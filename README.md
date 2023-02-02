@@ -1,7 +1,13 @@
 <div align="center">
 	<br />
 	<p>
-		<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed"><img src="https://cdn.rcd.gg/Recodive.png" width="546" alt="postgresql-typed" /></a>
+		<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">
+			<picture>
+				<source media="(prefers-color-scheme: dark)" srcset="https://cdn.rcd.gg/PostgreSQL-Typed-Banner-White.svg">
+				<source media="(prefers-color-scheme: light)" srcset="https://cdn.rcd.gg/PostgreSQL-Typed-Banner-Black.svg">
+				<img alt="PostgreSQL-Typed" src="https://cdn.rcd.gg/PostgreSQL-Typed-Banner-Black.svg">
+			</picture>
+		</a>
 	</p>
 </div>
 

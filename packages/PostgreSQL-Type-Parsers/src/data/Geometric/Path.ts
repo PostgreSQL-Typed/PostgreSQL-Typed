@@ -1,0 +1,419 @@
+import { types } from "pg";
+import { DataType } from "postgresql-data-types";
+
+import type { ParseContext } from "../../types/ParseContext";
+import type { ParseReturnType } from "../../types/ParseReturnType";
+import type { SafeEquals } from "../../types/SafeEquals";
+import type { SafeFrom } from "../../types/SafeFrom";
+import { arrayParser } from "../../util/arrayParser";
+import { getParsedType, ParsedType } from "../../util/getParsedType";
+import { hasKeys } from "../../util/hasKeys";
+import { isOneOf } from "../../util/isOneOf";
+import { parser } from "../../util/parser";
+import { PGTPBase } from "../../util/PGTPBase";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
+import { throwPGTPError } from "../../util/throwPGTPError";
+import { INVALID, OK } from "../../util/validation";
+import { Point, PointObject } from "./Point";
+
+enum Connection {
+	open = "open",
+	closed = "closed",
+}
+type ConnectionType = "open" | "closed";
+
+// [] = open, () = closed
+const connections = ["open", "closed"];
+
+interface PathObject {
+	points: Point[];
+	connection: Connection | ConnectionType;
+}
+
+interface RawPathObject {
+	points: PointObject[];
+	connection: Connection | ConnectionType;
+}
+
+interface Path {
+	points: Point[];
+	connection: Connection | ConnectionType;
+
+	toString(): string;
+	toJSON(): RawPathObject;
+
+	equals(string: string): boolean;
+	equals(points: Point[]): boolean;
+	equals(point: Point, ...points: Point[]): boolean;
+	equals(path: Path): boolean;
+	equals(object: PathObject | RawPathObject): boolean;
+	safeEquals(string: string): SafeEquals<Path>;
+	safeEquals(points: Point[]): SafeEquals<Path>;
+	safeEquals(point: Point, ...points: Point[]): SafeEquals<Path>;
+	safeEquals(path: Path): SafeEquals<Path>;
+	safeEquals(object: PathObject | RawPathObject): SafeEquals<Path>;
+}
+
+interface PathConstructor {
+	from(string: string): Path;
+	from(points: Point[]): Path;
+	from(point: Point, ...points: Point[]): Path;
+	from(path: Path): Path;
+	from(object: PathObject | RawPathObject): Path;
+	safeFrom(string: string): SafeFrom<Path>;
+	safeFrom(points: Point[]): SafeFrom<Path>;
+	safeFrom(point: Point, ...points: Point[]): SafeFrom<Path>;
+	safeFrom(path: Path): SafeFrom<Path>;
+	safeFrom(object: PathObject | RawPathObject): SafeFrom<Path>;
+	/**
+	 * Returns `true` if `obj` is a `Path`, `false` otherwise.
+	 */
+	isPath(obj: any): obj is Path;
+}
+
+class PathConstructorClass extends PGTPConstructorBase<Path> implements PathConstructor {
+	constructor() {
+		super();
+	}
+
+	_parse(ctx: ParseContext): ParseReturnType<Path> {
+		const [arg, ...otherArgs] = ctx.data,
+			allowedTypes = [ParsedType.string, ParsedType.object, ParsedType.array],
+			parsedType = getParsedType(arg);
+
+		if (parsedType !== ParsedType.object && ctx.data.length !== 1) {
+			this.setIssueForContext(
+				ctx,
+				ctx.data.length > 1
+					? {
+							code: "too_big",
+							type: "arguments",
+							maximum: 1,
+							exact: true,
+					  }
+					: {
+							code: "too_small",
+							type: "arguments",
+							minimum: 1,
+							exact: true,
+					  }
+			);
+			return INVALID;
+		}
+
+		if (!isOneOf(allowedTypes, parsedType)) {
+			this.setIssueForContext(ctx, {
+				code: "invalid_type",
+				expected: allowedTypes as ParsedType[],
+				received: parsedType,
+			});
+			return INVALID;
+		}
+
+		switch (parsedType) {
+			case "string":
+				return this._parseString(ctx, arg as string);
+			case "array":
+				return this._parseArray(ctx, arg as unknown[]);
+			default:
+				return this._parseObject(ctx, arg as object, otherArgs);
+		}
+	}
+
+	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Path> {
+		// Remove all whitespace
+		arg = arg.replaceAll(/\s/g, "");
+
+		if (arg.match(/^\(\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\)$/)) {
+			const points = arg
+					.slice(1, -1)
+					.split("),(")
+					.join("), (")
+					.split(", ")
+					.map(p => Point.safeFrom(p)),
+				invalidPoint = points.find(p => !p.success);
+
+			/* c8 ignore start */
+			if (invalidPoint?.success === false) {
+				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				return INVALID;
+			}
+			/* c8 ignore stop */
+
+			return OK(
+				new PathClass(
+					//@ts-expect-error - They are all valid at this point
+					points.map(range => range.data),
+					Connection.closed
+				)
+			);
+		} else if (arg.match(/^\[\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\]$/)) {
+			const points = arg
+					.slice(1, -1)
+					.split("),(")
+					.join("), (")
+					.split(", ")
+					.map(point => Point.safeFrom(point)),
+				invalidPoint = points.find(point => !point.success);
+
+			/* c8 ignore start */
+			if (invalidPoint?.success === false) {
+				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				return INVALID;
+			}
+			/* c8 ignore stop */
+
+			return OK(
+				new PathClass(
+					//@ts-expect-error - They are all valid at this point
+					points.map(range => range.data),
+					Connection.open
+				)
+			);
+		}
+
+		this.setIssueForContext(ctx, {
+			code: "invalid_string",
+			received: arg,
+			expected: "LIKE ((x,y),...) || [(x,y),...]",
+		});
+		return INVALID;
+	}
+
+	private _parseArray(ctx: ParseContext, arg: unknown[]): ParseReturnType<Path> {
+		if (arg.length < 1) {
+			this.setIssueForContext(ctx, {
+				code: "too_small",
+				type: "array",
+				minimum: 1,
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		const points = arg.map(point => Point.safeFrom(point as string)),
+			invalidPoint = points.find(point => !point.success);
+
+		if (invalidPoint?.success === false) {
+			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			return INVALID;
+		}
+
+		return OK(
+			new PathClass(
+				//@ts-expect-error - They are all valid at this point
+				points.map(range => range.data),
+				Connection.closed
+			)
+		);
+	}
+
+	private _parseObject(ctx: ParseContext, arg: object, otherArgs: unknown[]): ParseReturnType<Path> {
+		// Input should be [Path]
+		if (Path.isPath(arg)) {
+			if (otherArgs.length > 0) {
+				this.setIssueForContext(ctx, {
+					code: "too_big",
+					type: "arguments",
+					maximum: 1,
+					exact: true,
+				});
+				return INVALID;
+			}
+			return OK(new PathClass(arg.points, arg.connection));
+		}
+
+		// Input should be [Point, ...]
+		if (Point.isPoint(arg)) {
+			const points = otherArgs.map(point => Point.safeFrom(point as string)),
+				invalidPoint = points.find(point => !point.success);
+
+			if (invalidPoint?.success === false) {
+				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				return INVALID;
+			}
+
+			return OK(
+				new PathClass(
+					//@ts-expect-error - They are all valid at this point
+					[arg, ...points.map(range => range.data)],
+					Connection.closed
+				)
+			);
+		}
+
+		// Input should be [PathObject | RawPathObject]
+		if (otherArgs.length > 0) {
+			this.setIssueForContext(ctx, {
+				code: "too_big",
+				type: "arguments",
+				maximum: 1,
+				exact: true,
+			});
+			return INVALID;
+		}
+
+		const parsedObject = hasKeys<PathObject | RawPathObject>(arg, [
+			["points", "array"],
+			["connection", "string"],
+		]);
+		if (!parsedObject.success) {
+			switch (true) {
+				case parsedObject.otherKeys.length > 0:
+					this.setIssueForContext(ctx, {
+						code: "unrecognized_keys",
+						keys: parsedObject.otherKeys,
+					});
+					break;
+				case parsedObject.missingKeys.length > 0:
+					this.setIssueForContext(ctx, {
+						code: "missing_keys",
+						keys: parsedObject.missingKeys,
+					});
+					break;
+				case parsedObject.invalidKeys.length > 0:
+					this.setIssueForContext(ctx, {
+						code: "invalid_key_type",
+						...parsedObject.invalidKeys[0],
+					});
+					break;
+			}
+			return INVALID;
+		}
+
+		const { points, connection } = parsedObject.obj,
+			parsedPoints = points.map(point => Point.safeFrom(point)),
+			invalidPoint = parsedPoints.find(point => !point.success);
+
+		if (invalidPoint?.success === false) {
+			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			return INVALID;
+		}
+
+		if (parsedPoints.length < 1) {
+			this.setIssueForContext(ctx, {
+				code: "too_small",
+				type: "array",
+				minimum: 1,
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (!connections.includes(connection)) {
+			this.setIssueForContext(ctx, {
+				code: "invalid_string",
+				expected: connections,
+				received: connection,
+			});
+			return INVALID;
+		}
+
+		return OK(
+			new PathClass(
+				//@ts-expect-error - They are all valid at this point
+				parsedPoints.map(range => range.data),
+				connection as Connection
+			)
+		);
+	}
+
+	isPath(obj: any): obj is Path {
+		return obj instanceof PathClass;
+	}
+}
+
+const Path: PathConstructor = new PathConstructorClass();
+
+class PathClass extends PGTPBase<Path> implements Path {
+	constructor(private _points: Point[], private _connection: Connection | ConnectionType) {
+		super();
+	}
+
+	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Path }> {
+		//@ts-expect-error - _equals receives the same context as _parse
+		const parsed = Path.safeFrom(...ctx.data);
+		if (parsed.success) {
+			return OK({
+				equals: parsed.data.toString() === this.toString(),
+				data: parsed.data,
+			});
+		}
+		this.setIssueForContext(ctx, parsed.error.issue);
+		return INVALID;
+	}
+
+	toString(): string {
+		if (this._connection === Connection.closed) return `(${this._points.map(p => p.toString()).join(",")})`;
+		else return `[${this._points.map(p => p.toString()).join(",")}]`;
+	}
+
+	toJSON(): RawPathObject {
+		return {
+			points: this._points.map(p => p.toJSON()),
+			connection: this._connection,
+		};
+	}
+
+	get points(): Point[] {
+		return this._points;
+	}
+
+	set points(points: Point[]) {
+		const parsedType = getParsedType(points);
+		if (parsedType !== "array") {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: "array",
+				received: parsedType,
+			});
+		}
+
+		if (points.length < 1) {
+			throwPGTPError({
+				code: "too_small",
+				type: "array",
+				minimum: 1,
+				inclusive: true,
+			});
+		}
+
+		const finalPoints = points.map(point => Point.safeFrom(point)),
+			invalidPoint = finalPoints.find(point => !point.success);
+
+		if (invalidPoint?.success === false) throwPGTPError(invalidPoint.error.issue);
+
+		//@ts-expect-error - They are all valid at this point
+		this._points = finalPoints.map(point => point.data);
+	}
+
+	get connection(): Connection | ConnectionType {
+		return this._connection;
+	}
+
+	set connection(connection: Connection | ConnectionType) {
+		const parsedType = getParsedType(connection);
+		if (parsedType !== "string") {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: "string",
+				received: parsedType,
+			});
+		}
+
+		if (!connections.includes(connection)) {
+			throwPGTPError({
+				code: "invalid_string",
+				expected: connections,
+				received: connection,
+			});
+		}
+
+		this._connection = connection;
+	}
+}
+
+types.setTypeParser(DataType.path as any, parser(Path));
+types.setTypeParser(DataType._path as any, arrayParser(Path));
+
+export { Connection, ConnectionType, Path, PathObject, RawPathObject };

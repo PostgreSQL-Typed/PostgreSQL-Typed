@@ -1,0 +1,24 @@
+{
+	"deepscan.enable": true,
+	"deepscan.ignoreConfirmWarning": true,
+	"deepscan.serverEmbedded.eslint.enable": true,
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"editor.formatOnType": true,
+	"editor.tabSize": 2,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.guides.bracketPairs": true,
+	"editor.guides.bracketPairsHorizontal": true,
+	"editor.bracketPairColorization.enabled": true,
+	"telemetry.telemetryLevel": "off",
+	"typescript.format.semicolons": "insert",
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"atlascode.jira.todoIssues.triggers": ["TODO", "BUG", "FIXME", "ISSUE", "//!", "//?", "// !", "// ?"],
+	"prettier.arrowParens": "avoid",
+	"prettier.trailingComma": "none",
+	"prettier.useTabs": true,
+	"prettier.vueIndentScriptAndStyle": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": true
+	},
+}

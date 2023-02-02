@@ -1,0 +1,32 @@
+{
+	"name": "postgresql-data-types",
+	"version": "1.0.0",
+	"description": "A list of PostgreSQL data types",
+	"main": "lib/DataTypes.js",
+	"types": "lib/DataTypes.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git"
+	},
+	"bugs": {
+		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
+	},
+	"files": [
+		"lib"
+	],
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc",
+		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
+		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+	},
+	"keywords": [
+		"postgresql",
+		"pg",
+		"typed",
+		"types",
+		"typescript"
+	],
+	"author": "Bas950",
+	"license": "MPL-2.0"
+}

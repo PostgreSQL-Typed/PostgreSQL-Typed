@@ -118,6 +118,9 @@ describe("Date", () => {
 		expect(() => {
 			date.year = 10000;
 		}).toThrowError("Number must be less than or equal to 9999");
+		expect(() => {
+			date.year = 2.5;
+		}).toThrowError("Number must be whole");
 		date.year = 2023;
 		expect(date.year).toBe(2023);
 	});
@@ -138,6 +141,9 @@ describe("Date", () => {
 		expect(() => {
 			date.month = 13;
 		}).toThrowError("Number must be less than or equal to 12");
+		expect(() => {
+			date.month = 2.5;
+		}).toThrowError("Number must be whole");
 		date.month = 5;
 		expect(date.month).toBe(5);
 	});
@@ -158,6 +164,9 @@ describe("Date", () => {
 		expect(() => {
 			date.day = 32;
 		}).toThrowError("Number must be less than or equal to 31");
+		expect(() => {
+			date.day = 2.5;
+		}).toThrowError("Number must be whole");
 		date.day = 5;
 		expect(date.day).toBe(5);
 	});

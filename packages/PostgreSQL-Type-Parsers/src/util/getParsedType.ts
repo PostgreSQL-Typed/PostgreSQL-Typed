@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { DateTime } from "luxon";
 
 import { arrayToEnum } from "./arrayToEnum";
@@ -5,6 +6,7 @@ import { arrayToEnum } from "./arrayToEnum";
 export const ParsedType = arrayToEnum([
 	"array",
 	"bigint",
+	"bigNumber",
 	"boolean",
 	"function",
 	"globalThis.Date",
@@ -49,6 +51,7 @@ export const getParsedType = (data: any): ParsedType => {
 			if (typeof Set !== "undefined" && data instanceof Set) return ParsedType.set;
 			if (typeof Date !== "undefined" && data instanceof Date) return ParsedType["globalThis.Date"];
 			if (data instanceof DateTime) return ParsedType["luxon.DateTime"];
+			if (BigNumber.isBigNumber(data)) return ParsedType.bigNumber;
 			return ParsedType.object;
 		case "undefined":
 			return ParsedType.undefined;

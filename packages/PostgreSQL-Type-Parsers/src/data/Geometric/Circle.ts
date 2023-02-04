@@ -119,7 +119,7 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 			}
 
 			if (arg.startsWith("<(") || arg.startsWith("((")) arg = arg.slice(2);
-			if (arg.endsWith(")>") || arg.endsWith("))")) arg = arg.slice(0, -1);
+			if (arg.endsWith(">") || arg.endsWith(")")) arg = arg.slice(0, -1);
 			const [x, y, radius] = arg.split(",").map(c => parseFloat(c));
 			return OK(new CircleClass(x, y, radius));
 		}

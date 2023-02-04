@@ -16,7 +16,7 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 	/**
 	 * The groups to be included in the RegExp.
 	 */
-	groups: string[];
+	groups?: string[];
 }): {
 	match: (string: string) => T | null;
 } => {
@@ -29,11 +29,12 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 			};
 
 			// If the array is empty, match the string with the base RegExp
-			if (newOptions.groups.length === 0) return string.match(new RegExp(newOptions.base.source.replace("%others%", ""), newOptions.base.flags))?.groups as T;
+			if (newOptions.groups.length === 0)
+				return (string.match(new RegExp(newOptions.base.source.replace("%others%", ""), newOptions.base.flags))?.groups as T) ?? null;
 
 			// If the array has only one element, match the string with the base RegExp
 			if (newOptions.groups.length === 1)
-				return string.match(new RegExp(newOptions.base.source.replace("%others%", newOptions.groups[0]), newOptions.base.flags))?.groups as T;
+				return (string.match(new RegExp(newOptions.base.source.replace("%others%", newOptions.groups[0]), newOptions.base.flags))?.groups as T) ?? null;
 
 			// Otherwise test the string against the groups and map the results to the index of the string in the array
 			const allPositions: (string | null)[] = [...Array(string.length).keys()].map(() => null);
@@ -45,10 +46,12 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 
 				// If the match is not found, continue
 				const index = string.indexOf(newMatch);
+				/* c8 ignore next */
 				if (index === -1) continue;
 
 				// If the index is already occupied, check if the other matches are occupied
 				if (allPositions[index] !== null) {
+					/* c8 ignore next */
 					const otherMatches = [...(match ?? [])].filter(m => !!m).slice(1);
 
 					// If there are no other matches, continue
@@ -57,6 +60,7 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 					// Otherwise, check if the other matches are occupied
 					for (const otherMatch of otherMatches) {
 						const otherIndex = string.indexOf(otherMatch);
+						/* c8 ignore next */
 						if (otherIndex === -1) continue;
 
 						// If the other index is already occupied, continue
@@ -72,7 +76,7 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 			//Remove all nulls from the array and join the remaining groups with the base RegExp
 			const groups = allPositions.filter(group => group !== null);
 			if (groups.length === 0) return null;
-			return string.match(new RegExp(newOptions.base.source.replace("%others%", groups.join("")), newOptions.base.flags))?.groups as T;
+			return (string.match(new RegExp(newOptions.base.source.replace("%others%", groups.join("")), newOptions.base.flags))?.groups as T) ?? null;
 		},
 	};
 };

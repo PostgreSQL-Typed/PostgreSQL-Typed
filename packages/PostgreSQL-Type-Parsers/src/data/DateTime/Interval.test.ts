@@ -1,622 +1,305 @@
 import { Client } from "pg";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
-import { Interval } from "./Interval";
+import { Interval, IntervalStyle } from "./Interval";
 
-describe.todo("Interval Class", () => {
-	it("should create a interval from a string", () => {
-		const interval1 = Interval.from("01:02:03");
-		expect(interval1).not.toBeNull();
-		expect(
-			interval1.equals({
-				years: 0,
-				months: 0,
-				days: 0,
-				hours: 1,
-				minutes: 2,
-				seconds: 3,
-				milliseconds: 0,
-			})
-		).toBe(true);
-
-		const interval2 = Interval.from("01:02:03.456");
-		expect(interval2).not.toBeNull();
-		expect(
-			interval2.equals({
-				years: 0,
-				months: 0,
-				days: 0,
-				hours: 1,
-				minutes: 2,
-				seconds: 3,
-				milliseconds: 456,
-			})
-		).toBe(true);
-
-		const interval3 = Interval.from("1 year -32 days");
-		expect(interval3).not.toBeNull();
-		expect(
-			interval3.equals({
-				years: 1,
-				months: 0,
-				days: -32,
-				hours: 0,
-				minutes: 0,
-				seconds: 0,
-				milliseconds: 0,
-			})
-		).toBe(true);
-
-		const interval4 = Interval.from("1 day -00:00:03");
-		expect(interval4).not.toBeNull();
-		expect(
-			interval4.equals({
-				years: 0,
-				months: 0,
-				days: 1,
-				hours: 0,
-				minutes: 0,
-				seconds: -3,
-				milliseconds: 0,
-			})
-		).toBe(true);
-
-		const interval5 = Interval.from("1 day -00:00:03.456");
-		expect(interval5).not.toBeNull();
-		expect(
-			interval5.equals({
-				years: 0,
-				months: 0,
-				days: 1,
-				hours: 0,
-				minutes: 0,
-				seconds: -3,
-				milliseconds: -456,
-			})
-		).toBe(true);
-		expect(Interval.from(Interval.from("01:02:03"))).not.toBeNull();
+describe("IntervalStyle", () => {
+	it("should have all Interval styles", () => {
+		expect([
+			"PostgreSQL",
+			"PostgreSQL-Short",
+			"PostgreSQL-Time",
+			"PostgreSQL-Time-Short",
+			"ISO",
+			"ISO-Short",
+			"ISO-Basic",
+			"ISO-Extended",
+			"SQL",
+		]).toStrictEqual([
+			IntervalStyle.PostgreSQL,
+			IntervalStyle.PostgreSQLShort,
+			IntervalStyle.PostgreSQLTime,
+			IntervalStyle.PostgreSQLTimeShort,
+			IntervalStyle.ISO,
+			IntervalStyle.ISOShort,
+			IntervalStyle.ISOBasic,
+			IntervalStyle.ISOExtended,
+			IntervalStyle.SQL,
+		]);
 	});
+});
 
-	it("should create a interval from a ISO", () => {
-		const interval = Interval.from("P0Y0M4DT1H2M3S");
-		expect(interval).not.toBeNull();
+describe("IntervalConstructor", () => {
+	test("_parse(...)", () => {
+		expect(Interval.safeFrom("1 second").success).toBe(true);
 		expect(
-			interval.equals({
-				years: 0,
-				months: 0,
-				days: 4,
-				hours: 1,
-				minutes: 2,
-				seconds: 3,
-				milliseconds: 0,
-			})
+			Interval.safeFrom({
+				years: 2022,
+				months: 9,
+				days: 2,
+			}).success
 		).toBe(true);
-	});
+		expect(Interval.safeFrom(2022, 9, 2, 1, 2, 3, 4).success).toBe(true);
+		expect(Interval.safeFrom(Interval.from("1 second")).success).toBe(true);
+		expect(Interval.safeFrom("1 millennium 1 century 1 decade 1week 1microsecond ago").success).toBe(true);
 
-	it("should create a interval from a short ISO", () => {
-		const interval = Interval.from("P4DT1H2M3S");
-		expect(interval).not.toBeNull();
-		expect(
-			interval.equals({
-				years: 0,
-				months: 0,
-				days: 4,
-				hours: 1,
-				minutes: 2,
-				seconds: 3,
-				milliseconds: 0,
-			})
-		).toBe(true);
-		expect(Interval.from("P1MT")).not.toBeNull();
-	});
-
-	it("should error when creating a interval from a invalid string", () => {
-		expect(() => Interval.from("I guess 2 days seems fine")).toThrowError("Invalid Interval string");
-	});
-
-	it("should create a interval from numbers", () => {
-		const interval = Interval.from(1, 2, 3, 4, 5, 6, 7);
-		expect(interval).not.toBeNull();
-		expect(
-			interval.equals({
-				years: 1,
-				months: 2,
-				days: 3,
-				hours: 4,
-				minutes: 5,
-				seconds: 6,
-				milliseconds: 7,
-			})
-		).toBe(true);
-	});
-
-	it("should error when creating a interval from a invalid numbers", () => {
-		expect(() => Interval.from(1, 2, 3, 4, 5, 6, "7" as any)).toThrowError("Invalid Interval array, numbers only");
-	});
-
-	it("should create a interval from an object", () => {
-		const interval = Interval.from({
-			years: 1,
-			months: 2,
-			days: 3,
-			hours: 4,
-			minutes: 5,
-			seconds: 6,
-			milliseconds: 7,
-		});
-		expect(interval).not.toBeNull();
-	});
-
-	it("should error when creating a interval from a invalid object", () => {
-		expect(() => Interval.from({} as any)).toThrowError("Invalid Interval object");
+		//@ts-expect-error - this is a test
+		expect(() => Interval.from()).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Interval.from("a", "b")).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Interval.from(BigInt("1"))).toThrowError("Expected 'number' | 'string' | 'object', received 'bigint'");
+		expect(() => Interval.from("()")).toThrowError("Expected 'LIKE P1Y2M3W4DT5H6M7S', received '()'");
+		expect(() => Interval.from({} as any)).toThrowError("Missing keys in object: 'years', 'months', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'");
 		expect(() =>
 			Interval.from({
-				years: 1,
-				months: 2,
-				days: 3,
-				hours: 4,
-				minutes: 5,
-				seconds: 6,
-				milliseconds: "7" as any,
-			})
-		).toThrowError("Invalid Interval object");
+				years: 2022,
+				months: 9,
+				days: "2",
+			} as any)
+		).toThrowError("Expected 'number' | 'undefined' for key 'days', received 'string'");
+		expect(() =>
+			Interval.from({
+				years: 2022,
+				months: 9,
+				days: 2,
+				weeks: 0,
+			} as any)
+		).toThrowError("Unrecognized key in object: 'weeks'");
+		expect(() => Interval.from(1, 2, "a" as any, 4, 5, 6, 7)).toThrowError("Expected 'number', received 'string'");
+		//@ts-expect-error - this is a test
+		expect(() => Interval.from(1, 2, 3, 4, 5, 6)).toThrowError("Function must have exactly 7 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Interval.from(1, 2, 3, 4, 5, 6, 7, 8)).toThrowError("Function must have exactly 7 argument(s)");
 	});
 
-	it("isInterval()", () => {
+	test("isInterval(...)", () => {
 		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
+			years: 2022,
+			months: 9,
+			days: 2,
 		});
 		expect(Interval.isInterval(interval)).toBe(true);
 		expect(
 			Interval.isInterval({
-				seconds: 3,
-				minutes: 2,
-				hours: 1,
-			})
-		).toBe(false);
-	});
-
-	it("toString()", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.toString()).toBe("1 hour 2 minutes 3 seconds");
-		const interval2 = Interval.from({
-			milliseconds: 3,
-			hours: 1,
-		});
-		expect(interval2.toString()).toBe("1 hour 0.003 seconds");
-		const interval3 = Interval.from({
-			seconds: 0,
-		});
-		expect(interval3.toString()).toBe("0 seconds");
-	});
-
-	it("toISOString()", () => {
-		const interval1 = Interval.from({
-			days: 4,
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.toISOString()).toBe("P0Y0M4DT1H2M3S");
-		const interval2 = Interval.from({
-			years: 1,
-			months: 2,
-			days: 3,
-		});
-		expect(interval2.toISOString()).toBe("P1Y2M3DT0H0M0S");
-		const interval3 = Interval.from({
-			milliseconds: 3,
-		});
-		expect(interval3.toISOString()).toBe("P0Y0M0DT0H0M0.003S");
-		const interval4 = Interval.from({
-			seconds: 0,
-		});
-		expect(interval4.toISOString()).toBe("P0Y0M0DT0H0M0S");
-	});
-
-	it("toISOString(), short", () => {
-		const interval1 = Interval.from({
-			days: 4,
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.toISOString(true)).toBe("P4DT1H2M3S");
-		const interval2 = Interval.from({
-			years: 1,
-			months: 2,
-			days: 3,
-		});
-		expect(interval2.toISOString(true)).toBe("P1Y2M3D");
-		const interval3 = Interval.from({
-			milliseconds: 3,
-		});
-		expect(interval3.toISOString(true)).toBe("PT0.003S");
-		const interval4 = Interval.from({
-			milliseconds: 0,
-		});
-		expect(interval4.toISOString(true)).toBe("PT0S");
-	});
-
-	it("toJSON()", () => {
-		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval.toJSON()).toEqual({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-	});
-
-	it("equals()", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-
-		expect(
-			interval1.equals(
-				Interval.from({
-					seconds: 3,
-					minutes: 2,
-					hours: 1,
-				})
-			)
-		).toBe(true);
-		expect(
-			interval1.equals(
-				Interval.from({
-					seconds: 3,
-					minutes: 2,
-					hours: 2,
-				}).toString()
-			)
-		).toBe(false);
-		expect(
-			interval1.equals(
-				Interval.from({
-					seconds: 3,
-					minutes: 2,
-					hours: 1,
-				}).toJSON()
-			)
-		).toBe(true);
-		expect(
-			interval1.equals(
-				Interval.from({
-					seconds: 3,
-					minutes: 2,
-					hours: 2,
-				}).toISOString()
-			)
-		).toBe(false);
-		expect(
-			interval1.equals(
-				Interval.from({
-					seconds: 3,
-					minutes: 2,
-					hours: 1,
-				}).toISOString(true)
-			)
-		).toBe(true);
-		expect(
-			interval1.equals({
-				seconds: 3,
-				minutes: 2,
-				hours: 2,
-			})
-		).toBe(false);
-		expect(
-			interval1.equals({
-				seconds: 3,
-				minutes: 2,
-				hours: 1,
-			})
-		).toBe(true);
-		const interval2 = Interval.from({
-			years: 3,
-			months: 2,
-			days: 1,
-		});
-		expect(
-			interval2.equals({
-				years: 3,
-				months: 2,
+				years: 2022,
+				months: 9,
 				days: 2,
 			})
 		).toBe(false);
-		expect(
-			interval2.equals({
-				years: 3,
-				months: 2,
-				days: 1,
-			})
-		).toBe(true);
+	});
+});
+
+describe("Interval", () => {
+	test("_equals(...)", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 2 }))).toBe(true);
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 3 }))).toBe(false);
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 2 }).toJSON())).toBe(true);
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 3 }).toJSON())).toBe(false);
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 2 }).toString())).toBe(true);
+		expect(interval.equals(Interval.from({ years: 2022, months: 9, days: 3 }).toString())).toBe(false);
+		//@ts-expect-error - this is a test
+		expect(() => interval.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object', received 'bigint'");
 	});
 
-	it("get years", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.years).toBe(0);
+	test("toString(...)", () => {
+		const interval1 = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(interval1.toString()).toBe("2022 years 9 months 2 days");
+		expect(interval1.toString("PostgreSQL")).toBe(interval1.toString());
+		expect(interval1.toString("PostgreSQL-Short")).toBe("2022 yrs 9 mons 2 days");
+		expect(interval1.toString("PostgreSQL-Time")).toBe("2022 years 9 months 2 days");
+		expect(interval1.toString("PostgreSQL-Time-Short")).toBe("2022 yrs 9 mons 2 days");
+		expect(interval1.toString("ISO")).toBe("P2022Y9M2DT0H0M0S");
+		expect(interval1.toString("ISO-Short")).toBe("P2022Y9M2D");
+		expect(interval1.toString("ISO-Basic")).toBe("P20220902T000000");
+		expect(interval1.toString("ISO-Extended")).toBe("P2022-09-02T00:00:00");
+		expect(interval1.toString("SQL")).toBe("2022-9 2 00:00:00");
 
-		const interval2 = Interval.from({
-			years: 1,
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
+		const interval2 = Interval.from({ years: 2022, days: 2, hours: 1, minutes: 2, seconds: 3, milliseconds: 4 });
+		expect(interval2.toString()).toBe("2022 years 2 days 1 hours 2 minutes 3 seconds 4 milliseconds");
+		expect(interval2.toString("PostgreSQL")).toBe(interval2.toString());
+		expect(interval2.toString("PostgreSQL-Short")).toBe("2022 yrs 2 days 1 hrs 2 mins 3 secs 4 msecs");
+		expect(interval2.toString("PostgreSQL-Time")).toBe("2022 years 2 days 01:02:03.004");
+		expect(interval2.toString("PostgreSQL-Time-Short")).toBe("2022 yrs 2 days 01:02:03.004");
+		expect(interval2.toString("ISO")).toBe("P2022Y0M2DT1H2M3.004S");
+		expect(interval2.toString("ISO-Short")).toBe("P2022Y2DT1H2M3.004S");
+		expect(interval2.toString("ISO-Basic")).toBe("P20220002T010203.004");
+		expect(interval2.toString("ISO-Extended")).toBe("P2022-00-02T01:02:03.004");
+		expect(interval2.toString("SQL")).toBe("2022-0 2 01:02:03.004");
 
-		expect(interval2.years).toBe(1);
+		// Test some edge cases
+		const interval3 = Interval.from({ days: 400, hours: 100, minutes: 100, seconds: 100, milliseconds: 10000 });
+		expect(interval3.toString()).toBe("1 years 39 days 5 hours 41 minutes 50 seconds");
+
+		const interval4 = Interval.from({ years: 1.5, months: 1.5, days: 1.5, hours: 1.5, minutes: 1.5, seconds: 1.5, milliseconds: 1.5 });
+		expect(interval4.toString()).toBe("1 years 1 months 198.5 days 13 hours 31 minutes 31 seconds 501.5 milliseconds");
+
+		const interval5 = Interval.from({ milliseconds: 0 });
+		expect(interval5.toString()).toBe("0");
+		expect(interval5.toString("PostgreSQL")).toBe(interval5.toString());
+		expect(interval5.toString("PostgreSQL-Short")).toBe("0");
+		expect(interval5.toString("PostgreSQL-Time")).toBe("0");
+		expect(interval5.toString("PostgreSQL-Time-Short")).toBe("0");
+		expect(interval5.toString("ISO")).toBe("P0Y0M0DT0H0M0S");
+		expect(interval5.toString("ISO-Short")).toBe("PT0S");
+		expect(interval5.toString("ISO-Basic")).toBe("P00000000T000000");
+		expect(interval5.toString("ISO-Extended")).toBe("P0000-00-00T00:00:00");
+		expect(interval5.toString("SQL")).toBe("0-0 0 00:00:00");
+
+		// Test all sql formats
+		// year to month
+		expect(Interval.from({ years: 2022, months: 9 }).toString("SQL")).toBe("2022-9");
+
+		// day to second
+		expect(Interval.from({ days: 2, hours: 1, minutes: 2, seconds: 3, milliseconds: 4 }).toString("SQL")).toBe("2 01:02:03.004");
+		expect(Interval.from({ days: 2, hours: 1, minutes: 2, milliseconds: 4 }).toString("SQL")).toBe("2 01:02:00.004");
+
+		// year to second
+		expect(Interval.from({ years: 2022, months: 9, days: 2, hours: 1, minutes: 2, seconds: 3, milliseconds: 4 }).toString("SQL")).toBe("2022-9 2 01:02:03.004");
+		expect(Interval.from({ years: 2022, months: 9, days: 2, hours: 1, minutes: 2, milliseconds: 4 }).toString("SQL")).toBe("2022-9 2 01:02:00.004");
+		expect(Interval.from({ years: 2022, minutes: 2 }).toString("SQL")).toBe("2022-0 0 00:02:00");
+		expect(Interval.from({ months: 3, milliseconds: 2 }).toString("SQL")).toBe("0-3 0 00:00:00.002");
+
+		// hour to minute
+		expect(Interval.from({ hours: 1, minutes: 2 }).toString("SQL")).toBe("01:02");
+
+		// hour to second
+		expect(Interval.from({ hours: 1, minutes: 2, seconds: 3, milliseconds: 4 }).toString("SQL")).toBe("01:02:03.004");
+		expect(Interval.from({ hours: 1, minutes: 2, milliseconds: 4 }).toString("SQL")).toBe("01:02:00.004");
+
+		// second
+		expect(Interval.from({ seconds: 3, milliseconds: 4 }).toString("SQL")).toBe("3.004");
+		expect(Interval.from({ milliseconds: 3 }).toString("SQL")).toBe("0.003");
+
+		expect(() => interval1.toString("wdabedowa" as any)).toThrowError();
+
+		expect(Interval.from({ days: 2, hours: 1, minutes: 2, milliseconds: 4 }).toString("ISO-Basic")).toBe("P00000002T010200.004");
+		expect(Interval.from({ hours: 1 }).toString("PostgreSQL")).toBe("1 hours");
+		expect(Interval.from({ milliseconds: 1 }).toString("PostgreSQL-Time")).toBe("00:00:00.001");
+		expect(Interval.from({ minutes: 1 }).toString("PostgreSQL-Time")).toBe("00:01:00");
 	});
 
-	it("set years", () => {
-		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		interval.years = 1;
-
-		expect(interval.years).toBe(1);
+	test("toJSON()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(interval.toJSON()).toEqual({ years: 2022, months: 9, days: 2 });
 	});
 
-	it("get months", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.months).toBe(0);
-
-		const interval2 = Interval.from({
-			months: 1,
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-
-		expect(interval2.months).toBe(1);
+	test("get years()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(interval.years).toBe(2022);
 	});
 
-	it("set months", () => {
-		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		interval.months = 1;
-
-		expect(interval.months).toBe(1);
+	test("set years(...)", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(() => {
+			interval.years = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.years = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.years = 2023;
+		expect(interval.years).toBe(2023);
 	});
 
-	it("get days", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		expect(interval1.days).toBe(0);
-
-		const interval2 = Interval.from({
-			days: 1,
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-
-		expect(interval2.days).toBe(1);
+	test("get months()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(interval.months).toBe(9);
 	});
 
-	it("set days", () => {
-		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-		interval.days = 1;
-
-		expect(interval.days).toBe(1);
+	test("set months()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(() => {
+			interval.months = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.months = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.months = 5;
+		expect(interval.months).toBe(5);
 	});
 
-	it("get hours", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-		});
-		expect(interval1.hours).toBe(0);
-
-		const interval2 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-			hours: 1,
-		});
-
-		expect(interval2.hours).toBe(1);
+	test("get days()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(interval.days).toBe(2);
 	});
 
-	it("set hours", () => {
-		const interval = Interval.from({
-			seconds: 3,
-			minutes: 2,
-		});
-		interval.hours = 1;
-
-		expect(interval.hours).toBe(1);
+	test("set days()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2 });
+		expect(() => {
+			interval.days = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.days = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.days = 5;
+		expect(interval.days).toBe(5);
 	});
 
-	it("get minutes", () => {
-		const interval1 = Interval.from({
-			seconds: 3,
-		});
-		expect(interval1.minutes).toBe(0);
-
-		const interval2 = Interval.from({
-			seconds: 3,
-			minutes: 2,
-		});
-
-		expect(interval2.minutes).toBe(2);
+	test("get hours()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, hours: 2 });
+		expect(interval.hours).toBe(2);
 	});
 
-	it("set minutes", () => {
-		const interval = Interval.from({
-			seconds: 3,
-		});
-		interval.minutes = 2;
+	test("set hours()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, hours: 2 });
+		expect(() => {
+			interval.hours = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.hours = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.hours = 5;
+		expect(interval.hours).toBe(5);
+	});
 
+	test("get minutes()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, minutes: 2 });
 		expect(interval.minutes).toBe(2);
 	});
 
-	it("get seconds", () => {
-		const interval = Interval.from({
-			seconds: 3,
-		});
-
-		expect(interval.seconds).toBe(3);
+	test("set minutes()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, minutes: 2 });
+		expect(() => {
+			interval.minutes = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.minutes = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.minutes = 5;
+		expect(interval.minutes).toBe(5);
 	});
 
-	it("set seconds", () => {
-		const interval = Interval.from({
-			seconds: 3,
-		});
-		interval.seconds = 2;
-
+	test("get seconds()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, seconds: 2 });
 		expect(interval.seconds).toBe(2);
 	});
 
-	it("get milliseconds", () => {
-		const interval = Interval.from({
-			seconds: 3,
-		});
-
-		expect(interval.milliseconds).toBe(0);
+	test("set seconds()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, seconds: 2 });
+		expect(() => {
+			interval.seconds = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			interval.seconds = 2.5;
+		}).toThrowError("Number must be whole");
+		interval.seconds = 5;
+		expect(interval.seconds).toBe(5);
 	});
 
-	it("set milliseconds", () => {
-		const interval = Interval.from({
-			seconds: 3,
-		});
-		interval.milliseconds = 2;
-
+	test("get milliseconds()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, milliseconds: 2 });
 		expect(interval.milliseconds).toBe(2);
 	});
 
-	it("get totalMilliseconds", () => {
-		const interval1 = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-		expect(interval1.totalMilliseconds).toBe(37065906007);
-		const interval2 = Interval.from({
-			milliseconds: 7,
-		});
-		expect(interval2.totalMilliseconds).toBe(7);
-		const interval3 = Interval.from({
-			seconds: 6,
-		});
-		expect(interval3.totalMilliseconds).toBe(6000);
-	});
-
-	it("get totalSeconds", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalSeconds).toBe(37065906.007);
-	});
-
-	it("get totalMinutes", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalMinutes).toBe(617765.1001166666);
-	});
-
-	it("get totalHours", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalHours).toBe(10296.085001944444);
-	});
-
-	it("get totalDays", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalDays).toBe(429.0035417476852);
-	});
-
-	it("get totalMonths", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalMonths).toBe(14.300118058256173);
-	});
-
-	it("get totalYears", () => {
-		const interval = Interval.from({
-			milliseconds: 7,
-			seconds: 6,
-			minutes: 5,
-			hours: 4,
-			days: 3,
-			months: 2,
-			years: 1,
-		});
-
-		expect(interval.totalYears).toBe(1.1916765048546811);
+	test("set milliseconds()", () => {
+		const interval = Interval.from({ years: 2022, months: 9, days: 2, milliseconds: 2 });
+		expect(() => {
+			interval.milliseconds = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		interval.milliseconds = 5;
+		expect(interval.milliseconds).toBe(5);
 	});
 });
 
@@ -744,7 +427,7 @@ describe("PostgreSQL", () => {
 		expect(() => Interval.from("PT2562047788.0152155019444")).not.toThrowError();
 		expect(() => Interval.from("PT-2562047788.0152155022222")).not.toThrowError();
 
-		// overflow each date/time field
+		// overflow each interval/time field
 		expect(() => Interval.from("2147483648 years")).not.toThrowError();
 		expect(() => Interval.from("-2147483649 years")).not.toThrowError();
 		expect(() => Interval.from("2147483648 months")).not.toThrowError();
@@ -768,7 +451,7 @@ describe("PostgreSQL", () => {
 		expect(() => Interval.from("PT2562047789")).not.toThrowError();
 		expect(() => Interval.from("PT-2562047789")).not.toThrowError();
 
-		// overflow with date/time unit aliases
+		// overflow with interval/time unit aliases
 		expect(() => Interval.from("2147483647 weeks")).not.toThrowError();
 		expect(() => Interval.from("-2147483648 weeks")).not.toThrowError();
 		expect(() => Interval.from("2147483647 decades")).not.toThrowError();

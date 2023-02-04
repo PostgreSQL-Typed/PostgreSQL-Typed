@@ -56,7 +56,7 @@ export interface InvalidRangeBoundIssue {
 
 export interface TooSmallIssue {
 	code: typeof IssueCode.too_small;
-	minimum: number | bigint;
+	minimum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
 	type: "array" | "number" | "bigint" | "arguments";
@@ -64,7 +64,7 @@ export interface TooSmallIssue {
 
 export interface TooBigIssue {
 	code: typeof IssueCode.too_big;
-	maximum: number | bigint;
+	maximum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
 	type: "array" | "number" | "bigint" | "arguments";

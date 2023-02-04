@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { DateTime } from "luxon";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
@@ -18,6 +19,10 @@ describe("getParsedType", () => {
 
 	it("should return bigint", () => {
 		expect(getParsedType(BigInt(1))).toBe("bigint");
+	});
+
+	it("should return bigint", () => {
+		expect(getParsedType(BigNumber(1))).toBe("bigNumber");
 	});
 
 	it("should return symbol", () => {
@@ -84,6 +89,7 @@ describe("ParsedType", () => {
 		expect(ParsedType).toEqual({
 			array: "array",
 			bigint: "bigint",
+			bigNumber: "bigNumber",
 			boolean: "boolean",
 			"globalThis.Date": "globalThis.Date",
 			infinity: "infinity",
@@ -107,6 +113,7 @@ describe("ParsedType", () => {
 		expectTypeOf<ParsedType>().toEqualTypeOf<
 			| "array"
 			| "bigint"
+			| "bigNumber"
 			| "boolean"
 			| "globalThis.Date"
 			| "infinity"

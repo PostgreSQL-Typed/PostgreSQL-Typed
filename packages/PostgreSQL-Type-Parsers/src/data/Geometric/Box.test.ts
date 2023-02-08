@@ -2,7 +2,7 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Box } from "./Box";
+import { Box } from "./Box.js";
 
 describe("BoxConstructor", () => {
 	test("_parse(...)", () => {
@@ -188,8 +188,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._box).toHaveLength(2);
 			expect(result.rows[0]._box[0].toString()).toStrictEqual(Box.from({ x1: 3.3, y1: 4.4, x2: 1.1, y2: 2.2 }).toString());
 			expect(result.rows[0]._box[1].toString()).toStrictEqual(Box.from({ x1: 7.7, y1: 8.8, x2: 5.5, y2: 6.6 }).toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

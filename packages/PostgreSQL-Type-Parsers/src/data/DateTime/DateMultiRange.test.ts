@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { DateMultiRange } from "./DateMultiRange";
-import { DateRange } from "./DateRange";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { DateMultiRange } from "./DateMultiRange.js";
+import { DateRange } from "./DateRange.js";
 
 describe("DateMultiRangeConstructor", () => {
 	test("_parse(...)", () => {
@@ -94,12 +94,12 @@ describe("DateMultiRangeConstructor", () => {
 			DateMultiRange.from(["range1", "range2"] as any);
 		}).toThrowError("Expected '[' | '(', received 'r'");
 
-		const dateMultiRangeFromArgsArray = DateMultiRange.from(
+		const dateMultiRangeFromArgumentsArray = DateMultiRange.from(
 			DateRange.from("[2021-01-01,2022-01-01)"),
 			DateRange.from("[2023-01-01,2024-01-01)"),
 			DateRange.from("[2025-01-01,2026-01-01)")
 		);
-		expect(dateMultiRangeFromArgsArray).not.toBeNull();
+		expect(dateMultiRangeFromArgumentsArray).not.toBeNull();
 
 		expect(() => {
 			DateMultiRange.from(DateRange.from("[2021-01-01,2022-01-01)"), "range2" as any);
@@ -282,8 +282,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._datemultirange).toHaveLength(2);
 			expect(result.rows[0]._datemultirange[0].toString()).toStrictEqual(DateMultiRange.from("{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01)}").toString());
 			expect(result.rows[0]._datemultirange[1].toString()).toStrictEqual(DateMultiRange.from("{[2025-01-08,2026-01-01),[2027-01-08,2028-01-01)}").toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

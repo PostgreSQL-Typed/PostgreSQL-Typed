@@ -1,20 +1,20 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Int4 } from "./Int4";
+import { Int4 } from "./Int4.js";
 
 describe("Int4Constructor", () => {
 	test("_parse(...)", () => {
 		//#region //* it should return OK when parsing succeeds
 		expect(Int4.safeFrom(1).success).toBe(true);
-		expect(Int4.safeFrom(2147483647).success).toBe(true);
-		expect(Int4.safeFrom(-2147483648).success).toBe(true);
+		expect(Int4.safeFrom(2_147_483_647).success).toBe(true);
+		expect(Int4.safeFrom(-2_147_483_648).success).toBe(true);
 		expect(Int4.safeFrom("1").success).toBe(true);
 		expect(Int4.safeFrom("2147483647").success).toBe(true);
 		expect(Int4.safeFrom("-2147483648").success).toBe(true);
 		expect(Int4.safeFrom(Int4.from(1)).success).toBe(true);
-		expect(Int4.safeFrom(Int4.from(2147483647)).success).toBe(true);
-		expect(Int4.safeFrom(Int4.from(-2147483648)).success).toBe(true);
+		expect(Int4.safeFrom(Int4.from(2_147_483_647)).success).toBe(true);
+		expect(Int4.safeFrom(Int4.from(-2_147_483_648)).success).toBe(true);
 		expect(
 			Int4.safeFrom({
 				int4: 1,
@@ -22,12 +22,12 @@ describe("Int4Constructor", () => {
 		).toBe(true);
 		expect(
 			Int4.safeFrom({
-				int4: 2147483647,
+				int4: 2_147_483_647,
 			}).success
 		).toBe(true);
 		expect(
 			Int4.safeFrom({
-				int4: -2147483648,
+				int4: -2_147_483_648,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -35,72 +35,79 @@ describe("Int4Constructor", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = Int4.safeFrom(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		const nanString = Int4.safeFrom("abc");
 		expect(nanString.success).toEqual(false);
-		if (!nanString.success) {
+		if (nanString.success) expect.fail();
+		else {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "number",
 				received: "nan",
 				message: "Expected 'number', received 'nan'",
 			});
-		} else expect.fail();
+		}
 
 		const notFinite = Int4.safeFrom("Infinity");
 		expect(notFinite.success).toEqual(false);
-		if (!notFinite.success) {
+		if (notFinite.success) expect.fail();
+		else {
 			expect(notFinite.error.issue).toStrictEqual({
 				code: "not_finite",
 				message: "Number must be finite",
 			});
-		} else expect.fail();
+		}
 
 		const notWhole = Int4.safeFrom(0.5);
 		expect(notWhole.success).toEqual(false);
-		if (!notWhole.success) {
+		if (notWhole.success) expect.fail();
+		else {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
 			});
-		} else expect.fail();
+		}
 
-		const tooBig = Int4.safeFrom(2147483648);
+		const tooBig = Int4.safeFrom(2_147_483_648);
 		expect(tooBig.success).toEqual(false);
-		if (!tooBig.success) {
+		if (tooBig.success) expect.fail();
+		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "number",
-				maximum: 2147483647,
+				maximum: 2_147_483_647,
 				inclusive: true,
 				message: "Number must be less than or equal to 2147483647",
 			});
-		} else expect.fail();
+		}
 
-		const tooSmall = Int4.safeFrom(-2147483649);
+		const tooSmall = Int4.safeFrom(-2_147_483_649);
 		expect(tooSmall.success).toEqual(false);
-		if (!tooSmall.success) {
+		if (tooSmall.success) expect.fail();
+		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "number",
-				minimum: -2147483648,
+				minimum: -2_147_483_648,
 				inclusive: true,
 				message: "Number must be greater than or equal to -2147483648",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooManyArguments = Int4.safeFrom(1, 2);
 		expect(tooManyArguments.success).toEqual(false);
-		if (!tooManyArguments.success) {
+		if (tooManyArguments.success) expect.fail();
+		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "arguments",
@@ -108,12 +115,13 @@ describe("Int4Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooFewArguments = Int4.safeFrom();
 		expect(tooFewArguments.success).toEqual(false);
-		if (!tooFewArguments.success) {
+		if (tooFewArguments.success) expect.fail();
+		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "arguments",
@@ -121,38 +129,41 @@ describe("Int4Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		const unrecognizedKeys = Int4.safeFrom({
 			int4: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
-		if (!unrecognizedKeys.success) {
+		if (unrecognizedKeys.success) expect.fail();
+		else {
 			expect(unrecognizedKeys.error.issue).toStrictEqual({
 				code: "unrecognized_keys",
 				keys: ["unrecognized"],
 				message: "Unrecognized key in object: 'unrecognized'",
 			});
-		} else expect.fail();
+		}
 
 		const missingKeys = Int4.safeFrom({
 			// int4: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
-		if (!missingKeys.success) {
+		if (missingKeys.success) expect.fail();
+		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
 				keys: ["int4"],
 				message: "Missing key in object: 'int4'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidKeys = Int4.safeFrom({
 			int4: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
-		if (!invalidKeys.success) {
+		if (invalidKeys.success) expect.fail();
+		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
 				objectKey: "int4",
@@ -160,7 +171,7 @@ describe("Int4Constructor", () => {
 				received: "string",
 				message: "Expected 'number' for key 'int4', received 'string'",
 			});
-		} else expect.fail();
+		}
 		//#endregion
 	});
 
@@ -233,14 +244,15 @@ describe("Int4", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = int4.safeEquals(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		expect(() => int4.equals(true as any)).toThrowError();
 		//#endregion
@@ -272,7 +284,7 @@ describe("Int4", () => {
 		int4.int4 = 2;
 		expect(int4.int4).toEqual(2);
 
-		expect(() => (int4.int4 = 2147483648)).toThrowError("Number must be less than or equal to 2147483647");
+		expect(() => (int4.int4 = 2_147_483_648)).toThrowError("Number must be less than or equal to 2147483647");
 	});
 });
 

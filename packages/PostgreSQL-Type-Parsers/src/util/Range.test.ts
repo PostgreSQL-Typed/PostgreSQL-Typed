@@ -1,14 +1,14 @@
 import { describe, expect, it, test } from "vitest";
 
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import { SafeEquals } from "../types/SafeEquals";
-import { SafeFrom } from "../types/SafeFrom";
-import { getParsedType } from "./getParsedType";
-import { PGTPBase } from "./PGTPBase";
-import { PGTPConstructorBase } from "./PGTPConstructorBase";
-import { getRange, LowerRange, RangeConstructor, UpperRange } from "./Range";
-import { INVALID, OK } from "./validation";
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import { SafeEquals } from "../types/SafeEquals.js";
+import { SafeFrom } from "../types/SafeFrom.js";
+import { getParsedType } from "./getParsedType.js";
+import { PGTPBase } from "./PGTPBase.js";
+import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { getRange, LowerRange, RangeConstructor, UpperRange } from "./Range.js";
+import { INVALID, OK } from "./validation.js";
 
 interface TestObject {
 	test: string;
@@ -31,7 +31,7 @@ interface TestConstructor {
 	from(object: Test | TestObject): Test;
 	safeFrom(string: string): SafeFrom<Test>;
 	safeFrom(object: Test | TestObject): SafeFrom<Test>;
-	isTest(obj: any): obj is Test;
+	isTest(object: any): object is Test;
 }
 
 class TestConstructorClass extends PGTPConstructorBase<TestClass> implements TestConstructor {
@@ -39,26 +39,26 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> implements Tes
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<TestClass> {
-		const [arg] = ctx.data,
-			type = getParsedType(arg);
+	_parse(context: ParseContext): ParseReturnType<TestClass> {
+		const [argument] = context.data,
+			type = getParsedType(argument);
 
 		if (type === "string") {
-			if (arg === "fail") {
-				this.setIssueForContext(ctx, {
+			if (argument === "fail") {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
 					expected: "a-z",
-					received: arg,
+					received: argument,
 				});
 				return INVALID;
 			}
-			return OK(new TestClass(arg as string));
+			return OK(new TestClass(argument as string));
 		}
-		if (type === "number") return OK(new TestClass((arg as number).toString()));
+		if (type === "number") return OK(new TestClass((argument as number).toString()));
 		if (type === "bigint") return INVALID;
-		if (type === "object") return OK(new TestClass((arg as TestObject).test));
+		if (type === "object") return OK(new TestClass((argument as TestObject).test));
 		else {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: ["string", "number", "object"],
 				received: type,
@@ -67,8 +67,8 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> implements Tes
 		}
 	}
 
-	isTest(obj: any): obj is Test {
-		return obj instanceof TestClass;
+	isTest(object: any): object is Test {
+		return object instanceof TestClass;
 	}
 }
 
@@ -129,18 +129,18 @@ describe("RangeConstructor", () => {
 		expect(invalidType.error.message).toBe("Expected 'string' | 'object' | 'array', received 'bigint'");
 
 		//@ts-expect-error - This is to test the error
-		const notEnoughArgs = TestRange.safeFrom();
-		expect(notEnoughArgs.success).toBe(false);
-		if (notEnoughArgs.success) expect.fail();
-		expect(notEnoughArgs.error.code).toBe("too_small");
-		expect(notEnoughArgs.error.message).toBe("Function must have exactly 1 argument(s)");
+		const notEnoughArguments = TestRange.safeFrom();
+		expect(notEnoughArguments.success).toBe(false);
+		if (notEnoughArguments.success) expect.fail();
+		expect(notEnoughArguments.error.code).toBe("too_small");
+		expect(notEnoughArguments.error.message).toBe("Function must have exactly 1 argument(s)");
 
 		//@ts-expect-error - This is to test the error
-		const tooManyArgs = TestRange.safeFrom("a", "b");
-		expect(tooManyArgs.success).toBe(false);
-		if (tooManyArgs.success) expect.fail();
-		expect(tooManyArgs.error.code).toBe("too_big");
-		expect(tooManyArgs.error.message).toBe("Function must have exactly 1 argument(s)");
+		const tooManyArguments = TestRange.safeFrom("a", "b");
+		expect(tooManyArguments.success).toBe(false);
+		if (tooManyArguments.success) expect.fail();
+		expect(tooManyArguments.error.code).toBe("too_big");
+		expect(tooManyArguments.error.message).toBe("Function must have exactly 1 argument(s)");
 	});
 
 	test("_parseString(...)", () => {
@@ -231,29 +231,25 @@ describe("RangeConstructor", () => {
 		expect(validArray.data.value).toHaveLength(2);
 		expect(validArray.data.equals([testClass.from("a"), testClass.from("c")])).toBe(true);
 
-		// @ts-expect-error - invalid array
-		const invalidArray1 = TestRange.safeFrom(["a"]);
+		const invalidArray1 = TestRange.safeFrom(["a"] as any);
 		expect(invalidArray1.success).toBe(false);
 		if (invalidArray1.success) expect.fail();
 		expect(invalidArray1.error.code).toBe("too_small");
 		expect(invalidArray1.error.message).toBe("Array must contain exactly 2 element(s)");
 
-		// @ts-expect-error - invalid array
-		const invalidArray2 = TestRange.safeFrom(["a", "c", "e"]);
+		const invalidArray2 = TestRange.safeFrom(["a", "c", "e"] as any);
 		expect(invalidArray2.success).toBe(false);
 		if (invalidArray2.success) expect.fail();
 		expect(invalidArray2.error.code).toBe("too_big");
 		expect(invalidArray2.error.message).toBe("Array must contain exactly 2 element(s)");
 
-		// @ts-expect-error - invalid array
-		const invalidArray3 = TestRange.safeFrom(["fail", "c"]);
+		const invalidArray3 = TestRange.safeFrom(["fail", "c"] as any);
 		expect(invalidArray3.success).toBe(false);
 		if (invalidArray3.success) expect.fail();
 		expect(invalidArray3.error.code).toBe("invalid_string");
 		expect(invalidArray3.error.message).toBe("Expected 'a-z', received 'fail'");
 
-		// @ts-expect-error - invalid array
-		const invalidArray4 = TestRange.safeFrom(["a", "fail"]);
+		const invalidArray4 = TestRange.safeFrom(["a", "fail"] as any);
 		expect(invalidArray4.success).toBe(false);
 		if (invalidArray4.success) expect.fail();
 		expect(invalidArray4.error.code).toBe("invalid_string");
@@ -277,7 +273,7 @@ describe("RangeConstructor", () => {
 		expect(validObject.data.empty).toBe(false);
 		expect(validObject.data.toString()).toBe("[a,c)");
 
-		// @ts-expect-error - invalid object
+		// @ts-expect-error - Testing invalid input
 		const invalidObject3 = TestRange.safeFrom(testClass.from("a"), testClass.from("c"), testClass.from("e"));
 		expect(invalidObject3.success).toBe(false);
 		if (invalidObject3.success) expect.fail();
@@ -285,8 +281,7 @@ describe("RangeConstructor", () => {
 		expect(invalidObject3.error.message).toBe("Function must have at most 2 argument(s)");
 
 		//Input should be [Range<DataType, DataTypeObject>]
-		// @ts-expect-error - invalid object
-		const invalidObject1 = TestRange.safeFrom(validObject.data, "hha");
+		const invalidObject1 = TestRange.safeFrom(validObject.data as any, "hha" as any);
 		expect(invalidObject1.success).toBe(false);
 		if (invalidObject1.success) expect.fail();
 		expect(invalidObject1.error.code).toBe("too_big");
@@ -299,15 +294,13 @@ describe("RangeConstructor", () => {
 		expect(fromRange.data.toString()).toBe("[a,c)");
 
 		//Input should be [DataType, DataType]
-		// @ts-expect-error - invalid object
-		const invalidObject2 = TestRange.safeFrom(testClass.from("a"));
+		const invalidObject2 = TestRange.safeFrom(testClass.from("a") as any);
 		expect(invalidObject2.success).toBe(false);
 		if (invalidObject2.success) expect.fail();
 		expect(invalidObject2.error.code).toBe("too_small");
 		expect(invalidObject2.error.message).toBe("Function must have exactly 2 argument(s)");
 
-		// @ts-expect-error - invalid object
-		const invalidObject4 = TestRange.safeFrom(testClass.from("c"), "fail");
+		const invalidObject4 = TestRange.safeFrom(testClass.from("c"), "fail" as any);
 		expect(invalidObject4.success).toBe(false);
 		if (invalidObject4.success) expect.fail();
 		expect(invalidObject4.error.code).toBe("invalid_string");
@@ -320,38 +313,34 @@ describe("RangeConstructor", () => {
 		expect(fromDataType.data.toString()).toBe("[a,c)");
 
 		//Input should be [RangeObject<DataType> | RawRangeObject<DataTypeObject>]
-		// @ts-expect-error - invalid object
-		const invalidObject5 = TestRange.safeFrom({}, {});
+		const invalidObject5 = TestRange.safeFrom({} as any, {} as any);
 		expect(invalidObject5.success).toBe(false);
 		if (invalidObject5.success) expect.fail();
 		expect(invalidObject5.error.code).toBe("too_big");
 		expect(invalidObject5.error.message).toBe("Function must have exactly 1 argument(s)");
 
-		// @ts-expect-error - invalid object
 		const invalidObject6 = TestRange.safeFrom({
 			lower: "[",
 			upper: ")",
 			value: [testClass.from("a"), testClass.from("c")],
 			g: "h",
-		});
+		} as any);
 		expect(invalidObject6.success).toBe(false);
 		if (invalidObject6.success) expect.fail();
 		expect(invalidObject6.error.code).toBe("unrecognized_keys");
 		expect(invalidObject6.error.message).toBe("Unrecognized key in object: 'g'");
 
-		// @ts-expect-error - invalid object
 		const invalidObject7 = TestRange.safeFrom({
 			upper: ")",
 			value: [testClass.from("a"), testClass.from("c")],
-		});
+		} as any);
 		expect(invalidObject7.success).toBe(false);
 		if (invalidObject7.success) expect.fail();
 		expect(invalidObject7.error.code).toBe("missing_keys");
 		expect(invalidObject7.error.message).toBe("Missing key in object: 'lower'");
 
-		// @ts-expect-error - invalid object
 		const invalidObject8 = TestRange.safeFrom({
-			lower: 0,
+			lower: 0 as any,
 			upper: ")",
 			value: [testClass.from("a"), testClass.from("c")],
 		});
@@ -360,9 +349,8 @@ describe("RangeConstructor", () => {
 		expect(invalidObject8.error.code).toBe("invalid_key_type");
 		expect(invalidObject8.error.message).toBe("Expected 'string' for key 'lower', received 'number'");
 
-		// @ts-expect-error - invalid object
 		const invalidObject9 = TestRange.safeFrom({
-			lower: "a",
+			lower: "a" as any,
 			upper: ")",
 			value: [testClass.from("a"), testClass.from("c")],
 		});
@@ -371,10 +359,9 @@ describe("RangeConstructor", () => {
 		expect(invalidObject9.error.code).toBe("invalid_string");
 		expect(invalidObject9.error.message).toBe("Expected '[' | '(', received 'a'");
 
-		// @ts-expect-error - invalid object
 		const invalidObject10 = TestRange.safeFrom({
 			lower: "[",
-			upper: "b",
+			upper: "b" as any,
 			value: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(invalidObject10.success).toBe(false);

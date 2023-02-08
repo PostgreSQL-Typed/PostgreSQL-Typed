@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { ParsedType } from "./getParsedType";
-import { isOneOf } from "./isOneOf";
+import { ParsedType } from "./getParsedType.js";
+import { isOneOf } from "./isOneOf.js";
 
 describe("isOneOf", () => {
 	it("should return true when value is one of the types", () => {

@@ -1,9 +1,10 @@
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import type { SafeFrom } from "../types/SafeFrom";
-import { getErrorMap } from "./errorMap";
-import { IssueWithoutMessage, PGTPError } from "./PGTPError";
-import { isValid } from "./validation";
+/* eslint-disable unicorn/filename-case */
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import type { SafeFrom } from "../types/SafeFrom.js";
+import { getErrorMap } from "./errorMap.js";
+import { IssueWithoutMessage, PGTPError } from "./PGTPError.js";
+import { isValid } from "./validation.js";
 
 export abstract class PGTPConstructorBase<DataType> {
 	constructor() {
@@ -11,7 +12,7 @@ export abstract class PGTPConstructorBase<DataType> {
 		this.safeFrom = this.safeFrom.bind(this);
 	}
 
-	abstract _parse(ctx: ParseContext): ParseReturnType<DataType>;
+	abstract _parse(context: ParseContext): ParseReturnType<DataType>;
 
 	from(...data: unknown[]): DataType {
 		const result = this.safeFrom(...data);
@@ -20,27 +21,27 @@ export abstract class PGTPConstructorBase<DataType> {
 	}
 
 	safeFrom(...data: unknown[]): SafeFrom<DataType> {
-		const ctx: ParseContext = {
+		const context: ParseContext = {
 				issue: null,
 				errorMap: getErrorMap(),
 				data,
 			},
-			result = this._parse(ctx);
+			result = this._parse(context);
 
-		return this._handleResult(ctx, result);
+		return this._handleResult(context, result);
 	}
 
-	private _handleResult(ctx: ParseContext, result: ParseReturnType<DataType>): SafeFrom<DataType> {
+	private _handleResult(context: ParseContext, result: ParseReturnType<DataType>): SafeFrom<DataType> {
 		if (isValid(result)) return { success: true, data: result.value };
-		if (!ctx.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTPError(ctx.issue);
+		if (!context.issue) throw new Error("Validation failed but no issue detected.");
+		const error = new PGTPError(context.issue);
 		return { success: false, error };
 	}
 
-	setIssueForContext(ctx: ParseContext, issueData: IssueWithoutMessage): void {
-		ctx.issue = {
+	setIssueForContext(context: ParseContext, issueData: IssueWithoutMessage): void {
+		context.issue = {
 			...issueData,
-			message: ctx.errorMap(issueData).message,
+			message: context.errorMap(issueData).message,
 		};
 	}
 }

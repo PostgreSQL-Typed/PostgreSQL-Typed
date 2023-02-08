@@ -1,9 +1,9 @@
-import type { Printer } from "../../../classes/Printer";
-import { ClassKind } from "../../../types/enums/ClassKind";
-import { ConstraintType } from "../../../types/enums/ConstraintType";
-import type { Attribute } from "../../../types/interfaces/Attribute";
-import type { ClassDetails } from "../../../types/interfaces/ClassDetails";
-import type { FileContext } from "../../../types/interfaces/FileContext";
+import type { Printer } from "../../../classes/Printer.js";
+import { ClassKind } from "../../../types/enums/ClassKind.js";
+import { ConstraintType } from "../../../types/enums/ConstraintType.js";
+import type { Attribute } from "../../../types/interfaces/Attribute.js";
+import type { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
+import type { FileContext } from "../../../types/interfaces/FileContext.js";
 
 export function printClassZod(type: ClassDetails, printer: Printer) {
 	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printClassZod only supports ordinary tables at the moment.");

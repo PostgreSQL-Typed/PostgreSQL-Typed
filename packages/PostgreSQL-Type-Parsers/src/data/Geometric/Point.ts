@@ -1,19 +1,19 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface PointObject {
 	x: number;
@@ -43,9 +43,9 @@ interface PointConstructor {
 	safeFrom(object: Point | PointObject): SafeFrom<Point>;
 	safeFrom(x: number, y: number): SafeFrom<Point>;
 	/**
-	 * Returns `true` if `obj` is a `Point`, `false` otherwise.
+	 * Returns `true` if `object` is a `Point`, `false` otherwise.
 	 */
-	isPoint(obj: any): obj is Point;
+	isPoint(object: any): object is Point;
 }
 
 class PointConstructorClass extends PGTPConstructorBase<Point> implements PointConstructor {
@@ -53,15 +53,15 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Point> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Point> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.nan, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -79,7 +79,7 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -89,40 +89,40 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
 			case "nan":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Point> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Point> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)$/)) {
-			const [x, y] = arg
+		if (/^\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)$/.test(argument)) {
+			const [x, y] = argument
 				.slice(1, -1)
 				.split(",")
-				.map(c => parseFloat(c));
+				.map(c => Number.parseFloat(c));
 			return OK(new PointClass(x, y));
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE (x,y)",
 		});
 		return INVALID;
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Point> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Point> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 2) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 2
 					? {
 							code: "too_big",
@@ -140,12 +140,12 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number, ParsedType.nan],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -154,13 +154,13 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 			}
 		}
 
-		const [x, y] = [arg, ...otherArgs] as number[];
+		const [x, y] = [argument, ...otherArguments] as number[];
 		return OK(new PointClass(x, y));
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Point> {
-		if (this.isPoint(arg)) return OK(new PointClass(arg.x, arg.y));
-		const parsedObject = hasKeys<PointObject>(arg, [
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Point> {
+		if (this.isPoint(argument)) return OK(new PointClass(argument.x, argument.y));
+		const parsedObject = hasKeys<PointObject>(argument, [
 			["x", ["number", "nan"]],
 			["y", ["number", "nan"]],
 		]);
@@ -168,19 +168,19 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -189,8 +189,8 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 		return INVALID;
 	}
 
-	isPoint(obj: any): obj is Point {
-		return obj instanceof PointClass;
+	isPoint(object: any): object is Point {
+		return object instanceof PointClass;
 	}
 }
 
@@ -201,16 +201,16 @@ class PointClass extends PGTPBase<Point> implements Point {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Point }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Point }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Point.safeFrom(...ctx.data);
+		const parsed = Point.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

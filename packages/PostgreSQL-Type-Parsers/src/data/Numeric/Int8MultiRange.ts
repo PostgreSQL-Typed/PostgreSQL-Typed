@@ -1,11 +1,11 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange";
-import { parser } from "../../util/parser";
-import { Int8, Int8Object } from "./Int8";
-import { Int8Range } from "./Int8Range";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
+import { parser } from "../../util/parser.js";
+import { Int8, Int8Object } from "./Int8.js";
+import { Int8Range } from "./Int8Range.js";
 
 type Int8MultiRangeObject = MultiRangeObject<Int8, Int8Object>;
 

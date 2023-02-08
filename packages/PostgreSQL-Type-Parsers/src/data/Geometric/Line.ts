@@ -1,19 +1,19 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface LineObject {
 	a: number;
@@ -45,9 +45,9 @@ interface LineConstructor {
 	safeFrom(object: Line | LineObject): SafeFrom<Line>;
 	safeFrom(a: number, b: number, c: number): SafeFrom<Line>;
 	/**
-	 * Returns `true` if `obj` is a `Line`, `false` otherwise.
+	 * Returns `true` if `object` is a `Line`, `false` otherwise.
 	 */
-	isLine(obj: any): obj is Line;
+	isLine(object: any): object is Line;
 }
 
 class LineConstructorClass extends PGTPConstructorBase<Line> implements LineConstructor {
@@ -55,15 +55,15 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Line> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Line> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -81,7 +81,7 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -91,26 +91,26 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Line> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Line> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^{(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)}$/)) {
-			const [a, b, c] = arg
+		if (/^{(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)}$/.test(argument)) {
+			const [a, b, c] = argument
 				.slice(1, -1)
 				.split(",")
-				.map(l => parseFloat(l));
+				.map(l => Number.parseFloat(l));
 
 			if (a === 0 && b === 0) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "too_small",
 					type: "number",
 					minimum: 1,
@@ -122,19 +122,19 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 			return OK(new LineClass(a, b, c));
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE {a,b,c}",
 		});
 		return INVALID;
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Line> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Line> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 3) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 3
 					? {
 							code: "too_big",
@@ -152,12 +152,12 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -166,13 +166,13 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 			}
 		}
 
-		const [a, b, c] = [arg, ...otherArgs] as number[];
+		const [a, b, c] = [argument, ...otherArguments] as number[];
 		return OK(new LineClass(a, b, c));
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Line> {
-		if (this.isLine(arg)) return OK(new LineClass(arg.a, arg.b, arg.c));
-		const parsedObject = hasKeys<LineObject>(arg, [
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Line> {
+		if (this.isLine(argument)) return OK(new LineClass(argument.a, argument.b, argument.c));
+		const parsedObject = hasKeys<LineObject>(argument, [
 			["a", "number"],
 			["b", "number"],
 			["c", "number"],
@@ -181,19 +181,19 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -202,8 +202,8 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 		return INVALID;
 	}
 
-	isLine(obj: any): obj is Line {
-		return obj instanceof LineClass;
+	isLine(object: any): object is Line {
+		return object instanceof LineClass;
 	}
 }
 
@@ -214,16 +214,16 @@ class LineClass extends PGTPBase<Line> implements Line {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Line }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Line }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Line.safeFrom(...ctx.data);
+		const parsed = Line.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

@@ -1,4 +1,4 @@
-import type { ErrorMap, Issue } from "../util/PGTPError";
+import type { ErrorMap, Issue } from "../util/PGTPError.js";
 
 export interface ParseContext {
 	issue: Issue | null;

@@ -1,11 +1,11 @@
-import type { DatabaseData } from "../interfaces/DatabaseData";
-import type { Join } from "../types/Join";
-import type { NestedPaths } from "../types/NestedPaths";
+import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { Join } from "../types/Join.js";
+import type { NestedPaths } from "../types/NestedPaths.js";
 
-export type TableLocations<DbData extends DatabaseData> = Join<
+export type TableLocations<InnerDatabaseData extends DatabaseData> = Join<
 	NestedPaths<{
-		[schema_name in keyof DbData["schemas"]]: {
-			[table_name in keyof DbData["schemas"][schema_name]["tables"]]: string;
+		[schema_name in keyof InnerDatabaseData["schemas"]]: {
+			[table_name in keyof InnerDatabaseData["schemas"][schema_name]["tables"]]: string;
 		};
 	}>,
 	"."

@@ -1,4 +1,4 @@
-import type { ObjectFunction } from "../types/ObjectFunction";
+import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const arrayParser =
 	<DataType>(object: any, delimiter = '","') =>
@@ -14,7 +14,7 @@ export const arrayParser =
 			.split(delimiter)
 			.join(delimiter.includes('"') ? '", "' : ", ")
 			.split(", ")
-			.filter(v => v);
+			.filter(Boolean);
 		//* Removes the quotes from the strings
 		if (delimiter.includes('"')) values = values.map(v => v.slice(1, -1));
 		//* Returns the values as Object objects

@@ -2,11 +2,11 @@ import clArgs from "command-line-args";
 import clCommands from "command-line-commands";
 import debug from "debug";
 
-import { commands, DEFAULT_COMMAND, globalArugments, priorityArguments } from "../commands";
-import { Debug } from "../commands/Debug";
-import type { Argument } from "../types/interfaces/Argument";
-import type { Command } from "../types/interfaces/Command";
-import { GLOBAL_DEBUG_GLOB, LOGGER } from "../util/constants";
+import { Debug } from "../commands/Debug.js";
+import { commands, DEFAULT_COMMAND, globalArugments, priorityArguments } from "../commands/index.js";
+import type { Argument } from "../types/interfaces/Argument.js";
+import type { Command } from "../types/interfaces/Command.js";
+import { GLOBAL_DEBUG_GLOB, LOGGER } from "../util/constants.js";
 
 export class CommandsHandler {
 	// eslint-disable-next-line no-undefined
@@ -15,20 +15,20 @@ export class CommandsHandler {
 	private LOGGER = LOGGER.extend("CommandsHandler");
 
 	constructor() {
-		let args = process.argv.slice(2);
+		let arguments_ = process.argv.slice(2);
 
-		if (args.includes(`--${Debug.name}`)) debug.enable(GLOBAL_DEBUG_GLOB);
+		if (arguments_.includes(`--${Debug.name}`)) debug.enable(GLOBAL_DEBUG_GLOB);
 
-		if (args.length && !args[0].includes("-")) {
+		if (arguments_.length > 0 && !arguments_[0].includes("-")) {
 			try {
 				const parsedCommand = clCommands(
 					commands.map(c => c.name),
-					args
+					arguments_
 				);
 				this.selectedCommand = commands.find(c => c.name === parsedCommand.command);
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				this.LOGGER(`Found command: ${this.selectedCommand!.name}`);
-				args = parsedCommand.argv;
+				arguments_ = parsedCommand.argv;
 			} catch (error: any) {
 				this.LOGGER(error);
 				if (error.name === "INVALID_COMMAND") {
@@ -41,7 +41,7 @@ export class CommandsHandler {
 
 		try {
 			this.parsedArguments = clArgs(globalArugments, {
-				argv: args,
+				argv: arguments_,
 			});
 			this.LOGGER(`Parsed global arguments: ${JSON.stringify(this.parsedArguments)}`);
 		} catch (error: any) {
@@ -57,11 +57,11 @@ export class CommandsHandler {
 	}
 
 	private runCommand() {
-		for (const arg of Object.keys(this.parsedArguments)) {
-			if (priorityArguments.map(a => a.name).includes(arg)) {
-				this.LOGGER(`Found priority argument: ${arg}`);
+		for (const argument of Object.keys(this.parsedArguments)) {
+			if (priorityArguments.map(a => a.name).includes(argument)) {
+				this.LOGGER(`Found priority argument: ${argument}`);
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				return priorityArguments.find(a => a.name === arg)!.run(this.parsedArguments[arg], this.selectedCommand);
+				return priorityArguments.find(a => a.name === argument)!.run(this.parsedArguments[argument], this.selectedCommand);
 			}
 		}
 
@@ -72,10 +72,10 @@ export class CommandsHandler {
 	}
 
 	private runArgument() {
-		for (const arg of globalArugments) {
-			if (arg.name in this.parsedArguments) {
-				this.LOGGER(`Found global argument: ${arg.name}`);
-				return arg.run(this.parsedArguments[arg.name]);
+		for (const argument of globalArugments) {
+			if (argument.name in this.parsedArguments) {
+				this.LOGGER(`Found global argument: ${argument.name}`);
+				return argument.run(this.parsedArguments[argument.name]);
 			}
 		}
 		this.LOGGER("No argument found... running default command");

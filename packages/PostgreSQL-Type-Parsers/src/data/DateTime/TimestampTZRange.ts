@@ -1,10 +1,11 @@
+/* eslint-disable unicorn/filename-case */
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
-import { getRange, Range, RangeConstructor, RangeObject, RawRangeObject } from "../../util/Range";
-import { TimestampTZ, TimestampTZObject } from "./TimestampTZ";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
+import { getRange, Range, RangeConstructor, RangeObject, RawRangeObject } from "../../util/Range.js";
+import { TimestampTZ, TimestampTZObject } from "./TimestampTZ.js";
 
 type TimestampTZRangeObject = RangeObject<TimestampTZ>;
 

@@ -1,9 +1,9 @@
-import type { Printer } from "../../../classes/Printer";
-import { ClassKind } from "../../../types/enums/ClassKind";
-import { ConstraintType } from "../../../types/enums/ConstraintType";
-import type { Attribute } from "../../../types/interfaces/Attribute";
-import type { ClassDetails } from "../../../types/interfaces/ClassDetails";
-import type { FileContext } from "../../../types/interfaces/FileContext";
+import type { Printer } from "../../../classes/Printer.js";
+import { ClassKind } from "../../../types/enums/ClassKind.js";
+import { ConstraintType } from "../../../types/enums/ConstraintType.js";
+import type { Attribute } from "../../../types/interfaces/Attribute.js";
+import type { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
+import type { FileContext } from "../../../types/interfaces/FileContext.js";
 
 export function printClassDetails(type: ClassDetails, printer: Printer) {
 	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printClassDetails only supports ordinary tables at the moment.");
@@ -110,8 +110,7 @@ function getClassComment(cls: ClassDetails): string[] {
 	const commentLines = [];
 	if (cls.comment?.trim()) commentLines.push(...cls.comment.trim().split("\n"));
 
-	if (commentLines.length) return ["/**", ...commentLines.map(l => ` * ${l}`), " */"];
-	else return [];
+	return commentLines.length > 0 ? ["/**", ...commentLines.map(l => ` * ${l}`), " */"] : [];
 }
 function getAttributeComment(type: ClassDetails, attribute: Attribute): string[] {
 	const commentLines = [];
@@ -120,22 +119,21 @@ function getAttributeComment(type: ClassDetails, attribute: Attribute): string[]
 	const pk = type.constraints.find(c => c.table_attribute_numbers.includes(attribute.attribute_number) && c.constraint_type === ConstraintType.PrimaryKey);
 
 	if (pk) {
-		if (commentLines.length) commentLines.push("");
+		if (commentLines.length > 0) commentLines.push("");
 		commentLines.push("@kind PrimaryKey");
 	}
 
 	if (attribute.type_name) {
-		if (commentLines.length) commentLines.push("");
+		if (commentLines.length > 0) commentLines.push("");
 		commentLines.push(`@kind ${attribute.type_name}`);
 	}
 
 	if (attribute.default) {
-		if (commentLines.length) commentLines.push("");
+		if (commentLines.length > 0) commentLines.push("");
 		commentLines.push(`@default ${attribute.default}`);
 	}
 
-	if (commentLines.length) return ["  /**", ...commentLines.map(l => `   * ${l}`), "   */"];
-	else return [];
+	return commentLines.length > 0 ? ["  /**", ...commentLines.map(l => `   * ${l}`), "   */"] : [];
 }
 
 function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {

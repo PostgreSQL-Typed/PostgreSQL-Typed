@@ -1,20 +1,20 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
-import { type PointObject, Point } from "./Point";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
+import { Point, type PointObject } from "./Point.js";
 
 interface LineSegmentObject {
 	a: Point;
@@ -53,9 +53,9 @@ interface LineSegmentConstructor {
 	safeFrom(lineSegment: LineSegment): SafeFrom<LineSegment>;
 	safeFrom(object: LineSegmentObject | RawLineSegmentObject): SafeFrom<LineSegment>;
 	/**
-	 * Returns `true` if `obj` is a `LineSegment`, `false` otherwise.
+	 * Returns `true` if `object` is a `LineSegment`, `false` otherwise.
 	 */
-	isLineSegment(obj: any): obj is LineSegment;
+	isLineSegment(object: any): object is LineSegment;
 }
 
 class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> implements LineSegmentConstructor {
@@ -63,15 +63,15 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<LineSegment> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<LineSegment> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.object && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.object && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -89,7 +89,7 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -99,19 +99,19 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			default:
-				return this._parseObject(ctx, arg as object, otherArgs);
+				return this._parseObject(context, argument as object, otherArguments);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<LineSegment> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<LineSegment> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^\[?\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\),\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)\]?$/)) {
-			if (arg.startsWith("[(") && arg.endsWith(")]")) arg = arg.slice(1, -1);
-			const [a, b] = arg
+		if (/^\[?\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\),\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)]?$/.test(argument)) {
+			if (argument.startsWith("[(") && argument.endsWith(")]")) argument = argument.slice(1, -1);
+			const [a, b] = argument
 				.split("),(")
 				.join("), (")
 				.split(", ")
@@ -119,12 +119,12 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 
 			/* c8 ignore start */
 			if (!a.success) {
-				this.setIssueForContext(ctx, a.error.issue);
+				this.setIssueForContext(context, a.error.issue);
 				return INVALID;
 			}
 
 			if (!b.success) {
-				this.setIssueForContext(ctx, b.error.issue);
+				this.setIssueForContext(context, b.error.issue);
 				return INVALID;
 			}
 			/* c8 ignore stop */
@@ -132,17 +132,17 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 			return OK(new LineSegmentClass(a.data, b.data));
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE [(x1,y1),(x2,y2)]",
 		});
 		return INVALID;
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object, otherArgs: unknown[]): ParseReturnType<LineSegment> {
-		if (ctx.data.length > 2) {
-			this.setIssueForContext(ctx, {
+	private _parseObject(context: ParseContext, argument: object, otherArguments: unknown[]): ParseReturnType<LineSegment> {
+		if (context.data.length > 2) {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "arguments",
 				maximum: 2,
@@ -151,13 +151,13 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 			return INVALID;
 		}
 
-		const secondArg = otherArgs[0],
-			parsedType = getParsedType(secondArg);
+		const secondArgument = otherArguments[0],
+			parsedType = getParsedType(secondArgument);
 
 		//Input should be [LineSegment]
-		if (LineSegment.isLineSegment(arg)) {
+		if (LineSegment.isLineSegment(argument)) {
 			if (parsedType !== "undefined") {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "too_big",
 					type: "arguments",
 					maximum: 1,
@@ -166,13 +166,13 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 				return INVALID;
 			}
 
-			return OK(new LineSegmentClass(arg.a, arg.b));
+			return OK(new LineSegmentClass(argument.a, argument.b));
 		}
 
 		//Input should be [Point, Point]
-		if (Point.isPoint(arg)) {
+		if (Point.isPoint(argument)) {
 			if (parsedType === "undefined") {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "too_small",
 					type: "arguments",
 					minimum: 2,
@@ -181,18 +181,18 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 				return INVALID;
 			}
 
-			const parsedObject = Point.safeFrom(secondArg as string);
+			const parsedObject = Point.safeFrom(secondArgument as string);
 			if (!parsedObject.success) {
-				this.setIssueForContext(ctx, parsedObject.error.issue);
+				this.setIssueForContext(context, parsedObject.error.issue);
 				return INVALID;
 			}
 
-			return OK(new LineSegmentClass(arg, parsedObject.data));
+			return OK(new LineSegmentClass(argument, parsedObject.data));
 		}
 
 		//Input should be [LineSegmentObject | RawLineSegmentObject]
 		if (parsedType !== "undefined") {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "arguments",
 				maximum: 1,
@@ -201,26 +201,26 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 			return INVALID;
 		}
 
-		const parsedObject = hasKeys<LineSegmentObject | RawLineSegmentObject>(arg, [
+		const parsedObject = hasKeys<LineSegmentObject | RawLineSegmentObject>(argument, [
 			["a", "object"],
 			["b", "object"],
 		]);
 		if (!parsedObject.success) {
 			switch (true) {
 				case parsedObject.otherKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "unrecognized_keys",
 						keys: parsedObject.otherKeys,
 					});
 					break;
 				case parsedObject.missingKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "missing_keys",
 						keys: parsedObject.missingKeys,
 					});
 					break;
 				case parsedObject.invalidKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "invalid_key_type",
 						...parsedObject.invalidKeys[0],
 					});
@@ -234,20 +234,20 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 			parsedB = Point.safeFrom(b);
 
 		if (!parsedA.success) {
-			this.setIssueForContext(ctx, parsedA.error.issue);
+			this.setIssueForContext(context, parsedA.error.issue);
 			return INVALID;
 		}
 
 		if (!parsedB.success) {
-			this.setIssueForContext(ctx, parsedB.error.issue);
+			this.setIssueForContext(context, parsedB.error.issue);
 			return INVALID;
 		}
 
 		return OK(new LineSegmentClass(parsedA.data, parsedB.data));
 	}
 
-	isLineSegment(obj: any): obj is LineSegment {
-		return obj instanceof LineSegmentClass;
+	isLineSegment(object: any): object is LineSegment {
+		return object instanceof LineSegmentClass;
 	}
 }
 
@@ -258,16 +258,16 @@ class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: LineSegment }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: LineSegment }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = LineSegment.safeFrom(...ctx.data);
+		const parsed = LineSegment.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

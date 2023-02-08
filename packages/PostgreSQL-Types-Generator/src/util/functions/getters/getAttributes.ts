@@ -1,6 +1,6 @@
 import type { Client } from "pg";
 
-import type { Attribute } from "../../../types/interfaces/Attribute";
+import type { Attribute } from "../../../types/interfaces/Attribute.js";
 
 export async function getAttributes(
 	client: Client,
@@ -38,7 +38,7 @@ export async function getAttributes(
       ON (cls.relnamespace = ns.oid)
     LEFT OUTER JOIN pg_catalog.pg_attrdef def -- default values
       ON (def.adrelid = cls.oid AND def.adnum = a.attnum)
-    ${conditions.length ? `WHERE ${conditions.join(" AND ")}` : ""}
+    ${conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""}
     ORDER BY ns.nspname ASC, cls.relname ASC, a.attname ASC;
   `);
 

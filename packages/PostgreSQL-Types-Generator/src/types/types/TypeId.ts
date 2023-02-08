@@ -1,4 +1,4 @@
-export type TypeID =
+export type TypeId =
 	| {
 			type: "table";
 			name: string;

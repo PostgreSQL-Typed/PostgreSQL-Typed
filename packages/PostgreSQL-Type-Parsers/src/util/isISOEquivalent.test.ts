@@ -1,6 +1,7 @@
+/* eslint-disable unicorn/filename-case */
 import { describe, expect, it } from "vitest";
 
-import { isISOEquivalent } from "./isISOEquivalent";
+import { isISOEquivalent } from "./isISOEquivalent.js";
 
 describe("isISOEquivalent", () => {
 	it("should return true if the 2 ISO's are equivalent", () => {

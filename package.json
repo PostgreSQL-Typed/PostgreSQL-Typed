@@ -3,8 +3,12 @@
 	"private": true,
 	"version": "0.0.0",
 	"description": "PostgreSQL Typed Monorepo",
-	"author": "Bas950",
 	"license": "MPL-2.0",
+	"author": {
+		"name": "Bas950",
+		"email": "me@bas950.com",
+		"url": "https://bas950.com"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git"
@@ -15,19 +19,21 @@
 	"scripts": {
 		"preinstall": "npx only-allow pnpm",
 		"prepare": "husky install configs/.husky",
-		"build": "turbo run build",
 		"dev": "turbo run dev",
+		"build": "turbo run build",
 		"clean": "rimraf ./packages/*/{lib,dist,.turbo,coverage}",
 		"clean:all": "pnpm clean && rimraf ./packages/*/node_modules node_modules",
-		"ci:version": "changeset version && pnpm install --frozen-lockfile false",
+		"test": "turbo run test && pnpm badges",
+		"test:watch": "turbo run test:watch",
+		"test:ci": "turbo run test:ci && pnpm badges:ci",
 		"lint": "turbo run lint",
 		"lint:ci": "turbo run lint:ci",
+		"badges": "monorepo-coverage-badges",
+		"badges:ci": "monorepo-coverage-badges --ci",
+		"ci:version": "changeset version && pnpm install --frozen-lockfile false",
 		"prerelease": "pnpm clean && pnpm install && pnpm build",
 		"release": "pnpm run prerelease && changeset publish",
 		"snapshot": "pnpm prerelease && changeset version --snapshot preview && pnpm install && changeset publish --tag preview",
-		"test": "turbo run test",
-		"test:watch": "turbo run test:watch",
-		"test:ci": "turbo run test:ci",
 		"changeset": "changeset"
 	},
 	"workspaces": [
@@ -35,8 +41,8 @@
 	],
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
-		"@recodive/configs": "^1.0.4",
-		"@recodive/eslint-config": "^1.0.0",
+		"@recodive/configs": "^1.1.0",
+		"@recodive/eslint-config": "^1.2.0",
 		"@rushstack/eslint-patch": "^1.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.50.0",
 		"@typescript-eslint/parser": "^5.50.0",
@@ -49,6 +55,7 @@
 		"eslint-plugin-unicorn": "^45.0.2",
 		"husky": "^8.0.3",
 		"lint-staged": "^13.1.0",
+		"monorepo-coverage-badges": "^1.0.2",
 		"prettier": "^2.8.3",
 		"rimraf": "^3.0.2",
 		"source-map-support": "^0.5.21",
@@ -63,5 +70,26 @@
 	},
 	"eslintConfig": {
 		"extends": "./configs/.eslintrc.js"
+	},
+	"monorepo-coverage-badges": {
+		"mdFiles": {
+			"**/*.md": {
+				"coverage": {
+					"logo": "vitest"
+				},
+				"statements": {
+					"logo": "vitest"
+				},
+				"branches": {
+					"logo": "vitest"
+				},
+				"functions": {
+					"logo": "vitest"
+				},
+				"lines": {
+					"logo": "vitest"
+				}
+			}
+		}
 	}
 }

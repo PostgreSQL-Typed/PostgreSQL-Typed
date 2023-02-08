@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import type { ZodConfig } from "../interfaces/ZodConfig";
-import { zZodConfig } from "../interfaces/ZodConfig";
+import type { ZodConfig } from "../interfaces/ZodConfig.js";
+import { zZodConfig } from "../interfaces/ZodConfig.js";
 
 export interface TypesConfig {
 	/**

@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import type { Connection } from "../interfaces/Connection";
-import { zConnection } from "../interfaces/Connection";
-import type { TypesConfig } from "../interfaces/TypesConfig";
-import { zTypesConfig } from "../interfaces/TypesConfig";
+import type { Connection } from "../interfaces/Connection.js";
+import { zConnection } from "../interfaces/Connection.js";
+import type { TypesConfig } from "../interfaces/TypesConfig.js";
+import { zTypesConfig } from "../interfaces/TypesConfig.js";
 
 export interface Config {
 	/**

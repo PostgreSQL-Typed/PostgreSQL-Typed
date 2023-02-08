@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getRegExpByGroups } from "./getRegExpByGroups";
+import { getRegExpByGroups } from "./getRegExpByGroups.js";
 
 describe("getRegExpByGroups", () => {
 	it("should return a match function", () => {

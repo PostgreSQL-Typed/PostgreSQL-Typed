@@ -1,18 +1,34 @@
 {
+	"private": true,
 	"name": "postgresql-typed",
 	"version": "1.0.0",
-	"description": "PostgreSQL with type safety using TypeScript",
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
+	"description": "A type-safe PostgreSQL client for Node.js",
+	"type": "module",
+	"exports": "./lib/index.js",
+	"types": "./lib/index.d.ts",
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Bas950",
+		"email": "me@bas950.com",
+		"url": "https://bas950.com"
+	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git"
+		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
+		"directory": "packages/postgresql-typed"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
 	},
 	"files": [
 		"lib"
+	],
+	"keywords": [
+		"postgresql",
+		"pg",
+		"typed",
+		"types",
+		"typescript"
 	],
 	"scripts": {
 		"dev": "tsc -w",
@@ -29,15 +45,9 @@
 		"gen-types:run": "pgtg generate",
 		"gen-types:clean": "cd util/dist && node deleteTable.js && node fixImports.js"
 	},
-	"keywords": [
-		"postgresql",
-		"pg",
-		"typed",
-		"types",
-		"typescript"
-	],
-	"author": "Bas950",
-	"license": "MPL-2.0",
+	"dependencies": {
+		"pg": "^8.7.3"
+	},
 	"devDependencies": {
 		"@types/pg": "^8.6.5",
 		"source-map-support": "^0.5.21",
@@ -45,9 +55,6 @@
 		"zod": "^3.18.0",
 		"postgresql-types-generator": "workspace:*",
 		"postgresql-type-parsers": "workspace:*"
-	},
-	"dependencies": {
-		"pg": "^8.7.3"
 	},
 	"peerDependencies": {
 		"zod": "^3.18.0"

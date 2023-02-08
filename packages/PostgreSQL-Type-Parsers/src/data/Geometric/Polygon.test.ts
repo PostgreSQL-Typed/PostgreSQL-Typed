@@ -1,8 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Point } from "./Point";
-import { Polygon } from "./Polygon";
+import { Point } from "./Point.js";
+import { Polygon } from "./Polygon.js";
 
 describe("PolygonConstructor", () => {
 	test("_parse(...)", () => {
@@ -249,8 +249,8 @@ describe("PostgreSQL", () => {
 					points: [Point.from({ x: 5.5, y: 6.6 }), Point.from({ x: 7.7, y: 8.8 })],
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

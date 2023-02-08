@@ -60,7 +60,7 @@ export async function insertData(PC: PostgreSQLCaching) {
 		)
     VALUES (
       '4e5797e0-ef31-4b15-b85f-957b25cc81ac',
-			${BigInt(9007199254740991)},
+			${BigInt(9_007_199_254_740_991)},
 			'9223372036854775807',
 			'101',
 			'10',
@@ -68,7 +68,7 @@ export async function insertData(PC: PostgreSQLCaching) {
 			false,
 			'(1,1),(1,1)',
 			'Text',
-			'${Buffer.from("abc \xDEADBEEF").toString()}',
+			'${Buffer.from("abc \u00DEADBEEF").toString()}',
 			1,
 			'A',
 			'D',
@@ -173,7 +173,7 @@ export async function insertExtraData(PC: PostgreSQLCaching) {
 		)
 		VALUES (
 			'5e5797e0-ef31-4b15-b85f-957b25cc81ac',
-			${BigInt(9007199254740991)},
+			${BigInt(9_007_199_254_740_991)},
 			'9123372036854775807',
 			'111',
 			'11',
@@ -181,7 +181,7 @@ export async function insertExtraData(PC: PostgreSQLCaching) {
 			true,
 			'(2,2),(2,2)',
 			'Text2',
-			'${Buffer.from("efg \xDEADBEEF").toString()}',
+			'${Buffer.from("efg \u00DEADBEEF").toString()}',
 			2,
 			'B',
 			'C',

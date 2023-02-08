@@ -34,7 +34,7 @@ export interface Connection {
 
 export const zConnection = z.object({
 	host: z.string().default("postgres"),
-	port: z.number().min(0).max(65535).default(5432),
+	port: z.number().min(0).max(65_535).default(5432),
 	user: z.string().default("postgres"),
 	password: z.optional(z.string()),
 	database: z.string().default("postgres"),

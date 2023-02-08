@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { MACAddress } from "./MACAddress";
+import { MACAddress } from "./MACAddress.js";
 
 describe.todo("MACAddress Class", () => {
 	it("should create a MAC address from a string", () => {
@@ -22,13 +23,13 @@ describe.todo("MACAddress Class", () => {
 	});
 
 	it("should create a MAC address from a number", () => {
-		const address = MACAddress.from(8796814508547);
+		const address = MACAddress.from(8_796_814_508_547);
 		expect(address).not.toBeNull();
 	});
 
 	it("should error when creating a MAC address from an invalid number", () => {
 		expect(() => MACAddress.from(1.5)).toThrowError("Invalid MACAddress");
-		expect(() => MACAddress.from(998796814508547)).toThrowError("MACAddress must be 48-bit");
+		expect(() => MACAddress.from(998_796_814_508_547)).toThrowError("MACAddress must be 48-bit");
 	});
 
 	it("should create a MAC address from a object", () => {
@@ -64,7 +65,7 @@ describe.todo("MACAddress Class", () => {
 
 	it("toLong()", () => {
 		const address = MACAddress.from("08:00:2b:01:02:03");
-		expect(address.toLong()).toBe(8796814508547);
+		expect(address.toLong()).toBe(8_796_814_508_547);
 	});
 
 	it("toJSON()", () => {
@@ -96,7 +97,7 @@ describe.todo("MACAddress Class", () => {
 		const address = MACAddress.from("08:00:2b:01:02:04");
 		address.MACAddress = "01:02:03:04:05:06";
 		expect(address.MACAddress).toBe("01:02:03:04:05:06");
-		expect(() => (address.MACAddress = 8796814508547 as any)).not.toThrowError();
+		expect(() => (address.MACAddress = 8_796_814_508_547 as any)).not.toThrowError();
 		expect(() => (address.MACAddress = BigInt(1) as any)).toThrowError("Invalid MACAddress");
 		expect(() => (address.MACAddress = "01:02:03:04")).toThrowError("Invalid MACAddress, too few octets");
 		expect(() => (address.MACAddress = "01:02:03:04:05:06:07:08")).toThrowError("Invalid MACAddress, too many octets");
@@ -138,8 +139,8 @@ describe.todo("MACAddress Class", () => {
 
 			expect(result.rows[0].macaddr).toStrictEqual(MACAddress.from("08:00:2b:01:02:03"));
 			expect(result.rows[0]._macaddr).toStrictEqual([MACAddress.from("08:00:2b:01:02:03"), MACAddress.from("01:02:03:04:05:06")]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

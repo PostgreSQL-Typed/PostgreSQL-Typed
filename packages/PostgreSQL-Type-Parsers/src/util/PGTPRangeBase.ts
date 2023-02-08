@@ -1,10 +1,11 @@
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import type { SafeIsWithinRange } from "../types/SafeIsWithinRange";
-import { getErrorMap } from "./errorMap";
-import { PGTPBase } from "./PGTPBase";
-import { PGTPError } from "./PGTPError";
-import { isValid } from "./validation";
+/* eslint-disable unicorn/filename-case */
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import type { SafeIsWithinRange } from "../types/SafeIsWithinRange.js";
+import { getErrorMap } from "./errorMap.js";
+import { PGTPBase } from "./PGTPBase.js";
+import { PGTPError } from "./PGTPError.js";
+import { isValid } from "./validation.js";
 
 export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<RangeDataType> {
 	constructor() {
@@ -13,7 +14,7 @@ export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<Ra
 		this.safeIsWithinRange = this.safeIsWithinRange.bind(this);
 	}
 
-	abstract _isWithinRange(ctx: ParseContext): ParseReturnType<{
+	abstract _isWithinRange(context: ParseContext): ParseReturnType<{
 		readonly isWithinRange: boolean;
 		readonly data?: DataType;
 	}>;
@@ -25,18 +26,18 @@ export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<Ra
 	}
 
 	safeIsWithinRange(...data: unknown[]): SafeIsWithinRange<DataType> {
-		const ctx: ParseContext = {
+		const context: ParseContext = {
 				issue: null,
 				errorMap: getErrorMap(),
 				data,
 			},
-			result = this._isWithinRange(ctx);
+			result = this._isWithinRange(context);
 
-		return this._handleWithinResult(ctx, result);
+		return this._handleWithinResult(context, result);
 	}
 
 	private _handleWithinResult(
-		ctx: ParseContext,
+		context: ParseContext,
 		result: ParseReturnType<{
 			readonly isWithinRange: boolean;
 			readonly data?: DataType;
@@ -49,8 +50,8 @@ export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<Ra
 				data: result.value.data,
 			};
 		}
-		if (!ctx.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTPError(ctx.issue);
+		if (!context.issue) throw new Error("Validation failed but no issue detected.");
+		const error = new PGTPError(context.issue);
 		return { success: false, error };
 	}
 }

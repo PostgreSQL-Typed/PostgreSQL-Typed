@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 export class ETA {
 	private etaBufferLength: number;
 	private valueBuffer: number[];
@@ -48,9 +49,9 @@ export class ETA {
 		const eta = Math.ceil(remaining / vtRate / 1000);
 
 		// check values
-		if (isNaN(eta)) this.eta = "NULL";
+		if (Number.isNaN(eta)) this.eta = "NULL";
 		// +/- Infinity --- NaN already handled
-		else if (!isFinite(eta)) this.eta = "∞";
+		else if (!Number.isFinite(eta)) this.eta = "∞";
 		// > 10M s ? - set upper display limit ~115days (1e7/60/60/24)
 		else if (eta > 1e7) this.eta = "∞";
 		// negative ?

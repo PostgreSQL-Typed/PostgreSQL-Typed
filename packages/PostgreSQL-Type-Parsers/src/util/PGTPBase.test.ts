@@ -1,26 +1,27 @@
+/* eslint-disable unicorn/filename-case */
 import { describe, expect, it } from "vitest";
 
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import { getParsedType } from "./getParsedType";
-import { PGTPBase } from "./PGTPBase";
-import { PGTPConstructorBase } from "./PGTPConstructorBase";
-import { INVALID, OK } from "./validation";
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import { getParsedType } from "./getParsedType.js";
+import { PGTPBase } from "./PGTPBase.js";
+import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { INVALID, OK } from "./validation.js";
 
 class TestConstructorClass extends PGTPConstructorBase<TestClass> {
 	constructor() {
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<TestClass> {
-		const [arg] = ctx.data,
-			type = getParsedType(arg);
+	_parse(context: ParseContext): ParseReturnType<TestClass> {
+		const [argument] = context.data,
+			type = getParsedType(argument);
 
-		if (type === "string") return OK(new TestClass(arg as string));
-		if (type === "number") return OK(new TestClass((arg as number).toString()));
+		if (type === "string") return OK(new TestClass(argument as string));
+		if (type === "number") return OK(new TestClass((argument as number).toString()));
 		if (type === "bigint") return INVALID;
 		else {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: ["string", "number"],
 				received: type,
@@ -81,18 +82,18 @@ describe("PGTPBase", () => {
 			equalsResult2 = result1.safeEquals(true);
 
 		expect(equalsResult1.success).toBe(false);
-		if (!equalsResult1.success) expect(equalsResult1.error.message).toBe("Expected 'string' | 'number', received 'null'");
-		else expect.fail();
+		if (equalsResult1.success) expect.fail();
+		else expect(equalsResult1.error.message).toBe("Expected 'string' | 'number', received 'null'");
 
 		expect(equalsResult2.success).toBe(false);
-		if (!equalsResult2.success) expect(equalsResult2.error.message).toBe("Expected 'string' | 'number', received 'boolean'");
-		else expect.fail();
+		if (equalsResult2.success) expect.fail();
+		else expect(equalsResult2.error.message).toBe("Expected 'string' | 'number', received 'boolean'");
 	});
 
 	it("should throw error if parse with errors but no issue was set", () => {
 		expect(() => result1.equals(BigInt(1))).toThrowError("Validation failed but no issue detected.");
 		expect(() => result1.safeEquals(BigInt(1))).toThrowError("Validation failed but no issue detected.");
-		expect(() => result1.equals(NaN)).toThrowError("Validation failed but no issue detected.");
-		expect(() => result1.safeEquals(NaN)).toThrowError("Validation failed but no issue detected.");
+		expect(() => result1.equals(Number.NaN)).toThrowError("Validation failed but no issue detected.");
+		expect(() => result1.safeEquals(Number.NaN)).toThrowError("Validation failed but no issue detected.");
 	});
 });

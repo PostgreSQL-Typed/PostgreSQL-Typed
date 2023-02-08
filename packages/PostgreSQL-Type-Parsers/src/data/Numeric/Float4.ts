@@ -1,20 +1,20 @@
-import type BigNumber from "bignumber.js";
+import type { BigNumber } from "bignumber.js";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getBigNumber } from "../../util/getBigNumber";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getBigNumber } from "../../util/getBigNumber.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999999999999999999999999999999999999");
 
@@ -53,9 +53,9 @@ interface Float4Constructor {
 	safeFrom(bigNumber: BigNumber): SafeFrom<Float4>;
 	safeFrom(object: Float4 | Float4Object): SafeFrom<Float4>;
 	/**
-	 * Returns `true` if `obj` is a `Float4`, `false` otherwise.
+	 * Returns `true` if `object` is a `Float4`, `false` otherwise.
 	 */
-	isFloat4(obj: any): obj is Float4;
+	isFloat4(object: any): object is Float4;
 }
 
 class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Float4Constructor {
@@ -63,11 +63,11 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Float4> {
-		if (ctx.data.length !== 1) {
+	_parse(context: ParseContext): ParseReturnType<Float4> {
+		if (context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -84,12 +84,12 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 			return INVALID;
 		}
 
-		const [arg] = ctx.data,
+		const [argument] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object, ParsedType.nan, ParsedType.infinity, ParsedType.bigNumber, ParsedType.bigint],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -99,39 +99,39 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 
 		switch (parsedType) {
 			case ParsedType.object:
-				return this._parseObject(ctx, arg as Float4Object);
+				return this._parseObject(context, argument as Float4Object);
 			default:
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Float4> {
-		const parsedNumber = bigNumber(arg);
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Float4> {
+		const parsedNumber = bigNumber(argument);
 		if (parsedNumber.success) return OK(new Float4Class(parsedNumber.data));
-		this.setIssueForContext(ctx, parsedNumber.error);
+		this.setIssueForContext(context, parsedNumber.error);
 		return INVALID;
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Float4> {
-		if (this.isFloat4(arg)) return OK(new Float4Class(arg.float4));
-		const parsedObject = hasKeys<Float4Object>(arg, [["float4", "string"]]);
-		if (parsedObject.success) return this._parseString(ctx, parsedObject.obj.float4);
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Float4> {
+		if (this.isFloat4(argument)) return OK(new Float4Class(argument.float4));
+		const parsedObject = hasKeys<Float4Object>(argument, [["float4", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.float4);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -140,8 +140,8 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 		return INVALID;
 	}
 
-	isFloat4(obj: any): obj is Float4 {
-		return obj instanceof Float4Class;
+	isFloat4(object: any): object is Float4 {
+		return object instanceof Float4Class;
 	}
 }
 

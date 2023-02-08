@@ -1,18 +1,18 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface Int8Object {
 	int8: bigint;
@@ -45,9 +45,9 @@ interface Int8Constructor {
 	safeFrom(string: string): SafeFrom<Int8>;
 	safeFrom(object: Int8 | Int8Object): SafeFrom<Int8>;
 	/**
-	 * Returns `true` if `obj` is a `Int8`, `false` otherwise.
+	 * Returns `true` if `object` is a `Int8`, `false` otherwise.
 	 */
-	isInt8(obj: any): obj is Int8;
+	isInt8(object: any): object is Int8;
 }
 
 class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Constructor {
@@ -55,11 +55,11 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Int8> {
-		if (ctx.data.length !== 1) {
+	_parse(context: ParseContext): ParseReturnType<Int8> {
+		if (context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -76,12 +76,12 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 			return INVALID;
 		}
 
-		const [arg] = ctx.data,
+		const [argument] = context.data,
 			allowedTypes = [ParsedType.bigint, ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -91,29 +91,29 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 
 		switch (parsedType) {
 			case ParsedType.bigint:
-				return this._parseBigint(ctx, arg as bigint);
+				return this._parseBigint(context, argument as bigint);
 			case ParsedType.number:
-				return this._parseNumber(ctx, arg as number);
+				return this._parseNumber(context, argument as number);
 			case ParsedType.string:
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			default:
-				return this._parseObject(ctx, arg as Int8Object);
+				return this._parseObject(context, argument as Int8Object);
 		}
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number): ParseReturnType<Int8> {
-		if (arg % 1 !== 0) {
-			this.setIssueForContext(ctx, {
+	private _parseNumber(context: ParseContext, argument: number): ParseReturnType<Int8> {
+		if (argument % 1 !== 0) {
+			this.setIssueForContext(context, {
 				code: "not_whole",
 			});
 			return INVALID;
 		}
-		return this._parseBigint(ctx, BigInt(arg));
+		return this._parseBigint(context, BigInt(argument));
 	}
 
-	private _parseBigint(ctx: ParseContext, arg: bigint): ParseReturnType<Int8> {
-		if (arg < BigInt("-9223372036854775808")) {
-			this.setIssueForContext(ctx, {
+	private _parseBigint(context: ParseContext, argument: bigint): ParseReturnType<Int8> {
+		if (argument < BigInt("-9223372036854775808")) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "bigint",
 				minimum: BigInt("-9223372036854775808"),
@@ -121,8 +121,8 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 			});
 			return INVALID;
 		}
-		if (arg > BigInt("9223372036854775807")) {
-			this.setIssueForContext(ctx, {
+		if (argument > BigInt("9223372036854775807")) {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "bigint",
 				maximum: BigInt("9223372036854775807"),
@@ -130,14 +130,14 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 			});
 			return INVALID;
 		}
-		return OK(new Int8Class(arg));
+		return OK(new Int8Class(argument));
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Int8> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Int8> {
 		try {
-			return this._parseBigint(ctx, BigInt(arg));
+			return this._parseBigint(context, BigInt(argument));
 		} catch {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: "bigint",
 				received: "string",
@@ -146,26 +146,26 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 		}
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Int8> {
-		if (this.isInt8(arg)) return OK(new Int8Class(arg.int8));
-		const parsedObject = hasKeys<Int8Object>(arg, [["int8", "bigint"]]);
-		if (parsedObject.success) return this._parseBigint(ctx, parsedObject.obj.int8);
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Int8> {
+		if (this.isInt8(argument)) return OK(new Int8Class(argument.int8));
+		const parsedObject = hasKeys<Int8Object>(argument, [["int8", "bigint"]]);
+		if (parsedObject.success) return this._parseBigint(context, parsedObject.obj.int8);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -174,8 +174,8 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 		return INVALID;
 	}
 
-	isInt8(obj: any): obj is Int8 {
-		return obj instanceof Int8Class;
+	isInt8(object: any): object is Int8 {
+		return object instanceof Int8Class;
 	}
 }
 

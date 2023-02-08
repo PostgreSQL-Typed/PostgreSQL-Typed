@@ -1,10 +1,10 @@
-import type { Config } from "../../types/interfaces/Config";
-import type { IdentifierName } from "../../types/types/IdentifierName";
-import type { TypeID } from "../../types/types/TypeID";
-import { getExportNameTemplate } from "../functions/getters/getExportNameTemplate";
-import { getTemplateValues } from "../functions/getters/getTemplateValues";
-import { parseTemplate } from "../functions/parseTemplate";
+import type { Config } from "../../types/interfaces/Config.js";
+import type { IdentifierName } from "../../types/types/IdentifierName.js";
+import type { TypeId } from "../../types/types/TypeId.js";
+import { getExportNameTemplate } from "../functions/getters/getExportNameTemplate.js";
+import { getTemplateValues } from "../functions/getters/getTemplateValues.js";
+import { parseTemplate } from "../functions/parseTemplate.js";
 
-export function resolveExportName(config: Config, id: TypeID): IdentifierName {
+export function resolveExportName(config: Config, id: TypeId): IdentifierName {
 	return parseTemplate(getExportNameTemplate(config, id)).applyTemplate(getTemplateValues(id));
 }

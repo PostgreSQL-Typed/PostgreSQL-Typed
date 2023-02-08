@@ -1,19 +1,19 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface BoxObject {
 	x1: number;
@@ -47,9 +47,9 @@ interface BoxConstructor {
 	safeFrom(object: Box | BoxObject): SafeFrom<Box>;
 	safeFrom(x1: number, y1: number, x2: number, y2: number): SafeFrom<Box>;
 	/**
-	 * Returns `true` if `obj` is a `Box`, `false` otherwise.
+	 * Returns `true` if `object` is a `Box`, `false` otherwise.
 	 */
-	isBox(obj: any): obj is Box;
+	isBox(object: any): object is Box;
 }
 
 class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstructor {
@@ -57,15 +57,15 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Box> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Box> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -83,7 +83,7 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -93,38 +93,38 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Box> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Box> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.startsWith("((") && arg.endsWith("))")) arg = arg.slice(1, -1);
+		if (argument.startsWith("((") && argument.endsWith("))")) argument = argument.slice(1, -1);
 
-		if (arg.match(/^\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\),\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)$/)) {
-			const [x1, y1, x2, y2] = arg.split(",").map(c => parseFloat(c.replace("(", "")));
+		if (/^\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\),\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)$/.test(argument)) {
+			const [x1, y1, x2, y2] = argument.split(",").map(c => Number.parseFloat(c.replace("(", "")));
 			return OK(new BoxClass(x1, y1, x2, y2));
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE (x1,y1),(x2,y2)",
 		});
 		return INVALID;
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Box> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Box> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 4) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 4
 					? {
 							code: "too_big",
@@ -142,12 +142,12 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -156,13 +156,13 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 			}
 		}
 
-		const [x1, y1, x2, y2] = [arg, ...otherArgs] as number[];
+		const [x1, y1, x2, y2] = [argument, ...otherArguments] as number[];
 		return OK(new BoxClass(x1, y1, x2, y2));
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Box> {
-		if (this.isBox(arg)) return OK(new BoxClass(arg.x1, arg.y1, arg.x2, arg.y2));
-		const parsedObject = hasKeys<BoxObject>(arg, [
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Box> {
+		if (this.isBox(argument)) return OK(new BoxClass(argument.x1, argument.y1, argument.x2, argument.y2));
+		const parsedObject = hasKeys<BoxObject>(argument, [
 			["x1", "number"],
 			["y1", "number"],
 			["x2", "number"],
@@ -172,19 +172,19 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -193,8 +193,8 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 		return INVALID;
 	}
 
-	isBox(obj: any): obj is Box {
-		return obj instanceof BoxClass;
+	isBox(object: any): object is Box {
+		return object instanceof BoxClass;
 	}
 }
 
@@ -205,16 +205,16 @@ class BoxClass extends PGTPBase<Box> implements Box {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Box }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Box }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Box.safeFrom(...ctx.data);
+		const parsed = Box.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

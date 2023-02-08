@@ -1,11 +1,11 @@
-import type { DatabaseData } from "../interfaces/DatabaseData";
-import type { LastPath } from "../types/LastPath";
-import type { NestedPaths } from "../types/NestedPaths";
+import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { LastPath } from "../types/LastPath.js";
+import type { NestedPaths } from "../types/NestedPaths.js";
 
-export type Tables<DbData extends DatabaseData> = LastPath<
+export type Tables<InnerDatabaseData extends DatabaseData> = LastPath<
 	NestedPaths<{
-		[schema_name in keyof DbData["schemas"]]: {
-			[table_name in keyof DbData["schemas"][schema_name]["tables"]]: string;
+		[schema_name in keyof InnerDatabaseData["schemas"]]: {
+			[table_name in keyof InnerDatabaseData["schemas"][schema_name]["tables"]]: string;
 		};
 	}>
 >;

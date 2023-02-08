@@ -1,11 +1,11 @@
 import type { Section } from "command-line-usage";
 import commandLineUsage from "command-line-usage";
 
-import { commands, globalArugments } from "../commands";
-import type { Argument } from "../types/interfaces/Argument";
-import type { Command } from "../types/interfaces/Command";
-import { DESCRIPTION, LOGGER as logger } from "../util/constants";
-import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader";
+import { commands, globalArugments } from "../commands/index.js";
+import type { Argument } from "../types/interfaces/Argument.js";
+import type { Command } from "../types/interfaces/Command.js";
+import { DESCRIPTION, LOGGER as logger } from "../util/constants.js";
+import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Help: Argument = {
 	name: "help",
@@ -60,7 +60,7 @@ function commandHelp(command: Command) {
 			},
 			{
 				header: `${command.name} Options`,
-				content: command.arguments.length ? command.arguments : "This command has no extra options.",
+				content: command.arguments.length > 0 ? command.arguments : "This command has no extra options.",
 			},
 			{
 				header: "Global Options",

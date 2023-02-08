@@ -1,5 +1,5 @@
-import { ConfigHandler } from "../classes/ConfigHandler";
-import type { Command } from "../types/interfaces/Command";
+import { ConfigHandler } from "../classes/ConfigHandler.js";
+import type { Command } from "../types/interfaces/Command.js";
 
 export const Init: Command = {
 	name: "init",

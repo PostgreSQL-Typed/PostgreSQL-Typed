@@ -1,4 +1,4 @@
-import type { ParseReturnType } from "../types/ParseReturnType";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
 
 export type INVALID = { status: "invalid" };
 export const INVALID: INVALID = Object.freeze({

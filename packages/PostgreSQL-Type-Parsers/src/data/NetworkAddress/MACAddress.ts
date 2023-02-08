@@ -1,9 +1,10 @@
+/* eslint-disable unicorn/filename-case */
 import { parseInteger } from "jsprim";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 
 interface MACAddressObject {
 	MACAddress: string;
@@ -21,21 +22,21 @@ interface MACAddress {
 interface MACAddressConstructor {
 	from(integer: number): MACAddress;
 	from(data: MACAddress | MACAddressObject): MACAddress;
-	from(str: string): MACAddress;
+	from(string: string): MACAddress;
 	/**
-	 * Returns `true` if `obj` is a `MACAddress`, `false` otherwise.
+	 * Returns `true` if `object` is a `MACAddress`, `false` otherwise.
 	 */
-	isMACAddress(obj: any): obj is MACAddress;
+	isMACAddress(object: any): object is MACAddress;
 }
 
 const MACAddress: MACAddressConstructor = {
-	from(arg: string | number | MACAddress | MACAddressObject): MACAddress {
-		if (typeof arg === "string" || typeof arg === "number") return new MACAddressClass(arg);
-		else if (MACAddress.isMACAddress(arg)) return new MACAddressClass(arg.toJSON().MACAddress);
-		else return new MACAddressClass(arg.MACAddress);
+	from(argument: string | number | MACAddress | MACAddressObject): MACAddress {
+		if (typeof argument === "string" || typeof argument === "number") return new MACAddressClass(argument);
+		else if (MACAddress.isMACAddress(argument)) return new MACAddressClass(argument.toJSON().MACAddress);
+		else return new MACAddressClass(argument.MACAddress);
 	},
-	isMACAddress(obj: any): obj is MACAddress {
-		return obj instanceof MACAddressClass;
+	isMACAddress(object: any): object is MACAddress {
+		return object instanceof MACAddressClass;
 	},
 };
 
@@ -57,8 +58,12 @@ class MACAddressClass implements MACAddress {
 
 	private _parseLong(input: number): number {
 		if (input !== Math.floor(input)) throw new Error("Invalid MACAddress");
-		if (input < 0 || input > 0xffffffffffff) throw new Error("MACAddress must be 48-bit");
+		if (input < 0 || input > 0xff_ff_ff_ff_ff_ff) throw new Error("MACAddress must be 48-bit");
 		return input;
+	}
+
+	private _isDigit(c: string) {
+		return /^[\da-f]$/.test(c);
 	}
 
 	private _parseString(input: string): number {
@@ -70,14 +75,10 @@ class MACAddressClass implements MACAddress {
 			seperator: string | null = null,
 			chr: string | undefined;
 
-		function isDigit(c: string) {
-			return /^[a-f0-9]$/.test(c);
-		}
-
-		function isSep(sep?: string) {
-			if (seperator !== null) return sep === seperator;
-			if (sep !== ":" && sep !== "-" && sep !== ".") return false;
-			seperator = sep;
+		function isSeparator(separator?: string) {
+			if (seperator !== null) return separator === seperator;
+			if (separator !== ":" && separator !== "-" && separator !== ".") return false;
+			seperator = separator;
 			return true;
 		}
 
@@ -85,11 +86,11 @@ class MACAddressClass implements MACAddress {
 			if (octet.length === 0) throw new Error(`Invalid MACAddress, expected to find a hexadecimal number before ${JSON.stringify(seperator)}`);
 			else if (octet.length > 2) throw new Error(`Invalid MACAddress, too many hexadecimal digits in ${JSON.stringify(octet)}`);
 			else if (position < 6) {
-				const tmp = parseInteger(octet, { base: 16 });
-				if (tmp instanceof Error) throw new Error(`Invalid MACAddress, "${octet}" is not a valid hexadecimal number`);
+				const temporary = parseInteger(octet, { base: 16 });
+				if (temporary instanceof Error) throw new Error(`Invalid MACAddress, "${octet}" is not a valid hexadecimal number`);
 
-				value *= 0x100;
-				value += tmp;
+				value *= 0x1_00;
+				value += temporary;
 				position += 1;
 				octet = "";
 			} else throw new Error("Invalid MACAddress, too many octets");
@@ -97,21 +98,21 @@ class MACAddressClass implements MACAddress {
 
 		for (const element of input) {
 			chr = element;
-			if (isSep(chr)) process();
-			else if (isDigit(chr)) octet += chr;
+			if (isSeparator(chr)) process();
+			else if (this._isDigit(chr)) octet += chr;
 			else throw new Error(`Invalid MACAddress, unrecognized character ${JSON.stringify(chr)}`);
 		}
 
-		if (isSep(chr)) throw new Error(`Invalid MACAddress, trailing ${JSON.stringify(seperator)}`);
+		if (isSeparator(chr)) throw new Error(`Invalid MACAddress, trailing ${JSON.stringify(seperator)}`);
 
 		if (position === 0) {
 			if (octet.length < 12) throw new Error("Invalid MACAddress, too few octets");
 			else if (octet.length > 12) throw new Error("Invalid MACAddress, too many octets");
 
-			const tmp = parseInteger(octet, { base: 16 });
-			if (tmp instanceof Error) throw new Error(`Invalid MACAddress, "${octet}" is not a valid hexadecimal number`);
+			const temporary = parseInteger(octet, { base: 16 });
+			if (temporary instanceof Error) throw new Error(`Invalid MACAddress, "${octet}" is not a valid hexadecimal number`);
 
-			value = tmp;
+			value = temporary;
 		} else {
 			process();
 			if (position < 6) throw new Error("Invalid MACAddress, too few octets");
@@ -128,8 +129,8 @@ class MACAddressClass implements MACAddress {
 			 * arithmetic, so we have to handle the first two parts of the number
 			 * differently.
 			 */
-			(this._MACAddress / 0x010000000000) & 0xff,
-			(this._MACAddress / 0x000100000000) & 0xff,
+			(this._MACAddress / 0x01_00_00_00_00_00) & 0xff,
+			(this._MACAddress / 0x00_01_00_00_00_00) & 0xff,
 
 			(this._MACAddress >>> 24) & 0xff,
 			(this._MACAddress >>> 16) & 0xff,
@@ -137,8 +138,8 @@ class MACAddressClass implements MACAddress {
 			this._MACAddress & 0xff,
 		];
 
-		for (const [i, field] of fields.entries()) {
-			if (i !== 0) result += ":";
+		for (const [index, field] of fields.entries()) {
+			if (index !== 0) result += ":";
 
 			const octet = field.toString(16);
 			if (octet.length === 1) result += "0";

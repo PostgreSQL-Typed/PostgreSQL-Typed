@@ -1,6 +1,7 @@
+/* eslint-disable unicorn/filename-case */
 import { describe, expect, test } from "vitest";
 
-import { throwPGTPError } from "./throwPGTPError";
+import { throwPGTPError } from "./throwPGTPError.js";
 
 describe("throwPGTPError", () => {
 	test("should throw an error", () => {

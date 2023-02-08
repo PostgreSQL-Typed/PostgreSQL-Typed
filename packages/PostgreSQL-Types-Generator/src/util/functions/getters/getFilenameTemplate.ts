@@ -1,7 +1,7 @@
-import type { Config } from "../../../types/interfaces/Config";
-import type { TypeID } from "../../../types/types/TypeID";
+import type { Config } from "../../../types/interfaces/Config.js";
+import type { TypeId } from "../../../types/types/TypeId.js";
 
-export function getFilenameTemplate(config: Config, id: TypeID): string {
+export function getFilenameTemplate(config: Config, id: TypeId): string {
 	const {
 			tableFileName,
 			tableInsertParametersFileName,

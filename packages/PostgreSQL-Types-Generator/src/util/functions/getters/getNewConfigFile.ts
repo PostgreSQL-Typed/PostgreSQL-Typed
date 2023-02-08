@@ -1,4 +1,4 @@
-import type { Config } from "../../../types/interfaces/Config";
+import type { Config } from "../../../types/interfaces/Config.js";
 
 export function getNewConfigFile(config: Config): string {
 	return `${CONFIG_HEADER}${getStringifyedConfig(config)}${CONFIG_FOOTER}`;
@@ -7,13 +7,13 @@ export function getNewConfigFile(config: Config): string {
 function getStringifyedConfig(cfg: Record<string, any>, tabCount = 1): string {
 	const properties = Object.keys(cfg);
 	let output = "";
-	for (const [i, property] of properties.entries()) {
-		const isLast = i === properties.length - 1 ? "" : ",",
+	for (const [index, property] of properties.entries()) {
+		const isLast = index === properties.length - 1 ? "" : ",",
 			tab = "\t".repeat(tabCount);
 
 		switch (typeof cfg[property]) {
 			case "object":
-				if (Object.keys(cfg[property]).length) {
+				if (Object.keys(cfg[property]).length > 0) {
 					output += `${tab}${property}: {\n`;
 					output += getStringifyedConfig(cfg[property], tabCount + 1);
 					output += `${tab}}${isLast}\n`;

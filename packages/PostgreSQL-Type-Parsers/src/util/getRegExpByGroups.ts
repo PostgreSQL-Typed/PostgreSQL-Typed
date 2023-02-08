@@ -37,7 +37,7 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 				return (string.match(new RegExp(newOptions.base.source.replace("%others%", newOptions.groups[0]), newOptions.base.flags))?.groups as T) ?? null;
 
 			// Otherwise test the string against the groups and map the results to the index of the string in the array
-			const allPositions: (string | null)[] = [...Array(string.length).keys()].map(() => null);
+			const allPositions: (string | null)[] = [...Array.from({ length: string.length }).keys()].map(() => null);
 
 			for (const group of newOptions.groups) {
 				const match = string.match(new RegExp(group, "g")),

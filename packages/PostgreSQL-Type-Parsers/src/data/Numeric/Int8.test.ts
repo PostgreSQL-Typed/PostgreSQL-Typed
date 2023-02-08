@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Int8 } from "./Int8";
+import { Int8 } from "./Int8.js";
 
 describe("Int8Constructor", () => {
 	test("_parse(...)", () => {
@@ -35,60 +35,66 @@ describe("Int8Constructor", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = Int8.safeFrom(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidString = Int8.safeFrom("abc");
 		expect(invalidString.success).toEqual(false);
-		if (!invalidString.success) {
+		if (invalidString.success) expect.fail();
+		else {
 			expect(invalidString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "bigint",
 				received: "string",
 				message: "Expected 'bigint', received 'string'",
 			});
-		} else expect.fail();
+		}
 
-		const nanNumber = Int8.safeFrom(NaN);
+		const nanNumber = Int8.safeFrom(Number.NaN);
 		expect(nanNumber.success).toEqual(false);
-		if (!nanNumber.success) {
+		if (nanNumber.success) expect.fail();
+		else {
 			expect(nanNumber.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
 				received: "nan",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'nan'",
 			});
-		} else expect.fail();
+		}
 
-		const notFinite = Int8.safeFrom(Infinity);
+		const notFinite = Int8.safeFrom(Number.POSITIVE_INFINITY);
 		expect(notFinite.success).toEqual(false);
-		if (!notFinite.success) {
+		if (notFinite.success) expect.fail();
+		else {
 			expect(notFinite.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'infinity'",
 				received: "infinity",
 			});
-		} else expect.fail();
+		}
 
 		const notWhole = Int8.safeFrom(0.5);
 		expect(notWhole.success).toEqual(false);
-		if (!notWhole.success) {
+		if (notWhole.success) expect.fail();
+		else {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
 			});
-		} else expect.fail();
+		}
 
 		const tooBig = Int8.safeFrom(BigInt("9223372036854775808"));
 		expect(tooBig.success).toEqual(false);
-		if (!tooBig.success) {
+		if (tooBig.success) expect.fail();
+		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "bigint",
@@ -96,11 +102,12 @@ describe("Int8Constructor", () => {
 				inclusive: true,
 				message: "BigInt must be less than or equal to 9223372036854775807",
 			});
-		} else expect.fail();
+		}
 
 		const tooSmall = Int8.safeFrom(BigInt("-9223372036854775809"));
 		expect(tooSmall.success).toEqual(false);
-		if (!tooSmall.success) {
+		if (tooSmall.success) expect.fail();
+		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "bigint",
@@ -108,12 +115,13 @@ describe("Int8Constructor", () => {
 				inclusive: true,
 				message: "BigInt must be greater than or equal to -9223372036854775808",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooManyArguments = Int8.safeFrom(1, 2);
 		expect(tooManyArguments.success).toEqual(false);
-		if (!tooManyArguments.success) {
+		if (tooManyArguments.success) expect.fail();
+		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "arguments",
@@ -121,12 +129,13 @@ describe("Int8Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooFewArguments = Int8.safeFrom();
 		expect(tooFewArguments.success).toEqual(false);
-		if (!tooFewArguments.success) {
+		if (tooFewArguments.success) expect.fail();
+		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "arguments",
@@ -134,38 +143,41 @@ describe("Int8Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		const unrecognizedKeys = Int8.safeFrom({
 			int8: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
-		if (!unrecognizedKeys.success) {
+		if (unrecognizedKeys.success) expect.fail();
+		else {
 			expect(unrecognizedKeys.error.issue).toStrictEqual({
 				code: "unrecognized_keys",
 				keys: ["unrecognized"],
 				message: "Unrecognized key in object: 'unrecognized'",
 			});
-		} else expect.fail();
+		}
 
 		const missingKeys = Int8.safeFrom({
 			// int8: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
-		if (!missingKeys.success) {
+		if (missingKeys.success) expect.fail();
+		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
 				keys: ["int8"],
 				message: "Missing key in object: 'int8'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidKeys = Int8.safeFrom({
 			int8: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
-		if (!invalidKeys.success) {
+		if (invalidKeys.success) expect.fail();
+		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
 				objectKey: "int8",
@@ -173,7 +185,7 @@ describe("Int8Constructor", () => {
 				received: "string",
 				message: "Expected 'bigint' for key 'int8', received 'string'",
 			});
-		} else expect.fail();
+		}
 		//#endregion
 	});
 
@@ -258,14 +270,15 @@ describe("Int8", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = int8.safeEquals(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		expect(() => int8.equals(true as any)).toThrowError();
 		//#endregion

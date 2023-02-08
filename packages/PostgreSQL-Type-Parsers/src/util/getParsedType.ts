@@ -1,7 +1,7 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { DateTime } from "luxon";
 
-import { arrayToEnum } from "./arrayToEnum";
+import { arrayToEnum } from "./arrayToEnum.js";
 
 export const ParsedType = arrayToEnum([
 	"array",
@@ -38,7 +38,7 @@ export const getParsedType = (data: any): ParsedType => {
 		case "function":
 			return ParsedType.function;
 		case "number":
-			return isNaN(data) ? ParsedType.nan : !isFinite(data) ? ParsedType.infinity : ParsedType.number;
+			return Number.isNaN(data) ? ParsedType.nan : Number.isFinite(data) ? ParsedType.number : ParsedType.infinity;
 		case "string":
 			return ParsedType.string;
 		case "symbol":

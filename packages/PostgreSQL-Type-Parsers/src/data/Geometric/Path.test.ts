@@ -1,8 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Connection, Path } from "./Path";
-import { Point } from "./Point";
+import { Connection, Path } from "./Path.js";
+import { Point } from "./Point.js";
 
 describe("PathConstructor", () => {
 	test("_parse(...)", () => {
@@ -300,8 +300,8 @@ describe("PostgreSQL", () => {
 					connection: "open",
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

@@ -1,21 +1,21 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { getRegExpByGroups } from "../../util/getRegExpByGroups";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { pad } from "../../util/pad";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { getRegExpByGroups } from "../../util/getRegExpByGroups.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { pad } from "../../util/pad.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 enum IntervalStyle {
 	PostgreSQL = "PostgreSQL",
@@ -104,9 +104,9 @@ interface IntervalConstructor {
 	safeFrom(years: number, months: number, days: number, hours: number, minutes: number, seconds: number, milliseconds: number): SafeFrom<Interval>;
 	safeFrom(object: Interval | IntervalObject): SafeFrom<Interval>;
 	/**
-	 * Returns `true` if `obj` is a `Interval`, `false` otherwise.
+	 * Returns `true` if `object` is a `Interval`, `false` otherwise.
 	 */
-	isInterval(obj: any): obj is Interval;
+	isInterval(object: any): object is Interval;
 }
 
 class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements IntervalConstructor {
@@ -114,15 +114,15 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Interval> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Interval> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -140,7 +140,7 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -150,15 +150,15 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Interval> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Interval> {
 		//#region Regexes
 		//Traditional PostgreSQL interval format 1 millennium 2 centuries 3 decades 4 year 5 months 6 days 7 hours 8 minutes 9 seconds 10 milliseconds 11 microseconds
 		const TraditionalRegex = getRegExpByGroups<{
@@ -324,7 +324,7 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 				SQLMinuteToSecondRegex,
 				SQLSecondRegex,
 			] as {
-				match: (arg: string) => {
+				match: (argument_: string) => {
 					millennium?: string;
 					century?: string;
 					decade?: string;
@@ -359,7 +359,7 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		} | null = null;
 
 		for (const regex of regexes) {
-			const match = regex.match(` ${arg}`);
+			const match = regex.match(` ${argument}`);
 			if (match) {
 				// Clean up the match object (trim and remove all a-z characters)
 				const hasAgoInAnyValue = Object.values(match).some(value => value?.trim().endsWith("ago"));
@@ -367,32 +367,32 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 					match[key as keyof typeof match] = `${hasAgoInAnyValue ? "-" : ""}${
 						/* c8 ignore next 2 */
 						//to ignore the `?? 0` fallback
-						match[key as keyof typeof match]?.trim().match(/([-+]?\d+(?:\.\d+)?)/)?.[1] ?? "0"
+						match[key as keyof typeof match]?.trim().match(/([+-]?\d+(?:\.\d+)?)/)?.[1] ?? "0"
 					}`;
 				}
 
 				result = {
-					millennium: "millennium" in match && typeof match.millennium === "string" ? parseFloat(match.millennium) : 0,
-					century: "century" in match && typeof match.century === "string" ? parseFloat(match.century) : 0,
-					decade: "decade" in match && typeof match.decade === "string" ? parseFloat(match.decade) : 0,
-					year: "year" in match && typeof match.year === "string" ? parseFloat(match.year) : 0,
-					month: "month" in match && typeof match.month === "string" ? parseFloat(match.month) : 0,
-					week: "week" in match && typeof match.week === "string" ? parseFloat(match.week) : 0,
-					day: "day" in match && typeof match.day === "string" ? parseFloat(match.day) : 0,
-					hour: "hour" in match && typeof match.hour === "string" ? parseFloat(match.hour) : 0,
-					minute: "minute" in match && typeof match.minute === "string" ? parseFloat(match.minute) : 0,
-					second: "second" in match && typeof match.second === "string" ? parseFloat(match.second) : 0,
-					millisecond: "millisecond" in match && typeof match.millisecond === "string" ? parseFloat(match.millisecond) : 0,
-					microsecond: "microsecond" in match && typeof match.microsecond === "string" ? parseFloat(match.microsecond) : 0,
+					millennium: "millennium" in match && typeof match.millennium === "string" ? Number.parseFloat(match.millennium) : 0,
+					century: "century" in match && typeof match.century === "string" ? Number.parseFloat(match.century) : 0,
+					decade: "decade" in match && typeof match.decade === "string" ? Number.parseFloat(match.decade) : 0,
+					year: "year" in match && typeof match.year === "string" ? Number.parseFloat(match.year) : 0,
+					month: "month" in match && typeof match.month === "string" ? Number.parseFloat(match.month) : 0,
+					week: "week" in match && typeof match.week === "string" ? Number.parseFloat(match.week) : 0,
+					day: "day" in match && typeof match.day === "string" ? Number.parseFloat(match.day) : 0,
+					hour: "hour" in match && typeof match.hour === "string" ? Number.parseFloat(match.hour) : 0,
+					minute: "minute" in match && typeof match.minute === "string" ? Number.parseFloat(match.minute) : 0,
+					second: "second" in match && typeof match.second === "string" ? Number.parseFloat(match.second) : 0,
+					millisecond: "millisecond" in match && typeof match.millisecond === "string" ? Number.parseFloat(match.millisecond) : 0,
+					microsecond: "microsecond" in match && typeof match.microsecond === "string" ? Number.parseFloat(match.microsecond) : 0,
 				};
 				break;
 			}
 		}
 
 		if (!result) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_string",
-				received: arg,
+				received: argument,
 				expected: "LIKE P1Y2M3W4DT5H6M7S",
 			});
 			return INVALID;
@@ -423,37 +423,37 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		//Convert not whole (decimal) values to smaller units
 		//Convert seconds to milliseconds
 		if (finalResult.seconds % 1 !== 0) {
-			finalResult.milliseconds += parseFloat(`.${finalResult.seconds.toString().split(".")[1]}`) * 1000;
+			finalResult.milliseconds += Number.parseFloat(`.${finalResult.seconds.toString().split(".")[1]}`) * 1000;
 			finalResult.seconds = Math.floor(finalResult.seconds);
 		}
 
 		//Convert minutes to seconds
 		if (finalResult.minutes % 1 !== 0) {
-			finalResult.seconds += parseFloat(`.${finalResult.minutes.toString().split(".")[1]}`) * 60;
+			finalResult.seconds += Number.parseFloat(`.${finalResult.minutes.toString().split(".")[1]}`) * 60;
 			finalResult.minutes = Math.floor(finalResult.minutes);
 		}
 
 		//Convert hours to minutes
 		if (finalResult.hours % 1 !== 0) {
-			finalResult.minutes += parseFloat(`.${finalResult.hours.toString().split(".")[1]}`) * 60;
+			finalResult.minutes += Number.parseFloat(`.${finalResult.hours.toString().split(".")[1]}`) * 60;
 			finalResult.hours = Math.floor(finalResult.hours);
 		}
 
 		//Convert days to hours
 		if (finalResult.days % 1 !== 0) {
-			finalResult.hours += parseFloat(`.${finalResult.days.toString().split(".")[1]}`) * 24;
+			finalResult.hours += Number.parseFloat(`.${finalResult.days.toString().split(".")[1]}`) * 24;
 			finalResult.days = Math.floor(finalResult.days);
 		}
 
 		//Convert months to days
 		if (finalResult.months % 1 !== 0) {
-			finalResult.days += parseFloat(`.${finalResult.months.toString().split(".")[1]}`) * 30;
+			finalResult.days += Number.parseFloat(`.${finalResult.months.toString().split(".")[1]}`) * 30;
 			finalResult.months = Math.floor(finalResult.months);
 		}
 
 		//Convert years to days
 		if (finalResult.years % 1 !== 0) {
-			finalResult.days += parseFloat(`.${finalResult.years.toString().split(".")[1]}`) * 365;
+			finalResult.days += Number.parseFloat(`.${finalResult.years.toString().split(".")[1]}`) * 365;
 			finalResult.years = Math.floor(finalResult.years);
 		}
 
@@ -502,11 +502,11 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		);
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Interval> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Interval> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 7) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 7
 					? {
 							code: "too_big",
@@ -524,12 +524,12 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -538,19 +538,20 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 			}
 		}
 
-		const [years, months, days, hours, minutes, seconds, milliseconds] = [arg, ...otherArgs] as number[];
+		const [years, months, days, hours, minutes, seconds, milliseconds] = [argument, ...otherArguments] as number[];
 		return this._parseString(
-			ctx,
+			context,
 			`${years} years ${months} months ${days} days ${hours} hours ${minutes} minutes ${seconds} seconds ${milliseconds} milliseconds`
 		);
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Interval> {
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Interval> {
 		// Should be [Interval]
-		if (Interval.isInterval(arg)) return OK(new IntervalClass(arg.years, arg.months, arg.days, arg.hours, arg.minutes, arg.seconds, arg.milliseconds));
+		if (Interval.isInterval(argument))
+			return OK(new IntervalClass(argument.years, argument.months, argument.days, argument.hours, argument.minutes, argument.seconds, argument.milliseconds));
 
 		// Should be [IntervalObject]
-		const parsedObject = hasKeys<IntervalObject>(arg, [
+		const parsedObject = hasKeys<IntervalObject>(argument, [
 			["years", ["number", "undefined"]],
 			["months", ["number", "undefined"]],
 			["days", ["number", "undefined"]],
@@ -562,19 +563,19 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 		if (!parsedObject.success) {
 			switch (true) {
 				case parsedObject.otherKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "unrecognized_keys",
 						keys: parsedObject.otherKeys,
 					});
 					break;
 				case parsedObject.missingKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "missing_keys",
 						keys: parsedObject.missingKeys,
 					});
 					break;
 				case parsedObject.invalidKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "invalid_key_type",
 						...parsedObject.invalidKeys[0],
 					});
@@ -585,15 +586,15 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 
 		const { years, months, days, hours, minutes, seconds, milliseconds } = parsedObject.obj;
 		return this._parseString(
-			ctx,
+			context,
 			`${years ?? 0} years ${months ?? 0} months ${days ?? 0} days ${hours ?? 0} hours ${minutes ?? 0} minutes ${seconds ?? 0} seconds ${
 				milliseconds ?? 0
 			} milliseconds`
 		);
 	}
 
-	isInterval(obj: any): obj is Interval {
-		return obj instanceof IntervalClass;
+	isInterval(object: any): object is Interval {
+		return object instanceof IntervalClass;
 	}
 }
 
@@ -612,16 +613,16 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Interval }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Interval }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Interval.safeFrom(...ctx.data);
+		const parsed = Interval.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 
@@ -683,12 +684,12 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			["seconds", ["number", "undefined"]],
 			["milliseconds", ["number", "undefined"]],
 		]);
-		if (ddhhmmss.success && (typeof ddhhmmss.obj.seconds !== "undefined" || typeof ddhhmmss.obj.milliseconds !== "undefined")) {
+		if (ddhhmmss.success && (ddhhmmss.obj.seconds !== undefined || ddhhmmss.obj.milliseconds !== undefined)) {
 			const { days, hours, minutes, milliseconds } = ddhhmmss.obj;
 			let { seconds } = ddhhmmss.obj;
-			if (typeof seconds === "undefined") seconds = 0;
+			if (seconds === undefined) seconds = 0;
 			// add the milliseconds to the seconds
-			if (typeof milliseconds !== "undefined") seconds += milliseconds / 1000;
+			if (milliseconds !== undefined) seconds += milliseconds / 1000;
 			return `${days} ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 		}
 
@@ -704,12 +705,12 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			["seconds", ["number", "undefined"]],
 			["milliseconds", ["number", "undefined"]],
 		]);
-		if (hhmmss.success && (typeof hhmmss.obj.seconds !== "undefined" || typeof hhmmss.obj.milliseconds !== "undefined")) {
+		if (hhmmss.success && (hhmmss.obj.seconds !== undefined || hhmmss.obj.milliseconds !== undefined)) {
 			const { hours, minutes, milliseconds } = hhmmss.obj;
 			let { seconds } = hhmmss.obj;
-			if (typeof seconds === "undefined") seconds = 0;
+			if (seconds === undefined) seconds = 0;
 			// add the milliseconds to the seconds
-			if (typeof milliseconds !== "undefined") seconds += milliseconds / 1000;
+			if (milliseconds !== undefined) seconds += milliseconds / 1000;
 			return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 		}
 
@@ -721,12 +722,12 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			["seconds", ["number", "undefined"]],
 			["milliseconds", ["number", "undefined"]],
 		]);
-		if (ss.success && (typeof ss.obj.seconds !== "undefined" || typeof ss.obj.milliseconds !== "undefined")) {
+		if (ss.success && (ss.obj.seconds !== undefined || ss.obj.milliseconds !== undefined)) {
 			const { milliseconds } = ss.obj;
 			let { seconds } = ss.obj;
-			if (typeof seconds === "undefined") seconds = 0;
+			if (seconds === undefined) seconds = 0;
 			// add the milliseconds to the seconds
-			if (typeof milliseconds !== "undefined") seconds += milliseconds / 1000;
+			if (milliseconds !== undefined) seconds += milliseconds / 1000;
 			return `${seconds}`;
 		}
 
@@ -735,8 +736,8 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			{ years, months, days, hours, minutes, milliseconds } = data;
 		let { seconds } = data;
 		// add the milliseconds to the seconds
-		if (typeof milliseconds !== "undefined") {
-			if (typeof seconds === "undefined") seconds = 0;
+		if (milliseconds !== undefined) {
+			if (seconds === undefined) seconds = 0;
 			seconds += milliseconds / 1000;
 		}
 
@@ -752,9 +753,9 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 				datePart = dateProperties.map(d => this._buildISOProperty(d, short)).join(""),
 				timePart = timeProperties.map(t => this._buildISOProperty(t, short)).join("");
 
-			if (!timePart.length && !datePart.length) return "PT0S";
+			if (timePart.length === 0 && datePart.length === 0) return "PT0S";
 
-			if (!timePart.length) return `P${datePart}`;
+			if (timePart.length === 0) return `P${datePart}`;
 
 			return `P${datePart}T${timePart}`;
 		}
@@ -763,8 +764,8 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			{ years, months, days, hours, minutes, milliseconds } = data;
 		let { seconds } = data;
 		// add the milliseconds to the seconds
-		if (typeof milliseconds !== "undefined") {
-			if (typeof seconds === "undefined") seconds = 0;
+		if (milliseconds !== undefined) {
+			if (seconds === undefined) seconds = 0;
 			seconds += milliseconds / 1000;
 		}
 
@@ -772,7 +773,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		const formatted = `P${pad(years ?? 0, 4)}-${pad(months ?? 0)}-${pad(days ?? 0)}T${pad(hours ?? 0)}:${pad(minutes ?? 0)}:${pad(seconds ?? 0)}`;
 
 		// Basic format is the same as ISO, except that the hyphens and colons are removed.
-		if (style === IntervalStyle.ISOBasic) return formatted.replaceAll(/[-:]/g, "");
+		if (style === IntervalStyle.ISOBasic) return formatted.replaceAll(/[:-]/g, "");
 		return formatted;
 	}
 
@@ -790,7 +791,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 
 		// Account for fractional part of seconds,
 		// remove trailing zeroes.
-		if (property === "seconds" && this.milliseconds) value = (value + this.milliseconds / 1_000).toFixed(6).replace(/0+$/, "");
+		if (property === "seconds" && this.milliseconds) value = (value + this.milliseconds / 1000).toFixed(6).replace(/0+$/, "");
 
 		if (short && !value) return "";
 
@@ -805,21 +806,21 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			datePart = dateProperties
 				.map(d => this._buildPostgreSQLProperty(d, isShort))
 				// remove empty strings
-				.filter(d => d)
+				.filter(Boolean)
 				.join(" "),
 			timePart = timeProperties
 				.map(t => this._buildPostgreSQLProperty(t, isShort))
 				// remove empty strings
-				.filter(t => t)
+				.filter(Boolean)
 				.join(" ");
 
-		if (!timePart.length && !datePart.length) return "0";
+		if (timePart.length === 0 && datePart.length === 0) return "0";
 
-		if (!timePart.length) return datePart;
+		if (timePart.length === 0) return datePart;
 
 		const timeStyles: IntervalStyleType[] = [IntervalStyle.PostgreSQLTime, IntervalStyle.PostgreSQLTimeShort];
 		if (!timeStyles.includes(style)) {
-			if (!datePart.length) return timePart;
+			if (datePart.length === 0) return timePart;
 			return `${datePart} ${timePart}`;
 		}
 
@@ -828,14 +829,14 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			{ hours, minutes, milliseconds } = data;
 		let { seconds } = data;
 		// add the milliseconds to the seconds
-		if (typeof milliseconds !== "undefined") {
-			if (typeof seconds === "undefined") seconds = 0;
+		if (milliseconds !== undefined) {
+			if (seconds === undefined) seconds = 0;
 			seconds += milliseconds / 1000;
 		}
 
 		const newTimePart = `${pad(hours ?? 0)}:${pad(minutes ?? 0)}:${pad(seconds ?? 0)}`;
 
-		if (!datePart.length) return newTimePart;
+		if (datePart.length === 0) return newTimePart;
 
 		return `${datePart} ${newTimePart}`;
 	}
@@ -854,8 +855,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 
 		if (!value) return "";
 
-		if (short) return `${value} ${propertiesISOEquivalent[property]}`;
-		else return `${value} ${property}`;
+		return short ? `${value} ${propertiesISOEquivalent[property]}` : `${value} ${property}`;
 	}
 
 	toJSON(): IntervalObject {

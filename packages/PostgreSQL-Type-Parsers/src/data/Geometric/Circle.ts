@@ -1,19 +1,19 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface CircleObject {
 	x: number;
@@ -45,9 +45,9 @@ interface CircleConstructor {
 	safeFrom(object: Circle | CircleObject): SafeFrom<Circle>;
 	safeFrom(x: number, y: number, radius: number): SafeFrom<Circle>;
 	/**
-	 * Returns `true` if `obj` is a `Circle`, `false` otherwise.
+	 * Returns `true` if `object` is a `Circle`, `false` otherwise.
 	 */
-	isCircle(obj: any): obj is Circle;
+	isCircle(object: any): object is Circle;
 }
 
 class CircleConstructorClass extends PGTPConstructorBase<Circle> implements CircleConstructor {
@@ -55,15 +55,15 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Circle> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Circle> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -81,7 +81,7 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -91,52 +91,52 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Circle> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Circle> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^[<(]?\(?(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)?,(?:\d+(\.\d+)?|NaN)[>)]?$/)) {
+		if (/^[(<]?\(?(?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)?,(?:\d+(\.\d+)?|NaN)[)>]?$/.test(argument)) {
 			if (
-				(arg.startsWith("<") && !arg.endsWith(">")) ||
-				(arg.endsWith(">") && !arg.startsWith("<")) ||
-				(arg.startsWith("((") && !arg.endsWith(")")) ||
-				(arg.endsWith(")") && !arg.startsWith("(("))
+				(argument.startsWith("<") && !argument.endsWith(">")) ||
+				(argument.endsWith(">") && !argument.startsWith("<")) ||
+				(argument.startsWith("((") && !argument.endsWith(")")) ||
+				(argument.endsWith(")") && !argument.startsWith("(("))
 			) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
-					received: arg,
+					received: argument,
 					expected: "LIKE <(x,y),radius>",
 				});
 				return INVALID;
 			}
 
-			if (arg.startsWith("<(") || arg.startsWith("((")) arg = arg.slice(2);
-			if (arg.endsWith(">") || arg.endsWith(")")) arg = arg.slice(0, -1);
-			const [x, y, radius] = arg.split(",").map(c => parseFloat(c));
+			if (argument.startsWith("<(") || argument.startsWith("((")) argument = argument.slice(2);
+			if (argument.endsWith(">") || argument.endsWith(")")) argument = argument.slice(0, -1);
+			const [x, y, radius] = argument.split(",").map(c => Number.parseFloat(c));
 			return OK(new CircleClass(x, y, radius));
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE <(x,y),radius>",
 		});
 		return INVALID;
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Circle> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Circle> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 3) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 3
 					? {
 							code: "too_big",
@@ -154,12 +154,12 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -168,13 +168,13 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 			}
 		}
 
-		const [x, y, radius] = [arg, ...otherArgs] as number[];
+		const [x, y, radius] = [argument, ...otherArguments] as number[];
 		return OK(new CircleClass(x, y, radius));
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Circle> {
-		if (this.isCircle(arg)) return OK(new CircleClass(arg.x, arg.y, arg.radius));
-		const parsedObject = hasKeys<CircleObject>(arg, [
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Circle> {
+		if (this.isCircle(argument)) return OK(new CircleClass(argument.x, argument.y, argument.radius));
+		const parsedObject = hasKeys<CircleObject>(argument, [
 			["x", "number"],
 			["y", "number"],
 			["radius", "number"],
@@ -183,19 +183,19 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -204,8 +204,8 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 		return INVALID;
 	}
 
-	isCircle(obj: any): obj is Circle {
-		return obj instanceof CircleClass;
+	isCircle(object: any): object is Circle {
+		return object instanceof CircleClass;
 	}
 }
 
@@ -216,16 +216,16 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Circle }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Circle }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Circle.safeFrom(...ctx.data);
+		const parsed = Circle.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

@@ -1,22 +1,20 @@
 import { Client } from "pg";
 
-(async () => {
-	const client = new Client({
-		password: "password",
-		host: "localhost",
-		user: "postgres",
-		database: "postgres",
-		port: 5432,
-	});
+const client = new Client({
+	password: "password",
+	host: "localhost",
+	user: "postgres",
+	database: "postgres",
+	port: 5432,
+});
 
-	await client.connect();
+await client.connect();
 
-	const tables = ["JestDataTypes", "JestOperators", "JestSelectAll", "JestSelectInputted"];
+const tables = ["JestDataTypes", "JestOperators", "JestSelectAll", "JestSelectInputted"];
 
-	for (const table of tables) await createTable(client, table);
+for (const table of tables) await createTable(client, table);
 
-	await client.end();
-})();
+await client.end();
 
 async function createTable(client: Client, name: string) {
 	await client.query(`

@@ -1,7 +1,7 @@
-import { getParsedType, ParsedType } from "./getParsedType";
+import { getParsedType, ParsedType } from "./getParsedType.js";
 
 export const hasKeys = <T>(
-	obj: object,
+	object: object,
 	keys: readonly [string, ParsedType | ParsedType[]][]
 ):
 	| {
@@ -18,9 +18,9 @@ export const hasKeys = <T>(
 				received: ParsedType;
 			}[];
 	  } => {
-	const objKeys = Object.keys(obj),
-		otherKeys = objKeys.filter(key => !keys.some(([k]) => k === key)),
-		missingKeys = keys.filter(([k, v]) => !objKeys.includes(k) && !v.includes("undefined")).map(([k]) => k),
+	const objectKeys = Object.keys(object),
+		otherKeys = objectKeys.filter(key => !keys.some(([k]) => k === key)),
+		missingKeys = keys.filter(([k, v]) => !objectKeys.includes(k) && !v.includes("undefined")).map(([k]) => k),
 		invalidKeys = keys
 			.map(
 				([k, t]): {
@@ -28,26 +28,26 @@ export const hasKeys = <T>(
 					expected: ParsedType | ParsedType[];
 					received: ParsedType;
 				} | null => {
-					if (!(k in obj) && !t.includes("undefined")) {
+					if (!(k in object) && !t.includes("undefined")) {
 						return {
 							objectKey: k,
 							expected: t,
 							received: "undefined",
 						};
 					}
-					const objType = getParsedType((obj as Record<string, unknown>)[k]);
-					if (Array.isArray(t) && t.includes(objType)) return null;
-					else if (objType === t) return null;
+					const objectType = getParsedType((object as Record<string, unknown>)[k]);
+					if (Array.isArray(t) && t.includes(objectType)) return null;
+					else if (objectType === t) return null;
 					return {
 						objectKey: k,
 						expected: t,
-						received: objType,
+						received: objectType,
 					};
 				}
 			)
 			.filter((v): v is Exclude<typeof v, null> => v !== null);
 
-	if (otherKeys.length || missingKeys.length || invalidKeys.length) {
+	if (otherKeys.length > 0 || missingKeys.length > 0 || invalidKeys.length > 0) {
 		return {
 			success: false,
 			otherKeys,
@@ -56,7 +56,7 @@ export const hasKeys = <T>(
 		};
 	}
 
-	if (!objKeys.length) {
+	if (objectKeys.length === 0) {
 		return {
 			success: false,
 			otherKeys,
@@ -66,6 +66,6 @@ export const hasKeys = <T>(
 	}
 	return {
 		success: true,
-		obj: obj as T,
+		obj: object as T,
 	};
 };

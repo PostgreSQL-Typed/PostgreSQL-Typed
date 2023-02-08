@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { INVALID, isValid, OK } from "./validation";
+import { INVALID, isValid, OK } from "./validation.js";
 
 describe("isValid", () => {
 	it("should return true for OK", () => {

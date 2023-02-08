@@ -1,24 +1,24 @@
 /* eslint-disable no-console */
 import { Client } from "pg";
 
-import type { ProgressBar } from "../classes/ProgressBar";
-import { ClassKind } from "../types/enums/ClassKind";
-import type { Attribute } from "../types/interfaces/Attribute";
-import type { Class } from "../types/interfaces/Class";
-import type { ClassDetails } from "../types/interfaces/ClassDetails";
-import type { Config } from "../types/interfaces/Config";
-import type { Connection } from "../types/interfaces/Connection";
-import type { Constraint } from "../types/interfaces/Constraint";
-import type { FetchedData } from "../types/interfaces/FetchedData";
-import type { Table } from "../types/interfaces/Table";
-import type { DataType } from "../types/types/DataType";
-import { r } from "../util/chalk";
-import { getAttributes } from "../util/functions/getters/getAttributes";
-import { getClasses } from "../util/functions/getters/getClasses";
-import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader";
-import { getConstraints } from "../util/functions/getters/getConstraints";
-import { getDataTypes } from "../util/functions/getters/getDataTypes";
-import { getTables } from "../util/functions/getters/getTables";
+import type { ProgressBar } from "../classes/ProgressBar.js";
+import { ClassKind } from "../types/enums/ClassKind.js";
+import type { Attribute } from "../types/interfaces/Attribute.js";
+import type { Class } from "../types/interfaces/Class.js";
+import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
+import type { Config } from "../types/interfaces/Config.js";
+import type { Connection } from "../types/interfaces/Connection.js";
+import type { Constraint } from "../types/interfaces/Constraint.js";
+import type { FetchedData } from "../types/interfaces/FetchedData.js";
+import type { Table } from "../types/interfaces/Table.js";
+import type { DataType } from "../types/types/DataType.js";
+import { r } from "../util/chalk.js";
+import { getAttributes } from "../util/functions/getters/getAttributes.js";
+import { getClasses } from "../util/functions/getters/getClasses.js";
+import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
+import { getConstraints } from "../util/functions/getters/getConstraints.js";
+import { getDataTypes } from "../util/functions/getters/getDataTypes.js";
+import { getTables } from "../util/functions/getters/getTables.js";
 
 export class Fetcher {
 	private client: Client;
@@ -64,9 +64,9 @@ export class Fetcher {
 	private get formatted_connection_string(): string {
 		if (typeof this.connection === "string") return this.connection;
 
-		if (this.connection.password)
-			return `postgres://${this.connection.user}:${this.connection.password}@${this.connection.host}:${this.connection.port}/${this.connection.database}`;
-		else return `postgres://${this.connection.user}@${this.connection.host}:${this.connection.port}/${this.connection.database}`;
+		return this.connection.password
+			? `postgres://${this.connection.user}:${this.connection.password}@${this.connection.host}:${this.connection.port}/${this.connection.database}`
+			: `postgres://${this.connection.user}@${this.connection.host}:${this.connection.port}/${this.connection.database}`;
 	}
 
 	private get schema_names(): string[] {
@@ -88,7 +88,7 @@ export class Fetcher {
 
 	private async fetchTables(): Promise<void> {
 		const tables = await getTables(this.client, this.config, this.dbName);
-		if (!tables.length) {
+		if (tables.length === 0) {
 			this.progressBar.stop();
 			console.log(
 				getConsoleHeader(
@@ -106,7 +106,7 @@ export class Fetcher {
 
 	private async fetchDataTypes(): Promise<void> {
 		const types = await getDataTypes(this.client, this.schema_names);
-		if (!types.length) {
+		if (types.length === 0) {
 			this.progressBar.stop();
 			console.log(
 				getConsoleHeader(
@@ -127,7 +127,7 @@ export class Fetcher {
 			schema_names: this.schema_names,
 			kind: [ClassKind.OrdinaryTable, ClassKind.View, ClassKind.MaterializedView],
 		});
-		if (!classes.length) {
+		if (classes.length === 0) {
 			this.progressBar.stop();
 			console.log(
 				getConsoleHeader(
@@ -148,7 +148,7 @@ export class Fetcher {
 			schema_names: this.schema_names,
 			database_name: this.dbName,
 		});
-		if (!attributes.length) {
+		if (attributes.length === 0) {
 			this.progressBar.stop();
 			console.log(
 				getConsoleHeader(
@@ -166,7 +166,7 @@ export class Fetcher {
 
 	private async fetchConstraints(): Promise<void> {
 		const constraints = await getConstraints(this.client, this.schema_names);
-		if (!constraints.length) {
+		if (constraints.length === 0) {
 			this.progressBar.stop();
 			console.log(
 				getConsoleHeader(

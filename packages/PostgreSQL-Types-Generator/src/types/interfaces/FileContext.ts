@@ -1,4 +1,4 @@
-import type { FileExport } from "../interfaces/FileExport";
+import type { FileExport } from "../interfaces/FileExport.js";
 
 export interface FileContext {
 	getImport: (fileExport: FileExport) => string;

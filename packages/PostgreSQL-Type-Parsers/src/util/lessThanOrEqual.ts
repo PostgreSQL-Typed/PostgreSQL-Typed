@@ -1,5 +1,5 @@
-import { Timestamp } from "../data/DateTime/Timestamp";
-import { TimestampTZ } from "../data/DateTime/TimestampTZ";
+import { Timestamp } from "../data/DateTime/Timestamp.js";
+import { TimestampTZ } from "../data/DateTime/TimestampTZ.js";
 
 export const lessThanOrEqual = <
 	DataType extends {

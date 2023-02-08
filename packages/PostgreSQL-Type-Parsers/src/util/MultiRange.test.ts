@@ -1,15 +1,15 @@
 import { describe, expect, test } from "vitest";
 
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import { SafeEquals } from "../types/SafeEquals";
-import { SafeFrom } from "../types/SafeFrom";
-import { getParsedType } from "./getParsedType";
-import { getMultiRange, MultiRangeConstructor } from "./MultiRange";
-import { PGTPBase } from "./PGTPBase";
-import { PGTPConstructorBase } from "./PGTPConstructorBase";
-import { getRange, RangeConstructor } from "./Range";
-import { INVALID, OK } from "./validation";
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import { SafeEquals } from "../types/SafeEquals.js";
+import { SafeFrom } from "../types/SafeFrom.js";
+import { getParsedType } from "./getParsedType.js";
+import { getMultiRange, MultiRangeConstructor } from "./MultiRange.js";
+import { PGTPBase } from "./PGTPBase.js";
+import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { getRange, RangeConstructor } from "./Range.js";
+import { INVALID, OK } from "./validation.js";
 
 interface TestObject {
 	test: string;
@@ -32,7 +32,7 @@ interface TestConstructor {
 	from(object: Test | TestObject): Test;
 	safeFrom(string: string): SafeFrom<Test>;
 	safeFrom(object: Test | TestObject): SafeFrom<Test>;
-	isTest(obj: any): obj is Test;
+	isTest(object: any): object is Test;
 }
 
 class TestConstructorClass extends PGTPConstructorBase<TestClass> implements TestConstructor {
@@ -40,26 +40,26 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> implements Tes
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<TestClass> {
-		const [arg] = ctx.data,
-			type = getParsedType(arg);
+	_parse(context: ParseContext): ParseReturnType<TestClass> {
+		const [argument] = context.data,
+			type = getParsedType(argument);
 
 		if (type === "string") {
-			if (arg === "fail") {
-				this.setIssueForContext(ctx, {
+			if (argument === "fail") {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
 					expected: "a-z",
-					received: arg,
+					received: argument,
 				});
 				return INVALID;
 			}
-			return OK(new TestClass(arg as string));
+			return OK(new TestClass(argument as string));
 		}
-		if (type === "number") return OK(new TestClass((arg as number).toString()));
+		if (type === "number") return OK(new TestClass((argument as number).toString()));
 		if (type === "bigint") return INVALID;
-		if (type === "object") return OK(new TestClass((arg as TestObject).test));
+		if (type === "object") return OK(new TestClass((argument as TestObject).test));
 		else {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: ["string", "number", "object"],
 				received: type,
@@ -68,8 +68,8 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> implements Tes
 		}
 	}
 
-	isTest(obj: any): obj is Test {
-		return obj instanceof TestClass;
+	isTest(object: any): object is Test {
+		return object instanceof TestClass;
 	}
 }
 
@@ -124,18 +124,18 @@ describe("MultiRangeConstructor", () => {
 		expect(invalidType.error.message).toBe("Expected 'string' | 'object' | 'array', received 'bigint'");
 
 		//@ts-expect-error - This is to test the error
-		const notEnoughArgs = TestMultiRange.safeFrom();
-		expect(notEnoughArgs.success).toBe(false);
-		if (notEnoughArgs.success) expect.fail();
-		expect(notEnoughArgs.error.code).toBe("too_small");
-		expect(notEnoughArgs.error.message).toBe("Function must have exactly 1 argument(s)");
+		const notEnoughArguments = TestMultiRange.safeFrom();
+		expect(notEnoughArguments.success).toBe(false);
+		if (notEnoughArguments.success) expect.fail();
+		expect(notEnoughArguments.error.code).toBe("too_small");
+		expect(notEnoughArguments.error.message).toBe("Function must have exactly 1 argument(s)");
 
 		//@ts-expect-error - This is to test the error
-		const tooManyArgs = TestMultiRange.safeFrom("a", "b");
-		expect(tooManyArgs.success).toBe(false);
-		if (tooManyArgs.success) expect.fail();
-		expect(tooManyArgs.error.code).toBe("too_big");
-		expect(tooManyArgs.error.message).toBe("Function must have exactly 1 argument(s)");
+		const tooManyArguments = TestMultiRange.safeFrom("a", "b");
+		expect(tooManyArguments.success).toBe(false);
+		if (tooManyArguments.success) expect.fail();
+		expect(tooManyArguments.error.code).toBe("too_big");
+		expect(tooManyArguments.error.message).toBe("Function must have exactly 1 argument(s)");
 	});
 
 	test("_parseString(...)", () => {
@@ -286,9 +286,9 @@ describe("MultiRangeConstructor", () => {
 		expect(invalidObject5.error.code).toBe("too_big");
 		expect(invalidObject5.error.message).toBe("Function must have exactly 1 argument(s)");
 
-		// @ts-expect-error - invalid object
 		const invalidObject6 = TestMultiRange.safeFrom({
 			ranges: [TestRange.from("[a,c)"), TestRange.from("[d,f)")],
+			// @ts-expect-error - invalid object
 			g: "h",
 		});
 		expect(invalidObject6.success).toBe(false);
@@ -310,8 +310,8 @@ describe("MultiRangeConstructor", () => {
 		expect(invalidObject8.error.code).toBe("invalid_key_type");
 		expect(invalidObject8.error.message).toBe("Expected 'array' for key 'ranges', received 'number'");
 
-		// @ts-expect-error - invalid object
 		const invalidObject9 = TestMultiRange.safeFrom({
+			// @ts-expect-error - invalid object
 			ranges: ["[a,fail)", TestRange.from("[d,f)")],
 		});
 		expect(invalidObject9.success).toBe(false);

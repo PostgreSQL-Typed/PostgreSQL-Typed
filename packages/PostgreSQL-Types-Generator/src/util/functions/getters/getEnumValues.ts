@@ -1,6 +1,6 @@
 import type { Client } from "pg";
 
-import type { EnumValue } from "../../../types/interfaces/EnumValue";
+import type { EnumValue } from "../../../types/interfaces/EnumValue.js";
 
 export async function getEnumValues(connection: Client, typeId: number): Promise<EnumValue[]> {
 	const conditions = [`ty.oid = ${typeId}`],
@@ -18,7 +18,7 @@ export async function getEnumValues(connection: Client, typeId: number): Promise
       ON (ty.typnamespace = ns.oid)
     LEFT OUTER JOIN pg_catalog.pg_type subt
       ON (ty.typelem = subt.oid)
-    ${conditions.length ? `WHERE ${conditions.join(" AND ")}` : ""}
+    ${conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""}
     ORDER BY ns.nspname ASC, ty.typname ASC, e.enumlabel ASC
   `);
 

@@ -2,8 +2,8 @@ import { DateTime, Zone } from "luxon";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 
 interface TimeObject {
 	hour: number;
@@ -34,18 +34,18 @@ interface Time {
 interface TimeConstructor {
 	from(hour: number, minute: number, second: number): Time;
 	from(data: Time | TimeObject | globalThis.Date | DateTime): Time;
-	from(str: string): Time;
+	from(string: string): Time;
 	/**
-	 * Returns `true` if `obj` is a `Time`, `false` otherwise.
+	 * Returns `true` if `object` is a `Time`, `false` otherwise.
 	 */
-	isTime(obj: any): obj is Time;
+	isTime(object: any): object is Time;
 }
 
 const Time: TimeConstructor = {
-	from(arg: string | Time | TimeObject | globalThis.Date | DateTime | number, minute?: number, second?: number): Time {
-		if (typeof arg === "string") {
-			if (arg.match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?$/)) {
-				const [hour, minute, second] = arg.split(":").map(c => parseInt(c));
+	from(argument: string | Time | TimeObject | globalThis.Date | DateTime | number, minute?: number, second?: number): Time {
+		if (typeof argument === "string") {
+			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?$/.test(argument)) {
+				const [hour, minute, second] = argument.split(":").map(c => Number.parseInt(c));
 				return new TimeClass({
 					hour,
 					minute,
@@ -53,52 +53,52 @@ const Time: TimeConstructor = {
 				});
 			}
 			throw new Error("Invalid Time string");
-		} else if (Time.isTime(arg)) return new TimeClass(arg.toJSON());
-		else if (typeof arg === "number") {
+		} else if (Time.isTime(argument)) return new TimeClass(argument.toJSON());
+		else if (typeof argument === "number") {
 			if (typeof minute === "number" && typeof second === "number") {
 				const newlyMadeTime = new TimeClass({
-					hour: arg,
+					hour: argument,
 					minute,
 					second,
 				});
-				if (newlyMadeTime.toString().match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/)) return newlyMadeTime;
+				if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(newlyMadeTime.toString())) return newlyMadeTime;
 				throw new Error("Invalid Time array, numbers only");
 			}
 			throw new Error("Invalid Time array, numbers only");
-		} else if (arg instanceof DateTime) {
+		} else if (argument instanceof DateTime) {
 			return new TimeClass({
-				hour: arg.hour,
-				minute: arg.minute,
-				second: arg.second,
+				hour: argument.hour,
+				minute: argument.minute,
+				second: argument.second,
 			});
-		} else if (arg instanceof globalThis.Date) {
+		} else if (argument instanceof globalThis.Date) {
 			return new TimeClass({
-				hour: arg.getHours(),
-				minute: arg.getMinutes(),
-				second: arg.getSeconds(),
+				hour: argument.getHours(),
+				minute: argument.getMinutes(),
+				second: argument.getSeconds(),
 			});
 		} else {
 			if (
 				!(
-					typeof arg === "object" &&
-					"hour" in arg &&
-					typeof arg.hour === "number" &&
-					"minute" in arg &&
-					typeof arg.minute === "number" &&
-					"second" in arg &&
-					typeof arg.second === "number"
+					typeof argument === "object" &&
+					"hour" in argument &&
+					typeof argument.hour === "number" &&
+					"minute" in argument &&
+					typeof argument.minute === "number" &&
+					"second" in argument &&
+					typeof argument.second === "number"
 				)
 			)
 				throw new Error("Invalid Time object");
 
-			const newlyMadeTime = new TimeClass(arg);
-			if (newlyMadeTime.toString().match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/)) return newlyMadeTime;
+			const newlyMadeTime = new TimeClass(argument);
+			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(newlyMadeTime.toString())) return newlyMadeTime;
 
 			throw new Error("Invalid Time object");
 		}
 	},
-	isTime(obj: any): obj is Time {
-		return obj instanceof TimeClass;
+	isTime(object: any): object is Time {
+		return object instanceof TimeClass;
 	},
 };
 
@@ -108,13 +108,13 @@ class TimeClass implements Time {
 	private _second: number;
 
 	constructor(data: TimeObject) {
-		this._hour = parseInt(data.hour.toString());
-		this._minute = parseInt(data.minute.toString());
-		this._second = parseInt(data.second.toString());
+		this._hour = Number.parseInt(data.hour.toString());
+		this._minute = Number.parseInt(data.minute.toString());
+		this._second = Number.parseInt(data.second.toString());
 	}
 
-	private _prefix(num: number): string {
-		return num < 10 ? `0${num}` : `${num}`;
+	private _prefix(number: number): string {
+		return number < 10 ? `0${number}` : `${number}`;
 	}
 
 	toString(): string {
@@ -140,8 +140,8 @@ class TimeClass implements Time {
 	}
 
 	set hour(hour: number) {
-		hour = parseInt(hour.toString());
-		if (isNaN(hour) || hour < 0 || hour > 23) throw new Error("Invalid hour");
+		hour = Number.parseInt(hour.toString());
+		if (Number.isNaN(hour) || hour < 0 || hour > 23) throw new Error("Invalid hour");
 
 		this._hour = hour;
 	}
@@ -151,8 +151,8 @@ class TimeClass implements Time {
 	}
 
 	set minute(minute: number) {
-		minute = parseInt(minute.toString());
-		if (isNaN(minute) || minute < 0 || minute > 59) throw new Error("Invalid minute");
+		minute = Number.parseInt(minute.toString());
+		if (Number.isNaN(minute) || minute < 0 || minute > 59) throw new Error("Invalid minute");
 
 		this._minute = minute;
 	}
@@ -162,8 +162,8 @@ class TimeClass implements Time {
 	}
 
 	set second(second: number) {
-		second = parseInt(second.toString());
-		if (isNaN(second) || second < 0 || second > 59) throw new Error("Invalid second");
+		second = Number.parseInt(second.toString());
+		if (Number.isNaN(second) || second < 0 || second > 59) throw new Error("Invalid second");
 
 		this._second = second;
 	}

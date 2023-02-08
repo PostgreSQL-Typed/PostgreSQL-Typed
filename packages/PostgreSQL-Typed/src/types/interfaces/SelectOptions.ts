@@ -1,5 +1,5 @@
-import type { Filter } from "../types/Filter";
-import type { OrderBy } from "../types/OrderBy";
+import type { Filter } from "../types/Filter.js";
+import type { OrderBy } from "../types/OrderBy.js";
 
 export interface SelectOptions<Table> {
 	$WHERE?: Filter<Table>;

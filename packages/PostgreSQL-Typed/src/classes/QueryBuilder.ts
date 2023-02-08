@@ -1,27 +1,27 @@
-import { Table } from "../classes/Table";
-import { isFilterOperator } from "../functions/isFilterOperator";
-import { isRootFilterOperator } from "../functions/isRootFilterOperator";
-import type { DatabaseData } from "../types/interfaces/DatabaseData";
-import type { FilterOperators } from "../types/interfaces/FilterOperators";
-import type { RootFilterOperators } from "../types/interfaces/RootFilterOperators";
-import type { SelectOptions } from "../types/interfaces/SelectOptions";
-import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable";
-import type { ColumnsOfTable } from "../types/types/ColumnsOfTable";
-import type { Filter } from "../types/types/Filter";
-import type { OrderBy } from "../types/types/OrderBy";
-import type { TableLocations } from "../types/types/TableLocations";
+import { Table } from "../classes/Table.js";
+import { isFilterOperator } from "../functions/isFilterOperator.js";
+import { isRootFilterOperator } from "../functions/isRootFilterOperator.js";
+import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
+import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
+import type { RootFilterOperators } from "../types/interfaces/RootFilterOperators.js";
+import type { SelectOptions } from "../types/interfaces/SelectOptions.js";
+import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable.js";
+import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
+import type { Filter } from "../types/types/Filter.js";
+import type { OrderBy } from "../types/types/OrderBy.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
 
 export class QueryBuilder<
-	DbData extends DatabaseData,
+	InnerDatabaseData extends DatabaseData,
 	Ready extends boolean,
 	ClientType extends "client" | "pool",
-	TableLocation extends TableLocations<DbData>
+	TableLocation extends TableLocations<InnerDatabaseData>
 > {
-	constructor(private table: Table<DbData, Ready, ClientType, TableLocation>) {}
+	constructor(private table: Table<InnerDatabaseData, Ready, ClientType, TableLocation>) {}
 
 	public getSelectQuery<
-		ColumNames extends ColumnNamesOfTable<DbData, TableLocation>,
-		Columns extends ColumnsOfTable<DbData, TableLocation>,
+		ColumNames extends ColumnNamesOfTable<InnerDatabaseData, TableLocation>,
+		Columns extends ColumnsOfTable<InnerDatabaseData, TableLocation>,
 		IncludePrimaryKey extends boolean = false
 	>(columns: ColumNames | "*", options?: SelectOptions<Columns>, includePrimaryKey?: IncludePrimaryKey): string {
 		const { table_name: tableName, schema_name: schemaName, primary_key: primaryKey } = this.table,
@@ -41,25 +41,23 @@ export class QueryBuilder<
 	}
 
 	private whereToSQL<Table>(where?: Filter<Table>, nested = false): string {
-		if (typeof where === "undefined" || !Object.keys(where).length) return "";
+		if (where === undefined || Object.keys(where).length === 0) return "";
 
 		const keys = Object.entries(where).filter(([key]) => isRootFilterOperator<Table>(key));
-		if (keys.length) {
+		if (keys.length > 0) {
 			const [[operator, filter]] = keys as [keyof RootFilterOperators<Table>, Filter<Table>[]][],
 				queries = filter.map(v => this.whereToSQL(v, true)).filter(Boolean);
-			if (nested) return `(${queries.join(` ${this.encodeOperator(operator)} `)})`;
-			else return `WHERE ${queries.join(` ${this.encodeOperator(operator)} `)}`;
+			return nested ? `(${queries.join(` ${this.encodeOperator(operator)} `)})` : `WHERE ${queries.join(` ${this.encodeOperator(operator)} `)}`;
 		}
 
-		const res: string[] = [];
+		const result: string[] = [];
 		for (const [key, value] of Object.entries(where)) {
-			if (key.includes(".")) res.push(this.encodeJsonQuery(key, value));
-			else if (typeof value !== "object" || value === null) res.push(`${key} = ${this.encodeValue(value)}`);
-			else res.push(this.encodeOperation(key, value));
+			if (key.includes(".")) result.push(this.encodeJsonQuery(key, value));
+			else if (typeof value !== "object" || value === null) result.push(`${key} = ${this.encodeValue(value)}`);
+			else result.push(this.encodeOperation(key, value));
 		}
 
-		if (res.length === 1) return `${!nested ? "WHERE " : ""}${res[0]}`;
-		else return `${!nested ? "WHERE " : ""}(${res.join(" AND ")})`;
+		return result.length === 1 ? `${nested ? "" : "WHERE "}${result[0]}` : `${nested ? "" : "WHERE "}(${result.join(" AND ")})`;
 	}
 
 	private escape(value: string) {
@@ -70,25 +68,22 @@ export class QueryBuilder<
 		return value.replaceAll(rxSingleQuote[0], rxSingleQuote[1]).replaceAll(rxDoubleQuote[0], rxDoubleQuote[1]).replaceAll(rxBackslash[0], rxBackslash[1]);
 	}
 
-	private encodeValue<TSchema>(value: any, operator?: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): any {
+	private encodeValue<TSchema>(value: any, operator?: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): string {
 		switch (typeof value) {
-			case "boolean": {
+			case "boolean":
 				switch (operator) {
 					case "$IS_NULL":
 						return "";
 					case "$IS_NOT_NULL":
 						return "";
 					default:
-						return value;
+						return value.toString();
 				}
-			}
-			case "string": {
+			case "string":
 				return `'${this.escape(value)}'`;
-			}
 			case "number":
-			case "bigint": {
-				return value;
-			}
+			case "bigint":
+				return value.toString();
 			case "object": {
 				const isArray = Array.isArray(value),
 					isBuffer = Buffer.isBuffer(value);
@@ -101,34 +96,30 @@ export class QueryBuilder<
 							return `${this.encodeValue(min)} AND ${this.encodeValue(max)}`;
 						}
 						case "$IN":
-						case "$NOT_IN": {
+						case "$NOT_IN":
 							return `(${value.map(v => this.encodeValue(v)).join(", ")})`;
-						}
-						default: {
+						default:
 							return `'${JSON.stringify(value)}'`;
-						}
 					}
 				} else if (isBuffer) return `'${value.toString()}'`;
 
 				return `'${JSON.stringify(value)}'`;
 			}
-			default: {
+			default:
 				break;
-			}
 		}
-		return null;
+		return "NULL";
 	}
 
 	private encodeOperation(key: string, operation: FilterOperators<any>): string {
-		const res: string[] = [];
+		const result: string[] = [];
 		for (const [operator, value] of Object.entries(operation)) {
 			if (isFilterOperator(operator) || isRootFilterOperator(operator))
-				res.push(`${key} ${this.encodeOperator(operator)} ${this.encodeValue(value, operator)}`);
+				result.push(`${key} ${this.encodeOperator(operator)} ${this.encodeValue(value, operator)}`);
 			else return `${key} = ${this.encodeValue(operation)}`;
 		}
 
-		if (res.length === 1) return res[0];
-		else return `(${res.join(" AND ")})`;
+		return result.length === 1 ? result[0] : `(${result.join(" AND ")})`;
 	}
 
 	private encodeOperator<TSchema>(operator: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): string {
@@ -175,31 +166,25 @@ export class QueryBuilder<
 	private encodeJsonQuery(key: string, value: any) {
 		const [field, ...path] = key.split("."),
 			lastPath = path.pop();
-		let pathStr = path.map(p => `'${p}'`).join("->");
-		if (pathStr) pathStr = `->${pathStr}`;
-		return this.encodeJsonQueryCast(`${field}${pathStr}->>'${lastPath}'`, value);
+		let pathString = path.map(p => `'${p}'`).join("->");
+		if (pathString) pathString = `->${pathString}`;
+		return this.encodeJsonQueryCast(`${field}${pathString}->>'${lastPath}'`, value);
 	}
 
 	private encodeJsonQueryCast(key: string, value: any) {
 		switch (typeof value) {
-			case "boolean": {
+			case "boolean":
 				return `CAST(${key} as boolean) = ${value}`;
-			}
-			case "string": {
+			case "string":
 				return `${key} = '${this.escape(value)}'`;
-			}
-			case "number": {
+			case "number":
 				return `CAST(${key} as integer) = ${value}`;
-			}
-			case "bigint": {
+			case "bigint":
 				return `CAST(${key} as bigint) = ${value}`;
-			}
-			case "object": {
+			case "object":
 				return `CAST(${key} as jsonb) = '${JSON.stringify(value)}'`;
-			}
-			default: {
+			default:
 				return `${key} = ${this.encodeValue(value)}`;
-			}
 		}
 	}
 

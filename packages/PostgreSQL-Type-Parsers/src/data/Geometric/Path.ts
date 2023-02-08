@@ -1,20 +1,20 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
-import { Point, PointObject } from "./Point";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
+import { Point, PointObject } from "./Point.js";
 
 enum Connection {
 	open = "open",
@@ -66,9 +66,9 @@ interface PathConstructor {
 	safeFrom(path: Path): SafeFrom<Path>;
 	safeFrom(object: PathObject | RawPathObject): SafeFrom<Path>;
 	/**
-	 * Returns `true` if `obj` is a `Path`, `false` otherwise.
+	 * Returns `true` if `object` is a `Path`, `false` otherwise.
 	 */
-	isPath(obj: any): obj is Path;
+	isPath(object: any): object is Path;
 }
 
 class PathConstructorClass extends PGTPConstructorBase<Path> implements PathConstructor {
@@ -76,15 +76,15 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Path> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Path> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.string, ParsedType.object, ParsedType.array],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.object && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.object && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -102,7 +102,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -112,20 +112,20 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "array":
-				return this._parseArray(ctx, arg as unknown[]);
+				return this._parseArray(context, argument as unknown[]);
 			default:
-				return this._parseObject(ctx, arg as object, otherArgs);
+				return this._parseObject(context, argument as object, otherArguments);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Path> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Path> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^\(\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\)$/)) {
-			const points = arg
+		if (/^\(\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\)$/.test(argument)) {
+			const points = argument
 					.slice(1, -1)
 					.split("),(")
 					.join("), (")
@@ -135,7 +135,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 
 			/* c8 ignore start */
 			if (invalidPoint?.success === false) {
-				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				this.setIssueForContext(context, invalidPoint.error.issue);
 				return INVALID;
 			}
 			/* c8 ignore stop */
@@ -147,8 +147,8 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 					Connection.closed
 				)
 			);
-		} else if (arg.match(/^\[\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\]$/)) {
-			const points = arg
+		} else if (/^\[\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*]$/.test(argument)) {
+			const points = argument
 					.slice(1, -1)
 					.split("),(")
 					.join("), (")
@@ -158,7 +158,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 
 			/* c8 ignore start */
 			if (invalidPoint?.success === false) {
-				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				this.setIssueForContext(context, invalidPoint.error.issue);
 				return INVALID;
 			}
 			/* c8 ignore stop */
@@ -172,17 +172,17 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 			);
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE ((x,y),...) || [(x,y),...]",
 		});
 		return INVALID;
 	}
 
-	private _parseArray(ctx: ParseContext, arg: unknown[]): ParseReturnType<Path> {
-		if (arg.length < 1) {
-			this.setIssueForContext(ctx, {
+	private _parseArray(context: ParseContext, argument: unknown[]): ParseReturnType<Path> {
+		if (argument.length === 0) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -191,11 +191,11 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 			return INVALID;
 		}
 
-		const points = arg.map(point => Point.safeFrom(point as string)),
+		const points = argument.map(point => Point.safeFrom(point as string)),
 			invalidPoint = points.find(point => !point.success);
 
 		if (invalidPoint?.success === false) {
-			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			this.setIssueForContext(context, invalidPoint.error.issue);
 			return INVALID;
 		}
 
@@ -208,11 +208,11 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 		);
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object, otherArgs: unknown[]): ParseReturnType<Path> {
+	private _parseObject(context: ParseContext, argument: object, otherArguments: unknown[]): ParseReturnType<Path> {
 		// Input should be [Path]
-		if (Path.isPath(arg)) {
-			if (otherArgs.length > 0) {
-				this.setIssueForContext(ctx, {
+		if (Path.isPath(argument)) {
+			if (otherArguments.length > 0) {
+				this.setIssueForContext(context, {
 					code: "too_big",
 					type: "arguments",
 					maximum: 1,
@@ -220,31 +220,31 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 				});
 				return INVALID;
 			}
-			return OK(new PathClass(arg.points, arg.connection));
+			return OK(new PathClass(argument.points, argument.connection));
 		}
 
 		// Input should be [Point, ...]
-		if (Point.isPoint(arg)) {
-			const points = otherArgs.map(point => Point.safeFrom(point as string)),
+		if (Point.isPoint(argument)) {
+			const points = otherArguments.map(point => Point.safeFrom(point as string)),
 				invalidPoint = points.find(point => !point.success);
 
 			if (invalidPoint?.success === false) {
-				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				this.setIssueForContext(context, invalidPoint.error.issue);
 				return INVALID;
 			}
 
 			return OK(
 				new PathClass(
 					//@ts-expect-error - They are all valid at this point
-					[arg, ...points.map(range => range.data)],
+					[argument, ...points.map(range => range.data)],
 					Connection.closed
 				)
 			);
 		}
 
 		// Input should be [PathObject | RawPathObject]
-		if (otherArgs.length > 0) {
-			this.setIssueForContext(ctx, {
+		if (otherArguments.length > 0) {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "arguments",
 				maximum: 1,
@@ -253,26 +253,26 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 			return INVALID;
 		}
 
-		const parsedObject = hasKeys<PathObject | RawPathObject>(arg, [
+		const parsedObject = hasKeys<PathObject | RawPathObject>(argument, [
 			["points", "array"],
 			["connection", "string"],
 		]);
 		if (!parsedObject.success) {
 			switch (true) {
 				case parsedObject.otherKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "unrecognized_keys",
 						keys: parsedObject.otherKeys,
 					});
 					break;
 				case parsedObject.missingKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "missing_keys",
 						keys: parsedObject.missingKeys,
 					});
 					break;
 				case parsedObject.invalidKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "invalid_key_type",
 						...parsedObject.invalidKeys[0],
 					});
@@ -286,12 +286,12 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 			invalidPoint = parsedPoints.find(point => !point.success);
 
 		if (invalidPoint?.success === false) {
-			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			this.setIssueForContext(context, invalidPoint.error.issue);
 			return INVALID;
 		}
 
-		if (parsedPoints.length < 1) {
-			this.setIssueForContext(ctx, {
+		if (parsedPoints.length === 0) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -301,7 +301,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 		}
 
 		if (!connections.includes(connection)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_string",
 				expected: connections,
 				received: connection,
@@ -318,8 +318,8 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 		);
 	}
 
-	isPath(obj: any): obj is Path {
-		return obj instanceof PathClass;
+	isPath(object: any): object is Path {
+		return object instanceof PathClass;
 	}
 }
 
@@ -330,22 +330,21 @@ class PathClass extends PGTPBase<Path> implements Path {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Path }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Path }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Path.safeFrom(...ctx.data);
+		const parsed = Path.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 
 	toString(): string {
-		if (this._connection === Connection.closed) return `(${this._points.map(p => p.toString()).join(",")})`;
-		else return `[${this._points.map(p => p.toString()).join(",")}]`;
+		return this._connection === Connection.closed ? `(${this._points.map(p => p.toString()).join(",")})` : `[${this._points.map(p => p.toString()).join(",")}]`;
 	}
 
 	toJSON(): RawPathObject {
@@ -369,7 +368,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 			});
 		}
 
-		if (points.length < 1) {
+		if (points.length === 0) {
 			throwPGTPError({
 				code: "too_small",
 				type: "array",

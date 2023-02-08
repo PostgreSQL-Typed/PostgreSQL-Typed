@@ -1,4 +1,4 @@
-import { mapSetAndReturn } from "../functions/mapSetAndReturn";
+import { mapSetAndReturn } from "../functions/mapSetAndReturn.js";
 
 export function mapGetOrSet<TKey, TValue>(
 	map: {
@@ -9,6 +9,6 @@ export function mapGetOrSet<TKey, TValue>(
 	value: () => TValue
 ) {
 	const cached = map.get(key);
-	if (typeof cached !== "undefined") return cached;
+	if (cached !== undefined) return cached;
 	return mapSetAndReturn(map, key, value());
 }

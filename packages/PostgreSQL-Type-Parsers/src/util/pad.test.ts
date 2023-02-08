@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { pad } from "./pad";
+import { pad } from "./pad.js";
 
 describe("pad", () => {
 	it("should pad a number", () => {

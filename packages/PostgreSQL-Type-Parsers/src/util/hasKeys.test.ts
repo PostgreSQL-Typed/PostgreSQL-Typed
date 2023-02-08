@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { ParsedType } from "./getParsedType";
-import { hasKeys } from "./hasKeys";
+import { ParsedType } from "./getParsedType.js";
+import { hasKeys } from "./hasKeys.js";
 
 describe("hasKeys", () => {
 	it("should return true for an object with keys", () => {
@@ -28,8 +28,8 @@ describe("hasKeys", () => {
 			missingKeys: [],
 			invalidKeys: [],
 		});
-		if (!test1.success) expectTypeOf(test1.otherKeys).toEqualTypeOf<string[]>();
-		else expect.fail();
+		if (test1.success) expect.fail();
+		else expectTypeOf(test1.otherKeys).toEqualTypeOf<string[]>();
 	});
 
 	it("should return false for an object with missing keys", () => {
@@ -49,8 +49,8 @@ describe("hasKeys", () => {
 				},
 			],
 		});
-		if (!test1.success) expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
-		else expect.fail();
+		if (test1.success) expect.fail();
+		else expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
 	});
 
 	it("should return false if types of the keys are incorrect", () => {
@@ -70,7 +70,8 @@ describe("hasKeys", () => {
 				},
 			],
 		});
-		if (!test1.success) {
+		if (test1.success) expect.fail();
+		else {
 			expectTypeOf(test1.invalidKeys).toEqualTypeOf<
 				{
 					objectKey: string;
@@ -78,7 +79,7 @@ describe("hasKeys", () => {
 					received: ParsedType;
 				}[]
 			>();
-		} else expect.fail();
+		}
 
 		const test2 = hasKeys<{ a: 1; b: 2 | string }>({ a: 1, b: 2 }, [
 			["a", ParsedType.number],
@@ -138,7 +139,8 @@ describe("hasKeys", () => {
 				},
 			],
 		});
-		if (!test1.success) {
+		if (test1.success) expect.fail();
+		else {
 			expectTypeOf(test1.otherKeys).toEqualTypeOf<string[]>();
 			expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
 			expectTypeOf(test1.invalidKeys).toEqualTypeOf<
@@ -148,6 +150,6 @@ describe("hasKeys", () => {
 					received: ParsedType;
 				}[]
 			>();
-		} else expect.fail();
+		}
 	});
 });

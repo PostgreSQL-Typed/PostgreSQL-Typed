@@ -1,7 +1,7 @@
 import type { Client } from "pg";
 
-import type { ClassKind } from "../../../types/enums/ClassKind";
-import type { Class } from "../../../types/interfaces/Class";
+import type { ClassKind } from "../../../types/enums/ClassKind.js";
+import type { Class } from "../../../types/interfaces/Class.js";
 
 export async function getClasses(
 	client: Client,
@@ -26,7 +26,7 @@ export async function getClasses(
     FROM pg_catalog.pg_class cls
     INNER JOIN pg_catalog.pg_namespace ns
       ON (cls.relnamespace = ns.oid)
-    ${conditions.length ? `WHERE ${conditions.join(" AND ")}` : ""}
+    ${conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""}
     ORDER BY ns.nspname ASC, cls.relname ASC;
   `);
 

@@ -1,16 +1,17 @@
 /* eslint-disable no-console */
-import { cosmiconfig } from "cosmiconfig";
-import TypeScriptLoader from "cosmiconfig-typescript-loader";
-import { writeFileSync } from "fs";
-import { join } from "path";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 
-import type { Config } from "../types/interfaces/Config";
-import { DEFAULT_CONFIG, zConfig } from "../types/interfaces/Config";
-import type { Connection } from "../types/interfaces/Connection";
-import { g, r, y } from "../util/chalk";
-import { LOGGER, MODULE_NAME } from "../util/constants";
-import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader";
-import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile";
+import { cosmiconfig } from "cosmiconfig";
+import { TypeScriptLoader } from "cosmiconfig-typescript-loader";
+
+import type { Config } from "../types/interfaces/Config.js";
+import { DEFAULT_CONFIG, zConfig } from "../types/interfaces/Config.js";
+import type { Connection } from "../types/interfaces/Connection.js";
+import { g, r, y } from "../util/chalk.js";
+import { LOGGER, MODULE_NAME } from "../util/constants.js";
+import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
+import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile.js";
 
 export class ConfigHandler {
 	filepath: string | null = null;
@@ -86,8 +87,8 @@ export class ConfigHandler {
 	}
 
 	get connections(): (string | Connection)[] {
-		const envVar = process.env[this.config.connectionStringEnvironmentVariable];
-		if (envVar) return [envVar];
+		const environmentVariable = process.env[this.config.connectionStringEnvironmentVariable];
+		if (environmentVariable) return [environmentVariable];
 		if (Array.isArray(this.config.connections)) return this.config.connections;
 		return [this.config.connections];
 	}

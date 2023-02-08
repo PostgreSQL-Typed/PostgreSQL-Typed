@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { greaterThan } from "./greaterThan";
+import { greaterThan } from "./greaterThan.js";
 
 describe("greaterThan", () => {
 	it("should return true if value1 is greater than value2", () => {

@@ -1,9 +1,10 @@
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import type { SafeEquals } from "../types/SafeEquals";
-import { getErrorMap } from "./errorMap";
-import { IssueWithoutMessage, PGTPError } from "./PGTPError";
-import { isValid } from "./validation";
+/* eslint-disable unicorn/filename-case */
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import type { SafeEquals } from "../types/SafeEquals.js";
+import { getErrorMap } from "./errorMap.js";
+import { IssueWithoutMessage, PGTPError } from "./PGTPError.js";
+import { isValid } from "./validation.js";
 
 export abstract class PGTPBase<DataType> {
 	constructor() {
@@ -11,7 +12,7 @@ export abstract class PGTPBase<DataType> {
 		this.safeEquals = this.safeEquals.bind(this);
 	}
 
-	abstract _equals(ctx: ParseContext): ParseReturnType<{
+	abstract _equals(context: ParseContext): ParseReturnType<{
 		readonly equals: boolean;
 		readonly data: DataType;
 	}>;
@@ -23,18 +24,18 @@ export abstract class PGTPBase<DataType> {
 	}
 
 	safeEquals(...data: unknown[]): SafeEquals<DataType> {
-		const ctx: ParseContext = {
+		const context: ParseContext = {
 				issue: null,
 				errorMap: getErrorMap(),
 				data,
 			},
-			result = this._equals(ctx);
+			result = this._equals(context);
 
-		return this._handleResult(ctx, result);
+		return this._handleResult(context, result);
 	}
 
 	private _handleResult(
-		ctx: ParseContext,
+		context: ParseContext,
 		result: ParseReturnType<{
 			readonly equals: boolean;
 			readonly data: DataType;
@@ -47,15 +48,15 @@ export abstract class PGTPBase<DataType> {
 				data: result.value.data,
 			};
 		}
-		if (!ctx.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTPError(ctx.issue);
+		if (!context.issue) throw new Error("Validation failed but no issue detected.");
+		const error = new PGTPError(context.issue);
 		return { success: false, error };
 	}
 
-	setIssueForContext(ctx: ParseContext, issueData: IssueWithoutMessage): void {
-		ctx.issue = {
+	setIssueForContext(context: ParseContext, issueData: IssueWithoutMessage): void {
+		context.issue = {
 			...issueData,
-			message: ctx.errorMap(issueData).message,
+			message: context.errorMap(issueData).message,
 		};
 	}
 }

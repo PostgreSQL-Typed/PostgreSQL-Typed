@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { UUID } from "./UUID";
+import { UUID } from "./UUID.js";
 
 describe("UUIDConstructor", () => {
 	test("_parse(...)", () => {
@@ -29,19 +30,21 @@ describe("UUIDConstructor", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = UUID.safeFrom(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
 				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooManyArguments = UUID.safeFrom(1, 2);
 		expect(tooManyArguments.success).toEqual(false);
-		if (!tooManyArguments.success) {
+		if (tooManyArguments.success) expect.fail();
+		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "arguments",
@@ -49,12 +52,13 @@ describe("UUIDConstructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooFewArguments = UUID.safeFrom();
 		expect(tooFewArguments.success).toEqual(false);
-		if (!tooFewArguments.success) {
+		if (tooFewArguments.success) expect.fail();
+		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "arguments",
@@ -62,38 +66,41 @@ describe("UUIDConstructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		const unrecognizedKeys = UUID.safeFrom({
 			uuid: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
-		if (!unrecognizedKeys.success) {
+		if (unrecognizedKeys.success) expect.fail();
+		else {
 			expect(unrecognizedKeys.error.issue).toStrictEqual({
 				code: "unrecognized_keys",
 				keys: ["unrecognized"],
 				message: "Unrecognized key in object: 'unrecognized'",
 			});
-		} else expect.fail();
+		}
 
 		const missingKeys = UUID.safeFrom({
 			// uuid: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
-		if (!missingKeys.success) {
+		if (missingKeys.success) expect.fail();
+		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
 				keys: ["uuid"],
 				message: "Missing key in object: 'uuid'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidKeys = UUID.safeFrom({
 			uuid: 0,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
-		if (!invalidKeys.success) {
+		if (invalidKeys.success) expect.fail();
+		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
 				objectKey: "uuid",
@@ -101,7 +108,7 @@ describe("UUIDConstructor", () => {
 				received: "number",
 				message: "Expected 'string' for key 'uuid', received 'number'",
 			});
-		} else expect.fail();
+		}
 		//#endregion
 	});
 
@@ -221,8 +228,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._uuid).toHaveLength(2);
 			expect(result.rows[0]._uuid[0].toString()).toStrictEqual(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").toString());
 			expect(result.rows[0]._uuid[1].toString()).toStrictEqual(UUID.from("A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11").toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

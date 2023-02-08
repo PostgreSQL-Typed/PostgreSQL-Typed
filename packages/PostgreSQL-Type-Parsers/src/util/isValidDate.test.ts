@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isValidDate } from "./isValidDate";
+import { isValidDate } from "./isValidDate.js";
 
 describe("isValidDate", () => {
 	it("should return true if the Date is valid", () => {

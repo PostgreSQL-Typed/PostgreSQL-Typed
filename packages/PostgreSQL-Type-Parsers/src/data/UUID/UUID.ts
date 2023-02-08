@@ -1,20 +1,21 @@
+/* eslint-disable unicorn/filename-case */
 import { randomUUID, RandomUUIDOptions } from "node:crypto";
 
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface UUIDObject {
 	uuid: string;
@@ -43,9 +44,9 @@ interface UUIDConstructor {
 	 */
 	generate(options?: RandomUUIDOptions): UUID;
 	/**
-	 * Returns `true` if `obj` is a `UUID`, `false` otherwise.
+	 * Returns `true` if `object` is a `UUID`, `false` otherwise.
 	 */
-	isUUID(obj: any): obj is UUID;
+	isUUID(object: any): object is UUID;
 }
 
 class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDConstructor {
@@ -53,11 +54,11 @@ class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDCons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<UUID> {
-		if (ctx.data.length !== 1) {
+	_parse(context: ParseContext): ParseReturnType<UUID> {
+		if (context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -74,12 +75,12 @@ class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDCons
 			return INVALID;
 		}
 
-		const [arg] = ctx.data,
+		const [argument] = context.data,
 			allowedTypes = [ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -89,45 +90,45 @@ class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDCons
 
 		switch (parsedType) {
 			case ParsedType.string:
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<UUID> {
-		if (arg.match(/^([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i)) return OK(new UUIDClass(arg));
-		if (arg.match(/^{([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})}$/i)) return OK(new UUIDClass(arg.slice(1, -1)));
-		if (arg.match(/^([a-f0-9]{32})$/i)) return OK(new UUIDClass(arg.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, "$1-$2-$3-$4-$5")));
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<UUID> {
+		if (/^([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})$/i.test(argument)) return OK(new UUIDClass(argument));
+		if (/^{([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})}$/i.test(argument)) return OK(new UUIDClass(argument.slice(1, -1)));
+		if (/^([\da-f]{32})$/i.test(argument)) return OK(new UUIDClass(argument.replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, "$1-$2-$3-$4-$5")));
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
 		});
 		return INVALID;
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<UUID> {
-		if (this.isUUID(arg)) return OK(new UUIDClass(arg.uuid));
-		const parsedObject = hasKeys<UUIDObject>(arg, [["uuid", "string"]]);
-		if (parsedObject.success) return this._parseString(ctx, parsedObject.obj.uuid);
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<UUID> {
+		if (this.isUUID(argument)) return OK(new UUIDClass(argument.uuid));
+		const parsedObject = hasKeys<UUIDObject>(argument, [["uuid", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.uuid);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -140,8 +141,8 @@ class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDCons
 		return new UUIDClass(randomUUID(options));
 	}
 
-	isUUID(obj: any): obj is UUID {
-		return obj instanceof UUIDClass;
+	isUUID(object: any): object is UUID {
+		return object instanceof UUIDClass;
 	}
 }
 
@@ -153,16 +154,16 @@ class UUIDClass extends PGTPBase<UUID> implements UUID {
 		this._uuid = _uuid.toLowerCase();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: UUID }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: UUID }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = UUID.safeFrom(...ctx.data);
+		const parsed = UUID.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

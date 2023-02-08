@@ -1,20 +1,20 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
-import { Point, PointObject } from "./Point";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
+import { Point, PointObject } from "./Point.js";
 
 interface PolygonObject {
 	points: Point[];
@@ -54,9 +54,9 @@ interface PolygonConstructor {
 	safeFrom(polygon: Polygon): SafeFrom<Polygon>;
 	safeFrom(object: PolygonObject | RawPolygonObject): SafeFrom<Polygon>;
 	/**
-	 * Returns `true` if `obj` is a `Polygon`, `false` otherwise.
+	 * Returns `true` if `object` is a `Polygon`, `false` otherwise.
 	 */
-	isPolygon(obj: any): obj is Polygon;
+	isPolygon(object: any): object is Polygon;
 }
 
 class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements PolygonConstructor {
@@ -64,15 +64,15 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Polygon> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Polygon> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.string, ParsedType.object, ParsedType.array],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.object && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.object && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -90,7 +90,7 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -100,21 +100,21 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "array":
-				return this._parseArray(ctx, arg as unknown[]);
+				return this._parseArray(context, argument as unknown[]);
 			default:
-				return this._parseObject(ctx, arg as object, otherArgs);
+				return this._parseObject(context, argument as object, otherArguments);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Polygon> {
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Polygon> {
 		// Remove all whitespace
-		arg = arg.replaceAll(/\s/g, "");
+		argument = argument.replaceAll(/\s/g, "");
 
-		if (arg.match(/^\(?\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\)?$/)) {
-			if (arg.startsWith("((") && arg.endsWith("))")) arg = arg.slice(1, -1);
-			const points = arg
+		if (/^\(?\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\)(,\((?:-?\d+(\.\d+)?|NaN),(?:-?\d+(\.\d+)?|NaN)\))*\)?$/.test(argument)) {
+			if (argument.startsWith("((") && argument.endsWith("))")) argument = argument.slice(1, -1);
+			const points = argument
 					.split("),(")
 					.join("), (")
 					.split(", ")
@@ -123,7 +123,7 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 
 			/* c8 ignore start */
 			if (invalidPoint?.success === false) {
-				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				this.setIssueForContext(context, invalidPoint.error.issue);
 				return INVALID;
 			}
 			/* c8 ignore stop */
@@ -136,17 +136,17 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 			);
 		}
 
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE ((x,y),...)",
 		});
 		return INVALID;
 	}
 
-	private _parseArray(ctx: ParseContext, arg: unknown[]): ParseReturnType<Polygon> {
-		if (arg.length < 1) {
-			this.setIssueForContext(ctx, {
+	private _parseArray(context: ParseContext, argument: unknown[]): ParseReturnType<Polygon> {
+		if (argument.length === 0) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -155,11 +155,11 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 			return INVALID;
 		}
 
-		const points = arg.map(point => Point.safeFrom(point as string)),
+		const points = argument.map(point => Point.safeFrom(point as string)),
 			invalidPoint = points.find(point => !point.success);
 
 		if (invalidPoint?.success === false) {
-			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			this.setIssueForContext(context, invalidPoint.error.issue);
 			return INVALID;
 		}
 
@@ -171,11 +171,11 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 		);
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object, otherArgs: unknown[]): ParseReturnType<Polygon> {
+	private _parseObject(context: ParseContext, argument: object, otherArguments: unknown[]): ParseReturnType<Polygon> {
 		// Input should be [Polygon]
-		if (Polygon.isPolygon(arg)) {
-			if (otherArgs.length > 0) {
-				this.setIssueForContext(ctx, {
+		if (Polygon.isPolygon(argument)) {
+			if (otherArguments.length > 0) {
+				this.setIssueForContext(context, {
 					code: "too_big",
 					type: "arguments",
 					maximum: 1,
@@ -183,30 +183,30 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 				});
 				return INVALID;
 			}
-			return OK(new PolygonClass(arg.points));
+			return OK(new PolygonClass(argument.points));
 		}
 
 		// Input should be [Point, ...]
-		if (Point.isPoint(arg)) {
-			const points = otherArgs.map(point => Point.safeFrom(point as string)),
+		if (Point.isPoint(argument)) {
+			const points = otherArguments.map(point => Point.safeFrom(point as string)),
 				invalidPoint = points.find(point => !point.success);
 
 			if (invalidPoint?.success === false) {
-				this.setIssueForContext(ctx, invalidPoint.error.issue);
+				this.setIssueForContext(context, invalidPoint.error.issue);
 				return INVALID;
 			}
 
 			return OK(
 				new PolygonClass(
 					//@ts-expect-error - They are all valid at this point
-					[arg, ...points.map(range => range.data)]
+					[argument, ...points.map(range => range.data)]
 				)
 			);
 		}
 
 		// Input should be [PolygonObject | RawPolygonObject]
-		if (otherArgs.length > 0) {
-			this.setIssueForContext(ctx, {
+		if (otherArguments.length > 0) {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "arguments",
 				maximum: 1,
@@ -215,23 +215,23 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 			return INVALID;
 		}
 
-		const parsedObject = hasKeys<PolygonObject | RawPolygonObject>(arg, [["points", "array"]]);
+		const parsedObject = hasKeys<PolygonObject | RawPolygonObject>(argument, [["points", "array"]]);
 		if (!parsedObject.success) {
 			switch (true) {
 				case parsedObject.otherKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "unrecognized_keys",
 						keys: parsedObject.otherKeys,
 					});
 					break;
 				case parsedObject.missingKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "missing_keys",
 						keys: parsedObject.missingKeys,
 					});
 					break;
 				case parsedObject.invalidKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "invalid_key_type",
 						...parsedObject.invalidKeys[0],
 					});
@@ -245,12 +245,12 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 			invalidPoint = parsedPoints.find(point => !point.success);
 
 		if (invalidPoint?.success === false) {
-			this.setIssueForContext(ctx, invalidPoint.error.issue);
+			this.setIssueForContext(context, invalidPoint.error.issue);
 			return INVALID;
 		}
 
-		if (parsedPoints.length < 1) {
-			this.setIssueForContext(ctx, {
+		if (parsedPoints.length === 0) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -267,8 +267,8 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 		);
 	}
 
-	isPolygon(obj: any): obj is Polygon {
-		return obj instanceof PolygonClass;
+	isPolygon(object: any): object is Polygon {
+		return object instanceof PolygonClass;
 	}
 }
 
@@ -279,16 +279,16 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Polygon }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Polygon }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Polygon.safeFrom(...ctx.data);
+		const parsed = Polygon.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 
@@ -316,7 +316,7 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 			});
 		}
 
-		if (points.length < 1) {
+		if (points.length === 0) {
 			throwPGTPError({
 				code: "too_small",
 				type: "array",

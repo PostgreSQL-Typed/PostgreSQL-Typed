@@ -1,4 +1,4 @@
-import type { OffsetDirection, OffsetDirectionType } from "./OffsetDirection";
+import type { OffsetDirection, OffsetDirectionType } from "./OffsetDirection.js";
 
 export interface Offset {
 	hour: number;

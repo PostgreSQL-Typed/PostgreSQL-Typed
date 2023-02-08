@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { Date } from "./Date";
-import { DateRange } from "./DateRange";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { Date } from "./Date.js";
+import { DateRange } from "./DateRange.js";
 
 describe("DateRangeConstructor", () => {
 	test("_parse(...)", () => {
@@ -67,7 +67,7 @@ describe("DateRangeConstructor", () => {
 			DateRange.from({} as any);
 		}).toThrowError("Missing keys in object: 'lower', 'upper', 'value'");
 
-		const dateRangeFromArgsArray = DateRange.from(
+		const dateRangeFromArgumentsArray = DateRange.from(
 			Date.from({
 				year: 2022,
 				month: 9,
@@ -79,7 +79,7 @@ describe("DateRangeConstructor", () => {
 				day: 3,
 			})
 		);
-		expect(dateRangeFromArgsArray).not.toBeNull();
+		expect(dateRangeFromArgumentsArray).not.toBeNull();
 
 		expect(() => {
 			DateRange.from(
@@ -370,8 +370,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._daterange).toHaveLength(2);
 			expect(result.rows[0]._daterange[0].toString()).toStrictEqual(DateRange.from("[2022-09-02,2022-10-03)").toString());
 			expect(result.rows[0]._daterange[1].toString()).toStrictEqual(DateRange.from("[2022-11-03,2022-12-04)").toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

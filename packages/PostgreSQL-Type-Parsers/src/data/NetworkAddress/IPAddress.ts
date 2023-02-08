@@ -1,10 +1,11 @@
+/* eslint-disable unicorn/filename-case */
 import { Address4, Address6 } from "ip-address";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { IPVersion, IPVersionType } from "../../types/IPType";
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
+import { IPVersion, IPVersionType } from "../../types/IpType.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 
 interface IPAddressObject {
 	IPAddress: string;
@@ -35,24 +36,24 @@ interface IPAddress {
 
 interface IPAddressConstructor {
 	from(data: IPAddress | IPAddressObject): IPAddress;
-	from(str: string): IPAddress;
+	from(string: string): IPAddress;
 	/**
-	 * Returns `true` if `obj` is a `IPAddress`, `false` otherwise.
+	 * Returns `true` if `object` is a `IPAddress`, `false` otherwise.
 	 */
-	isIPAddresss(obj: any): obj is IPAddress;
+	isIPAddresss(object: any): object is IPAddress;
 }
 
 const IPAddress: IPAddressConstructor = {
-	from(arg: string | IPAddress | IPAddressObject): IPAddress {
-		if (typeof arg === "string") {
+	from(argument: string | IPAddress | IPAddressObject): IPAddress {
+		if (typeof argument === "string") {
 			return new IPAddressClass({
-				IPAddress: arg,
+				IPAddress: argument,
 			});
-		} else if (IPAddress.isIPAddresss(arg)) return new IPAddressClass(arg.toJSON());
-		else return new IPAddressClass(arg);
+		} else if (IPAddress.isIPAddresss(argument)) return new IPAddressClass(argument.toJSON());
+		else return new IPAddressClass(argument);
 	},
-	isIPAddresss(obj: any): obj is IPAddress {
-		return obj instanceof IPAddressClass;
+	isIPAddresss(object: any): object is IPAddress {
+		return object instanceof IPAddressClass;
 	},
 };
 
@@ -82,8 +83,9 @@ class IPAddressClass implements IPAddress {
 	}
 
 	equals(otherIPAddress: string | IPAddress | IPAddressObject): boolean {
-		if (typeof otherIPAddress === "string") return otherIPAddress.toLowerCase() === this._IPAddress.address.toLowerCase();
-		else return otherIPAddress.IPAddress.toLowerCase() === this._IPAddress.address.toLowerCase();
+		return typeof otherIPAddress === "string"
+			? otherIPAddress.toLowerCase() === this._IPAddress.address.toLowerCase()
+			: otherIPAddress.IPAddress.toLowerCase() === this._IPAddress.address.toLowerCase();
 	}
 
 	get IPAddress(): string {

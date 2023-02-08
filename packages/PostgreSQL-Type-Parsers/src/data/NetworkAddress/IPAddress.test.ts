@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { IPAddress } from "./IPAddress";
+import { IPAddress } from "./IPAddress.js";
 
 describe.todo("IPAddress Class", () => {
 	it("should create a IP address from a string", () => {
@@ -202,17 +203,11 @@ describe.todo("IPAddress Class", () => {
 			`);
 
 			expect(result.rows[0].inet?.IPAddress).toStrictEqual(IPAddress.from("192.168.0.0/24").IPAddress);
-			expect(result.rows[0]._inet.map((i: IPAddress) => i.IPAddress)).toStrictEqual([
-				IPAddress.from("192.168.0.0/24").IPAddress,
-				IPAddress.from("2001:4f8:3:ba::/64").IPAddress,
-			]);
+			expect(result.rows[0]._inet).toStrictEqual([IPAddress.from("192.168.0.0/24").IPAddress, IPAddress.from("2001:4f8:3:ba::/64").IPAddress]);
 			expect(result.rows[0].cidr?.IPAddress).toStrictEqual(IPAddress.from("192.168.0.0/24").IPAddress);
-			expect(result.rows[0]._cidr.map((c: IPAddress) => c.IPAddress)).toStrictEqual([
-				IPAddress.from("192.168.0.0/24").IPAddress,
-				IPAddress.from("2001:4f8:3:ba::/64").IPAddress,
-			]);
-		} catch (err) {
-			error = err;
+			expect(result.rows[0]._cidr).toStrictEqual([IPAddress.from("192.168.0.0/24").IPAddress, IPAddress.from("2001:4f8:3:ba::/64").IPAddress]);
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

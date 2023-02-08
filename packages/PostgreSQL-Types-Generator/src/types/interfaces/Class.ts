@@ -1,4 +1,4 @@
-import type { ClassKind } from "../../types/enums/ClassKind";
+import type { ClassKind } from "../../types/enums/ClassKind.js";
 
 export interface Class {
 	database_name: string;

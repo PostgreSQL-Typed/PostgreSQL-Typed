@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { Timestamp } from "./Timestamp";
-import { TimestampRange } from "./TimestampRange";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { Timestamp } from "./Timestamp.js";
+import { TimestampRange } from "./TimestampRange.js";
 
 describe.todo("TimestampRange Class", () => {
 	it("should create a timestamp range from a string", () => {
@@ -415,8 +415,8 @@ describe.todo("TimestampRange Class", () => {
 				TimestampRange.from("[2004-10-19T10:23:54.678Z,2004-11-19T10:23:54.678Z)"),
 				TimestampRange.from("[2015-09-08T09:08:07.678Z,2016-05-29T09:12:32.762Z)"),
 			]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

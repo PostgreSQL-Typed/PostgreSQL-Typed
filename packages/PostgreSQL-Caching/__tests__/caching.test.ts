@@ -39,21 +39,21 @@ class TestClass extends PostgreSQLCaching<TestData> {}
 
 describe.todo("Caching", () => {
 	it("should cache select query, and after clearing request again", async () => {
-		const dbQuerySpy = vitest.spyOn(sql, "query"),
+		const databaseQuerySpy = vitest.spyOn(sql, "query"),
 			result1 = await cacheClass.select("*");
 
 		expect(result1.rowCount).toEqual(0);
 		expect(result1.rows).toEqual([]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(1);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(1);
 
 		await insertData(cacheClass);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(2);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(2);
 
 		const result2 = await cacheClass.select("*");
 
 		expect(result2.rowCount).toEqual(0);
 		expect(result2.rows).toEqual([]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(2);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(2);
 
 		await cacheClass.clear();
 
@@ -61,21 +61,21 @@ describe.todo("Caching", () => {
 
 		expect(result3.rowCount).toEqual(1);
 		expect(result3.rows).toEqual([insertedData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(3);
-		dbQuerySpy.mockRestore();
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(3);
+		databaseQuerySpy.mockRestore();
 	});
 
 	it("should remove all cached objects with given primary key", async () => {
-		const dbQuerySpy = vitest.spyOn(sql, "query");
+		const databaseQuerySpy = vitest.spyOn(sql, "query");
 		await insertData(cacheClass);
 		await insertExtraData(cacheClass);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(2);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(2);
 
 		const result1 = await cacheClass.select("*");
 
 		expect(result1.rowCount).toEqual(2);
 		expect(result1.rows).toEqual([insertedData, extraData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(3);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(3);
 
 		const result2 = await cacheClass.select("*", {
 			$WHERE: {
@@ -85,7 +85,7 @@ describe.todo("Caching", () => {
 
 		expect(result2.rowCount).toEqual(1);
 		expect(result2.rows).toEqual([extraData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(4);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(4);
 
 		await cacheClass.clearValuesWithPk(insertedData.id);
 
@@ -97,14 +97,14 @@ describe.todo("Caching", () => {
 
 		expect(result3.rowCount).toEqual(1);
 		expect(result3.rows).toEqual([extraData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(4);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(4);
 
 		const result4 = await cacheClass.select("*");
 
 		expect(result4.rowCount).toEqual(2);
 		expect(result4.rows).toEqual([insertedData, extraData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(5);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(5);
 
-		dbQuerySpy.mockRestore();
+		databaseQuerySpy.mockRestore();
 	});
 });

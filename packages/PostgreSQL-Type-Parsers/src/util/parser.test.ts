@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { parser } from "./parser";
+import { parser } from "./parser.js";
 
 const testObject = {
 	from: (value: string) => {
-		const parsed = parseInt(value);
-		if (isNaN(parsed)) throw new Error("Not a number");
+		const parsed = Number.parseInt(value);
+		if (Number.isNaN(parsed)) throw new Error("Not a number");
 		return parsed;
 	},
 };

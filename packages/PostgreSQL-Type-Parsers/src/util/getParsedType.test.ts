@@ -1,8 +1,8 @@
-import BigNumber from "bignumber.js";
+import { BigNumber } from "bignumber.js";
 import { DateTime } from "luxon";
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { getParsedType, ParsedType } from "./getParsedType";
+import { getParsedType, ParsedType } from "./getParsedType.js";
 
 describe("getParsedType", () => {
 	it("should return string", () => {
@@ -30,15 +30,15 @@ describe("getParsedType", () => {
 	});
 
 	it("should return function", () => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		function fn() {}
+		// eslint-disable-next-line @typescript-eslint/no-empty-function, unicorn/consistent-function-scoping
+		function function_() {}
 		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		expect(getParsedType(() => {})).toBe("function");
-		expect(getParsedType(fn)).toBe("function");
+		expect(getParsedType(function_)).toBe("function");
 	});
 
 	it("should return undefined", () => {
-		// eslint-disable-next-line no-undefined
+		// eslint-disable-next-line unicorn/no-useless-undefined
 		expect(getParsedType(undefined)).toBe("undefined");
 	});
 
@@ -75,12 +75,12 @@ describe("getParsedType", () => {
 	});
 
 	it("should return nan", () => {
-		expect(getParsedType(NaN)).toBe("nan");
+		expect(getParsedType(Number.NaN)).toBe("nan");
 	});
 
 	it("should return infinity", () => {
-		expect(getParsedType(Infinity)).toBe("infinity");
-		expect(getParsedType(-Infinity)).toBe("infinity");
+		expect(getParsedType(Number.POSITIVE_INFINITY)).toBe("infinity");
+		expect(getParsedType(Number.NEGATIVE_INFINITY)).toBe("infinity");
 	});
 });
 

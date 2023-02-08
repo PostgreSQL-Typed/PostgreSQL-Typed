@@ -5,20 +5,20 @@ import { dirname, join } from "node:path";
 import { sync as mkdirp } from "mkdirp";
 import { DataType as DataTypeID } from "postgresql-data-types";
 
-import { PrinterContext } from "../classes/PrinterContext";
-import { ClassKind } from "../types/enums/ClassKind";
-import type { ClassDetails } from "../types/interfaces/ClassDetails";
-import type { Config } from "../types/interfaces/Config";
-import type { FetchedData } from "../types/interfaces/FetchedData";
-import type { FileContext } from "../types/interfaces/FileContext";
-import type { DataType } from "../types/types/DataType";
-import { GENERATED_STATEMENT, LOGGER } from "../util/constants";
-import { DefaultTypeScriptMapping } from "../util/DefaultTypeScriptMapping";
-import { DefaultZodMapping } from "../util/DefaultZodMapping";
-import { getTypeScriptType } from "../util/functions/getters/getTypeScriptType";
-import { getZodType } from "../util/functions/getters/getZodType";
-import { printDatabaseDetails } from "../util/functions/printers/printDatabaseDetails";
-import { printDatabaseZod } from "../util/functions/printers/printDatabaseZod";
+import { PrinterContext } from "../classes/PrinterContext.js";
+import { ClassKind } from "../types/enums/ClassKind.js";
+import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
+import type { Config } from "../types/interfaces/Config.js";
+import type { FetchedData } from "../types/interfaces/FetchedData.js";
+import type { FileContext } from "../types/interfaces/FileContext.js";
+import type { DataType } from "../types/types/DataType.js";
+import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
+import { DefaultTypeScriptMapping } from "../util/DefaultTypeScriptMapping.js";
+import { DefaultZodMapping } from "../util/DefaultZodMapping.js";
+import { getTypeScriptType } from "../util/functions/getters/getTypeScriptType.js";
+import { getZodType } from "../util/functions/getters/getZodType.js";
+import { printDatabaseDetails } from "../util/functions/printers/printDatabaseDetails.js";
+import { printDatabaseZod } from "../util/functions/printers/printDatabaseZod.js";
 
 export class Printer {
 	public readonly classes: Map<number, ClassDetails>;
@@ -46,13 +46,13 @@ export class Printer {
 
 	public getTypeScriptType(id: number, file: FileContext): string {
 		const override = this.config.types.typeOverrides[id];
-		if (typeof override !== "undefined") return override;
+		if (override !== undefined) return override;
 
 		if (id in DataTypeID) {
-			const str = DataTypeID[id],
-				override = this.config.types.typeOverrides[str];
+			const string = DataTypeID[id],
+				override = this.config.types.typeOverrides[string];
 
-			if (typeof override !== "undefined") return override;
+			if (override !== undefined) return override;
 		}
 
 		const builtin = DefaultTypeScriptMapping.get(id);
@@ -77,13 +77,13 @@ export class Printer {
 		file.addStringImport('import { z } from "zod";');
 
 		const override = this.config.types.typeOverrides[id];
-		if (typeof override !== "undefined") return override;
+		if (override !== undefined) return override;
 
 		if (id in DataTypeID) {
-			const str = DataTypeID[id],
-				override = this.config.types.zod.zodOverrides[str];
+			const string = DataTypeID[id],
+				override = this.config.types.zod.zodOverrides[string];
 
-			if (typeof override !== "undefined") return override;
+			if (override !== undefined) return override;
 		}
 
 		const builtin = DefaultZodMapping.get(id);
@@ -100,16 +100,16 @@ export class Printer {
 
 	public async print() {
 		const allClasses = [...this.classes.values()].filter(cls => cls.kind === ClassKind.OrdinaryTable),
-			dbClassLists: ClassDetails[][] = [];
+			databaseClassLists: ClassDetails[][] = [];
 
 		for (const cls of allClasses) {
-			const classList = dbClassLists.find(c => c[0].database_name === cls.database_name);
+			const classList = databaseClassLists.find(c => c[0].database_name === cls.database_name);
 			if (classList) classList.push(cls);
-			else dbClassLists.push([cls]);
+			else databaseClassLists.push([cls]);
 		}
 
-		for (const classList of dbClassLists) printDatabaseDetails(classList, this);
-		if (this.config.types.zod.enabled) for (const classList of dbClassLists) printDatabaseZod(classList, this);
+		for (const classList of databaseClassLists) printDatabaseDetails(classList, this);
+		if (this.config.types.zod.enabled) for (const classList of databaseClassLists) printDatabaseZod(classList, this);
 
 		return await this.writeFiles();
 	}
@@ -123,16 +123,16 @@ export class Printer {
 		mkdirp(directory);
 
 		//* Delete files that would no longer be output
+		const directoryFiles = await promises.readdir(directory);
 		await Promise.all(
-			(
-				await promises.readdir(directory)
-			)
+			directoryFiles
 				.filter(fileName => !filenames.has(fileName))
 				.map(async fileName => {
-					const filePath = join(directory, fileName);
-					if ((await promises.stat(filePath)).isFile()) {
-						const src = await promises.readFile(filePath, "utf8");
-						if (src.includes(GENERATED_STATEMENT)) {
+					const filePath = join(directory, fileName),
+						file = await promises.stat(filePath);
+					if (file.isFile()) {
+						const source = await promises.readFile(filePath, "utf8");
+						if (source.includes(GENERATED_STATEMENT)) {
 							this.LOGGER(`Deleting: ${fileName}`);
 							await promises.unlink(filePath);
 						}
@@ -151,8 +151,8 @@ export class Printer {
 						const existingSource = await promises.readFile(filename, "utf8");
 						if (existingSource.includes(checksum)) return;
 						this.LOGGER(`Updating: ${f.filename}`);
-					} catch (ex: any) {
-						if (ex.code !== "ENOENT") throw ex;
+					} catch (error: any) {
+						if (error.code !== "ENOENT") throw error;
 						this.LOGGER(`Writing: ${f.filename}`);
 					}
 
@@ -182,8 +182,8 @@ export class Printer {
 						const existingSource = await promises.readFile(filename, "utf8");
 						if (existingSource === f.content) return;
 						this.LOGGER(`Updating: ${f.filename}`);
-					} catch (ex: any) {
-						if (ex.code !== "ENOENT") throw ex;
+					} catch (error: any) {
+						if (error.code !== "ENOENT") throw error;
 						this.LOGGER(`Writing: ${f.filename}`);
 					}
 

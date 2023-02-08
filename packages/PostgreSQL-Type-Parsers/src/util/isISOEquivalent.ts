@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
 
 export function isISOEquivalent(value1: string, value2: string): boolean {

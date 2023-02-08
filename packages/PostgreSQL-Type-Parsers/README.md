@@ -1,4 +1,4 @@
-# PostgreSQL-Type-Parsers [![Version](https://img.shields.io/npm/v/postgresql-type-parsers.svg)](https://www.npmjs.com/package/postgresql-type-parsers) [![CI](https://github.com/PostgreSQL-Typed/PostgreSQL-Type-Parsers/actions/workflows/CI.yml/badge.svg)](https://github.com/PostgreSQL-Typed/PostgreSQL-Type-Parsers/actions/workflows/CI.yml)
+# PostgreSQL-Type-Parsers [![Version](https://img.shields.io/npm/v/postgresql-type-parsers.svg)](https://www.npmjs.com/package/postgresql-type-parsers) [![CI](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/actions/workflows/CI.yml/badge.svg)](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/actions/workflows/CI.yml)
 
 Easy to use types for PostgreSQL data types
 

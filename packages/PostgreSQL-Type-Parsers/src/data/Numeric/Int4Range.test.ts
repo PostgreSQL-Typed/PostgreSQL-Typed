@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { Int4 } from "./Int4";
-import { Int4Range } from "./Int4Range";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { Int4 } from "./Int4.js";
+import { Int4Range } from "./Int4Range.js";
 
 describe("Int4RangeConstructor", () => {
 	test("_parse(...)", () => {
@@ -56,8 +56,8 @@ describe("Int4RangeConstructor", () => {
 			Int4Range.from({} as any);
 		}).toThrowError("Missing keys in object: 'lower', 'upper', 'value'");
 
-		const int4RangeFromArgsArray = Int4Range.from(Int4.from({ int4: 1 }), Int4.from({ int4: 3 }));
-		expect(int4RangeFromArgsArray).not.toBeNull();
+		const int4RangeFromArgumentsArray = Int4Range.from(Int4.from({ int4: 1 }), Int4.from({ int4: 3 }));
+		expect(int4RangeFromArgumentsArray).not.toBeNull();
 
 		expect(() => {
 			Int4Range.from(Int4.from({ int4: 1 }), "int4" as any);
@@ -278,8 +278,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._int4range).toHaveLength(2);
 			expect(result.rows[0]._int4range[0].toString()).toStrictEqual(Int4Range.from("[1,3)").toString());
 			expect(result.rows[0]._int4range[1].toString()).toStrictEqual(Int4Range.from("[6,8)").toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

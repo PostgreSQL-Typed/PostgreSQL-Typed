@@ -2,9 +2,9 @@ import { DateTime } from "luxon";
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { Date } from "./Date";
-import { Time } from "./Time";
-import { Timestamp } from "./Timestamp";
+import { Date } from "./Date.js";
+import { Time } from "./Time.js";
+import { Timestamp } from "./Timestamp.js";
 
 describe.todo("Timestamp Class", () => {
 	it("should create a timestamp from a string", () => {
@@ -58,7 +58,7 @@ describe.todo("Timestamp Class", () => {
 		).toThrowError("Invalid Timestamp object");
 		expect(() =>
 			Timestamp.from({
-				year: 10000,
+				year: 10_000,
 				month: 10,
 				day: 19,
 				hour: 4,
@@ -77,7 +77,7 @@ describe.todo("Timestamp Class", () => {
 
 	it("should error when creating a timestamp from invalid numbers", () => {
 		expect(() => Timestamp.from(2004, 10, 19, 4, 5, "invalid" as any)).toThrowError("Invalid Timestamp array, numbers only");
-		expect(() => Timestamp.from(10000, 10, 19, 4, 5, 6)).toThrowError("Invalid Timestamp arguments");
+		expect(() => Timestamp.from(10_000, 10, 19, 4, 5, 6)).toThrowError("Invalid Timestamp arguments");
 	});
 
 	it("should create a timestamp from a DateTime", () => {
@@ -286,7 +286,7 @@ describe.todo("Timestamp Class", () => {
 		timestamp.year = 2005;
 		expect(timestamp.year).toBe(2005);
 		expect(() => {
-			timestamp.year = 10000;
+			timestamp.year = 10_000;
 		}).toThrowError("Invalid year");
 		expect(() => {
 			timestamp.year = 0;
@@ -600,8 +600,8 @@ describe.todo("Timestamp Class", () => {
 					second: 5,
 				}),
 			]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

@@ -1,9 +1,10 @@
+/* eslint-disable unicorn/filename-case */
 import { parseInteger } from "jsprim";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 
 interface MACAddress8Object {
 	MACAddress8: string;
@@ -21,21 +22,21 @@ interface MACAddress8 {
 interface MACAddress8Constructor {
 	from(integer: bigint): MACAddress8;
 	from(data: MACAddress8 | MACAddress8Object): MACAddress8;
-	from(str: string): MACAddress8;
+	from(string: string): MACAddress8;
 	/**
-	 * Returns `true` if `obj` is a `MACAddress8`, `false` otherwise.
+	 * Returns `true` if `object` is a `MACAddress8`, `false` otherwise.
 	 */
-	isMACAddress8(obj: any): obj is MACAddress8;
+	isMACAddress8(object: any): object is MACAddress8;
 }
 
 const MACAddress8: MACAddress8Constructor = {
-	from(arg: string | bigint | MACAddress8 | MACAddress8Object): MACAddress8 {
-		if (typeof arg === "string" || typeof arg === "bigint") return new MACAddress8Class(arg);
-		else if (MACAddress8.isMACAddress8(arg)) return new MACAddress8Class(arg.toJSON().MACAddress8);
-		else return new MACAddress8Class(arg.MACAddress8);
+	from(argument: string | bigint | MACAddress8 | MACAddress8Object): MACAddress8 {
+		if (typeof argument === "string" || typeof argument === "bigint") return new MACAddress8Class(argument);
+		else if (MACAddress8.isMACAddress8(argument)) return new MACAddress8Class(argument.toJSON().MACAddress8);
+		else return new MACAddress8Class(argument.MACAddress8);
 	},
-	isMACAddress8(obj: any): obj is MACAddress8 {
-		return obj instanceof MACAddress8Class;
+	isMACAddress8(object: any): object is MACAddress8 {
+		return object instanceof MACAddress8Class;
 	},
 };
 
@@ -60,6 +61,9 @@ class MACAddress8Class implements MACAddress8 {
 
 		return input;
 	}
+	private _isDigit(c: string) {
+		return /^[\da-f]$/.test(c);
+	}
 
 	private _parseString(input: string): bigint {
 		input = input.toLowerCase();
@@ -70,14 +74,10 @@ class MACAddress8Class implements MACAddress8 {
 			seperator: string | null = null,
 			chr: string | undefined;
 
-		function isDigit(c: string) {
-			return /^[a-f0-9]$/.test(c);
-		}
-
-		function isSep(sep?: string) {
-			if (seperator !== null) return sep === seperator;
-			if (sep !== ":" && sep !== "-" && sep !== ".") return false;
-			seperator = sep;
+		function isSeparator(separator?: string) {
+			if (seperator !== null) return separator === seperator;
+			if (separator !== ":" && separator !== "-" && separator !== ".") return false;
+			seperator = separator;
 			return true;
 		}
 
@@ -85,11 +85,11 @@ class MACAddress8Class implements MACAddress8 {
 			if (octet.length === 0) throw new Error(`Invalid MACAddress8, expected to find a hexadecimal number before ${JSON.stringify(seperator)}`);
 			else if (octet.length > 2) throw new Error(`Invalid MACAddress8, too many hexadecimal digits in ${JSON.stringify(octet)}`);
 			else if (position < 8) {
-				const tmp = parseInteger(octet, { base: 16 });
-				if (tmp instanceof Error) throw new Error(`Invalid MACAddress8, "${octet}" is not a valid hexadecimal number`);
+				const temporary = parseInteger(octet, { base: 16 });
+				if (temporary instanceof Error) throw new Error(`Invalid MACAddress8, "${octet}" is not a valid hexadecimal number`);
 
-				value *= BigInt(0x100);
-				value += BigInt(tmp);
+				value *= BigInt(0x1_00);
+				value += BigInt(temporary);
 				position += 1;
 				octet = "";
 			} else throw new Error("Invalid MACAddress8, too many octets");
@@ -97,12 +97,12 @@ class MACAddress8Class implements MACAddress8 {
 
 		for (const element of input) {
 			chr = element;
-			if (isSep(chr)) process();
-			else if (isDigit(chr)) octet += chr;
+			if (isSeparator(chr)) process();
+			else if (this._isDigit(chr)) octet += chr;
 			else throw new Error(`Invalid MACAddress8, unrecognized character ${JSON.stringify(chr)}`);
 		}
 
-		if (isSep(chr)) throw new Error(`Invalid MACAddress8, trailing ${JSON.stringify(seperator)}`);
+		if (isSeparator(chr)) throw new Error(`Invalid MACAddress8, trailing ${JSON.stringify(seperator)}`);
 
 		if (position === 0) {
 			if (octet.length < 16) throw new Error("Invalid MACAddress8, too few octets");
@@ -121,9 +121,9 @@ class MACAddress8Class implements MACAddress8 {
 		let result = "";
 		const fields = [
 			(this._MACAddress8 / BigInt("0x100000000000000")) & BigInt(0xff),
-			(this._MACAddress8 / BigInt(0x1000000000000)) & BigInt(0xff),
-			(this._MACAddress8 / BigInt(0x010000000000)) & BigInt(0xff),
-			(this._MACAddress8 / BigInt(0x000100000000)) & BigInt(0xff),
+			(this._MACAddress8 / BigInt(0x1_00_00_00_00_00_00)) & BigInt(0xff),
+			(this._MACAddress8 / BigInt(0x01_00_00_00_00_00)) & BigInt(0xff),
+			(this._MACAddress8 / BigInt(0x00_01_00_00_00_00)) & BigInt(0xff),
 
 			(this._MACAddress8 >> BigInt(24)) & BigInt(0xff),
 			(this._MACAddress8 >> BigInt(16)) & BigInt(0xff),
@@ -131,8 +131,8 @@ class MACAddress8Class implements MACAddress8 {
 			this._MACAddress8 & BigInt(0xff),
 		];
 
-		for (const [i, field] of fields.entries()) {
-			if (i !== 0) result += ":";
+		for (const [index, field] of fields.entries()) {
+			if (index !== 0) result += ":";
 
 			const octet = field.toString(16);
 			if (octet.length === 1) result += "0";

@@ -1,17 +1,22 @@
 import type { QueryResult } from "pg";
 
-import type { Database } from "../classes/Database";
-import { QueryBuilder } from "../classes/QueryBuilder";
-import type { DatabaseData } from "../types/interfaces/DatabaseData";
-import type { SelectOptions } from "../types/interfaces/SelectOptions";
-import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable";
-import type { ColumnsOfTable } from "../types/types/ColumnsOfTable";
-import type { Include } from "../types/types/Include";
-import type { PrimaryKeyOfTable } from "../types/types/PrimaryKeyOfTable";
-import type { TableLocations } from "../types/types/TableLocations";
+import type { Database } from "../classes/Database.js";
+import { QueryBuilder } from "../classes/QueryBuilder.js";
+import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
+import type { SelectOptions } from "../types/interfaces/SelectOptions.js";
+import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable.js";
+import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
+import type { Include } from "../types/types/Include.js";
+import type { PrimaryKeyOfTable } from "../types/types/PrimaryKeyOfTable.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
 
-export class Table<DbData extends DatabaseData, Ready extends boolean, ClientType extends "client" | "pool", TableLocation extends TableLocations<DbData>> {
-	constructor(public readonly database: Database<DbData, Ready, ClientType>, public readonly tableLocation: TableLocation) {}
+export class Table<
+	InnerDatabaseData extends DatabaseData,
+	Ready extends boolean,
+	ClientType extends "client" | "pool",
+	TableLocation extends TableLocations<InnerDatabaseData>
+> {
+	constructor(public readonly database: Database<InnerDatabaseData, Ready, ClientType>, public readonly tableLocation: TableLocation) {}
 
 	get table_name(): TableLocation extends `${string}.${infer Table}` ? Table : never {
 		return (this.tableLocation as string).split(".")[1] as any;
@@ -22,15 +27,15 @@ export class Table<DbData extends DatabaseData, Ready extends boolean, ClientTyp
 	}
 
 	get primary_key(): TableLocation extends `${infer SchemaName}.${infer TableName}`
-		? DbData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
+		? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
 		: undefined {
 		return this.database.database_data.schemas.find(s => s.name === this.schema_name)?.tables.find(t => t.name === (this.table_name as string))
 			?.primary_key as any;
 	}
 
 	async select<
-		ColumNames extends ColumnNamesOfTable<DbData, TableLocation>,
-		Columns extends ColumnsOfTable<DbData, TableLocation>,
+		ColumNames extends ColumnNamesOfTable<InnerDatabaseData, TableLocation>,
+		Columns extends ColumnsOfTable<InnerDatabaseData, TableLocation>,
 		IncludePrimaryKey extends boolean = false
 	>(
 		columns: ColumNames | "*",
@@ -44,7 +49,7 @@ export class Table<DbData extends DatabaseData, Ready extends boolean, ClientTyp
 			: QueryResult<{
 					[Column in Include<
 						keyof Columns,
-						IncludePrimaryKey extends true ? (ColumNames | [PrimaryKeyOfTable<DbData, TableLocation>])[number] : ColumNames[number]
+						IncludePrimaryKey extends true ? (ColumNames | [PrimaryKeyOfTable<InnerDatabaseData, TableLocation>])[number] : ColumNames[number]
 					>]: Columns[Column];
 			  }>
 	> {

@@ -1,9 +1,10 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { TimestampTZ } from "./TimestampTZ";
-import { TimestampTZRange } from "./TimestampTZRange";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { TimestampTZ } from "./TimestampTZ.js";
+import { TimestampTZRange } from "./TimestampTZRange.js";
 
 describe.todo("TimestampTZRange Class", () => {
 	it("should create a timestamptz range from a string", () => {
@@ -494,8 +495,8 @@ describe.todo("TimestampTZRange Class", () => {
 				TimestampTZRange.from("[2004-10-19 03:05:06.789 +00:00,2004-11-19 03:05:06.789 +00:00)"),
 				TimestampTZRange.from("[2015-09-08 08:08:07.678 +00:00,2016-05-29 08:12:32.762 +00:00)"),
 			]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

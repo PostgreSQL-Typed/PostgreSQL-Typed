@@ -1,6 +1,6 @@
 import type { Client } from "pg";
 
-import type { Constraint } from "../../../types/interfaces/Constraint";
+import type { Constraint } from "../../../types/interfaces/Constraint.js";
 
 export async function getConstraints(client: Client, schemaNames: string[]) {
 	const conditions = [`ns.nspname IN (${schemaNames.map(s => `'${s}'`).join(", ")})`],
@@ -21,7 +21,7 @@ export async function getConstraints(client: Client, schemaNames: string[]) {
       ON (c.conindid = cls.oid)
     INNER JOIN pg_catalog.pg_namespace ns
       ON (c.connamespace = ns.oid)
-    ${conditions.length ? `WHERE ${conditions.join(" AND ")}` : ""}
+    ${conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""}
     ORDER BY ns.nspname ASC, c.conname ASC
   `);
 

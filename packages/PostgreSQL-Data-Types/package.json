@@ -1,12 +1,20 @@
 {
 	"name": "postgresql-data-types",
 	"version": "1.0.0",
-	"description": "A list of PostgreSQL data types",
-	"main": "lib/DataTypes.js",
-	"types": "lib/DataTypes.d.ts",
+	"description": "A collection of the PostgreSQL data types",
+	"type": "module",
+	"exports": "./lib/DataTypes.js",
+	"types": "./lib/DataTypes.d.ts",
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Bas950",
+		"email": "me@bas950.com",
+		"url": "https://bas950.com"
+	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git"
+		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
+		"directory": "packages/data-types"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
@@ -14,12 +22,6 @@
 	"files": [
 		"lib"
 	],
-	"scripts": {
-		"dev": "tsc -w",
-		"build": "tsc",
-		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
-		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
-	},
 	"keywords": [
 		"postgresql",
 		"pg",
@@ -27,6 +29,10 @@
 		"types",
 		"typescript"
 	],
-	"author": "Bas950",
-	"license": "MPL-2.0"
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc",
+		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
+		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+	}
 }

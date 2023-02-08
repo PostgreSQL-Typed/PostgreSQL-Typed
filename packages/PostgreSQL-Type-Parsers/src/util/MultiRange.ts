@@ -1,16 +1,16 @@
-import type { ObjectFunction } from "../types/ObjectFunction";
-import type { ParseContext } from "../types/ParseContext";
-import type { ParseReturnType } from "../types/ParseReturnType";
-import type { SafeEquals } from "../types/SafeEquals";
-import type { SafeFrom } from "../types/SafeFrom";
-import { getParsedType, ParsedType } from "./getParsedType";
-import { hasKeys } from "./hasKeys";
-import { isOneOf } from "./isOneOf";
-import { PGTPBase } from "./PGTPBase";
-import { PGTPConstructorBase } from "./PGTPConstructorBase";
-import { Range, RawRangeObject } from "./Range";
-import { throwPGTPError } from "./throwPGTPError";
-import { INVALID, OK } from "./validation";
+import type { ObjectFunction } from "../types/ObjectFunction.js";
+import type { ParseContext } from "../types/ParseContext.js";
+import type { ParseReturnType } from "../types/ParseReturnType.js";
+import type { SafeEquals } from "../types/SafeEquals.js";
+import type { SafeFrom } from "../types/SafeFrom.js";
+import { getParsedType, ParsedType } from "./getParsedType.js";
+import { hasKeys } from "./hasKeys.js";
+import { isOneOf } from "./isOneOf.js";
+import { PGTPBase } from "./PGTPBase.js";
+import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { Range, RawRangeObject } from "./Range.js";
+import { throwPGTPError } from "./throwPGTPError.js";
+import { INVALID, OK } from "./validation.js";
 
 interface MultiRangeObject<DataType, DataTypeObject> {
 	ranges: Range<DataType, DataTypeObject>[];
@@ -50,9 +50,9 @@ interface MultiRangeConstructor<DataType, DataTypeObject> {
 	safeFrom(multiRange: MultiRange<DataType, DataTypeObject>): SafeFrom<MultiRange<DataType, DataTypeObject>>;
 	safeFrom(data: MultiRangeObject<DataType, DataTypeObject> | RawMultiRangeObject<DataTypeObject>): SafeFrom<MultiRange<DataType, DataTypeObject>>;
 	/**
-	 * Returns `true` if `obj` is a `MultiRange` of the same type as `this`, `false` otherwise.
+	 * Returns `true` if `object` is a `MultiRange` of the same type as `this`, `false` otherwise.
 	 */
-	isMultiRange(obj: any): obj is MultiRange<DataType, DataTypeObject>;
+	isMultiRange(object: any): object is MultiRange<DataType, DataTypeObject>;
 }
 
 const getMultiRange = <
@@ -64,7 +64,7 @@ const getMultiRange = <
 	DataTypeObject
 >(
 	object: any,
-	isObjectFunc: (obj: any) => obj is Range<DataType, DataTypeObject>,
+	isObjectFunction: (object: any) => object is Range<DataType, DataTypeObject>,
 	identifier: string
 ) => {
 	const Object = object as ObjectFunction<Range<DataType, DataTypeObject>, Range<DataType, DataTypeObject> | RawRangeObject<DataTypeObject> | string>;
@@ -79,15 +79,15 @@ const getMultiRange = <
 			super();
 		}
 
-		_parse(ctx: ParseContext): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
-			const [arg, ...otherArgs] = ctx.data,
+		_parse(context: ParseContext): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
+			const [argument, ...otherArguments] = context.data,
 				allowedTypes = [ParsedType.string, ParsedType.object, ParsedType.array],
-				parsedType = getParsedType(arg);
+				parsedType = getParsedType(argument);
 
-			if (parsedType !== ParsedType.object && ctx.data.length !== 1) {
+			if (parsedType !== ParsedType.object && context.data.length !== 1) {
 				this.setIssueForContext(
-					ctx,
-					ctx.data.length > 1
+					context,
+					context.data.length > 1
 						? {
 								code: "too_big",
 								type: "arguments",
@@ -105,7 +105,7 @@ const getMultiRange = <
 			}
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -115,19 +115,19 @@ const getMultiRange = <
 
 			switch (parsedType) {
 				case "string":
-					return this._parseString(ctx, arg as string);
+					return this._parseString(context, argument as string);
 				case "array":
-					return this._parseArray(ctx, arg as unknown[]);
+					return this._parseArray(context, argument as unknown[]);
 				default:
-					return this._parseObject(ctx, arg as object, otherArgs);
+					return this._parseObject(context, argument as object, otherArguments);
 			}
 		}
 
-		private _parseString(ctx: ParseContext, arg: string): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
+		private _parseString(context: ParseContext, argument: string): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
 			// If the 0 index is set then that automatically means -1 is set
-			const [begin, end] = [arg.at(0), arg.at(-1)] as [undefined, undefined] | [string, string];
+			const [begin, end] = [argument.at(0), argument.at(-1)] as [undefined, undefined] | [string, string];
 			if (!begin || begin !== "{") {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
 					expected: "{",
 					received: begin || "",
@@ -136,7 +136,7 @@ const getMultiRange = <
 			}
 
 			if (end !== "}") {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
 					expected: "}",
 					received: end,
@@ -144,17 +144,14 @@ const getMultiRange = <
 				return INVALID;
 			}
 
-			const halfRanges = arg
-				.slice(1, -1)
-				.split(",")
-				.filter(str => str);
+			const halfRanges = argument.slice(1, -1).split(",").filter(Boolean);
 
 			// If halfRanges is an odd number then it's invalid
 			if (halfRanges.length % 2 !== 0) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_string",
 					expected: "LIKE {[<DataType>,<DataType>),...}",
-					received: arg,
+					received: argument,
 				});
 				return INVALID;
 			}
@@ -167,13 +164,13 @@ const getMultiRange = <
 			 * We need to combine the even and odd indexes to get the full ranges
 			 * ["[1,3)", "[11,13)", "[21,23)"]
 			 */
-			const halfRangesEven = halfRanges.filter((_, i) => i % 2 === 0),
-				halfRangesOdd = halfRanges.filter((_, i) => i % 2 === 1),
-				ranges = halfRangesEven.map((range, i) => `${range},${halfRangesOdd[i]}`).map(range => Object.safeFrom(range)),
+			const halfRangesEven = halfRanges.filter((_, index) => index % 2 === 0),
+				halfRangesOdd = halfRanges.filter((_, index) => index % 2 === 1),
+				ranges = halfRangesEven.map((range, index) => `${range},${halfRangesOdd[index]}`).map(range => Object.safeFrom(range)),
 				invalidRange = ranges.find(range => !range.success);
 
 			if (invalidRange?.success === false) {
-				this.setIssueForContext(ctx, invalidRange.error.issue);
+				this.setIssueForContext(context, invalidRange.error.issue);
 				return INVALID;
 			}
 
@@ -181,12 +178,12 @@ const getMultiRange = <
 			return OK(new MultiRangeClass(ranges.map(range => range.data)));
 		}
 
-		private _parseArray(ctx: ParseContext, arg: unknown[]): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
-			const ranges = arg.map(range => Object.safeFrom(range as string)),
+		private _parseArray(context: ParseContext, argument: unknown[]): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
+			const ranges = argument.map(range => Object.safeFrom(range as string)),
 				invalidRange = ranges.find(range => !range.success);
 
 			if (invalidRange?.success === false) {
-				this.setIssueForContext(ctx, invalidRange.error.issue);
+				this.setIssueForContext(context, invalidRange.error.issue);
 				return INVALID;
 			}
 
@@ -194,11 +191,11 @@ const getMultiRange = <
 			return OK(new MultiRangeClass(ranges.map(range => range.data)));
 		}
 
-		private _parseObject(ctx: ParseContext, arg: object, otherArgs: unknown[]): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
+		private _parseObject(context: ParseContext, argument: object, otherArguments: unknown[]): ParseReturnType<MultiRange<DataType, DataTypeObject>> {
 			//Input should be [MultiRange<DataType, DataTypeObject>]
-			if (MultiRange.isMultiRange(arg)) {
-				if (otherArgs.length > 0) {
-					this.setIssueForContext(ctx, {
+			if (MultiRange.isMultiRange(argument)) {
+				if (otherArguments.length > 0) {
+					this.setIssueForContext(context, {
 						code: "too_big",
 						type: "arguments",
 						maximum: 1,
@@ -207,18 +204,18 @@ const getMultiRange = <
 					return INVALID;
 				}
 
-				return OK(new MultiRangeClass(arg.ranges));
+				return OK(new MultiRangeClass(argument.ranges));
 			}
 
 			//Input should be [Range<DataType, DataTypeObject>, Range<DataType, DataTypeObject>, ...]
-			if (isObjectFunc(arg)) {
-				if (otherArgs.length === 0) return OK(new MultiRangeClass([arg]));
+			if (isObjectFunction(argument)) {
+				if (otherArguments.length === 0) return OK(new MultiRangeClass([argument]));
 
-				const ranges = [arg, ...otherArgs].map(range => Object.safeFrom(range as string)),
+				const ranges = [argument, ...otherArguments].map(range => Object.safeFrom(range as string)),
 					invalidRange = ranges.find(range => !range.success);
 
 				if (invalidRange?.success === false) {
-					this.setIssueForContext(ctx, invalidRange.error.issue);
+					this.setIssueForContext(context, invalidRange.error.issue);
 					return INVALID;
 				}
 
@@ -227,8 +224,8 @@ const getMultiRange = <
 			}
 
 			//Input should be [MultiRangeObject<DataType, DataTypeObject> | RawMultiRangeObject<DataTypeObject>]
-			if (otherArgs.length > 0) {
-				this.setIssueForContext(ctx, {
+			if (otherArguments.length > 0) {
+				this.setIssueForContext(context, {
 					code: "too_big",
 					type: "arguments",
 					maximum: 1,
@@ -237,23 +234,23 @@ const getMultiRange = <
 				return INVALID;
 			}
 
-			const parsedObject = hasKeys<MultiRangeObject<DataType, DataTypeObject> | RawMultiRangeObject<DataTypeObject>>(arg, [["ranges", "array"]]);
+			const parsedObject = hasKeys<MultiRangeObject<DataType, DataTypeObject> | RawMultiRangeObject<DataTypeObject>>(argument, [["ranges", "array"]]);
 			if (!parsedObject.success) {
 				switch (true) {
 					case parsedObject.otherKeys.length > 0:
-						this.setIssueForContext(ctx, {
+						this.setIssueForContext(context, {
 							code: "unrecognized_keys",
 							keys: parsedObject.otherKeys,
 						});
 						break;
 					case parsedObject.missingKeys.length > 0:
-						this.setIssueForContext(ctx, {
+						this.setIssueForContext(context, {
 							code: "missing_keys",
 							keys: parsedObject.missingKeys,
 						});
 						break;
 					case parsedObject.invalidKeys.length > 0:
-						this.setIssueForContext(ctx, {
+						this.setIssueForContext(context, {
 							code: "invalid_key_type",
 							...parsedObject.invalidKeys[0],
 						});
@@ -262,12 +259,12 @@ const getMultiRange = <
 				return INVALID;
 			}
 
-			return this._parseArray(ctx, parsedObject.obj.ranges);
+			return this._parseArray(context, parsedObject.obj.ranges);
 		}
 
-		isMultiRange(obj: any): obj is MultiRange<DataType, DataTypeObject> {
+		isMultiRange(object: any): object is MultiRange<DataType, DataTypeObject> {
 			//@ts-expect-error - This is a hack to get around the fact that the value is private
-			return obj instanceof MultiRangeClass && obj._identifier === identifier;
+			return object instanceof MultiRangeClass && object._identifier === identifier;
 		}
 	}
 

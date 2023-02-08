@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-import type { IsValid } from "../types/IsValid";
+import type { IsValid } from "../types/IsValid.js";
 
 export const isValidDateTime = (date: unknown): IsValid<DateTime> => {
 	if (!(date instanceof DateTime)) return { isOfSameType: false };

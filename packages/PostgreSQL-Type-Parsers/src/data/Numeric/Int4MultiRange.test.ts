@@ -1,9 +1,9 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { LowerRange, UpperRange } from "../../util/Range";
-import { Int4MultiRange } from "./Int4MultiRange";
-import { Int4Range } from "./Int4Range";
+import { LowerRange, UpperRange } from "../../util/Range.js";
+import { Int4MultiRange } from "./Int4MultiRange.js";
+import { Int4Range } from "./Int4Range.js";
 
 describe("Int4MultiRangeConstructor", () => {
 	test("_parse(...)", () => {
@@ -57,8 +57,8 @@ describe("Int4MultiRangeConstructor", () => {
 			Int4MultiRange.from(["range1", "range2"] as any);
 		}).toThrowError("Expected '[' | '(', received 'r'");
 
-		const int4MultiRangeFromArgsArray = Int4MultiRange.from(Int4Range.from("[1,3)"), Int4Range.from("[11,13)"), Int4Range.from("[21,23)"));
-		expect(int4MultiRangeFromArgsArray).not.toBeNull();
+		const int4MultiRangeFromArgumentsArray = Int4MultiRange.from(Int4Range.from("[1,3)"), Int4Range.from("[11,13)"), Int4Range.from("[21,23)"));
+		expect(int4MultiRangeFromArgumentsArray).not.toBeNull();
 
 		expect(() => {
 			Int4MultiRange.from(Int4Range.from("[1,3)"), "range2" as any);
@@ -183,8 +183,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._int4multirange).toHaveLength(2);
 			expect(result.rows[0]._int4multirange[0].toString()).toStrictEqual(Int4MultiRange.from("{[1,3),[11,13)}").toString());
 			expect(result.rows[0]._int4multirange[1].toString()).toStrictEqual(Int4MultiRange.from("{[21,23),[31,33)}").toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

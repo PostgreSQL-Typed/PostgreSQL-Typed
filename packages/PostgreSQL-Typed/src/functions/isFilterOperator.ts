@@ -1,4 +1,4 @@
-import type { FilterOperators } from "../types/interfaces/FilterOperators";
+import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
 
 export const isFilterOperator = (value: any): value is keyof FilterOperators<any> =>
 	[

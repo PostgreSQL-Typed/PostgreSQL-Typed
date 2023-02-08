@@ -1,13 +1,13 @@
 import { dirname, relative } from "node:path";
 
-import { ImportState } from "../classes/ImportState";
-import type { Config } from "../types/interfaces/Config";
-import type { FileContext } from "../types/interfaces/FileContext";
-import type { FileExport } from "../types/interfaces/FileExport";
-import type { FileName } from "../types/types/FileName";
-import type { IdentifierName } from "../types/types/IdentifierName";
-import type { TypeID } from "../types/types/TypeID";
-import { resolveExportName } from "../util/functions/resolveExportName";
+import { ImportState } from "../classes/ImportState.js";
+import type { Config } from "../types/interfaces/Config.js";
+import type { FileContext } from "../types/interfaces/FileContext.js";
+import type { FileExport } from "../types/interfaces/FileExport.js";
+import type { FileName } from "../types/types/FileName.js";
+import type { IdentifierName } from "../types/types/IdentifierName.js";
+import type { TypeId } from "../types/types/TypeId.js";
+import { resolveExportName } from "../util/functions/resolveExportName.js";
 
 export class FileContent {
 	public readonly file: FileName;
@@ -33,7 +33,7 @@ export class FileContent {
 		}
 
 		const cachedImportState = this._imports.get(file);
-		if (typeof cachedImportState !== "undefined") return cachedImportState;
+		if (cachedImportState !== undefined) return cachedImportState;
 
 		const newImportState = new ImportState(file);
 		this._imports.set(file, newImportState);
@@ -44,7 +44,7 @@ export class FileContent {
 		this._stringImports.add(importString);
 	}
 
-	public pushDeclaration(typeID: TypeID, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
+	public pushDeclaration(typeID: TypeId, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		const identifierName = resolveExportName(this.config, typeID);
 		if (!this._declarationNames.has(identifierName)) {
 			this._declarationNames.add(identifierName);
@@ -63,8 +63,8 @@ export class FileContent {
 			exportName: identifierName,
 		};
 	}
-	public pushReExport(dest: TypeID, source: FileExport) {
-		const identifierName = resolveExportName(this.config, dest);
+	public pushReExport(destination: TypeId, source: FileExport) {
+		const identifierName = resolveExportName(this.config, destination);
 		if (this._declarationNames.has(identifierName)) return;
 
 		const importedName = this._getImportState(source.file).getImport(source);
@@ -78,7 +78,7 @@ export class FileContent {
 	public getContent() {
 		return `${[
 			[...this._stringImports.values()].join("\n"),
-			...(this._imports.size
+			...(this._imports.size > 0
 				? [
 						[...this._imports.values()]
 							.sort((a, b) => (a.file < b.file ? -1 : 1))
@@ -90,10 +90,10 @@ export class FileContent {
 				  ]
 				: []),
 			...this._declarations.map(v => v().join("\n")),
-			...(this._reExports.type.length
+			...(this._reExports.type.length > 0
 				? [`export type {\n${this._reExports.type.map(t => (t.source === t.dest ? `  ${t.source},` : `  ${t.source} as ${t.dest},`)).join("\n")}\n}`]
 				: []),
-			...(this._reExports.value.length
+			...(this._reExports.value.length > 0
 				? [`export {\n${this._reExports.value.map(t => (t.source === t.dest ? `  ${t.source},` : `  ${t.source} as ${t.dest},`)).join("\n")}\n}`]
 				: []),
 		].join("\n\n")}\n`;

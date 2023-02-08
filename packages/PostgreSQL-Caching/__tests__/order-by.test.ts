@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case, unicorn/no-null */
 import { Client } from "pg";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 

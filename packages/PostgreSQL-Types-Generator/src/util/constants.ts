@@ -1,13 +1,8 @@
+import { readFileSync } from "node:fs";
+
 import debug from "debug";
 
-const {
-	description,
-	version,
-}: {
-	description: string;
-	version: string;
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-} = require("../../package.json");
+const { description, version } = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url)).toString());
 
 export const NAME = "PostgreSQL-Types-Generator";
 export const DESCRIPTION = description;

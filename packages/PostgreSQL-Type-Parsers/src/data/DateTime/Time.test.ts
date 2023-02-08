@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { Time } from "./Time";
+import { Time } from "./Time.js";
 
 describe.todo("Time Class", () => {
 	it("should create a time from a string", () => {
@@ -353,8 +353,8 @@ describe.todo("Time Class", () => {
 					second: 6,
 				}),
 			]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

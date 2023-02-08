@@ -1,5 +1,5 @@
-import type { FileExport } from "../types/interfaces/FileExport";
-import type { FileName } from "../types/types/FileName";
+import type { FileExport } from "../types/interfaces/FileExport.js";
+import type { FileName } from "../types/types/FileName.js";
 
 export class ImportState {
 	public readonly file: FileName;

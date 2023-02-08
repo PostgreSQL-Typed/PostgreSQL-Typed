@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Interval, IntervalStyle } from "./Interval";
+import { Interval, IntervalStyle } from "./Interval.js";
 
 describe("IntervalStyle", () => {
 	it("should have all Interval styles", () => {
@@ -130,7 +130,7 @@ describe("Interval", () => {
 		expect(interval2.toString("SQL")).toBe("2022-0 2 01:02:03.004");
 
 		// Test some edge cases
-		const interval3 = Interval.from({ days: 400, hours: 100, minutes: 100, seconds: 100, milliseconds: 10000 });
+		const interval3 = Interval.from({ days: 400, hours: 100, minutes: 100, seconds: 100, milliseconds: 10_000 });
 		expect(interval3.toString()).toBe("1 years 39 days 5 hours 41 minutes 50 seconds");
 
 		const interval4 = Interval.from({ years: 1.5, months: 1.5, days: 1.5, hours: 1.5, minutes: 1.5, seconds: 1.5, milliseconds: 1.5 });
@@ -643,8 +643,8 @@ describe("PostgreSQL", () => {
 					years: 7,
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

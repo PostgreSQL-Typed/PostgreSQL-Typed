@@ -1,20 +1,20 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Int2 } from "./Int2";
+import { Int2 } from "./Int2.js";
 
 describe("Int2Constructor", () => {
 	test("_parse(...)", () => {
 		//#region //* it should return OK when parsing succeeds
 		expect(Int2.safeFrom(1).success).toBe(true);
-		expect(Int2.safeFrom(32767).success).toBe(true);
-		expect(Int2.safeFrom(-32768).success).toBe(true);
+		expect(Int2.safeFrom(32_767).success).toBe(true);
+		expect(Int2.safeFrom(-32_768).success).toBe(true);
 		expect(Int2.safeFrom("1").success).toBe(true);
 		expect(Int2.safeFrom("32767").success).toBe(true);
 		expect(Int2.safeFrom("-32768").success).toBe(true);
 		expect(Int2.safeFrom(Int2.from(1)).success).toBe(true);
-		expect(Int2.safeFrom(Int2.from(32767)).success).toBe(true);
-		expect(Int2.safeFrom(Int2.from(-32768)).success).toBe(true);
+		expect(Int2.safeFrom(Int2.from(32_767)).success).toBe(true);
+		expect(Int2.safeFrom(Int2.from(-32_768)).success).toBe(true);
 		expect(
 			Int2.safeFrom({
 				int2: 1,
@@ -22,12 +22,12 @@ describe("Int2Constructor", () => {
 		).toBe(true);
 		expect(
 			Int2.safeFrom({
-				int2: 32767,
+				int2: 32_767,
 			}).success
 		).toBe(true);
 		expect(
 			Int2.safeFrom({
-				int2: -32768,
+				int2: -32_768,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -35,83 +35,91 @@ describe("Int2Constructor", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = Int2.safeFrom(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		const nanString = Int2.safeFrom("abc");
 		expect(nanString.success).toEqual(false);
-		if (!nanString.success) {
+		if (nanString.success) expect.fail();
+		else {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "number",
 				received: "nan",
 				message: "Expected 'number', received 'nan'",
 			});
-		} else expect.fail();
+		}
 
-		const notFinite1 = Int2.safeFrom(Infinity);
+		const notFinite1 = Int2.safeFrom(Number.POSITIVE_INFINITY);
 		expect(notFinite1.success).toEqual(false);
-		if (!notFinite1.success) {
+		if (notFinite1.success) expect.fail();
+		else {
 			expect(notFinite1.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
 				message: "Expected 'number' | 'string' | 'object', received 'infinity'",
 				received: "infinity",
 			});
-		} else expect.fail();
+		}
 
 		const notFinite2 = Int2.safeFrom("Infinity");
 		expect(notFinite2.success).toEqual(false);
-		if (!notFinite2.success) {
+		if (notFinite2.success) expect.fail();
+		else {
 			expect(notFinite2.error.issue).toStrictEqual({
 				code: "not_finite",
 				message: "Number must be finite",
 			});
-		} else expect.fail();
+		}
 
 		const notWhole = Int2.safeFrom(0.5);
 		expect(notWhole.success).toEqual(false);
-		if (!notWhole.success) {
+		if (notWhole.success) expect.fail();
+		else {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
 			});
-		} else expect.fail();
+		}
 
-		const tooBig = Int2.safeFrom(32768);
+		const tooBig = Int2.safeFrom(32_768);
 		expect(tooBig.success).toEqual(false);
-		if (!tooBig.success) {
+		if (tooBig.success) expect.fail();
+		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "number",
-				maximum: 32767,
+				maximum: 32_767,
 				inclusive: true,
 				message: "Number must be less than or equal to 32767",
 			});
-		} else expect.fail();
+		}
 
-		const tooSmall = Int2.safeFrom(-32769);
+		const tooSmall = Int2.safeFrom(-32_769);
 		expect(tooSmall.success).toEqual(false);
-		if (!tooSmall.success) {
+		if (tooSmall.success) expect.fail();
+		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "number",
-				minimum: -32768,
+				minimum: -32_768,
 				inclusive: true,
 				message: "Number must be greater than or equal to -32768",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooManyArguments = Int2.safeFrom(1, 2);
 		expect(tooManyArguments.success).toEqual(false);
-		if (!tooManyArguments.success) {
+		if (tooManyArguments.success) expect.fail();
+		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "arguments",
@@ -119,12 +127,13 @@ describe("Int2Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooFewArguments = Int2.safeFrom();
 		expect(tooFewArguments.success).toEqual(false);
-		if (!tooFewArguments.success) {
+		if (tooFewArguments.success) expect.fail();
+		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "arguments",
@@ -132,38 +141,41 @@ describe("Int2Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		const unrecognizedKeys = Int2.safeFrom({
 			int2: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
-		if (!unrecognizedKeys.success) {
+		if (unrecognizedKeys.success) expect.fail();
+		else {
 			expect(unrecognizedKeys.error.issue).toStrictEqual({
 				code: "unrecognized_keys",
 				keys: ["unrecognized"],
 				message: "Unrecognized key in object: 'unrecognized'",
 			});
-		} else expect.fail();
+		}
 
 		const missingKeys = Int2.safeFrom({
 			// int2: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
-		if (!missingKeys.success) {
+		if (missingKeys.success) expect.fail();
+		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
 				keys: ["int2"],
 				message: "Missing key in object: 'int2'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidKeys = Int2.safeFrom({
 			int2: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
-		if (!invalidKeys.success) {
+		if (invalidKeys.success) expect.fail();
+		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
 				objectKey: "int2",
@@ -171,7 +183,7 @@ describe("Int2Constructor", () => {
 				received: "string",
 				message: "Expected 'number' for key 'int2', received 'string'",
 			});
-		} else expect.fail();
+		}
 		//#endregion
 	});
 
@@ -244,14 +256,15 @@ describe("Int2", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = int2.safeEquals(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		expect(() => int2.equals(true as any)).toThrowError();
 		//#endregion
@@ -283,7 +296,7 @@ describe("Int2", () => {
 		int2.int2 = 2;
 		expect(int2.int2).toEqual(2);
 
-		expect(() => (int2.int2 = 32768)).toThrowError("Number must be less than or equal to 32767");
+		expect(() => (int2.int2 = 32_768)).toThrowError("Number must be less than or equal to 32767");
 	});
 });
 

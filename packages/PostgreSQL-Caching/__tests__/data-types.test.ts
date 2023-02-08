@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 
@@ -43,7 +44,7 @@ describe.skip("Data Types", () => {
 
 		const result = await cacheClass.select("*", {
 			$WHERE: {
-				bigint: BigInt(9007199254740991).toString(),
+				bigint: BigInt(9_007_199_254_740_991).toString(),
 			},
 		});
 
@@ -147,7 +148,7 @@ describe.skip("Data Types", () => {
 
 		const result = await cacheClass.select("*", {
 			$WHERE: {
-				bytea: Buffer.from("abc \xDEADBEEF"),
+				bytea: Buffer.from("abc \u00DEADBEEF"),
 			},
 		});
 

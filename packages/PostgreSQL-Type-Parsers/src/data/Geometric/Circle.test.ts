@@ -171,8 +171,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._circle).toHaveLength(2);
 			expect(result.rows[0]._circle[0].toString()).toStrictEqual(Circle.from({ x: 1.1, y: 2.2, radius: 3.3 }).toString());
 			expect(result.rows[0]._circle[1].toString()).toStrictEqual(Circle.from({ x: 4, y: 5, radius: 6 }).toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

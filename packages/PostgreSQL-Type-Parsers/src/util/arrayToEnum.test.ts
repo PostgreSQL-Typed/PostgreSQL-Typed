@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { arrayToEnum } from "./arrayToEnum";
+import { arrayToEnum } from "./arrayToEnum.js";
 
 describe("arrayToEnum", () => {
 	it("should return an object with the same keys as the array", () => {

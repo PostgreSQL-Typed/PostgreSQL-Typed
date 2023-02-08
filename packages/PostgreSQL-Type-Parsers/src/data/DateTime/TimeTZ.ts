@@ -1,13 +1,14 @@
+/* eslint-disable unicorn/filename-case */
 import { DateTime, Zone } from "luxon";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { Offset } from "../../types/Offset";
-import { OffsetDirection, OffsetDirectionType } from "../../types/OffsetDirection";
-import { arrayParser } from "../../util/arrayParser";
-import { isISOEquivalent } from "../../util/isISOEquivalent";
-import { parser } from "../../util/parser";
-import { validateTimeZone } from "../../util/validateTimeZone";
+import { Offset } from "../../types/Offset.js";
+import { OffsetDirection, OffsetDirectionType } from "../../types/OffsetDirection.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { isISOEquivalent } from "../../util/isISOEquivalent.js";
+import { parser } from "../../util/parser.js";
+import { validateTimeZone } from "../../util/validateTimeZone.js";
 
 interface TimeTZObject {
 	hour: number;
@@ -40,34 +41,28 @@ interface TimeTZ {
 interface TimeTZConstructor {
 	from(hour: number, minute: number, second: number, offsetHour: number, offsetMinute: number, offsetDirection: OffsetDirection | OffsetDirectionType): TimeTZ;
 	from(data: TimeTZ | TimeTZObject | globalThis.Date | DateTime): TimeTZ;
-	from(str: string): TimeTZ;
+	from(string: string): TimeTZ;
 	/**
-	 * Returns `true` if `obj` is a `TimeTZ`, `false` otherwise.
+	 * Returns `true` if `object` is a `TimeTZ`, `false` otherwise.
 	 */
-	isTimeTZ(obj: any): obj is TimeTZ;
+	isTimeTZ(object: any): object is TimeTZ;
 }
 
 const TimeTZ: TimeTZConstructor = {
 	from(
-		arg: string | TimeTZ | TimeTZObject | globalThis.Date | DateTime | number,
+		argument: string | TimeTZ | TimeTZObject | globalThis.Date | DateTime | number,
 		minute?: number,
 		second?: number,
 		offsetHour?: number,
 		offsetMinute?: number,
 		offsetDirection?: OffsetDirection | OffsetDirectionType
 	): TimeTZ {
-		if (typeof arg === "string") {
-			if (
-				arg.match(
-					/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?[+-]([0-1][0-9]|2[0-3])(:([0-5][0-9]))?(:([0-5][0-9]))?(\.[0-9]?[0-9]?[0-9])?$/
-				)
-			) {
+		if (typeof argument === "string") {
+			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?(:([0-5]\d))?(\.\d{1,3})?$/.test(argument)) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const [, hour, minute, second, milisecond, offsetHour, , offsetMinute] = arg
-					.match(
-						/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?[+-]([0-1][0-9]|2[0-3])(:([0-5][0-9]))?(:([0-5][0-9]))?(\.[0-9]?[0-9]?[0-9])?$/
-					)!
-					.map(x => parseFloat(x));
+				const [, hour, minute, second, milisecond, offsetHour, , offsetMinute] = argument
+					.match(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?(:([0-5]\d))?(\.\d{1,3})?$/)!
+					.map(x => Number.parseFloat(x));
 				return new TimeTZClass({
 					hour,
 					minute,
@@ -75,16 +70,16 @@ const TimeTZ: TimeTZConstructor = {
 					offset: {
 						hour: offsetHour,
 						minute: offsetMinute || 0,
-						direction: arg.includes("-") ? OffsetDirection.minus : OffsetDirection.plus,
+						direction: argument.includes("-") ? OffsetDirection.minus : OffsetDirection.plus,
 					},
 				});
 			}
 
-			if (arg.match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?\s((\/|\w)*)$/)) {
+			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?\s(([\w/])*)$/.test(argument)) {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const matches = arg.match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?\s((\/|\w)*)$/)!,
+				const matches = argument.match(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?\s(([\w/])*)$/)!,
 					zone = matches[5],
-					[hour, minute, second, milisecond] = matches.slice(1, 5).map(x => parseFloat(x)),
+					[hour, minute, second, milisecond] = matches.slice(1, 5).map(x => Number.parseFloat(x)),
 					offset = validateTimeZone(zone);
 
 				if (offset === false) throw new Error("Invalid TimeTZ string");
@@ -104,8 +99,8 @@ const TimeTZ: TimeTZConstructor = {
 				});
 			}
 			throw new Error("Invalid TimeTZ string");
-		} else if (TimeTZ.isTimeTZ(arg)) return new TimeTZClass(arg.toJSON());
-		else if (typeof arg === "number") {
+		} else if (TimeTZ.isTimeTZ(argument)) return new TimeTZClass(argument.toJSON());
+		else if (typeof argument === "number") {
 			if (
 				typeof minute === "number" &&
 				typeof second === "number" &&
@@ -115,7 +110,7 @@ const TimeTZ: TimeTZConstructor = {
 				(offsetDirection === OffsetDirection.plus || offsetDirection === OffsetDirection.minus)
 			) {
 				const newlyMadeTime = new TimeTZClass({
-					hour: arg,
+					hour: argument,
 					minute,
 					second,
 					offset: {
@@ -124,48 +119,45 @@ const TimeTZ: TimeTZConstructor = {
 						direction: offsetDirection,
 					},
 				});
-				if (newlyMadeTime.toString().match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?[+-]([0-1][0-9]|2[0-3])(:([0-5][0-9]))?$/))
-					return newlyMadeTime;
+				if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?$/.test(newlyMadeTime.toString())) return newlyMadeTime;
 				throw new Error("Invalid TimeTZ array, numbers and OffsetDirection");
 			}
 			throw new Error("Invalid TimeTZ array, numbers and OffsetDirection");
-		} else if (arg instanceof DateTime || arg instanceof globalThis.Date) {
-			arg = arg instanceof DateTime ? arg : DateTime.fromJSDate(arg);
-			const isoString = arg.toISO().split("T")[1];
-			if (isoString.endsWith("Z")) return TimeTZ.from(`${isoString.slice(0, -1)}+00:00`);
-			else return TimeTZ.from(isoString);
+		} else if (argument instanceof DateTime || argument instanceof globalThis.Date) {
+			argument = argument instanceof DateTime ? argument : DateTime.fromJSDate(argument);
+			const isoString = argument.toISO().split("T")[1];
+			return isoString.endsWith("Z") ? TimeTZ.from(`${isoString.slice(0, -1)}+00:00`) : TimeTZ.from(isoString);
 		} else {
 			if (
 				!(
-					typeof arg === "object" &&
-					"hour" in arg &&
-					typeof arg.hour === "number" &&
-					"minute" in arg &&
-					typeof arg.minute === "number" &&
-					"second" in arg &&
-					typeof arg.second === "number" &&
-					"offset" in arg &&
-					typeof arg.offset === "object" &&
-					"hour" in arg.offset &&
-					typeof arg.offset.hour === "number" &&
-					"minute" in arg.offset &&
-					typeof arg.offset.minute === "number" &&
-					"direction" in arg.offset &&
-					typeof arg.offset.direction === "string" &&
-					(arg.offset.direction === OffsetDirection.plus || arg.offset.direction === OffsetDirection.minus)
+					typeof argument === "object" &&
+					"hour" in argument &&
+					typeof argument.hour === "number" &&
+					"minute" in argument &&
+					typeof argument.minute === "number" &&
+					"second" in argument &&
+					typeof argument.second === "number" &&
+					"offset" in argument &&
+					typeof argument.offset === "object" &&
+					"hour" in argument.offset &&
+					typeof argument.offset.hour === "number" &&
+					"minute" in argument.offset &&
+					typeof argument.offset.minute === "number" &&
+					"direction" in argument.offset &&
+					typeof argument.offset.direction === "string" &&
+					(argument.offset.direction === OffsetDirection.plus || argument.offset.direction === OffsetDirection.minus)
 				)
 			)
 				throw new Error("Invalid TimeTZ object");
 
-			const newlyMadeTime = new TimeTZClass(arg);
-			if (newlyMadeTime.toString().match(/^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.[0-9]?[0-9]?[0-9])?[+-]([0-1][0-9]|2[0-3])(:([0-5][0-9]))?$/))
-				return newlyMadeTime;
+			const newlyMadeTime = new TimeTZClass(argument);
+			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?$/.test(newlyMadeTime.toString())) return newlyMadeTime;
 
 			throw new Error("Invalid TimeTZ object");
 		}
 	},
-	isTimeTZ(obj: any): obj is TimeTZ {
-		return obj instanceof TimeTZClass;
+	isTimeTZ(object: any): object is TimeTZ {
+		return object instanceof TimeTZClass;
 	},
 };
 
@@ -176,18 +168,18 @@ class TimeTZClass implements TimeTZ {
 	private _offset: Offset;
 
 	constructor(data: TimeTZObject) {
-		this._hour = parseInt(data.hour.toString());
-		this._minute = parseInt(data.minute.toString());
-		this._second = parseFloat(data.second.toString());
+		this._hour = Number.parseInt(data.hour.toString());
+		this._minute = Number.parseInt(data.minute.toString());
+		this._second = Number.parseFloat(data.second.toString());
 		this._offset = {
-			hour: parseInt(data.offset.hour.toString()),
-			minute: parseInt(data.offset.minute.toString()),
+			hour: Number.parseInt(data.offset.hour.toString()),
+			minute: Number.parseInt(data.offset.minute.toString()),
 			direction: data.offset.direction,
 		};
 	}
 
-	private _prefix(num: number): string {
-		return num < 10 ? `0${num}` : `${num}`;
+	private _prefix(number: number): string {
+		return number < 10 ? `0${number}` : `${number}`;
 	}
 
 	private _format(): string {
@@ -232,8 +224,8 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set hour(hour: number) {
-		hour = parseInt(hour.toString());
-		if (isNaN(hour) || hour < 0 || hour > 23) throw new Error("Invalid hour");
+		hour = Number.parseInt(hour.toString());
+		if (Number.isNaN(hour) || hour < 0 || hour > 23) throw new Error("Invalid hour");
 
 		this._hour = hour;
 	}
@@ -243,8 +235,8 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set minute(minute: number) {
-		minute = parseInt(minute.toString());
-		if (isNaN(minute) || minute < 0 || minute > 59) throw new Error("Invalid minute");
+		minute = Number.parseInt(minute.toString());
+		if (Number.isNaN(minute) || minute < 0 || minute > 59) throw new Error("Invalid minute");
 
 		this._minute = minute;
 	}
@@ -254,8 +246,8 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set second(second: number) {
-		second = parseInt(second.toString());
-		if (isNaN(second) || second < 0 || second > 59) throw new Error("Invalid second");
+		second = Number.parseInt(second.toString());
+		if (Number.isNaN(second) || second < 0 || second > 59) throw new Error("Invalid second");
 
 		this._second = second;
 	}
@@ -265,10 +257,10 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set offset(offset: Offset) {
-		offset.hour = parseInt(offset.hour.toString());
-		if (isNaN(offset.hour) || offset.hour < 0 || offset.hour > 23) throw new Error("Invalid offset hour");
-		offset.minute = parseInt(offset.minute.toString());
-		if (isNaN(offset.minute) || offset.minute < 0 || offset.minute > 59) throw new Error("Invalid offset minute");
+		offset.hour = Number.parseInt(offset.hour.toString());
+		if (Number.isNaN(offset.hour) || offset.hour < 0 || offset.hour > 23) throw new Error("Invalid offset hour");
+		offset.minute = Number.parseInt(offset.minute.toString());
+		if (Number.isNaN(offset.minute) || offset.minute < 0 || offset.minute > 59) throw new Error("Invalid offset minute");
 		if (!([OffsetDirection.minus, OffsetDirection.plus] as string[]).includes(offset.direction)) throw new Error("Invalid offset direction");
 
 		this._offset = offset;

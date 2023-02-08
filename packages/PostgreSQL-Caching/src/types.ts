@@ -21,7 +21,7 @@ export type NestedPaths<Type> = Type extends
 	| Date
 	| RegExp
 	| Uint8Array
-	| ((...args: any[]) => any)
+	| ((...arguments_: any[]) => any)
 	| {
 			_bsontype: string;
 	  }

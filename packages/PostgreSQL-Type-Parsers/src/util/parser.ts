@@ -1,4 +1,4 @@
-import type { ObjectFunction } from "../types/ObjectFunction";
+import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const parser =
 	<DataType>(object: any) =>

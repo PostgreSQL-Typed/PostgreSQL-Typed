@@ -1,11 +1,11 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange";
-import { parser } from "../../util/parser";
-import { Date, DateObject } from "./Date";
-import { DateRange } from "./DateRange";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
+import { parser } from "../../util/parser.js";
+import { Date, DateObject } from "./Date.js";
+import { DateRange } from "./DateRange.js";
 
 type DateMultiRangeObject = MultiRangeObject<Date, DateObject>;
 

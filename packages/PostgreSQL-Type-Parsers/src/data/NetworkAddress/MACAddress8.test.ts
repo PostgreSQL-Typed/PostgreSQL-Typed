@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { MACAddress8 } from "./MACAddress8";
+import { MACAddress8 } from "./MACAddress8.js";
 
 describe.todo("MACAddress8 Class", () => {
 	it("should create a MAC address from a string", () => {
@@ -141,8 +142,8 @@ describe.todo("MACAddress8 Class", () => {
 
 			expect(result.rows[0].macaddr8).toStrictEqual(MACAddress8.from("08:00:2b:01:02:03:04:05"));
 			expect(result.rows[0]._macaddr8).toStrictEqual([MACAddress8.from("08:00:2b:01:02:03:04:05"), MACAddress8.from("01:02:03:04:05:06:07:08")]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

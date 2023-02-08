@@ -1,7 +1,7 @@
-import type { Printer } from "../../../classes/Printer";
-import { ClassKind } from "../../../types/enums/ClassKind";
-import type { ClassDetails } from "../../../types/interfaces/ClassDetails";
-import { printClassDetails } from "../../functions/printers/printClassDetails";
+import type { Printer } from "../../../classes/Printer.js";
+import { ClassKind } from "../../../types/enums/ClassKind.js";
+import type { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
+import { printClassDetails } from "../../functions/printers/printClassDetails.js";
 
 export function printSchemaDetails(types: ClassDetails[], printer: Printer) {
 	if (types.some(type => type.kind !== ClassKind.OrdinaryTable)) throw new Error("printSchemaDetails only supports ordinary tables at the moment.");

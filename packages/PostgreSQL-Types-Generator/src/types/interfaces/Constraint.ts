@@ -1,6 +1,6 @@
-import type { ConstraintType } from "../enums/ConstraintType";
-import type { ForeignKeyAction } from "../enums/ForeignKeyAction";
-import type { ForeignKeyMatchType } from "../enums/ForeignKeyMatchType";
+import type { ConstraintType } from "../enums/ConstraintType.js";
+import type { ForeignKeyAction } from "../enums/ForeignKeyAction.js";
+import type { ForeignKeyMatchType } from "../enums/ForeignKeyMatchType.js";
 
 export interface Constraint {
 	/**

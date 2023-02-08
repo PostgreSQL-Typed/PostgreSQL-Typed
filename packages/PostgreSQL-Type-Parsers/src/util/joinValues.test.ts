@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { joinValues } from "./joinValues";
+import { joinValues } from "./joinValues.js";
 
 describe("joinValues", () => {
 	it("should join values", () => {

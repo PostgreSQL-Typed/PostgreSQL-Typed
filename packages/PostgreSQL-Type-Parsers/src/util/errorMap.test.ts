@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { defaultErrorMap, getErrorMap, setErrorMap } from "./errorMap";
-import type { ErrorMap } from "./PGTPError";
+import { defaultErrorMap, getErrorMap, setErrorMap } from "./errorMap.js";
+import type { ErrorMap } from "./PGTPError.js";
 
 describe("errorMap", () => {
 	it("should return the default errorMap", () => {
@@ -9,9 +9,9 @@ describe("errorMap", () => {
 	});
 
 	it("should return the custom errorMap after setting it", () => {
+		// eslint-disable-next-line unicorn/consistent-function-scoping
 		const customErrorMap: ErrorMap = issue => {
-			if (issue.code === "invalid_date") return { message: "Invalid date" };
-			else return { message: "Invalid input" };
+			return issue.code === "invalid_date" ? { message: "Invalid date" } : { message: "Invalid input" };
 		};
 
 		setErrorMap(customErrorMap);

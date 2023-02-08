@@ -1,20 +1,20 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Float4 } from "./Float4";
+import { Float4 } from "./Float4.js";
 
 describe("Float4Constructor", () => {
 	test("_parse(...)", () => {
 		//#region //* it should return OK when parsing succeeds
 		expect(Float4.safeFrom(1).success).toBe(true);
-		expect(Float4.safeFrom(2147483647).success).toBe(true);
-		expect(Float4.safeFrom(-2147483648).success).toBe(true);
+		expect(Float4.safeFrom(2_147_483_647).success).toBe(true);
+		expect(Float4.safeFrom(-2_147_483_648).success).toBe(true);
 		expect(Float4.safeFrom("1").success).toBe(true);
 		expect(Float4.safeFrom("2147483647").success).toBe(true);
 		expect(Float4.safeFrom("-2147483648").success).toBe(true);
 		expect(Float4.safeFrom(Float4.from(1)).success).toBe(true);
-		expect(Float4.safeFrom(Float4.from(2147483647)).success).toBe(true);
-		expect(Float4.safeFrom(Float4.from(-2147483648)).success).toBe(true);
+		expect(Float4.safeFrom(Float4.from(2_147_483_647)).success).toBe(true);
+		expect(Float4.safeFrom(Float4.from(-2_147_483_648)).success).toBe(true);
 		expect(
 			Float4.safeFrom({
 				float4: "1",
@@ -30,9 +30,9 @@ describe("Float4Constructor", () => {
 				float4: "-2147483648",
 			}).success
 		).toBe(true);
-		expect(Float4.safeFrom(Infinity).success).toBe(true);
-		expect(Float4.safeFrom(-Infinity).success).toBe(true);
-		expect(Float4.safeFrom(NaN).success).toBe(true);
+		expect(Float4.safeFrom(Number.POSITIVE_INFINITY).success).toBe(true);
+		expect(Float4.safeFrom(Number.NEGATIVE_INFINITY).success).toBe(true);
+		expect(Float4.safeFrom(Number.NaN).success).toBe(true);
 		expect(Float4.safeFrom(BigInt(1)).success).toBe(true);
 		expect(Float4.safeFrom(Float4.from(-1).float4).success).toBe(true);
 		expect(Float4.safeFrom(1.5).success).toBe(true);
@@ -41,29 +41,32 @@ describe("Float4Constructor", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = Float4.safeFrom(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		const nanString = Float4.safeFrom("abc");
 		expect(nanString.success).toEqual(false);
-		if (!nanString.success) {
+		if (nanString.success) expect.fail();
+		else {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_string",
 				expected: "LIKE 1.23",
 				received: "abc",
 				message: "Expected 'LIKE 1.23', received 'abc'",
 			});
-		} else expect.fail();
+		}
 
 		const tooBig = Float4.safeFrom("10e400");
 		expect(tooBig.success).toEqual(false);
-		if (!tooBig.success) {
+		if (tooBig.success) expect.fail();
+		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "number",
@@ -71,11 +74,12 @@ describe("Float4Constructor", () => {
 				inclusive: true,
 				message: "Number must be less than or equal to 9.9999999999999999999999999999999999999e+37",
 			});
-		} else expect.fail();
+		}
 
 		const tooSmall = Float4.safeFrom("-10e400");
 		expect(tooSmall.success).toEqual(false);
-		if (!tooSmall.success) {
+		if (tooSmall.success) expect.fail();
+		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "number",
@@ -83,12 +87,13 @@ describe("Float4Constructor", () => {
 				inclusive: true,
 				message: "Number must be greater than or equal to -9.9999999999999999999999999999999999999e+37",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooManyArguments = Float4.safeFrom(1, 2);
 		expect(tooManyArguments.success).toEqual(false);
-		if (!tooManyArguments.success) {
+		if (tooManyArguments.success) expect.fail();
+		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
 				type: "arguments",
@@ -96,12 +101,13 @@ describe("Float4Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		//@ts-expect-error - testing invalid type
 		const tooFewArguments = Float4.safeFrom();
 		expect(tooFewArguments.success).toEqual(false);
-		if (!tooFewArguments.success) {
+		if (tooFewArguments.success) expect.fail();
+		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
 				type: "arguments",
@@ -109,38 +115,41 @@ describe("Float4Constructor", () => {
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
 			});
-		} else expect.fail();
+		}
 
 		const unrecognizedKeys = Float4.safeFrom({
 			float4: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
-		if (!unrecognizedKeys.success) {
+		if (unrecognizedKeys.success) expect.fail();
+		else {
 			expect(unrecognizedKeys.error.issue).toStrictEqual({
 				code: "unrecognized_keys",
 				keys: ["unrecognized"],
 				message: "Unrecognized key in object: 'unrecognized'",
 			});
-		} else expect.fail();
+		}
 
 		const missingKeys = Float4.safeFrom({
 			// float4: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
-		if (!missingKeys.success) {
+		if (missingKeys.success) expect.fail();
+		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
 				keys: ["float4"],
 				message: "Missing key in object: 'float4'",
 			});
-		} else expect.fail();
+		}
 
 		const invalidKeys = Float4.safeFrom({
 			float4: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
-		if (!invalidKeys.success) {
+		if (invalidKeys.success) expect.fail();
+		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
 				objectKey: "float4",
@@ -148,7 +157,7 @@ describe("Float4Constructor", () => {
 				received: "number",
 				message: "Expected 'string' for key 'float4', received 'number'",
 			});
-		} else expect.fail();
+		}
 		//#endregion
 	});
 
@@ -221,14 +230,15 @@ describe("Float4", () => {
 		//#region //* should return INVALID when parsing fails
 		const boolean = float4.safeEquals(true as any);
 		expect(boolean.success).toEqual(false);
-		if (!boolean.success) {
+		if (boolean.success) expect.fail();
+		else {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
 				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
 			});
-		} else expect.fail();
+		}
 
 		expect(() => float4.equals(true as any)).toThrowError();
 		//#endregion

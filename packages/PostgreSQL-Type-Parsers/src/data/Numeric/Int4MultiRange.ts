@@ -1,11 +1,11 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange";
-import { parser } from "../../util/parser";
-import { Int4, Int4Object } from "./Int4";
-import { Int4Range } from "./Int4Range";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
+import { parser } from "../../util/parser.js";
+import { Int4, Int4Object } from "./Int4.js";
+import { Int4Range } from "./Int4Range.js";
 
 type Int4MultiRangeObject = MultiRangeObject<Int4, Int4Object>;
 

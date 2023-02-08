@@ -1,8 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { LineSegment } from "./LineSegment";
-import { Point } from "./Point";
+import { LineSegment } from "./LineSegment.js";
+import { Point } from "./Point.js";
 
 describe("LineSegmentConstructor", () => {
 	test("_parse(...)", () => {
@@ -273,8 +273,8 @@ describe("PostgreSQL", () => {
 					b: Point.from(7.7, 8.8),
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

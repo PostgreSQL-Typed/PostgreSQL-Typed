@@ -1,8 +1,9 @@
+/* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { TimeTZ } from "./TimeTZ";
+import { TimeTZ } from "./TimeTZ.js";
 
 describe.todo("TimeTZ Class", () => {
 	it("should create a timetz from a string", () => {
@@ -573,8 +574,8 @@ describe.todo("TimeTZ Class", () => {
 
 			expect(result.rows[0].timetz).toStrictEqual(TimeTZ.from("04:05:06.789-01:00"));
 			expect(result.rows[0]._timetz).toStrictEqual([TimeTZ.from("01:02:03.456+08:00"), TimeTZ.from("04:05:06.789 EST")]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

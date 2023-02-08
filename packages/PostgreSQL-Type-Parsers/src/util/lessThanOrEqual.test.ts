@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { lessThanOrEqual } from "./lessThanOrEqual";
+import { lessThanOrEqual } from "./lessThanOrEqual.js";
 
 describe("lessThanOrEqual", () => {
 	it("should return true if value1 is less than or equal to value2", () => {

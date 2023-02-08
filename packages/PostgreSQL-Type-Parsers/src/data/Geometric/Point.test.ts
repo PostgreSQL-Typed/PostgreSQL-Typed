@@ -1,16 +1,16 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Point } from "./Point";
+import { Point } from "./Point.js";
 
 describe("PointConstructor", () => {
 	test("_parse(...)", () => {
 		expect(Point.safeFrom("(1,2)").success).toBe(true);
 		expect(Point.safeFrom("(1,NaN)").success).toBe(true);
 		expect(Point.safeFrom({ x: 1, y: 2 }).success).toBe(true);
-		expect(Point.safeFrom({ x: 1, y: NaN }).success).toBe(true);
+		expect(Point.safeFrom({ x: 1, y: Number.NaN }).success).toBe(true);
 		expect(Point.safeFrom(1, 2).success).toBe(true);
-		expect(Point.safeFrom(1, NaN).success).toBe(true);
+		expect(Point.safeFrom(1, Number.NaN).success).toBe(true);
 		expect(Point.safeFrom(Point.from("(1,2)")).success).toBe(true);
 
 		//@ts-expect-error - this is a test
@@ -84,8 +84,8 @@ describe("Point", () => {
 		}).toThrowError("Expected 'number', received 'string'");
 		circle.x = 5;
 		expect(circle.x).toBe(5);
-		circle.x = NaN;
-		expect(circle.x).toBe(NaN);
+		circle.x = Number.NaN;
+		expect(circle.x).toBe(Number.NaN);
 	});
 
 	test("get y()", () => {
@@ -100,8 +100,8 @@ describe("Point", () => {
 		}).toThrowError("Expected 'number', received 'string'");
 		circle.y = 5;
 		expect(circle.y).toBe(5);
-		circle.y = NaN;
-		expect(circle.y).toBe(NaN);
+		circle.y = Number.NaN;
+		expect(circle.y).toBe(Number.NaN);
 	});
 });
 
@@ -156,8 +156,8 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._point).toHaveLength(2);
 			expect(result.rows[0]._point[0].toString()).toStrictEqual(Point.from({ x: 1.1, y: 2.2 }).toString());
 			expect(result.rows[0]._point[1].toString()).toStrictEqual(Point.from({ x: 3.3, y: 4.4 }).toString());
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

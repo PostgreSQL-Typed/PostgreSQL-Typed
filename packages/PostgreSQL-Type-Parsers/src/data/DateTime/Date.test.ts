@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Date } from "./Date";
+import { Date } from "./Date.js";
 
 describe("DateConstructor", () => {
 	test("_parse(...)", () => {
@@ -116,7 +116,7 @@ describe("Date", () => {
 			date.year = 0;
 		}).toThrowError("Number must be greater than or equal to 1");
 		expect(() => {
-			date.year = 10000;
+			date.year = 10_000;
 		}).toThrowError("Number must be less than or equal to 9999");
 		expect(() => {
 			date.year = 2.5;
@@ -232,8 +232,8 @@ describe("PostgreSQL", () => {
 					day: 2,
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

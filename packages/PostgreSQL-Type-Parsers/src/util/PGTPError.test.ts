@@ -1,6 +1,7 @@
+/* eslint-disable unicorn/filename-case */
 import { describe, expect, it } from "vitest";
 
-import { IssueCode, PGTPError } from "./PGTPError";
+import { IssueCode, PGTPError } from "./PGTPError.js";
 
 describe("PGTPError", () => {
 	const error = new PGTPError({

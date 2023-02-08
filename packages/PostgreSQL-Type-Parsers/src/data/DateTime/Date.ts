@@ -2,22 +2,22 @@ import { DateTime, Zone } from "luxon";
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { isValidDate } from "../../util/isValidDate";
-import { isValidDateTime } from "../../util/isValidDateTime";
-import { pad } from "../../util/pad";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { throwPGTPError } from "../../util/throwPGTPError";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { isValidDate } from "../../util/isValidDate.js";
+import { isValidDateTime } from "../../util/isValidDateTime.js";
+import { pad } from "../../util/pad.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface DateObject {
 	year: number;
@@ -62,9 +62,9 @@ interface DateConstructor {
 	safeFrom(date: Date | globalThis.Date | DateTime): SafeFrom<Date>;
 	safeFrom(object: DateObject): SafeFrom<Date>;
 	/**
-	 * Returns `true` if `obj` is a `Date`, `false` otherwise.
+	 * Returns `true` if `object` is a `Date`, `false` otherwise.
 	 */
-	isDate(obj: any): obj is Date;
+	isDate(object: any): object is Date;
 }
 
 class DateConstructorClass extends PGTPConstructorBase<Date> implements DateConstructor {
@@ -72,15 +72,15 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Date> {
-		const [arg, ...otherArgs] = ctx.data,
+	_parse(context: ParseContext): ParseReturnType<Date> {
+		const [argument, ...otherArguments] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object, ParsedType["globalThis.Date"], ParsedType["luxon.DateTime"]],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
-		if (parsedType !== ParsedType.number && ctx.data.length !== 1) {
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -98,7 +98,7 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 		}
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -108,32 +108,32 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 
 		switch (parsedType) {
 			case "string":
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			case "number":
-				return this._parseNumber(ctx, arg as number, otherArgs);
+				return this._parseNumber(context, argument as number, otherArguments);
 			default:
-				return this._parseObject(ctx, arg as object);
+				return this._parseObject(context, argument as object);
 		}
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Date> {
-		if (arg.match(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)) {
-			const [year, month, day] = arg.split("-").map(c => parseInt(c));
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Date> {
+		if (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(argument)) {
+			const [year, month, day] = argument.split("-").map(c => Number.parseInt(c));
 			return OK(new DateClass(year, month, day));
 		}
-		this.setIssueForContext(ctx, {
+		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: arg,
+			received: argument,
 			expected: "LIKE YYYY-MM-DD",
 		});
 		return INVALID;
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number, otherArgs: any[]): ParseReturnType<Date> {
-		const totalLength = otherArgs.length + 1;
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Date> {
+		const totalLength = otherArguments.length + 1;
 		if (totalLength !== 3) {
 			this.setIssueForContext(
-				ctx,
+				context,
 				totalLength > 3
 					? {
 							code: "too_big",
@@ -151,12 +151,12 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 			return INVALID;
 		}
 
-		for (const otherArg of otherArgs) {
+		for (const otherArgument of otherArguments) {
 			const allowedTypes = [ParsedType.number],
-				parsedType = getParsedType(otherArg);
+				parsedType = getParsedType(otherArgument);
 
 			if (!isOneOf(allowedTypes, parsedType)) {
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_type",
 					expected: allowedTypes as ParsedType[],
 					received: parsedType,
@@ -165,38 +165,38 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 			}
 		}
 
-		const [year, month, day] = [arg, ...otherArgs] as number[];
-		return this._parseString(ctx, `${year}-${pad(month)}-${pad(day)}`);
+		const [year, month, day] = [argument, ...otherArguments] as number[];
+		return this._parseString(context, `${year}-${pad(month)}-${pad(day)}`);
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Date> {
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Date> {
 		// Should be [Date]
-		if (Date.isDate(arg)) return OK(new DateClass(arg.year, arg.month, arg.day));
+		if (Date.isDate(argument)) return OK(new DateClass(argument.year, argument.month, argument.day));
 
 		// Should be [globalThis.Date]
-		const jsDate = isValidDate(arg);
+		const jsDate = isValidDate(argument);
 		if (jsDate.isOfSameType) {
 			if (jsDate.isValid) {
 				const [year, month, day] = [jsDate.data.getFullYear(), jsDate.data.getMonth() + 1, jsDate.data.getDate()];
-				return this._parseString(ctx, `${year}-${pad(month)}-${pad(day)}`);
+				return this._parseString(context, `${year}-${pad(month)}-${pad(day)}`);
 			}
-			this.setIssueForContext(ctx, jsDate.error);
+			this.setIssueForContext(context, jsDate.error);
 			return INVALID;
 		}
 
 		// Should be [luxon.DateTime]
-		const luxonDate = isValidDateTime(arg);
+		const luxonDate = isValidDateTime(argument);
 		if (luxonDate.isOfSameType) {
 			if (luxonDate.isValid) {
 				const [year, month, day] = [luxonDate.data.year, luxonDate.data.month, luxonDate.data.day];
-				return this._parseString(ctx, `${year}-${pad(month)}-${pad(day)}`);
+				return this._parseString(context, `${year}-${pad(month)}-${pad(day)}`);
 			}
-			this.setIssueForContext(ctx, luxonDate.error);
+			this.setIssueForContext(context, luxonDate.error);
 			return INVALID;
 		}
 
 		// Should be [DateObject]
-		const parsedObject = hasKeys<DateObject>(arg, [
+		const parsedObject = hasKeys<DateObject>(argument, [
 			["year", "number"],
 			["month", "number"],
 			["day", "number"],
@@ -204,19 +204,19 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 		if (!parsedObject.success) {
 			switch (true) {
 				case parsedObject.otherKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "unrecognized_keys",
 						keys: parsedObject.otherKeys,
 					});
 					break;
 				case parsedObject.missingKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "missing_keys",
 						keys: parsedObject.missingKeys,
 					});
 					break;
 				case parsedObject.invalidKeys.length > 0:
-					this.setIssueForContext(ctx, {
+					this.setIssueForContext(context, {
 						code: "invalid_key_type",
 						...parsedObject.invalidKeys[0],
 					});
@@ -226,11 +226,11 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 		}
 
 		const { year, month, day } = parsedObject.obj;
-		return this._parseString(ctx, `${year}-${pad(month)}-${pad(day)}`);
+		return this._parseString(context, `${year}-${pad(month)}-${pad(day)}`);
 	}
 
-	isDate(obj: any): obj is Date {
-		return obj instanceof DateClass;
+	isDate(object: any): object is Date {
+		return object instanceof DateClass;
 	}
 }
 
@@ -241,16 +241,16 @@ class DateClass extends PGTPBase<Date> implements Date {
 		super();
 	}
 
-	_equals(ctx: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Date }> {
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: Date }> {
 		//@ts-expect-error - _equals receives the same context as _parse
-		const parsed = Date.safeFrom(...ctx.data);
+		const parsed = Date.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
 				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
 			});
 		}
-		this.setIssueForContext(ctx, parsed.error.issue);
+		this.setIssueForContext(context, parsed.error.issue);
 		return INVALID;
 	}
 

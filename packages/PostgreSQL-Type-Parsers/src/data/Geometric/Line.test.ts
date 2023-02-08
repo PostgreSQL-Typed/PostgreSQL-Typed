@@ -1,7 +1,7 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Line } from "./Line";
+import { Line } from "./Line.js";
 
 describe("LineConstructor", () => {
 	test("_parse(...)", () => {
@@ -193,8 +193,8 @@ describe("PostgreSQL", () => {
 					c: 6.6,
 				}).toString()
 			);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

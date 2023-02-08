@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vitest } from "vitest";
 
@@ -39,17 +40,17 @@ class TestClass extends PostgreSQLCaching<TestData> {}
 
 describe.skip("Select all (*) queries", () => {
 	it("should select all columns", async () => {
-		const dbQuerySpy = vitest.spyOn(sql, "query");
+		const databaseQuerySpy = vitest.spyOn(sql, "query");
 
 		await insertData(cacheClass);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(1);
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(1);
 
 		const result = await cacheClass.select("*");
 
 		expect(result.rowCount).toEqual(1);
 		expect(result.rows).toEqual([insertedData]);
-		expect(dbQuerySpy).toHaveBeenCalledTimes(2);
-		dbQuerySpy.mockRestore();
+		expect(databaseQuerySpy).toHaveBeenCalledTimes(2);
+		databaseQuerySpy.mockRestore();
 	});
 
 	it("should select all columns with where", async () => {

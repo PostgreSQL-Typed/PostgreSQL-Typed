@@ -1,8 +1,8 @@
-import type { IsValid } from "../types/IsValid";
+import type { IsValid } from "../types/IsValid.js";
 
 export const isValidDate = (date: unknown): IsValid<globalThis.Date> => {
 	if (!(date instanceof globalThis.Date)) return { isOfSameType: false };
-	if (isNaN(date as any)) {
+	if (Number.isNaN(+date)) {
 		return {
 			isOfSameType: true,
 			isValid: false,

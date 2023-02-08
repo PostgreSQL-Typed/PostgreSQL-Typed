@@ -1,18 +1,18 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import type { ParseContext } from "../../types/ParseContext";
-import type { ParseReturnType } from "../../types/ParseReturnType";
-import type { SafeEquals } from "../../types/SafeEquals";
-import type { SafeFrom } from "../../types/SafeFrom";
-import { arrayParser } from "../../util/arrayParser";
-import { getParsedType, ParsedType } from "../../util/getParsedType";
-import { hasKeys } from "../../util/hasKeys";
-import { isOneOf } from "../../util/isOneOf";
-import { parser } from "../../util/parser";
-import { PGTPBase } from "../../util/PGTPBase";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase";
-import { INVALID, OK } from "../../util/validation";
+import type { ParseContext } from "../../types/ParseContext.js";
+import type { ParseReturnType } from "../../types/ParseReturnType.js";
+import type { SafeEquals } from "../../types/SafeEquals.js";
+import type { SafeFrom } from "../../types/SafeFrom.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { parser } from "../../util/parser.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { INVALID, OK } from "../../util/validation.js";
 
 interface Int2Object {
 	int2: number;
@@ -41,9 +41,9 @@ interface Int2Constructor {
 	safeFrom(string: string): SafeFrom<Int2>;
 	safeFrom(object: Int2 | Int2Object): SafeFrom<Int2>;
 	/**
-	 * Returns `true` if `obj` is a `Int2`, `false` otherwise.
+	 * Returns `true` if `object` is a `Int2`, `false` otherwise.
 	 */
-	isInt2(obj: any): obj is Int2;
+	isInt2(object: any): object is Int2;
 }
 
 class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Constructor {
@@ -51,11 +51,11 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 		super();
 	}
 
-	_parse(ctx: ParseContext): ParseReturnType<Int2> {
-		if (ctx.data.length !== 1) {
+	_parse(context: ParseContext): ParseReturnType<Int2> {
+		if (context.data.length !== 1) {
 			this.setIssueForContext(
-				ctx,
-				ctx.data.length > 1
+				context,
+				context.data.length > 1
 					? {
 							code: "too_big",
 							type: "arguments",
@@ -72,12 +72,12 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 			return INVALID;
 		}
 
-		const [arg] = ctx.data,
+		const [argument] = context.data,
 			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object],
-			parsedType = getParsedType(arg);
+			parsedType = getParsedType(argument);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			this.setIssueForContext(ctx, {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: allowedTypes as ParsedType[],
 				received: parsedType,
@@ -87,81 +87,81 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 
 		switch (parsedType) {
 			case ParsedType.number:
-				return this._parseNumber(ctx, arg as number);
+				return this._parseNumber(context, argument as number);
 			case ParsedType.string:
-				return this._parseString(ctx, arg as string);
+				return this._parseString(context, argument as string);
 			default:
-				return this._parseObject(ctx, arg as Int2Object);
+				return this._parseObject(context, argument as Int2Object);
 		}
 	}
 
-	private _parseNumber(ctx: ParseContext, arg: number): ParseReturnType<Int2> {
-		if (isNaN(arg)) {
-			this.setIssueForContext(ctx, {
+	private _parseNumber(context: ParseContext, argument: number): ParseReturnType<Int2> {
+		if (Number.isNaN(argument)) {
+			this.setIssueForContext(context, {
 				code: "invalid_type",
 				expected: "number",
 				received: "nan",
 			});
 			return INVALID;
 		}
-		if (!isFinite(arg)) {
-			this.setIssueForContext(ctx, {
+		if (!Number.isFinite(argument)) {
+			this.setIssueForContext(context, {
 				code: "not_finite",
 			});
 			return INVALID;
 		}
-		if (arg % 1 !== 0) {
-			this.setIssueForContext(ctx, {
+		if (argument % 1 !== 0) {
+			this.setIssueForContext(context, {
 				code: "not_whole",
 			});
 			return INVALID;
 		}
-		if (arg < -32768) {
-			this.setIssueForContext(ctx, {
+		if (argument < -32_768) {
+			this.setIssueForContext(context, {
 				code: "too_small",
 				type: "number",
-				minimum: -32768,
+				minimum: -32_768,
 				inclusive: true,
 			});
 			return INVALID;
 		}
-		if (arg > 32767) {
-			this.setIssueForContext(ctx, {
+		if (argument > 32_767) {
+			this.setIssueForContext(context, {
 				code: "too_big",
 				type: "number",
-				maximum: 32767,
+				maximum: 32_767,
 				inclusive: true,
 			});
 			return INVALID;
 		}
-		return OK(new Int2Class(arg));
+		return OK(new Int2Class(argument));
 	}
 
-	private _parseString(ctx: ParseContext, arg: string): ParseReturnType<Int2> {
-		const parsed = parseFloat(arg);
-		return this._parseNumber(ctx, parsed);
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<Int2> {
+		const parsed = Number.parseFloat(argument);
+		return this._parseNumber(context, parsed);
 	}
 
-	private _parseObject(ctx: ParseContext, arg: object): ParseReturnType<Int2> {
-		if (this.isInt2(arg)) return OK(new Int2Class(arg.int2));
-		const parsedObject = hasKeys<Int2Object>(arg, [["int2", "number"]]);
-		if (parsedObject.success) return this._parseNumber(ctx, parsedObject.obj.int2);
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Int2> {
+		if (this.isInt2(argument)) return OK(new Int2Class(argument.int2));
+		const parsedObject = hasKeys<Int2Object>(argument, [["int2", "number"]]);
+		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.int2);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				this.setIssueForContext(ctx, {
+				this.setIssueForContext(context, {
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -170,8 +170,8 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 		return INVALID;
 	}
 
-	isInt2(obj: any): obj is Int2 {
-		return obj instanceof Int2Class;
+	isInt2(object: any): object is Int2 {
+		return object instanceof Int2Class;
 	}
 }
 

@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 export const insertedData = {
 	id: "4e5797e0-ef31-4b15-b85f-957b25cc81ac",
 	bigint: "9007199254740991",
@@ -8,7 +9,7 @@ export const insertedData = {
 	boolean: false,
 	box: "(1,1),(1,1)",
 	bpchar: "Text",
-	bytea: Buffer.from("abc \xDEADBEEF"),
+	bytea: Buffer.from("abc \u00DEADBEEF"),
 	cardinalnumber: 1,
 	char: "A",
 	charvarying: "D",
@@ -72,7 +73,7 @@ export const extraData = {
 	boolean: true,
 	box: "(2,2),(2,2)",
 	bpchar: "Text2",
-	bytea: Buffer.from("efg \xDEADBEEF"),
+	bytea: Buffer.from("efg \u00DEADBEEF"),
 	cardinalnumber: 2,
 	char: "B",
 	charvarying: "C",

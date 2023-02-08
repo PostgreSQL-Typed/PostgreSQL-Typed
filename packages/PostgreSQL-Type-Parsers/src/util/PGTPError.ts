@@ -1,5 +1,6 @@
-import { arrayToEnum } from "./arrayToEnum";
-import { ParsedType } from "./getParsedType";
+/* eslint-disable unicorn/filename-case */
+import { arrayToEnum } from "./arrayToEnum.js";
+import { ParsedType } from "./getParsedType.js";
 
 export const IssueCode = arrayToEnum([
 	"invalid_type",

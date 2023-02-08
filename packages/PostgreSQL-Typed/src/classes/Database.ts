@@ -3,32 +3,32 @@ import type { ClientConfig, PoolConfig } from "pg";
 import { Client, Pool } from "pg";
 import type { z } from "zod";
 
-import { Table } from "../classes/Table";
-import type { DatabaseData } from "../types/interfaces/DatabaseData";
-import type { TableLocations } from "../types/types/TableLocations";
-import type { Tables } from "../types/types/Tables";
+import { Table } from "../classes/Table.js";
+import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
+import type { Tables } from "../types/types/Tables.js";
 
-export class Database<DbData extends DatabaseData, Ready extends boolean = false, ClientType extends "client" | "pool" = "client"> {
+export class Database<InnerDatabaseData extends DatabaseData, Ready extends boolean = false, ClientType extends "client" | "pool" = "client"> {
 	private _client: Client | Pool | undefined;
 	private _ready = false;
 
 	constructor(
 		public readonly database_data: {
-			name: DbData["name"];
+			name: InnerDatabaseData["name"];
 			schemas: {
-				name: keyof DbData["schemas"];
+				name: keyof InnerDatabaseData["schemas"];
 				tables: {
-					name: Tables<DbData>;
+					name: Tables<InnerDatabaseData>;
 					primary_key?: string;
 				}[];
 			}[];
 		},
 		public readonly database_zod_data?: {
-			name: DbData["name"];
+			name: InnerDatabaseData["name"];
 			schemas: {
-				name: keyof DbData["schemas"];
+				name: keyof InnerDatabaseData["schemas"];
 				tables: {
-					name: Tables<DbData>;
+					name: Tables<InnerDatabaseData>;
 					// eslint-disable-next-line @typescript-eslint/ban-types
 					zod: z.ZodObject<{}>;
 				}[];
@@ -39,7 +39,7 @@ export class Database<DbData extends DatabaseData, Ready extends boolean = false
 	async connect<Type extends "client" | "pool">(
 		type: Type,
 		config?: Type extends "client" ? string | ClientConfig : PoolConfig
-	): Promise<Database<DbData, true, Type>> {
+	): Promise<Database<InnerDatabaseData, true, Type>> {
 		if (this._ready && !!this._client) return this as any;
 		if (this._ready) this._ready = false;
 
@@ -51,29 +51,29 @@ export class Database<DbData extends DatabaseData, Ready extends boolean = false
 		return this as any;
 	}
 
-	getTable<TableName extends TableLocations<DbData>>(table_name: TableName): Table<DbData, Ready, ClientType, TableName> {
-		return new Table<DbData, Ready, ClientType, TableName>(this, table_name);
+	getTable<TableName extends TableLocations<InnerDatabaseData>>(table_name: TableName): Table<InnerDatabaseData, Ready, ClientType, TableName> {
+		return new Table<InnerDatabaseData, Ready, ClientType, TableName>(this, table_name);
 	}
 
-	getTables(): Table<DbData, Ready, ClientType, TableLocations<DbData>>[] {
+	getTables(): Table<InnerDatabaseData, Ready, ClientType, TableLocations<InnerDatabaseData>>[] {
 		return this.table_locations.map(table_name => this.getTable(table_name));
 	}
 
-	get database_name(): DbData["name"] {
+	get database_name(): InnerDatabaseData["name"] {
 		return this.database_data.name;
 	}
 
-	get schema_names(): (keyof DbData["schemas"])[] {
+	get schema_names(): (keyof InnerDatabaseData["schemas"])[] {
 		return this.database_data.schemas.map(schema => schema.name);
 	}
 
-	get table_names(): Tables<DbData>[] {
-		return this.database_data.schemas.flatMap(schema => schema.tables.map(table => table.name as string)) as Tables<DbData>[];
+	get table_names(): Tables<InnerDatabaseData>[] {
+		return this.database_data.schemas.flatMap(schema => schema.tables.map(table => table.name as string)) as Tables<InnerDatabaseData>[];
 	}
 
-	get table_locations(): TableLocations<DbData>[] {
+	get table_locations(): TableLocations<InnerDatabaseData>[] {
 		return this.database_data.schemas.flatMap(schema =>
-			schema.tables.map(table => `${schema.name as string}.${table.name as string}` as TableLocations<DbData>)
+			schema.tables.map(table => `${schema.name as string}.${table.name as string}` as TableLocations<InnerDatabaseData>)
 		);
 	}
 

@@ -1,10 +1,10 @@
 import { types } from "pg";
 import { DataType } from "postgresql-data-types";
 
-import { arrayParser } from "../../util/arrayParser";
-import { parser } from "../../util/parser";
-import { getRange, Range, RangeConstructor, RangeObject, RawRangeObject } from "../../util/Range";
-import { Int4, Int4Object } from "./Int4";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
+import { getRange, Range, RangeConstructor, RangeObject, RawRangeObject } from "../../util/Range.js";
+import { Int4, Int4Object } from "./Int4.js";
 
 type Int4RangeObject = RangeObject<Int4>;
 

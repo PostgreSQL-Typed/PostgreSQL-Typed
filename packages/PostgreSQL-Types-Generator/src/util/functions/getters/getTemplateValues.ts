@@ -1,6 +1,6 @@
-import type { TypeID } from "../../../types/types/TypeID";
+import type { TypeId } from "../../../types/types/TypeId.js";
 
-export function getTemplateValues(id: TypeID): any {
+export function getTemplateValues(id: TypeId): any {
 	switch (id.type) {
 		case "table":
 		case "insert_parameters":

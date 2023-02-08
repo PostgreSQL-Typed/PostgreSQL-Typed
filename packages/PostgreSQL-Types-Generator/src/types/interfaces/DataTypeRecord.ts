@@ -1,5 +1,5 @@
-import type { DataTypeCategory } from "../enums/DataTypeCategory";
-import type { DataTypeKind } from "../enums/DataTypeKind";
+import type { DataTypeCategory } from "../enums/DataTypeCategory.js";
+import type { DataTypeKind } from "../enums/DataTypeKind.js";
 
 export interface DataTypeRecord {
 	database_name: string;

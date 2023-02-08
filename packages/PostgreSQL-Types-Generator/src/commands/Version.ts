@@ -1,5 +1,5 @@
-import type { Argument } from "../types/interfaces/Argument";
-import { LOGGER, VERSION } from "../util/constants";
+import type { Argument } from "../types/interfaces/Argument.js";
+import { LOGGER, VERSION } from "../util/constants.js";
 
 export const Version: Argument = {
 	name: "version",

@@ -1,10 +1,11 @@
+/* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { Date } from "./Date";
-import { TimestampTZ } from "./TimestampTZ";
-import { TimeTZ } from "./TimeTZ";
+import { Date } from "./Date.js";
+import { TimestampTZ } from "./TimestampTZ.js";
+import { TimeTZ } from "./TimeTZ.js";
 
 describe.todo("TimestampTZ Class", () => {
 	it("should create a timestamptz from a string", () => {
@@ -390,7 +391,7 @@ describe.todo("TimestampTZ Class", () => {
 		timestamptz.year = 2023;
 		expect(timestamptz.year).toBe(2023);
 		expect(() => {
-			timestamptz.year = 10000;
+			timestamptz.year = 10_000;
 		}).toThrowError("Invalid year");
 		expect(() => {
 			timestamptz.year = 0;
@@ -841,8 +842,8 @@ describe.todo("TimestampTZ Class", () => {
 				TimestampTZ.from("2004-10-19 03:05:06.789 +00:00"),
 				TimestampTZ.from("2004-10-19 15:23:54.678 +00:00"),
 			]);
-		} catch (err) {
-			error = err;
+		} catch (error_) {
+			error = error_;
 		}
 
 		await client.query(`

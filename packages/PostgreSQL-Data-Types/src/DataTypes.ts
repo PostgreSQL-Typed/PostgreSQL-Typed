@@ -726,7 +726,7 @@ export enum DataType {
 	/**
 	 * information_schema.character_data
 	 */
-	character_data = 13408,
+	character_data = 13_408,
 
 	/**
 	 * 63-byte type for storing system identifiers
@@ -827,7 +827,7 @@ export enum DataType {
 	/**
 	 * information_schema.cardinal_number
 	 */
-	cardinal_number = 13405,
+	cardinal_number = 13_405,
 
 	/**
 	 * Single-precision floating point number, 4-byte storage

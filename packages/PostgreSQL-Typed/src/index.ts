@@ -1,4 +1,4 @@
 import "source-map-support/register";
 
-export * from "./classes/Database";
-export * from "./classes/Table";
+export * from "./classes/Database.js";
+export * from "./classes/Table.js";

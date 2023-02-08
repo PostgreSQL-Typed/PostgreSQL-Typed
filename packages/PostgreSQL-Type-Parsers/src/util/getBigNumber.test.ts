@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getBigNumber } from "./getBigNumber";
+import { getBigNumber } from "./getBigNumber.js";
 
 describe("getBigNumber", () => {
 	it("should return a function", () => {
@@ -11,47 +11,47 @@ describe("getBigNumber", () => {
 describe("BigNumber", () => {
 	const BigNumber = getBigNumber("-1000", "1000");
 	it("should parse Infinity", () => {
-		const test1 = BigNumber(Infinity);
+		const test1 = BigNumber(Number.POSITIVE_INFINITY);
 		expect(test1.success).toBe(true);
 		if (!test1.success) expect.fail();
-		expect(test1.data.toNumber()).toBe(Infinity);
+		expect(test1.data.toNumber()).toBe(Number.POSITIVE_INFINITY);
 
-		const test2 = BigNumber(-Infinity);
+		const test2 = BigNumber(Number.NEGATIVE_INFINITY);
 		expect(test2.success).toBe(true);
 		if (!test2.success) expect.fail();
-		expect(test2.data.toNumber()).toBe(-Infinity);
+		expect(test2.data.toNumber()).toBe(Number.NEGATIVE_INFINITY);
 
 		// It works with strings
 		const test3 = BigNumber("Infinity");
 		expect(test3.success).toBe(true);
 		if (!test3.success) expect.fail();
-		expect(test3.data.toNumber()).toBe(Infinity);
+		expect(test3.data.toNumber()).toBe(Number.POSITIVE_INFINITY);
 
 		const test4 = BigNumber("-Infinity");
 		expect(test4.success).toBe(true);
 		if (!test4.success) expect.fail();
-		expect(test4.data.toNumber()).toBe(-Infinity);
+		expect(test4.data.toNumber()).toBe(Number.NEGATIVE_INFINITY);
 
 		// It is not case sensitive
 		const test5 = BigNumber("iNfInItY");
 		expect(test5.success).toBe(true);
 		if (!test5.success) expect.fail();
-		expect(test5.data.toNumber()).toBe(Infinity);
+		expect(test5.data.toNumber()).toBe(Number.POSITIVE_INFINITY);
 
 		const test6 = BigNumber("-iNfInItY");
 		expect(test6.success).toBe(true);
 		if (!test6.success) expect.fail();
-		expect(test6.data.toNumber()).toBe(-Infinity);
+		expect(test6.data.toNumber()).toBe(Number.NEGATIVE_INFINITY);
 
 		// It also works with a "+" sign
 		const test7 = BigNumber("+Infinity");
 		expect(test7.success).toBe(true);
 		if (!test7.success) expect.fail();
-		expect(test7.data.toNumber()).toBe(Infinity);
+		expect(test7.data.toNumber()).toBe(Number.POSITIVE_INFINITY);
 	});
 
 	it("should parse NaN", () => {
-		const test1 = BigNumber(NaN);
+		const test1 = BigNumber(Number.NaN);
 		expect(test1.success).toBe(true);
 		if (!test1.success) expect.fail();
 		expect(test1.data.isNaN()).toBe(true);

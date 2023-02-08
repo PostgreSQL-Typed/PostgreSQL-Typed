@@ -1,12 +1,12 @@
 import { resolve } from "node:path";
 
-import { ConfigHandler } from "../classes/ConfigHandler";
-import { Fetcher } from "../classes/Fetcher";
-import { Printer } from "../classes/Printer";
-import { ProgressBar } from "../classes/ProgressBar";
-import type { Command } from "../types/interfaces/Command";
-import { g, I, y } from "../util/chalk";
-import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader";
+import { ConfigHandler } from "../classes/ConfigHandler.js";
+import { Fetcher } from "../classes/Fetcher.js";
+import { Printer } from "../classes/Printer.js";
+import { ProgressBar } from "../classes/ProgressBar.js";
+import type { Command } from "../types/interfaces/Command.js";
+import { g, I, y } from "../util/chalk.js";
+import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Generate: Command = {
 	name: "generate",

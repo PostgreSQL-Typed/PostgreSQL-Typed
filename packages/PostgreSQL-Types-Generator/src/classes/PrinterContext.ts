@@ -1,12 +1,12 @@
-import { FileContent } from "../classes/FileContent";
-import type { Config } from "../types/interfaces/Config";
-import type { FileContext } from "../types/interfaces/FileContext";
-import type { FileExport } from "../types/interfaces/FileExport";
-import type { FileName } from "../types/types/FileName";
-import type { IdentifierName } from "../types/types/IdentifierName";
-import type { TypeID } from "../types/types/TypeID";
-import { mapGetOrSet } from "../util/functions/mapGetOrSet";
-import { resolveFilename } from "../util/functions/resolveFileName";
+import { FileContent } from "../classes/FileContent.js";
+import type { Config } from "../types/interfaces/Config.js";
+import type { FileContext } from "../types/interfaces/FileContext.js";
+import type { FileExport } from "../types/interfaces/FileExport.js";
+import type { FileName } from "../types/types/FileName.js";
+import type { IdentifierName } from "../types/types/IdentifierName.js";
+import type { TypeId } from "../types/types/TypeId.js";
+import { mapGetOrSet } from "../util/functions/mapGetOrSet.js";
+import { resolveFilename } from "../util/functions/resolveFileName.js";
 
 export class PrinterContext {
 	private readonly _files = new Map<FileName, FileContent>();
@@ -14,24 +14,24 @@ export class PrinterContext {
 
 	constructor(public readonly config: Config) {}
 
-	private _pushDeclaration(id: TypeID, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
+	private _pushDeclaration(id: TypeId, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		const file = resolveFilename(this.config, id),
 			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, file));
 
 		return fileContent.pushDeclaration(id, mode, declaration);
 	}
 
-	public pushTypeDeclaration(id: TypeID, declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
+	public pushTypeDeclaration(id: TypeId, declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		return this._pushDeclaration(id, "type", declaration);
 	}
-	public pushReExport(id: TypeID, from: FileExport): void {
+	public pushReExport(id: TypeId, from: FileExport): void {
 		const file = resolveFilename(this.config, id),
 			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, file));
 
 		fileContent.pushReExport(id, from);
 	}
 
-	public pushValueDeclaration(id: TypeID, declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
+	public pushValueDeclaration(id: TypeId, declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		return this._pushDeclaration(id, "value", declaration);
 	}
 

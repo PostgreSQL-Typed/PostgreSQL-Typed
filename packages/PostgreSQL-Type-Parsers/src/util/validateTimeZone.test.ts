@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { validateTimeZone } from "./validateTimeZone";
+import { validateTimeZone } from "./validateTimeZone.js";
 
 describe("validateTimeZone", () => {
 	it("should return the offset minutes for valid timezones", () => {

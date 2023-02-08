@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Client } from "pg";
 
-import { DataTypeCategory } from "../../../types/enums/DataTypeCategory";
-import { DataTypeKind } from "../../../types/enums/DataTypeKind";
-import type { DataTypeBase } from "../../../types/interfaces/DataTypeBase";
-import type { DataTypeRecord } from "../../../types/interfaces/DataTypeRecord";
-import type { DataType } from "../../../types/types/DataType";
-import { getAttributes } from "../getters/getAttributes";
-import { getEnumValues } from "../getters/getEnumValues";
+import { DataTypeCategory } from "../../../types/enums/DataTypeCategory.js";
+import { DataTypeKind } from "../../../types/enums/DataTypeKind.js";
+import type { DataTypeBase } from "../../../types/interfaces/DataTypeBase.js";
+import type { DataTypeRecord } from "../../../types/interfaces/DataTypeRecord.js";
+import type { DataType } from "../../../types/types/DataType.js";
+import { getAttributes } from "../getters/getAttributes.js";
+import { getEnumValues } from "../getters/getEnumValues.js";
 
 export async function getDataTypes(client: Client, schemaNames: string[]) {
 	const conditions = schemaNames.map(schemaName => `ns.nspname = '${schemaName}'`),
@@ -33,7 +33,7 @@ export async function getDataTypes(client: Client, schemaNames: string[]) {
       ON (ty.typelem = subt.oid)
     LEFT OUTER JOIN pg_catalog.pg_type baset
       ON (ty.typbasetype = baset.oid)
-    ${conditions.length ? `WHERE ${conditions.join(" OR ")}` : ""}
+    ${conditions.length > 0 ? `WHERE ${conditions.join(" OR ")}` : ""}
     ORDER BY ns.nspname ASC, ty.typname ASC, subt.typname ASC, baset.typname ASC
   `);
 
@@ -52,6 +52,7 @@ export async function getDataTypes(client: Client, schemaNames: string[]) {
 			switch (base.kind) {
 				case DataTypeKind.Array:
 				case DataTypeKind.Base:
+					// eslint-disable-next-line unicorn/prefer-ternary
 					if (tr.category === DataTypeCategory.Array) {
 						return {
 							...base,
@@ -84,12 +85,14 @@ export async function getDataTypes(client: Client, schemaNames: string[]) {
 						base_type_id: tr.base_type_id!,
 						base_type_name: tr.base_type_name!,
 					};
-				case DataTypeKind.Enum:
+				case DataTypeKind.Enum: {
+					const enumValues = await getEnumValues(client, tr.type_id);
 					return {
 						...base,
 						kind: DataTypeKind.Enum,
-						values: (await getEnumValues(client, tr.type_id)).map(v => v.value),
+						values: enumValues.map(v => v.value),
 					};
+				}
 				case DataTypeKind.Pseudo:
 					return {
 						...base,

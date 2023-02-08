@@ -1,9 +1,9 @@
 /* eslint-disable no-undefined */
 import type chalk from "chalk";
 
-import { ETA } from "../classes/ETA";
-import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader";
-import { isDebugEnabled } from "../util/functions/isDebugEnabled";
+import { ETA } from "../classes/ETA.js";
+import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
+import { isDebugEnabled } from "../util/functions/isDebugEnabled.js";
 
 interface WaiterOptions {
 	line1: string;
@@ -202,19 +202,19 @@ export class ProgressBar {
 
 	private getProgressString() {
 		const barWidth = 41,
-			completeString = new Array(barWidth).join("\u2588"),
-			incompleteString = new Array(barWidth).join("\u2591"),
+			completeString = Array.from({ length: barWidth }).join("\u2588"),
+			incompleteString = Array.from({ length: barWidth }).join("\u2591"),
 			completeSize = Math.round(this.getProgress() * barWidth),
 			incompleteSize = barWidth - completeSize;
 
-		return completeString.substring(0, completeSize) + incompleteString.substring(0, incompleteSize);
+		return completeString.slice(0, completeSize) + incompleteString.slice(0, incompleteSize);
 	}
 
 	private getProgress() {
 		let progress = this.value / this.total;
-		if (isNaN(progress)) progress = 1.0;
+		if (Number.isNaN(progress)) progress = 1;
 
-		progress = Math.min(Math.max(progress, 0.0), 1.0);
+		progress = Math.min(Math.max(progress, 0), 1);
 
 		return progress;
 	}

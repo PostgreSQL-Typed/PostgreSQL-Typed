@@ -1,4 +1,4 @@
-import type { Filter } from "../types/Filter";
+import type { Filter } from "../types/Filter.js";
 
 export interface RootFilterOperators<TSchema> {
 	$AND?: Filter<TSchema>[];

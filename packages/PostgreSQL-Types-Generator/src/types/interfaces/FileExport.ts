@@ -1,4 +1,4 @@
-import type { FileName } from "../types/FileName";
+import type { FileName } from "../types/FileName.js";
 
 export interface FileExport {
 	mode: "type" | "value";

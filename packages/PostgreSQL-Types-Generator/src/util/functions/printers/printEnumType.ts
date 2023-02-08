@@ -1,6 +1,6 @@
-import type { Printer } from "../../../classes/Printer";
-import type { EnumDataType } from "../../../types/interfaces/EnumDataType";
-import type { FileContext } from "../../../types/interfaces/FileContext";
+import type { Printer } from "../../../classes/Printer.js";
+import type { EnumDataType } from "../../../types/interfaces/EnumDataType.js";
+import type { FileContext } from "../../../types/interfaces/FileContext.js";
 
 export function printEnumType(type: EnumDataType, printer: Printer, file: FileContext): string {
 	return file.getImport(

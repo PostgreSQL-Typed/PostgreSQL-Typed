@@ -3,10 +3,10 @@ import "source-map-support/register";
 import Keyv from "keyv";
 import type { Client, Pool, QueryResult } from "pg";
 
-import type { Filter, FilterOperators, Include, OrderBy, RootFilterOperators, SelectOptions } from "./types";
-import { isFilterOperator, isRootFilterOperator } from "./types";
+import type { Filter, FilterOperators, Include, OrderBy, RootFilterOperators, SelectOptions } from "./types.js";
+import { isFilterOperator, isRootFilterOperator } from "./types.js";
 
-export * from "./types";
+export * from "./types.js";
 
 export default class PostgreSQLCaching<TSchema extends object = any, TContext = any> {
 	keyv: Keyv;
@@ -58,15 +58,15 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 		const cacheKey = `select-${this.getCacheKey(columns, options)}`;
 
 		return this.throttleFunction(cacheKey, async () => {
-			const cacheDoc = await this.keyv.get(cacheKey);
+			const cacheDocument = await this.keyv.get(cacheKey);
 
-			if (cacheDoc) return cacheDoc;
+			if (cacheDocument) return cacheDocument;
 
-			const res = await this.getSelectQuery(columns, options);
+			const result = await this.getSelectQuery(columns, options);
 
-			await this.keyv.set(cacheKey, res);
+			await this.keyv.set(cacheKey, result);
 
-			return res;
+			return result;
 		});
 	}
 
@@ -76,7 +76,7 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 
 		if (Array.isArray(columns)) columns = [...new Set<keyof TSchema>([...columns, this.pk])];
 
-		const res = await this.sql.query<TSchema>(`
+		const response = await this.sql.query<TSchema>(`
 				SELECT ${columns}
 				FROM ${this.schema}.${this.table}
 				${this.whereToSQL(where)}
@@ -84,62 +84,57 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 				${this.limitToSQL(limit)}
 				${this.fetchToSQL(fetch)}`);
 
-		res.rows = res.rows.map((row: Record<string, any>): TSchema => {
+		response.rows = response.rows.map((row: Record<string, any>): TSchema => {
 			for (const [key, value] of Object.entries(row)) if (value instanceof Date) row[key] = value.toJSON();
 			return row as TSchema;
 		});
 
 		if (Array.isArray(mainColumns) && !mainColumns.includes(this.pk)) {
-			res.rows = res.rows.map(row => {
+			response.rows = response.rows.map(row => {
 				delete row[this.pk];
 				return row;
 			});
 		}
 
-		return res;
+		return response;
 	}
 
 	private whereToSQL(where?: Filter<TSchema>, nested = false): string {
-		if (typeof where === "undefined" || !Object.keys(where).length) return "";
+		if (where === undefined || Object.keys(where).length === 0) return "";
 
 		const keys = Object.entries(where).filter(([key]) => isRootFilterOperator<TSchema>(key));
-		if (keys.length) {
+		if (keys.length > 0) {
 			const [[operator, filter]] = keys as [keyof RootFilterOperators<TSchema>, Filter<TSchema>[]][],
 				queries = filter.map(v => this.whereToSQL(v, true)).filter(Boolean);
-			if (nested) return `(${queries.join(` ${this.encodeOperator(operator)} `)})`;
-			else return `WHERE ${queries.join(` ${this.encodeOperator(operator)} `)}`;
+			return nested ? `(${queries.join(` ${this.encodeOperator(operator)} `)})` : `WHERE ${queries.join(` ${this.encodeOperator(operator)} `)}`;
 		}
 
-		const res: string[] = [];
+		const result: string[] = [];
 		for (const [key, value] of Object.entries(where)) {
-			if (key.includes(".")) res.push(this.encodeJsonQuery(key, value));
-			else if (typeof value !== "object" || value === null) res.push(`${key} = ${this.encodeValue(value)}`);
-			else res.push(this.encodeOperation(key, value));
+			if (key.includes(".")) result.push(this.encodeJsonQuery(key, value));
+			else if (typeof value !== "object" || value === null) result.push(`${key} = ${this.encodeValue(value)}`);
+			else result.push(this.encodeOperation(key, value));
 		}
 
-		if (res.length === 1) return `${!nested ? "WHERE " : ""}${res[0]}`;
-		else return `${!nested ? "WHERE " : ""}(${res.join(" AND ")})`;
+		return result.length === 1 ? `${nested ? "" : "WHERE "}${result[0]}` : `${nested ? "" : "WHERE "}(${result.join(" AND ")})`;
 	}
 
-	private encodeValue(value: any, operator?: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): any {
+	private encodeValue(value: any, operator?: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): string {
 		switch (typeof value) {
-			case "boolean": {
+			case "boolean":
 				switch (operator) {
 					case "$IS_NULL":
 						return "";
 					case "$IS_NOT_NULL":
 						return "";
 					default:
-						return value;
+						return value.toString();
 				}
-			}
-			case "string": {
+			case "string":
 				return `'${this.escape(value)}'`;
-			}
 			case "number":
-			case "bigint": {
-				return value;
-			}
+			case "bigint":
+				return value.toString();
 			case "object": {
 				const isArray = Array.isArray(value),
 					isBuffer = Buffer.isBuffer(value);
@@ -152,22 +147,19 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 							return `${this.encodeValue(min)} AND ${this.encodeValue(max)}`;
 						}
 						case "$IN":
-						case "$NOT_IN": {
+						case "$NOT_IN":
 							return `(${value.map(v => this.encodeValue(v)).join(", ")})`;
-						}
-						default: {
+						default:
 							return `'${JSON.stringify(value)}'`;
-						}
 					}
 				} else if (isBuffer) return `'${value.toString()}'`;
 
 				return `'${JSON.stringify(value)}'`;
 			}
-			default: {
+			default:
 				break;
-			}
 		}
-		return null;
+		return "NULL";
 	}
 
 	private escape(value: string) {
@@ -179,15 +171,14 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 	}
 
 	private encodeOperation(key: string, operation: FilterOperators<any>): string {
-		const res: string[] = [];
+		const result: string[] = [];
 		for (const [operator, value] of Object.entries(operation)) {
 			if (isFilterOperator(operator) || isRootFilterOperator(operator))
-				res.push(`${key} ${this.encodeOperator(operator)} ${this.encodeValue(value, operator)}`);
+				result.push(`${key} ${this.encodeOperator(operator)} ${this.encodeValue(value, operator)}`);
 			else return `${key} = ${this.encodeValue(operation)}`;
 		}
 
-		if (res.length === 1) return res[0];
-		else return `(${res.join(" AND ")})`;
+		return result.length === 1 ? result[0] : `(${result.join(" AND ")})`;
 	}
 
 	private encodeOperator(operator: keyof FilterOperators<any> | keyof RootFilterOperators<TSchema>): string {
@@ -234,31 +225,25 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 	private encodeJsonQuery(key: string, value: any) {
 		const [field, ...path] = key.split("."),
 			lastPath = path.pop();
-		let pathStr = path.map(p => `'${p}'`).join("->");
-		if (pathStr) pathStr = `->${pathStr}`;
-		return this.encodeJsonQueryCast(`${field}${pathStr}->>'${lastPath}'`, value);
+		let pathString = path.map(p => `'${p}'`).join("->");
+		if (pathString) pathString = `->${pathString}`;
+		return this.encodeJsonQueryCast(`${field}${pathString}->>'${lastPath}'`, value);
 	}
 
 	private encodeJsonQueryCast(key: string, value: any) {
 		switch (typeof value) {
-			case "boolean": {
+			case "boolean":
 				return `CAST(${key} as boolean) = ${value}`;
-			}
-			case "string": {
+			case "string":
 				return `${key} = '${this.escape(value)}'`;
-			}
-			case "number": {
+			case "number":
 				return `CAST(${key} as integer) = ${value}`;
-			}
-			case "bigint": {
+			case "bigint":
 				return `CAST(${key} as bigint) = ${value}`;
-			}
-			case "object": {
+			case "object":
 				return `CAST(${key} as jsonb) = '${JSON.stringify(value)}'`;
-			}
-			default: {
+			default:
 				return `${key} = ${this.encodeValue(value)}`;
-			}
 		}
 	}
 
@@ -323,8 +308,8 @@ export default class PostgreSQLCaching<TSchema extends object = any, TContext = 
 		return promise;
 	}
 
-	getCacheKey(...args: any[]) {
-		const elements = args.filter(arg => typeof arg === "object");
+	getCacheKey(...input: any[]) {
+		const elements = input.filter(element => typeof element === "object");
 
 		return JSON.stringify(elements.length === 1 ? elements[0] : elements);
 	}

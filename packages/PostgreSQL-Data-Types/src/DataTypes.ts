@@ -420,6 +420,16 @@ export enum DataType {
 	anycompatible = 5077,
 
 	/**
+	 * Pseudo-type representing a multirange over a polymorphic common type
+	 */
+	anymultirange = 4537,
+
+	/**
+	 * Pseudo-type representing a multirange over a polymorphic common type
+	 */
+	anycompatiblemultirange = 4538,
+
+	/**
 	 * Pseudo-type representing an array of polymorphic common type elements
 	 */
 	anycompatiblearray = 5078,
@@ -813,14 +823,29 @@ export enum DataType {
 	numrange = 3906,
 
 	/**
+	 * Multirange of numerics
+	 */
+	nummultirange = 4532,
+
+	/**
 	 * Range of timestamps without time zone
 	 */
 	tsrange = 3908,
 
 	/**
+	 * Multirange of timestamps without time zone
+	 */
+	tsmultirange = 4533,
+
+	/**
 	 * Range of timestamps with time zone
 	 */
 	tstzrange = 3910,
+
+	/**
+	 * Multirange of timestamps with time zone
+	 */
+	tstzmultirange = 4534,
 
 	//* Numeric
 
@@ -940,6 +965,18 @@ export enum DataType {
 	 * (abstime,abstime), time interval
 	 */
 	tinterval = 704,
+
+	//* BRIN
+
+	/**
+	 * BRIN bloom summary
+	 */
+	pg_brin_bloom_summary = 4600,
+
+	/**
+	 * BRIN minmax-multi summary
+	 */
+	pg_brin_minmax_multi_summary = 4601,
 
 	//* Unknown
 

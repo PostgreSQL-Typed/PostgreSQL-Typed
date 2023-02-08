@@ -11,8 +11,17 @@
 </div>
 
 <h1 align="center">
-	PostgreSQL-Typed Monorepo <img src="https://img.shields.io/badge/coverage-90.57%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Global Monorepo Coverage"/>
+	PostgreSQL-Typed Monorepo
 </h1>
+<div align="center">
+	<!-- badges -->
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/actions/workflows/CI.yml">
+		<img src="https://img.shields.io/github/actions/workflow/status/PostgreSQL-Typed/PostgreSQL-Typed/CI.yml?label=Test%20Packages&logo=github" alt="CI Status"/>
+	</a>
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">
+		<img src="https://img.shields.io/badge/coverage-90.88%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Monorepo Coverage"/>
+	</a>
+</div>
 <p align="center">
   The PostgreSQL-Typed monorepo contains all packages for the PostgreSQL-Typed ecosystem.
 <p>
@@ -67,7 +76,7 @@
 	<!-- badges -->
 	<a href="https://www.npmjs.com/package/postgresql-data-types">
 		<img src="https://img.shields.io/npm/v/postgresql-data-types.svg?logo=npm" alt="PostgreSQL-Data-Types Version"/>
-		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/PostgreSQL-Data-Types&logo=vitest&style=flat" alt="PostgreSQL-Data-Types Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/PostgreSQL-Data-Types&logo=vitest&style=flat" alt="PostgreSQL-Data-Types Coverage"/>
 	</a>
 </div>
 <p align="center">

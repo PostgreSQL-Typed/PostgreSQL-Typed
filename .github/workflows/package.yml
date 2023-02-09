@@ -39,6 +39,7 @@ jobs:
     name: Test Node-${{matrix.node}} Postgres-${{matrix.postgres}}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         postgres: ["11", "12", "13", "14", "latest"]
         node: ["16", "17", "current", "latest"]
@@ -74,6 +75,7 @@ jobs:
       - name: Upload coverage
         uses: actions/upload-artifact@v3
         with:
+          if: ${{matrix.node == 'current' && matrix.postgres == 'latest'}}
           name: Coverage
           path: packages/*/coverage/coverage-summary.json
           #if-no-files-found: error

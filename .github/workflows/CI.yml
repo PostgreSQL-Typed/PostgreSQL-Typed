@@ -28,7 +28,7 @@ jobs:
       package: postgresql-types-generator
   coverage:
     name: Coverage
-    needs: ecosystem
+    needs: [PostgreSQL-Typed, PostgreSQL-Caching, PostgreSQL-Data-Types, PostgreSQL-Type-Parsers, PostgreSQL-Types-Generator]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

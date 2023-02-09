@@ -1,16 +1,31 @@
 name: Ecosystem
 on: [push]
 jobs:
-  ecosystem:
-    name: ${{ matrix.package }}
-    strategy:
-      matrix:
-        package: ["postgresql-typed", "postgresql-caching", "postgresql-data-types", "postgresql-type-parsers", "postgresql-types-generator"]
-        pgVersion: ["11", "12", "13", "14", "15", "latest"]
+  "PostgreSQL-Typed":
+    name: PostgreSQL-Typed
     uses: ./.github/workflows/package.yml
     with:
-      package: ${{ matrix.package }}
-      pgVersion: ${{ matrix.pgVersion }}
+      package: postgresql-typed
+  "PostgreSQL-Caching":
+    name: PostgreSQL-Caching
+    uses: ./.github/workflows/package.yml
+    with:
+      package: postgresql-caching
+  "PostgreSQL-Data-Types":
+    name: PostgreSQL-Data-Types
+    uses: ./.github/workflows/package.yml
+    with:
+      package: postgresql-data-types
+  "PostgreSQL-Type-Parsers":
+    name: PostgreSQL-Type-Parsers
+    uses: ./.github/workflows/package.yml
+    with:
+      package: postgresql-type-parsers
+  "PostgreSQL-Types-Generator":
+    name: PostgreSQL-Types-Generator
+    uses: ./.github/workflows/package.yml
+    with:
+      package: postgresql-types-generator
   coverage:
     name: Coverage
     needs: ecosystem

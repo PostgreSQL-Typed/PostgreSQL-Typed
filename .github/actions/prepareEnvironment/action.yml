@@ -1,5 +1,10 @@
 name: Prepare Environment
 description: Prepare the environment for the build
+inputs:
+  node-version:
+    description: The Node.js version to use
+    required: false
+    default: '16'
 runs:
   using: composite
   steps:
@@ -10,6 +15,7 @@ runs:
       uses: actions/setup-node@v3
       with:
         cache: pnpm
+        node-version: ${{ inputs.node-version }}
 
     - name: Install dependencies
       shell: bash

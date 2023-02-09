@@ -6,10 +6,6 @@ on:
       package:
         required: true
         type: string
-      pgVersion:
-        required: false
-        type: string
-        default: 11
 
 jobs:
   lint:
@@ -42,6 +38,10 @@ jobs:
     needs: build
     name: Test ${{ inputs.package }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        postgres: ["11", "12", "13", "14", "latest"]
+        node: ["16", "17", "current", "latest"]
     services:
       postgres:
         image: postgres:${{ inputs.pgVersion }}
@@ -62,6 +62,8 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
+        with:
+          node-version: ${{ matrix.node }}
 
       - name: Run build
         run: pnpm build --filter ${{ inputs.package }}

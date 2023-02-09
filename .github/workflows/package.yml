@@ -73,9 +73,9 @@ jobs:
         run: pnpm test:ci --filter ${{ inputs.package }}
 
       - name: Upload coverage
+        if: ${{matrix.node == 'current' && matrix.postgres == 'latest'}}
         uses: actions/upload-artifact@v3
         with:
-          if: ${{matrix.node == 'current' && matrix.postgres == 'latest'}}
           name: Coverage
           path: packages/*/coverage/coverage-summary.json
           #if-no-files-found: error

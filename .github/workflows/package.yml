@@ -6,6 +6,10 @@ on:
       package:
         required: true
         type: string
+      pgVersion:
+        required: false
+        type: string
+        default: 11
 
 jobs:
   lint:
@@ -40,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:${{ inputs.pgVersion }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_DB: postgres

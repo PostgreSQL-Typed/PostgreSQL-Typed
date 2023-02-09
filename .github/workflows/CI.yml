@@ -6,9 +6,11 @@ jobs:
     strategy:
       matrix:
         package: ["postgresql-typed", "postgresql-caching", "postgresql-data-types", "postgresql-type-parsers", "postgresql-types-generator"]
+        pgVersion: ["11", "12", "13", "14", "15", "latest"]
     uses: ./.github/workflows/package.yml
     with:
       package: ${{ matrix.package }}
+      pgVersion: ${{ matrix.pgVersion }}
   coverage:
     name: Coverage
     needs: ecosystem

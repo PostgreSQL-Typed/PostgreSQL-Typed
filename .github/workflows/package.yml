@@ -41,8 +41,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        postgres: ["11", "12", "13", "14", "latest"]
         node: ["16", "17", "current", "latest"]
+        postgres: ["11", "12", "13", "14", "latest"]
     services:
       postgres:
         image: postgres:${{ matrix.postgres }}

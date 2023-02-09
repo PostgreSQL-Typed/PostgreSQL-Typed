@@ -10,7 +10,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    name: Lint ${{ inputs.package }}
+    name: Lint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: Build ${{ inputs.package }}
+    name: Build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -34,9 +34,9 @@ jobs:
       - name: Run build
         run: pnpm build --filter ${{ inputs.package }}
 
-  test:
+  "Test":
     needs: build
-    name: Test ${{ inputs.package }}
+    name: Test Node-${{matrix.node}} Postgres-${{matrix.postgres}}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,7 +44,7 @@ jobs:
         node: ["16", "17", "current", "latest"]
     services:
       postgres:
-        image: postgres:${{ inputs.pgVersion }}
+        image: postgres:${{ matrix.postgres }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_DB: postgres

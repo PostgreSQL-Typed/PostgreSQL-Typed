@@ -1,40 +1,48 @@
-name: Test Packages
+name: Ecosystem
 on: [push]
 jobs:
-  test:
-    name: Test Packages
+  ecosystem:
+    name: ${{ matrix.package }}
+    strategy:
+      matrix:
+        package: ["postgresql-typed", "postgresql-caching", "postgresql-data-types", "postgresql-type-parsers", "postgresql-types-generator"]
+    uses: ./.github/workflows/package.yml
+    with:
+      package: ${{ matrix.package }}
+  coverage:
+    name: Coverage
+    needs: ecosystem
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Prepare environment
+        uses: ./.github/actions/prepareEnvironment
 
-      - name: Install Node
-        uses: actions/setup-node@v3
+      - name: Download coverage
+        uses: actions/download-artifact@v3
         with:
-          cache: "pnpm"
+          name: Coverage
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Check badges
+        run: pnpm badges:ci
+  changesets:
+    name: Publish
+    needs: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Run linter
-        run: pnpm lint:ci
+      - name: Prepare environment
+        uses: ./.github/actions/prepareEnvironment
 
-      - name: Run test
-        run: pnpm test:ci
+      - name: Create Release Pull Request or Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

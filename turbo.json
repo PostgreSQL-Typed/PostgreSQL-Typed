@@ -2,7 +2,7 @@
 	"$schema": "https://turbo.build/schema.json",
 	"pipeline": {
 		"build": {
-			"dependsOn": ["lint:ci"],
+			"dependsOn": ["^build"],
 			"outputs": ["lib/**", "dist/**"]
 		},
 		"lint": {},
@@ -15,7 +15,6 @@
 			"cache": false
 		},
 		"test:ci": {
-			"dependsOn": ["build"],
 			"outputs": ["coverage/**"]
 		}
 	},

@@ -192,6 +192,11 @@ export enum DataType {
 	_numeric = 1231,
 
 	/**
+	 * `Array<nummultirange>`
+	 */
+	_nummultirange = 6151,
+
+	/**
 	 * `Array<numrange>`
 	 */
 	_numrange = 3907,
@@ -337,9 +342,19 @@ export enum DataType {
 	_tsquery = 3645,
 
 	/**
+	 * `Array<tstzmultirange>`
+	 */
+	_tsmultirange = 6152,
+
+	/**
 	 * `Array<tsrange>`
 	 */
 	_tsrange = 3909,
+
+	/**
+	 * `Array<tstzmultirange>`
+	 */
+	_tstzmultirange = 6153,
 
 	/**
 	 * `Array<tstzrange>`

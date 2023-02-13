@@ -19,12 +19,11 @@ describe("DataType", () => {
         (t.typrelid = 0 OR (
           SELECT c.relkind = 'c' FROM pg_catalog.pg_class c WHERE c.oid = t.typrelid
         ))
-        AND NOT EXISTS(
-          SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid
-        )
         AND pg_catalog.pg_type_is_visible(t.oid)
-        and t.oid not in (${allDataTypes.join(", ")})
-        and n.nspname = 'pg_catalog'
+				AND t.typname NOT LIKE 'pg_%'
+				AND t.typname NOT LIKE '_pg_%'
+        AND t.oid NOT IN (${allDataTypes.join(", ")})
+        AND n.nspname = 'pg_catalog'
       ORDER BY 1, 2;
     `,
 			client = new Client({
@@ -77,8 +76,8 @@ describe("DataType", () => {
           SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid
         )
         AND pg_catalog.pg_type_is_visible(t.oid)
-        and t.oid in (${allDataTypes.join(", ")})
-        and n.nspname = 'pg_catalog'
+        AND t.oid IN (${allDataTypes.join(", ")})
+        AND n.nspname = 'pg_catalog'
       ORDER BY 1, 2;
     `,
 			client = new Client({

@@ -21,7 +21,7 @@ describe("getParsedType", () => {
 		expect(getParsedType(BigInt(1))).toBe("bigint");
 	});
 
-	it("should return bigint", () => {
+	it("should return bigNumber", () => {
 		expect(getParsedType(BigNumber(1))).toBe("bigNumber");
 	});
 

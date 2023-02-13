@@ -1,304 +1,249 @@
 import { DateTime } from "luxon";
 import { Client } from "pg";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
 import { Time } from "./Time.js";
 
-describe.todo("Time Class", () => {
-	it("should create a time from a string", () => {
-		const time1 = Time.from("04:05:06.789");
-		expect(time1).not.toBeNull();
-		const time2 = Time.from("04:05:06");
-		expect(time2).not.toBeNull();
-		expect(Time.from(Time.from("04:05:06"))).not.toBeNull();
-	});
+describe("TimeConstructor", () => {
+	test("_parse(...)", () => {
+		expect(Time.safeFrom("22:10:09").success).toBe(true);
+		expect(
+			Time.safeFrom({
+				hour: 1,
+				minute: 2,
+				second: 3,
+			}).success
+		).toBe(true);
+		expect(Time.safeFrom(1, 2, 3).success).toBe(true);
+		expect(Time.safeFrom(Time.from("22:10:09")).success).toBe(true);
+		expect(Time.safeFrom(new globalThis.Date()).success).toBe(true);
+		expect(Time.safeFrom(DateTime.now()).success).toBe(true);
 
-	it("should error when creating a time from an invalid string", () => {
-		expect(() => Time.from("04:abc:06.789")).toThrowError("Invalid Time string");
-	});
-
-	it("should create a time from a object", () => {
-		const time1 = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		expect(time1).not.toBeNull();
-		const time2 = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6.789,
-		});
-		expect(time2).not.toBeNull();
-	});
-
-	it("should error when creating a time from an invalid object", () => {
-		expect(() => Time.from({} as any)).toThrowError("Invalid Time object");
+		//@ts-expect-error - this is a test
+		expect(() => Time.from()).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Time.from("a", "b")).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Time.from(BigInt("1"))).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'bigint'");
+		expect(() => Time.from("()")).toThrowError("Expected 'LIKE HH:MM:SS', received '()'");
+		expect(() => Time.from({} as any)).toThrowError("Missing keys in object: 'hour', 'minute', 'second'");
 		expect(() =>
 			Time.from({
-				hour: 4,
-				minute: 5,
-				second: "invalid",
+				hour: "1",
+				minute: 2,
+				second: 3,
 			} as any)
-		).toThrowError("Invalid Time object");
+		).toThrowError("Expected 'number' for key 'hour', received 'string'");
 		expect(() =>
 			Time.from({
-				hour: 99,
-				minute: 5,
-				second: 1,
+				week: 0,
+				hour: 1,
+				minute: 2,
+				second: 3,
+			} as any)
+		).toThrowError("Unrecognized key in object: 'week'");
+		expect(() => Time.from(1, 2, "a" as any)).toThrowError("Expected 'number', received 'string'");
+		//@ts-expect-error - this is a test
+		expect(() => Time.from(1, 2)).toThrowError("Function must have exactly 3 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => Time.from(1, 2, 3, 4)).toThrowError("Function must have exactly 3 argument(s)");
+		expect(() => Time.from(new globalThis.Date("a"))).toThrowError("Invalid globalThis.Date");
+		expect(() => Time.from(DateTime.fromISO("a"))).toThrowError("Invalid luxon.DateTime");
+
+		expect(() =>
+			Time.from({
+				hour: 1.2,
+				minute: 2,
+				second: 3,
 			})
-		).toThrowError("Invalid Time object");
-	});
-
-	it("should create a time from numbers", () => {
-		const time1 = Time.from(4, 5, 6);
-		expect(time1).not.toBeNull();
-		const time2 = Time.from(4, 5, 6.789);
-		expect(time2).not.toBeNull();
-	});
-
-	it("should error when creating a time from invalid numbers", () => {
-		expect(() => Time.from(4, 5, "number" as any)).toThrowError("Invalid Time array, numbers only");
-		expect(() => Time.from(4, 5, 99)).toThrowError("Invalid Time array, numbers only");
-	});
-
-	it("should create a time from a DateTime", () => {
-		const time1 = Time.from(
-			DateTime.fromObject({
-				hour: 4,
-				minute: 5,
-				second: 6,
-				millisecond: 789,
+		).toThrowError("Number must be whole");
+		expect(() =>
+			Time.from({
+				hour: 24,
+				minute: 2,
+				second: 3,
 			})
-		);
-		expect(time1).not.toBeNull();
-		const time2 = Time.from(
-			DateTime.fromObject({
-				hour: 4,
-				minute: 5,
-				second: 6,
+		).toThrowError("Number must be less than or equal to 23");
+		expect(() =>
+			Time.from({
+				hour: -1,
+				minute: 2,
+				second: 3,
 			})
-		);
-		expect(time2).not.toBeNull();
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			Time.from({
+				hour: 1,
+				minute: 1.2,
+				second: 3,
+			})
+		).toThrowError("Number must be whole");
+		expect(() =>
+			Time.from({
+				hour: 1,
+				minute: 60,
+				second: 3,
+			})
+		).toThrowError("Number must be less than or equal to 59");
+		expect(() =>
+			Time.from({
+				hour: 1,
+				minute: -1,
+				second: 3,
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			Time.from({
+				hour: 1,
+				minute: 2,
+				second: -1,
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			Time.from({
+				hour: 1,
+				minute: 2,
+				second: 60,
+			})
+		).toThrowError("Number must be less than or equal to 59");
 	});
 
-	it("should create a time from a JavaScript Date", () => {
-		const time1 = Time.from(new globalThis.Date(2022, 9, 2, 4, 5, 6, 789));
-		expect(time1).not.toBeNull();
-		const time2 = Time.from(new globalThis.Date(2022, 9, 2, 4, 5, 6));
-		expect(time2).not.toBeNull();
-	});
-
-	it("isTime()", () => {
+	test("isTime(...)", () => {
 		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
+			hour: 1,
+			minute: 2,
+			second: 3,
 		});
 		expect(Time.isTime(time)).toBe(true);
 		expect(
 			Time.isTime({
-				hour: 4,
-				minute: 5,
-				second: 6,
+				hour: 1,
+				minute: 2,
+				second: 3,
 			})
 		).toBe(false);
 	});
+});
 
-	it("toString()", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6.789,
-		});
-		expect(time.toString()).toBe("04:05:06");
+describe("Time", () => {
+	test("_equals(...)", () => {
+		const time = Time.from("22:10:09");
+
+		expect(time.equals(Time.from("22:10:09"))).toBe(true);
+		expect(time.equals(Time.from("22:10:09.456"))).toBe(false);
+		expect(time.equals(Time.from("22:10:09").toJSON())).toBe(true);
+		expect(time.equals(Time.from("22:10:09.456").toJSON())).toBe(false);
+		expect(time.equals(Time.from("22:10:09").toString())).toBe(true);
+		expect(time.equals(Time.from("22:10:09.456").toString())).toBe(false);
+		//@ts-expect-error - this is a test
+		expect(() => time.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'bigint'");
 	});
 
-	it("toJSON()", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6.789,
-		});
+	test("toString()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.toString()).toBe("22:10:09");
+	});
+
+	test("toJSON()", () => {
+		const time = Time.from("22:10:09");
 		expect(time.toJSON()).toEqual({
-			hour: 4,
-			minute: 5,
-			second: 6,
+			hour: 22,
+			minute: 10,
+			second: 9,
 		});
 	});
 
-	it("equals()", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6.789,
-		});
-
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-				})
-			)
-		).toBe(true);
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 6,
-					second: 6,
-				})
-			)
-		).toBe(false);
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-				}).toJSON()
-			)
-		).toBe(true);
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 6,
-					second: 6,
-				}).toJSON()
-			)
-		).toBe(false);
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-				}).toString()
-			)
-		).toBe(true);
-		expect(
-			time.equals(
-				Time.from({
-					hour: 4,
-					minute: 6,
-					second: 6,
-				}).toString()
-			)
-		).toBe(false);
+	test("toDateTime()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.toDateTime().isValid).toBe(true);
 	});
 
-	it("get hour", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		expect(time.hour).toBe(4);
+	test("toJSDate()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.toJSDate() instanceof globalThis.Date).toBe(true);
 	});
 
-	it("set hour", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		time.hour = 12;
-		expect(time.hour).toBe(12);
-		expect(() => {
-			time.hour = 24;
-		}).toThrowError("Invalid hour");
-		expect(() => {
-			time.hour = -1;
-		}).toThrowError("Invalid hour");
+	test("get hour()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.hour).toBe(22);
+	});
+
+	test("set hour()", () => {
+		const time = Time.from("22:10:09");
 		expect(() => {
 			time.hour = "a" as any;
-		}).toThrowError("Invalid hour");
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			time.hour = 2.5;
+		}).toThrowError("Number must be whole");
+		expect(() => {
+			time.hour = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			time.hour = 24;
+		}).toThrowError("Number must be less than or equal to 23");
+		time.hour = 5;
+		expect(time.hour).toBe(5);
 	});
 
-	it("get minute", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
+	test("get minute()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.minute).toBe(10);
+	});
+
+	test("set minute()", () => {
+		const time = Time.from("22:10:09");
+		expect(() => {
+			time.minute = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			time.minute = 2.5;
+		}).toThrowError("Number must be whole");
+		expect(() => {
+			time.minute = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			time.minute = 60;
+		}).toThrowError("Number must be less than or equal to 59");
+		time.minute = 5;
 		expect(time.minute).toBe(5);
 	});
 
-	it("set minute", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		time.minute = 10;
-		expect(time.minute).toBe(10);
-		expect(() => {
-			time.minute = 60;
-		}).toThrowError("Invalid minute");
-		expect(() => {
-			time.minute = -1;
-		}).toThrowError("Invalid minute");
-		expect(() => {
-			time.minute = "a" as any;
-		}).toThrowError("Invalid minute");
+	test("get second()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.second).toBe(9);
 	});
 
-	it("get second", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6.789,
-		});
-		expect(time.second).toBe(6);
-	});
-
-	it("set second", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		time.second = 3;
-		expect(time.second).toBe(3);
-		expect(() => {
-			time.second = 60;
-		}).toThrowError("Invalid second");
-		expect(() => {
-			time.second = -1;
-		}).toThrowError("Invalid second");
+	test("set second()", () => {
+		const time = Time.from("22:10:09");
 		expect(() => {
 			time.second = "a" as any;
-		}).toThrowError("Invalid second");
+		}).toThrowError("Expected 'number', received 'string'");
+		expect(() => {
+			time.second = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			time.second = 60;
+		}).toThrowError("Number must be less than or equal to 59");
+		time.second = 5;
+		expect(time.second).toBe(5);
 	});
+});
 
-	it("toDateTime()", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		expect(time.toDateTime()).toStrictEqual(
-			DateTime.fromObject(
-				{
-					hour: 4,
-					minute: 5,
-					second: 6,
-				},
-				{ zone: "local" }
-			)
-		);
-	});
-
-	it("toJSDate()", () => {
-		const time = Time.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-		});
-		expect(time.toJSDate()).toBeInstanceOf(globalThis.Date);
+describe("PostgreSQL", () => {
+	it("should work with PostgreSQL's own tests", () => {
+		//* https://github.com/postgres/postgres/blob/master/src/test/regress/sql/time.sql
+		//expect(() => Time.from("00:00")).not.toThrowError();
+		expect(() => Time.from("01:00")).not.toThrowError();
+		// as of 7.4, timezone spec should be accepted and ignored
+		expect(() => Time.from("02:03 PST")).not.toThrowError();
+		expect(() => Time.from("11:59 GMT")).not.toThrowError();
+		expect(() => Time.from("12:00")).not.toThrowError();
+		expect(() => Time.from("12:01")).not.toThrowError();
+		expect(() => Time.from("23:59")).not.toThrowError();
+		expect(() => Time.from("11:59:59.99 PM")).not.toThrowError();
+		expect(() => Time.from("2003-03-07 15:36:39 America/New_York")).not.toThrowError();
+		expect(() => Time.from("2003-07-07 15:36:39 America/New_York")).not.toThrowError();
 	});
 
 	it("should be returned from PostgreSQL", async () => {
@@ -334,25 +279,28 @@ describe.todo("Time Class", () => {
 				SELECT * FROM public.jesttime
 			`);
 
-			expect(result.rows[0].time).toStrictEqual(
+			expect(result.rows[0].time.toString()).toStrictEqual(
 				Time.from({
 					hour: 4,
 					minute: 5,
-					second: 6,
-				})
+					second: 6.789,
+				}).toString()
 			);
-			expect(result.rows[0]._time).toStrictEqual([
+			expect(result.rows[0]._time).toHaveLength(2);
+			expect(result.rows[0]._time[0].toString()).toStrictEqual(
 				Time.from({
 					hour: 1,
 					minute: 2,
-					second: 3,
-				}),
+					second: 3.456,
+				}).toString()
+			);
+			expect(result.rows[0]._time[1].toString()).toStrictEqual(
 				Time.from({
 					hour: 4,
 					minute: 5,
-					second: 6,
-				}),
-			]);
+					second: 6.789,
+				}).toString()
+			);
 		} catch (error_) {
 			error = error_;
 		}

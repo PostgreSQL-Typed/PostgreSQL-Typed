@@ -18,6 +18,7 @@ import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
+import { TimestampTZ } from "./TimestampTZ.js";
 
 interface DateObject {
 	year: number;
@@ -117,10 +118,8 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 	}
 
 	private _parseString(context: ParseContext, argument: string): ParseReturnType<Date> {
-		if (/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(argument)) {
-			const [year, month, day] = argument.split("-").map(c => Number.parseInt(c));
-			return OK(new DateClass(year, month, day));
-		}
+		const parsedTimestamp = TimestampTZ.safeFrom(argument);
+		if (parsedTimestamp.success) return OK(new DateClass(parsedTimestamp.data.year, parsedTimestamp.data.month, parsedTimestamp.data.day));
 		this.setIssueForContext(context, {
 			code: "invalid_string",
 			received: argument,

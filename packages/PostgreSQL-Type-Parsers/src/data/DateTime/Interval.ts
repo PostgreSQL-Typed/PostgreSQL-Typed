@@ -7,13 +7,13 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { arrayParser } from "../../util/arrayParser.js";
 import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { getRegExpByGroups } from "../../util/getRegExpByGroups.js";
 import { hasKeys } from "../../util/hasKeys.js";
 import { isOneOf } from "../../util/isOneOf.js";
 import { pad } from "../../util/pad.js";
 import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { REGEXES } from "../../util/regexes.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
 
@@ -160,185 +160,34 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 
 	private _parseString(context: ParseContext, argument: string): ParseReturnType<Interval> {
 		//#region Regexes
-		//Traditional PostgreSQL interval format 1 millennium 2 centuries 3 decades 4 year 5 months 6 days 7 hours 8 minutes 9 seconds 10 milliseconds 11 microseconds
-		const TraditionalRegex = getRegExpByGroups<{
-				millennium: string;
-				century: string;
-				decade: string;
-				year: string;
-				month: string;
-				week: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-				millisecond: string;
-				microsecond: string;
-			}>({
-				groups: [
-					"(?<century>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*c(?:ent(?:urie)?(?:ury)?s?)?(?:\\s+ago)?)?",
-					"(?<decade>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*dec(?:ade)?s?(?:\\s+ago)?)?",
-					"(?<day>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*d(?:ays?)?(?:\\s+ago)?)?",
-					"(?<hour>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*h(?:(?:ou)?rs?)?(?:\\s+ago)?)?",
-					"(?<millisecond>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*m(?:illi)?sec(?:ond)?s?(?:\\s+ago)?)?",
-					"(?<microsecond>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*microseconds?(?:\\s+ago)?)?",
-					"(?<millennium>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*mil(?:lennium)?s?(?:\\s+ago)?)?",
-					"(?<month>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*mon(?:th)?s?(?:\\s+ago)?)?",
-					"(?<minute>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*m(?:in(?:ute)?s?)?(?:\\s+ago)?)?",
-					"(?<second>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*s(?:ec(?:ond)?s?)?(?:\\s+ago)?)?",
-					"(?<week>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*w(?:eeks?)?(?:\\s+ago)?)?",
-					"(?<year>(?:\\s+@)?\\s+[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*y(?:(?:ea)?rs?)?(?:\\s+ago)?)?",
-				],
-			}),
-			//Traditional PostgreSQL interval format with time as 1 millennium 2 centuries 3 decades 4 year 5 months 6 days 7:08:09
-			TraditionalTimeRegex = getRegExpByGroups<{
-				millennium: string;
-				century: string;
-				decade: string;
-				year: string;
-				month: string;
-				week: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"(?<millennium>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*mil(?:lennium)?s?)?",
-					"(?<century>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*c(?:ent(?:urie)?(?:ury)?s?)?)?",
-					"(?<decade>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*dec(?:ade)?s?)?",
-					"(?<year>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*y(?:(?:ea)?rs?)?)?",
-					"(?<month>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*mon(?:th)?s?)?",
-					"(?<week>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*w(?:eeks?)?)?",
-					"(?<day>\\s*[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)\\s*d(?:ays?)?)?",
-					"(?:\\s*(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))(?::(?<minute>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)))(?::(?<second>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)))?)",
-				],
-			}),
-			//P1Y2M3W4DT5H6M7S ISO 8601 “format with designators”
-			ISODesignatorsRegex = getRegExpByGroups<{
-				year: string;
-				month: string;
-				week: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"P",
-					"(?<year>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)Y)?",
-					"(?<month>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)M)?",
-					"(?<week>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)W)?",
-					"(?<day>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)D)?",
-					"(?:T(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)H)?(?<minute>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)M)?(?<second>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)S)?)?",
-				],
-			}),
-			//PYYYYMMDDThhmmss ISO 8601 “basic format”
-			ISOBasicRegex = getRegExpByGroups<{
-				year: string;
-				month: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"P(?:(?<year>[-+]?\\d{4}(?:\\.\\d*)?)(?<month>[-+]?\\d{2}(?:\\.\\d*)?)(?<day>[-+]?\\d{2}(?:\\.\\d*)?))?T(?<hour>[-+]?\\d{2}(?:\\.\\d*)?)(?<minute>[-+]?\\d{2}(?:\\.\\d*)?)(?<second>[-+]?\\d{2}(?:\\.\\d*)?)",
-				],
-			}),
-			//PYYYY-MM-DDThh:mm:ss ISO 8601 “extended format”
-			ISOExtendedRegex = getRegExpByGroups<{
-				year: string;
-				month: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"P(?:(?<year>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))-(?<month>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))-(?<day>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)))?T(?:(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)):)?(?:(?<minute>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)):)?(?<second>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))",
-				],
-			}),
-			//YYYY-MM DD HH:MM:SS SQL standard interval format "year to second"
-			SQLYearToSecondRegex = getRegExpByGroups<{
-				year: string;
-				month: string;
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"(?<year>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))-(?<month>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s+(?<day>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s+(?<hour>(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<minute>(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<second>(?:\\d+(?:\\.\\d*)?|\\.\\d+))",
-				],
-			}),
-			//YYYY-MM SQL standard interval format "year to month"
-			SQLYearToMonthRegex = getRegExpByGroups<{
-				year: string;
-				month: string;
-			}>({
-				groups: ["(?<year>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))-(?<month>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))"],
-			}),
-			//DD hh:mm:ss SQL standard interval format "day to second"
-			SQLDayToSecondRegex = getRegExpByGroups<{
-				day: string;
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: [
-					"(?<day>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))\\s+(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<minute>(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:\\s+ago)?)(?::(?<second>(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:\\s+ago)?))?",
-				],
-			}),
-			//hh:mm:ss SQL standard interval format "hour to second"
-			SQLHourToSecondRegex = getRegExpByGroups<{
-				hour: string;
-				minute: string;
-				second: string;
-			}>({
-				groups: ["(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<minute>(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<second>(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:\\s+ago)?)"],
-			}),
-			//hh:mm SQL standard interval format "hour to minute"
-			SQLMinuteToSecondRegex = getRegExpByGroups<{
-				hour: string;
-				minute: string;
-			}>({
-				groups: ["(?<hour>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)):(?<minute>(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:\\s+ago)?)"],
-			}),
-			//ss SQL standard interval format "second"
-			SQLSecondRegex = getRegExpByGroups<{
-				second: string;
-			}>({
-				groups: ["(?<second>[-+]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:\\s+ago)?)"],
-			}),
-			regexes = [
-				TraditionalRegex,
-				TraditionalTimeRegex,
-				ISODesignatorsRegex,
-				ISOBasicRegex,
-				ISOExtendedRegex,
-				SQLYearToSecondRegex,
-				SQLYearToMonthRegex,
-				SQLDayToSecondRegex,
-				SQLHourToSecondRegex,
-				SQLMinuteToSecondRegex,
-				SQLSecondRegex,
-			] as {
-				match: (argument_: string) => {
-					millennium?: string;
-					century?: string;
-					decade?: string;
-					year?: string;
-					month?: string;
-					week?: string;
-					day?: string;
-					hour?: string;
-					minute?: string;
-					second?: string;
-					millisecond?: string;
-					microsecond?: string;
-				};
-			}[];
+		const regexes = [
+			REGEXES.TraditionalPostgreSQLInterval,
+			REGEXES.TraditionalPostgreSQLTimeInterval,
+			REGEXES.ISO8601DurationsDesignators,
+			REGEXES.ISO8601DurationsBasic,
+			REGEXES.ISO8601DurationsExtended,
+			REGEXES.SQLYearToSecond,
+			REGEXES.SQLYearToMonth,
+			REGEXES.SQLDayToSecond,
+			REGEXES.SQLHourToSecond,
+			REGEXES.SQLMinuteToSecond,
+			REGEXES.SQLSecond,
+		] as {
+			match: (argument_: string) => {
+				millennium?: string;
+				century?: string;
+				decade?: string;
+				year?: string;
+				month?: string;
+				week?: string;
+				day?: string;
+				hour?: string;
+				minute?: string;
+				second?: string;
+				millisecond?: string;
+				microsecond?: string;
+			};
+		}[];
 		//#endregion
 
 		// Add a space to the beginning of the string to make the regexes easier to write

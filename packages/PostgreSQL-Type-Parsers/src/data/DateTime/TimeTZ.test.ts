@@ -1,542 +1,438 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
 import { Client } from "pg";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, test } from "vitest";
 
+import { Time } from "./Time.js";
 import { TimeTZ } from "./TimeTZ.js";
 
-describe.todo("TimeTZ Class", () => {
-	it("should create a timetz from a string", () => {
-		const timetz1 = TimeTZ.from("04:05:06.789+01:00");
-		expect(timetz1).not.toBeNull();
-		const timetz2 = TimeTZ.from("04:05:06.789-01:00");
-		expect(timetz2).not.toBeNull();
-		const timetz3 = TimeTZ.from("04:05:06.789+01");
-		expect(timetz3).not.toBeNull();
-		const timetz4 = TimeTZ.from("04:05:06.789-01");
-		expect(timetz4).not.toBeNull();
-		const timetz5 = TimeTZ.from("04:05:06.789 EST");
-		expect(timetz5).not.toBeNull();
-		const timetz6 = TimeTZ.from("04:05:06.789 Asia/Tokyo");
-		expect(timetz6).not.toBeNull();
-		const timetz7 = TimeTZ.from("04:05:06+01");
-		expect(timetz7).not.toBeNull();
-		const timetz8 = TimeTZ.from("04:05:06 Asia/Tokyo");
-		expect(timetz8).not.toBeNull();
-		expect(TimeTZ.from(TimeTZ.from("04:05:06.789+01:00"))).not.toBeNull();
-	});
-
-	it("should error when creating a timetz from an invalid string", () => {
-		expect(() => TimeTZ.from("04:05:06.789")).toThrowError("Invalid TimeTZ string");
-		expect(() => TimeTZ.from("04:05:06.789+01:")).toThrowError("Invalid TimeTZ string");
-		expect(() => TimeTZ.from("04:05:06.789+01:0")).toThrowError("Invalid TimeTZ string");
-		expect(() => TimeTZ.from("04:05:06.789 KST")).toThrowError("Invalid TimeTZ string");
-	});
-
-	it("should create a timetz from a object", () => {
-		const timetz1 = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
+describe("TimeTZConstructor", () => {
+	test("_parse(...)", () => {
+		expect(TimeTZ.safeFrom("22:10:09Z").success).toBe(true);
+		expect(
+			TimeTZ.safeFrom({
 				hour: 1,
-				minute: 0,
-				direction: "plus",
-			},
-		});
-		expect(timetz1).not.toBeNull();
-		const timetz2 = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz2).not.toBeNull();
-	});
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			}).success
+		).toBe(true);
+		expect(TimeTZ.safeFrom(1, 2, 3, 4, 5, "plus").success).toBe(true);
+		expect(TimeTZ.safeFrom(TimeTZ.from("2023-01-01T22:10:09Z")).success).toBe(true);
+		expect(TimeTZ.safeFrom(new globalThis.Date()).success).toBe(true);
+		expect(TimeTZ.safeFrom(DateTime.now()).success).toBe(true);
 
-	it("should error when creating a timetz from an invalid object", () => {
-		expect(() => TimeTZ.from({} as any)).toThrowError("Invalid TimeTZ object");
+		//@ts-expect-error - this is a test
+		expect(() => TimeTZ.from()).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => TimeTZ.from("a", "b")).toThrowError("Function must have exactly 1 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => TimeTZ.from(BigInt("1"))).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'bigint'");
+		expect(() => TimeTZ.from("()")).toThrowError("Expected 'LIKE HH:MM:SS+HH:MM', received '()'");
+		expect(() => TimeTZ.from({} as any)).toThrowError("Missing keys in object: 'hour', 'minute', 'second', 'offset'");
 		expect(() =>
 			TimeTZ.from({
-				hour: 4,
-				minute: 5,
-				second: 6,
-				offset: {
-					hour: 1,
-					minute: 0,
-					direction: "invalid",
-				},
+				hour: "1",
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
 			} as any)
-		).toThrowError("Invalid TimeTZ object");
+		).toThrowError("Expected 'number' for key 'hour', received 'string'");
 		expect(() =>
 			TimeTZ.from({
-				hour: 99,
-				minute: 5,
-				second: 6,
-				offset: {
-					hour: 1,
-					minute: 0,
-					direction: "plus",
-				},
+				week: 0,
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			} as any)
+		).toThrowError("Unrecognized key in object: 'week'");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: {},
+			} as any)
+		).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "a" as any },
+			} as any)
+		).toThrowError("Expected 'minus' | 'plus', received 'a'");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus", second: 1 },
+			} as any)
+		).toThrowError("Unrecognized key in object: 'second'");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: "0", direction: "plus" },
+			} as any)
+		).toThrowError("Expected 'number' for key 'minute', received 'string'");
+		expect(() => TimeTZ.from(4, "5" as any, 6, 7, 8, "minus")).toThrowError("Expected 'number' for key 'minute', received 'string'");
+		//@ts-expect-error - this is a test
+		expect(() => TimeTZ.from(1, 2, 3, 4, 5)).toThrowError("Function must have exactly 6 argument(s)");
+		//@ts-expect-error - this is a test
+		expect(() => TimeTZ.from(1, 2, 3, 4, 5, 6, 7)).toThrowError("Function must have exactly 6 argument(s)");
+		expect(() => TimeTZ.from(new globalThis.Date("a"))).toThrowError("Invalid globalThis.Date");
+		expect(() => TimeTZ.from(DateTime.fromISO("a"))).toThrowError("Invalid luxon.DateTime");
+
+		// Test all string formats
+		expect(TimeTZ.safeFrom("2023-01-01T22:10:09-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("2023-01-01T22:10:09-02").success).toBe(true);
+		expect(TimeTZ.safeFrom("2023-01-01").success).toBe(true);
+		expect(TimeTZ.safeFrom("22:10:09-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("22:10+02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("22:10:09-02").success).toBe(true);
+		expect(TimeTZ.safeFrom("22:10:09").success).toBe(true);
+		expect(TimeTZ.safeFrom("22:10").success).toBe(true);
+		expect(TimeTZ.safeFrom("P2023Y1M1DT22H10M9S").success).toBe(true);
+		expect(TimeTZ.safeFrom("P20230101T221009").success).toBe(true);
+		expect(TimeTZ.safeFrom("P2023-01-01T22:10:09").success).toBe(true);
+		expect(TimeTZ.safeFrom("2023-01-01 22:10:09-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sunday January 01 2023 22:10:09 GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sun Jan 01 2023 22:10:09 GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("2023-01 01 22:10:09").success).toBe(true);
+		expect(TimeTZ.safeFrom(DateTime.fromISO("2023-01-01T22:10:09-02:00", { setZone: true })).success).toBe(true);
+		expect(TimeTZ.safeFrom(DateTime.fromISO("2023-01-01T22:10:09+02:00", { setZone: true })).success).toBe(true);
+		expect(TimeTZ.safeFrom(new globalThis.Date("2023-01-01T22:10:09-02:00")).success).toBe(true);
+		expect(TimeTZ.safeFrom(new globalThis.Date("2023-01-01T22:10:09+02:00")).success).toBe(true);
+
+		// Test with AM/PM
+		expect(TimeTZ.safeFrom("2023-01-01 10:10PM-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("2023-01-01 10:10:09AM-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sunday January 01 2023 10:10:09PM GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sunday January 01 2023 10:10:09AM GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sun Jan 01 2023 10:10:09PM GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("Sun Jan 01 2023 10:10:09AM GMT-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("10:10PM PST-02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("10:10:09AM PST+02:00").success).toBe(true);
+		expect(TimeTZ.safeFrom("10:10PM PST-02").success).toBe(true);
+		expect(TimeTZ.safeFrom("10:10:09AM PST+02").success).toBe(true);
+		expect(TimeTZ.safeFrom("10:10:09PM BC").success).toBe(true);
+
+		expect(TimeTZ.safeFrom("10:10:09PM ABC-02:00").success).toBe(false);
+
+		expect(() =>
+			TimeTZ.from({
+				hour: 1.2,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
-		).toThrowError("Invalid TimeTZ object");
+		).toThrowError("Number must be whole");
+		expect(() =>
+			TimeTZ.from({
+				hour: 24,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be less than or equal to 23");
+		expect(() =>
+			TimeTZ.from({
+				hour: -1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 1.2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be whole");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 60,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be less than or equal to 59");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: -1,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: -1,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 60,
+				offset: { hour: 0, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be less than or equal to 59");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 1.2, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be whole");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 24, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be less than or equal to 23");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: -1, minute: 0, direction: "plus" },
+			})
+		).toThrowError("Number must be greater than or equal to 0");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 1.2, direction: "plus" },
+			})
+		).toThrowError("Number must be whole");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 60, direction: "plus" },
+			})
+		).toThrowError("Number must be less than or equal to 59");
+		expect(() =>
+			TimeTZ.from({
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: -1, direction: "plus" },
+			})
+		).toThrowError("Number must be greater than or equal to 0");
 	});
 
-	it("should create a timetz from numbers", () => {
-		const timetz1 = TimeTZ.from(4, 5, 6, 1, 0, "plus");
-		expect(timetz1).not.toBeNull();
-		const timetz2 = TimeTZ.from(4, 5, 6, 1, 0, "minus");
-		expect(timetz2).not.toBeNull();
-	});
-
-	it("should error when creating a timetz from invalid numbers", () => {
-		expect(() => TimeTZ.from(4, 5, 6, 1, 0, "invalid" as any)).toThrowError("Invalid TimeTZ array, numbers and OffsetDirection");
-		expect(() => TimeTZ.from(4, 5, "number" as any, 1, 0, "minus")).toThrowError("Invalid TimeTZ array, numbers and OffsetDirection");
-		expect(() => TimeTZ.from(4, 5, 99, 1, 0, "minus")).toThrowError("Invalid TimeTZ array, numbers and OffsetDirection");
-	});
-
-	it("should create a timetz from a DateTime", () => {
-		const timetz1 = TimeTZ.from(
-			DateTime.fromObject({
-				hour: 4,
-				minute: 5,
-				second: 6,
-				millisecond: 789,
-			}).setZone("America/New_York")
-		);
-		expect(timetz1).not.toBeNull();
-		const timetz2 = TimeTZ.from(
-			DateTime.fromObject({
-				hour: 4,
-				minute: 5,
-				second: 6,
-				millisecond: 789,
-			}).setZone("UTC")
-		);
-		expect(timetz2).not.toBeNull();
-	});
-
-	it("should create a timetz from a JavaScript Date", () => {
-		const timetz = TimeTZ.from(new globalThis.Date(2022, 9, 2, 4, 5, 6, 789));
-		expect(timetz).not.toBeNull();
-	});
-
-	it("isTimeTZ()", () => {
-		const timetz = TimeTZ.from("04:05:06.789+01:00");
+	test("isTimeTZ(...)", () => {
+		const timetz = TimeTZ.from({
+			hour: 1,
+			minute: 2,
+			second: 3,
+			offset: { hour: 0, minute: 0, direction: "plus" },
+		});
 		expect(TimeTZ.isTimeTZ(timetz)).toBe(true);
 		expect(
 			TimeTZ.isTimeTZ({
-				hour: 4,
-				minute: 5,
-				second: 6,
-				offset: {
-					hour: 1,
-					minute: 0,
-					direction: "minus",
-				},
+				hour: 1,
+				minute: 2,
+				second: 3,
+				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toBe(false);
 	});
+});
 
-	it("toString()", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.toString()).toBe("04:05:06-01:00");
+describe("TimeTZ", () => {
+	test("_equals(...)", () => {
+		const timetz = TimeTZ.from("2023-01-01T22:10:09Z");
+
+		expect(timetz.equals(TimeTZ.from("2023-01-01T22:10:09Z"))).toBe(true);
+		expect(timetz.equals(TimeTZ.from("2023-01-02T22:11:09Z"))).toBe(false);
+		expect(timetz.equals(TimeTZ.from("2023-01-01T22:10:09Z").toJSON())).toBe(true);
+		expect(timetz.equals(TimeTZ.from("2023-01-02T22:11:09Z").toJSON())).toBe(false);
+		expect(timetz.equals(TimeTZ.from("2023-01-01T22:10:09Z").toString())).toBe(true);
+		expect(timetz.equals(TimeTZ.from("2023-01-02T22:11:09Z").toString())).toBe(false);
+		//@ts-expect-error - this is a test
+		expect(() => timetz.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'bigint'");
 	});
 
-	it("toJSON()", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.toJSON()).toEqual({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
+	test("toString()", () => {
+		const timestamptz1 = TimeTZ.from("22:10:09+02:00");
+		expect(timestamptz1.toString()).toBe("22:10:09+02:00");
+	});
+
+	test("toJSON()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.toJSON()).toEqual({
+			hour: 22,
+			minute: 10,
+			second: 9,
+			offset: { direction: "minus", hour: 2, minute: 0 },
 		});
 	});
 
-	it("equals()", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "minus",
-					},
-				})
-			)
-		).toBe(true);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "plus",
-					},
-				})
-			)
-		).toBe(false);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "minus",
-					},
-				}).toJSON()
-			)
-		).toBe(true);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "plus",
-					},
-				}).toJSON()
-			)
-		).toBe(false);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "minus",
-					},
-				}).toString()
-			)
-		).toBe(true);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 4,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "plus",
-					},
-				}).toString()
-			)
-		).toBe(false);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 6,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 1,
-						minute: 0,
-						direction: "plus",
-					},
-				})
-			)
-		).toBe(true);
-		expect(
-			timetz.equals(
-				TimeTZ.from({
-					hour: 6,
-					minute: 5,
-					second: 6,
-					offset: {
-						hour: 2,
-						minute: 0,
-						direction: "plus",
-					},
-				})
-			)
-		).toBe(false);
+	test("toTime()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(Time.isTime(timestamptz.toTime())).toBe(true);
 	});
 
-	it("get hour", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.hour).toBe(4);
+	test("toDateTime()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.toDateTime().isValid).toBe(true);
 	});
 
-	it("set hour", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		timetz.hour = 12;
-		expect(timetz.hour).toBe(12);
+	test("toJSDate()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.toJSDate() instanceof globalThis.Date).toBe(true);
+	});
+
+	test("get hour()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.hour).toBe(22);
+	});
+
+	test("set hour()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
 		expect(() => {
-			timetz.hour = 24;
-		}).toThrowError("Invalid hour");
+			timestamptz.hour = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
 		expect(() => {
-			timetz.hour = -1;
-		}).toThrowError("Invalid hour");
+			timestamptz.hour = 2.5;
+		}).toThrowError("Number must be whole");
 		expect(() => {
-			timetz.hour = "a" as any;
-		}).toThrowError("Invalid hour");
+			timestamptz.hour = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			timestamptz.hour = 24;
+		}).toThrowError("Number must be less than or equal to 23");
+		timestamptz.hour = 5;
+		expect(timestamptz.hour).toBe(5);
 	});
 
-	it("get minute", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.minute).toBe(5);
+	test("get minute()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.minute).toBe(10);
 	});
 
-	it("set minute", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		timetz.minute = 10;
-		expect(timetz.minute).toBe(10);
+	test("set minute()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
 		expect(() => {
-			timetz.minute = 60;
-		}).toThrowError("Invalid minute");
+			timestamptz.minute = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
 		expect(() => {
-			timetz.minute = -1;
-		}).toThrowError("Invalid minute");
+			timestamptz.minute = 2.5;
+		}).toThrowError("Number must be whole");
 		expect(() => {
-			timetz.minute = "a" as any;
-		}).toThrowError("Invalid minute");
+			timestamptz.minute = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			timestamptz.minute = 60;
+		}).toThrowError("Number must be less than or equal to 59");
+		timestamptz.minute = 5;
+		expect(timestamptz.minute).toBe(5);
 	});
 
-	it("get second", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6.123,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.second).toBe(6.123);
+	test("get second()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.second).toBe(9);
 	});
 
-	it("set second", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		timetz.second = 3;
-		expect(timetz.second).toBe(3);
+	test("set second()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
 		expect(() => {
-			timetz.second = 60;
-		}).toThrowError("Invalid second");
+			timestamptz.second = "a" as any;
+		}).toThrowError("Expected 'number', received 'string'");
 		expect(() => {
-			timetz.second = -1;
-		}).toThrowError("Invalid second");
+			timestamptz.second = -1;
+		}).toThrowError("Number must be greater than or equal to 0");
 		expect(() => {
-			timetz.second = "a" as any;
-		}).toThrowError("Invalid second");
+			timestamptz.second = 60;
+		}).toThrowError("Number must be less than or equal to 59");
+		timestamptz.second = 5;
+		expect(timestamptz.second).toBe(5);
 	});
 
-	it("get offset", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.offset).toEqual({
-			hour: 1,
-			minute: 0,
-			direction: "minus",
-		});
+	test("get offset()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.offset.direction).toBe("minus");
+		expect(timestamptz.offset.hour).toBe(2);
+		expect(timestamptz.offset.minute).toBe(0);
 	});
 
-	it("set offset", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		timetz.offset = {
+	test("set offset()", () => {
+		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
+		expect(() => {
+			timestamptz.offset = "a" as any;
+		}).toThrowError("Expected 'object', received 'string'");
+		expect(() => {
+			timestamptz.offset = {} as any;
+		}).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: 0, direction: 1 } as any;
+		}).toThrowError("Expected 'string' for key 'direction', received 'number'");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: 0, direction: "plus", second: 1 } as any;
+		}).toThrowError("Unrecognized key in object: 'second'");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: 0, direction: "+" as any };
+		}).toThrowError("Expected 'minus' | 'plus', received '+'");
+		expect(() => {
+			timestamptz.offset = { hour: 2.5, minute: 0, direction: "plus" };
+		}).toThrowError("Number must be whole");
+		expect(() => {
+			timestamptz.offset = { hour: -1, minute: 0, direction: "plus" };
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			timestamptz.offset = { hour: 24, minute: 0, direction: "plus" };
+		}).toThrowError("Number must be less than or equal to 23");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: 0.5, direction: "plus" };
+		}).toThrowError("Number must be whole");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: -1, direction: "plus" };
+		}).toThrowError("Number must be greater than or equal to 0");
+		expect(() => {
+			timestamptz.offset = { hour: 2, minute: 60, direction: "plus" };
+		}).toThrowError("Number must be less than or equal to 59");
+		timestamptz.offset = { hour: 2, minute: 0, direction: "plus" };
+		expect(timestamptz.offset).toEqual({
+			direction: "plus",
 			hour: 2,
 			minute: 0,
-			direction: "plus",
-		};
-		expect(timetz.offset).toEqual({
-			hour: 2,
-			minute: 0,
-			direction: "plus",
 		});
-		expect(() => {
-			timetz.offset = {
-				hour: 24,
-				minute: 0,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset hour");
-		expect(() => {
-			timetz.offset = {
-				hour: -1,
-				minute: 0,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset hour");
-		expect(() => {
-			timetz.offset = {
-				hour: "a" as any,
-				minute: 0,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset hour");
-
-		expect(() => {
-			timetz.offset = {
-				hour: 2,
-				minute: 60,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset minute");
-		expect(() => {
-			timetz.offset = {
-				hour: 2,
-				minute: -1,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset minute");
-		expect(() => {
-			timetz.offset = {
-				hour: 2,
-				minute: "a" as any,
-				direction: "plus",
-			};
-		}).toThrowError("Invalid offset minute");
-
-		expect(() => {
-			timetz.offset = {
-				hour: 2,
-				minute: 0,
-				direction: "a" as any,
-			};
-		}).toThrowError("Invalid offset direction");
 	});
+});
 
-	it("toDateTime()", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.toDateTime()).toStrictEqual(DateTime.fromISO(`${DateTime.now().toISODate()}T04:05:06-01:00`));
-	});
+describe("PostgreSQL", () => {
+	it("should work with PostgreSQL's own tests", () => {
+		//* https://github.com/postgres/postgres/blob/master/src/test/regress/sql/timetz.sql
+		expect(() => TimeTZ.from("00:01 PDT"));
+		expect(() => TimeTZ.from("01:00 PDT"));
+		expect(() => TimeTZ.from("02:03 PDT"));
+		expect(() => TimeTZ.from("07:07 PST"));
+		expect(() => TimeTZ.from("08:08 EDT"));
+		expect(() => TimeTZ.from("11:59 PDT"));
+		expect(() => TimeTZ.from("12:00 PDT"));
+		expect(() => TimeTZ.from("12:01 PDT"));
+		expect(() => TimeTZ.from("23:59 PDT"));
+		expect(() => TimeTZ.from("11:59:59.99 PM PDT"));
 
-	it("toJSDate()", () => {
-		const timetz = TimeTZ.from({
-			hour: 4,
-			minute: 5,
-			second: 6,
-			offset: {
-				hour: 1,
-				minute: 0,
-				direction: "minus",
-			},
-		});
-		expect(timetz.toJSDate()).toBeInstanceOf(globalThis.Date);
+		expect(() => TimeTZ.from("2003-03-07 15:36:39 America/New_York"));
+		expect(() => TimeTZ.from("2003-07-07 15:36:39 America/New_York"));
 	});
 
 	it("should be returned from PostgreSQL", async () => {
@@ -572,8 +468,10 @@ describe.todo("TimeTZ Class", () => {
 				SELECT * FROM public.jesttimetz
 			`);
 
-			expect(result.rows[0].timetz).toStrictEqual(TimeTZ.from("04:05:06.789-01:00"));
-			expect(result.rows[0]._timetz).toStrictEqual([TimeTZ.from("01:02:03.456+08:00"), TimeTZ.from("04:05:06.789 EST")]);
+			expect(result.rows[0].timetz.toString()).toStrictEqual(TimeTZ.from("04:05:06.789-01:00").toString());
+			expect(result.rows[0]._timetz).toHaveLength(2);
+			expect(result.rows[0]._timetz[0].toString()).toStrictEqual(TimeTZ.from("01:02:03.456+08:00").toString());
+			expect(result.rows[0]._timetz[1].toString()).toStrictEqual(TimeTZ.from("04:05:06.789-05:00").toString());
 		} catch (error_) {
 			error = error_;
 		}

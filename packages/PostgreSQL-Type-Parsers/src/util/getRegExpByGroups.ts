@@ -17,6 +17,11 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 	 * The groups to be included in the RegExp.
 	 */
 	groups?: string[];
+	/**
+	 * Whether the RegExp should be an OR condition.
+	 * @default false
+	 */
+	isOrCondition?: boolean;
 }): {
 	match: (string: string) => T | null;
 } => {
@@ -71,6 +76,8 @@ export const getRegExpByGroups = <T extends Record<string, string>>(options?: {
 					continue;
 				}
 				allPositions[index] = group;
+				// If the match is found and isOrCondition is true, stop the loop
+				if (newOptions.isOrCondition) break;
 			}
 
 			//Remove all nulls from the array and join the remaining groups with the base RegExp

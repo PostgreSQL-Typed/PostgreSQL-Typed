@@ -21,6 +21,9 @@ const errorMap: ErrorMap = issue => {
 							issue.received
 					  }'`;
 			break;
+		case IssueCode.invalid_timezone:
+			message = `Could not recognize '${issue.received}' as a valid timezone`;
+			break;
 		case IssueCode.invalid_range_bound:
 			message = `Range lower bound ('${issue.lower}') must be less than or equal to range upper bound ('${issue.upper}')`;
 			break;
@@ -52,6 +55,7 @@ const errorMap: ErrorMap = issue => {
 					break;
 				default:
 					message = "Invalid input";
+					throw new Error(message);
 			}
 			break;
 		case IssueCode.too_big:
@@ -70,6 +74,7 @@ const errorMap: ErrorMap = issue => {
 					break;
 				default:
 					message = "Invalid input";
+					throw new Error(message);
 			}
 			break;
 		case IssueCode.not_finite:

@@ -9,6 +9,7 @@ export const IssueCode = arrayToEnum([
 	"invalid_key_type",
 	"invalid_range_bound",
 	"invalid_string",
+	"invalid_timezone",
 	"missing_keys",
 	"not_finite",
 	"not_whole",
@@ -28,6 +29,11 @@ export interface InvalidTypeIssue {
 export interface InvalidStringIssue {
 	code: typeof IssueCode.invalid_string;
 	expected: string | string[];
+	received: string;
+}
+
+export interface InvalidTimezoneIssue {
+	code: typeof IssueCode.invalid_timezone;
 	received: string;
 }
 
@@ -87,6 +93,7 @@ export interface NotWholeIssue {
 export type IssueWithoutMessage =
 	| InvalidTypeIssue
 	| InvalidStringIssue
+	| InvalidTimezoneIssue
 	| InvalidKeyTypeIssue
 	| InvalidRangeBoundIssue
 	| UnrecognizedKeysIssue

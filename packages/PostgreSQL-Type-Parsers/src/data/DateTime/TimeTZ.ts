@@ -5,10 +5,25 @@ import { DataType } from "postgresql-data-types";
 
 import { Offset } from "../../types/Offset.js";
 import { OffsetDirection, OffsetDirectionType } from "../../types/OffsetDirection.js";
+import { ParseContext } from "../../types/ParseContext.js";
+import { ParseReturnType } from "../../types/ParseReturnType.js";
+import { SafeEquals } from "../../types/SafeEquals.js";
+import { SafeFrom } from "../../types/SafeFrom.js";
 import { arrayParser } from "../../util/arrayParser.js";
-import { isISOEquivalent } from "../../util/isISOEquivalent.js";
+import { formatOffset } from "../../util/formatOffset.js";
+import { getParsedType, ParsedType } from "../../util/getParsedType.js";
+import { hasKeys } from "../../util/hasKeys.js";
+import { isOneOf } from "../../util/isOneOf.js";
+import { isValidDate } from "../../util/isValidDate.js";
+import { isValidDateTime } from "../../util/isValidDateTime.js";
+import { pad } from "../../util/pad.js";
 import { parser } from "../../util/parser.js";
-import { validateTimeZone } from "../../util/validateTimeZone.js";
+import { PGTPBase } from "../../util/PGTPBase.js";
+import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { INVALID, OK } from "../../util/validation.js";
+import { Time } from "./Time.js";
+import { TimestampTZ } from "./TimestampTZ.js";
 
 interface TimeTZObject {
 	hour: number;
@@ -18,14 +33,15 @@ interface TimeTZObject {
 }
 
 interface TimeTZ {
-	toString(): string;
-	toJSON(): TimeTZObject;
-	equals(otherTimeTZ: string | TimeTZ | TimeTZObject): boolean;
-
 	hour: number;
 	minute: number;
 	second: number;
 	offset: Offset;
+
+	toString(): string;
+	toJSON(): TimeTZObject;
+
+	toTime(): Time;
 
 	/**
 	 * @param zone The zone to convert the time to. Defaults to 'local'.
@@ -36,162 +52,413 @@ interface TimeTZ {
 	 * @param zone The zone to convert the time to. Defaults to 'local'.
 	 */
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
+
+	equals(string: string): boolean;
+	equals(
+		hour: number,
+		minute: number,
+		second: number,
+		offsetHour: number,
+		offsetMinute: number,
+		offsetDirection: OffsetDirection | OffsetDirectionType
+	): boolean;
+	equals(timetz: TimeTZ | globalThis.Date | DateTime): boolean;
+	equals(object: TimeTZObject): boolean;
+	safeEquals(string: string): SafeEquals<TimeTZ>;
+	safeEquals(
+		hour: number,
+		minute: number,
+		second: number,
+		offsetHour: number,
+		offsetMinute: number,
+		offsetDirection: OffsetDirection | OffsetDirectionType
+	): SafeEquals<TimeTZ>;
+	safeEquals(timetz: TimeTZ | globalThis.Date | DateTime): SafeEquals<TimeTZ>;
+	safeEquals(object: TimeTZObject): SafeEquals<TimeTZ>;
 }
 
 interface TimeTZConstructor {
-	from(hour: number, minute: number, second: number, offsetHour: number, offsetMinute: number, offsetDirection: OffsetDirection | OffsetDirectionType): TimeTZ;
-	from(data: TimeTZ | TimeTZObject | globalThis.Date | DateTime): TimeTZ;
 	from(string: string): TimeTZ;
+	from(hour: number, minute: number, second: number, offsetHour: number, offsetMinute: number, offsetDirection: OffsetDirection | OffsetDirectionType): TimeTZ;
+	from(timetz: TimeTZ | globalThis.Date | DateTime): TimeTZ;
+	from(object: TimeTZObject): TimeTZ;
+	safeFrom(string: string): SafeFrom<TimeTZ>;
+	safeFrom(
+		hour: number,
+		minute: number,
+		second: number,
+		offsetHour: number,
+		offsetMinute: number,
+		offsetDirection: OffsetDirection | OffsetDirectionType
+	): SafeFrom<TimeTZ>;
+	safeFrom(timetz: TimeTZ | globalThis.Date | DateTime): SafeFrom<TimeTZ>;
+	safeFrom(object: TimeTZObject): SafeFrom<TimeTZ>;
 	/**
 	 * Returns `true` if `object` is a `TimeTZ`, `false` otherwise.
 	 */
 	isTimeTZ(object: any): object is TimeTZ;
 }
 
-const TimeTZ: TimeTZConstructor = {
-	from(
-		argument: string | TimeTZ | TimeTZObject | globalThis.Date | DateTime | number,
-		minute?: number,
-		second?: number,
-		offsetHour?: number,
-		offsetMinute?: number,
-		offsetDirection?: OffsetDirection | OffsetDirectionType
-	): TimeTZ {
-		if (typeof argument === "string") {
-			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?(:([0-5]\d))?(\.\d{1,3})?$/.test(argument)) {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const [, hour, minute, second, milisecond, offsetHour, , offsetMinute] = argument
-					.match(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?(:([0-5]\d))?(\.\d{1,3})?$/)!
-					.map(x => Number.parseFloat(x));
-				return new TimeTZClass({
-					hour,
-					minute,
-					second: second + (milisecond || 0),
-					offset: {
-						hour: offsetHour,
-						minute: offsetMinute || 0,
-						direction: argument.includes("-") ? OffsetDirection.minus : OffsetDirection.plus,
-					},
-				});
-			}
+class TimeTZConstructorClass extends PGTPConstructorBase<TimeTZ> implements TimeTZConstructor {
+	constructor() {
+		super();
+	}
 
-			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?\s(([\w/])*)$/.test(argument)) {
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				const matches = argument.match(/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?\s(([\w/])*)$/)!,
-					zone = matches[5],
-					[hour, minute, second, milisecond] = matches.slice(1, 5).map(x => Number.parseFloat(x)),
-					offset = validateTimeZone(zone);
+	_parse(context: ParseContext): ParseReturnType<TimeTZ> {
+		const [argument, ...otherArguments] = context.data,
+			allowedTypes = [ParsedType.number, ParsedType.string, ParsedType.object, ParsedType["globalThis.Date"], ParsedType["luxon.DateTime"]],
+			parsedType = getParsedType(argument);
 
-				if (offset === false) throw new Error("Invalid TimeTZ string");
-
-				const offsetHour = Math.floor(Math.abs(offset) / 60),
-					offsetMinute = Math.abs(offset) % 60;
-
-				return new TimeTZClass({
-					hour,
-					minute,
-					second: second + (milisecond || 0),
-					offset: {
-						hour: offsetHour,
-						minute: offsetMinute,
-						direction: Math.sign(offset) === -1 ? OffsetDirection.minus : OffsetDirection.plus,
-					},
-				});
-			}
-			throw new Error("Invalid TimeTZ string");
-		} else if (TimeTZ.isTimeTZ(argument)) return new TimeTZClass(argument.toJSON());
-		else if (typeof argument === "number") {
-			if (
-				typeof minute === "number" &&
-				typeof second === "number" &&
-				typeof offsetHour === "number" &&
-				typeof offsetMinute === "number" &&
-				typeof offsetDirection === "string" &&
-				(offsetDirection === OffsetDirection.plus || offsetDirection === OffsetDirection.minus)
-			) {
-				const newlyMadeTime = new TimeTZClass({
-					hour: argument,
-					minute,
-					second,
-					offset: {
-						hour: offsetHour,
-						minute: offsetMinute,
-						direction: offsetDirection,
-					},
-				});
-				if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?$/.test(newlyMadeTime.toString())) return newlyMadeTime;
-				throw new Error("Invalid TimeTZ array, numbers and OffsetDirection");
-			}
-			throw new Error("Invalid TimeTZ array, numbers and OffsetDirection");
-		} else if (argument instanceof DateTime || argument instanceof globalThis.Date) {
-			argument = argument instanceof DateTime ? argument : DateTime.fromJSDate(argument);
-			const isoString = argument.toISO().split("T")[1];
-			return isoString.endsWith("Z") ? TimeTZ.from(`${isoString.slice(0, -1)}+00:00`) : TimeTZ.from(isoString);
-		} else {
-			if (
-				!(
-					typeof argument === "object" &&
-					"hour" in argument &&
-					typeof argument.hour === "number" &&
-					"minute" in argument &&
-					typeof argument.minute === "number" &&
-					"second" in argument &&
-					typeof argument.second === "number" &&
-					"offset" in argument &&
-					typeof argument.offset === "object" &&
-					"hour" in argument.offset &&
-					typeof argument.offset.hour === "number" &&
-					"minute" in argument.offset &&
-					typeof argument.offset.minute === "number" &&
-					"direction" in argument.offset &&
-					typeof argument.offset.direction === "string" &&
-					(argument.offset.direction === OffsetDirection.plus || argument.offset.direction === OffsetDirection.minus)
-				)
-			)
-				throw new Error("Invalid TimeTZ object");
-
-			const newlyMadeTime = new TimeTZClass(argument);
-			if (/^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)(\.\d{1,3})?[+-]([01]\d|2[0-3])(:([0-5]\d))?$/.test(newlyMadeTime.toString())) return newlyMadeTime;
-
-			throw new Error("Invalid TimeTZ object");
+		if (parsedType !== ParsedType.number && context.data.length !== 1) {
+			this.setIssueForContext(
+				context,
+				context.data.length > 1
+					? {
+							code: "too_big",
+							type: "arguments",
+							maximum: 1,
+							exact: true,
+					  }
+					: {
+							code: "too_small",
+							type: "arguments",
+							minimum: 1,
+							exact: true,
+					  }
+			);
+			return INVALID;
 		}
-	},
+
+		if (!isOneOf(allowedTypes, parsedType)) {
+			this.setIssueForContext(context, {
+				code: "invalid_type",
+				expected: allowedTypes as ParsedType[],
+				received: parsedType,
+			});
+			return INVALID;
+		}
+
+		switch (parsedType) {
+			case "string":
+				return this._parseString(context, argument as string);
+			case "number":
+				return this._parseNumber(context, argument as number, otherArguments);
+			default:
+				return this._parseObject(context, argument as object);
+		}
+	}
+
+	private _parseString(context: ParseContext, argument: string): ParseReturnType<TimeTZ> {
+		const parsedTimestamp = TimestampTZ.safeFrom(argument);
+		if (parsedTimestamp.success)
+			return OK(new TimeTZClass(parsedTimestamp.data.hour, parsedTimestamp.data.minute, parsedTimestamp.data.second, parsedTimestamp.data.offset));
+		this.setIssueForContext(context, {
+			code: "invalid_string",
+			received: argument,
+			expected: "LIKE HH:MM:SS+HH:MM",
+		});
+		return INVALID;
+	}
+
+	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<TimeTZ> {
+		const totalLength = otherArguments.length + 1;
+		if (totalLength !== 6) {
+			this.setIssueForContext(
+				context,
+				totalLength > 6
+					? {
+							code: "too_big",
+							type: "arguments",
+							maximum: 6,
+							exact: true,
+					  }
+					: {
+							code: "too_small",
+							type: "arguments",
+							minimum: 6,
+							exact: true,
+					  }
+			);
+			return INVALID;
+		}
+
+		// Should be [hour, minute, second, offsetHour, offsetMinute, offsetDirection]
+		// To validate all the arguments, we make them go through the object parser
+		return this._parseObject(context, {
+			hour: argument,
+			minute: otherArguments[0],
+			second: otherArguments[1],
+			offset: {
+				hour: otherArguments[2],
+				minute: otherArguments[3],
+				direction: otherArguments[4],
+			},
+		});
+	}
+
+	private _parseObject(context: ParseContext, argument: object): ParseReturnType<TimeTZ> {
+		// Should be [TimeTZ]
+		if (TimeTZ.isTimeTZ(argument)) return OK(new TimeTZClass(argument.hour, argument.minute, argument.second, argument.offset));
+
+		// Should be [globalThis.Date]
+		const jsDate = isValidDate(argument);
+		if (jsDate.isOfSameType) {
+			if (jsDate.isValid) {
+				const [hour, minute, second, offset] = [jsDate.data.getHours(), jsDate.data.getMinutes(), jsDate.data.getSeconds(), jsDate.data.getTimezoneOffset()];
+				return OK(
+					new TimeTZClass(hour, minute, second, {
+						hour: offset / 60,
+						minute: offset % 60,
+						/* c8 ignore next 2 */
+						// globalThis.Date.getTimezoneOffset() returns system timezone offset, so it's always positive or negative depending on the system timezone
+						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
+					})
+				);
+			}
+			this.setIssueForContext(context, jsDate.error);
+			return INVALID;
+		}
+
+		// Should be [luxon.DateTime]
+		const luxonDate = isValidDateTime(argument);
+		if (luxonDate.isOfSameType) {
+			if (luxonDate.isValid) {
+				const [hour, minute, second, offset] = [luxonDate.data.hour, luxonDate.data.minute, luxonDate.data.second, luxonDate.data.offset];
+				return OK(
+					new TimeTZClass(hour, minute, second, {
+						hour: offset / 60,
+						minute: offset % 60,
+						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
+					})
+				);
+			}
+			this.setIssueForContext(context, luxonDate.error);
+			return INVALID;
+		}
+
+		// Should be [TimeTZObject]
+		const parsedObject = hasKeys<TimeTZObject>(argument, [
+			["hour", "number"],
+			["minute", "number"],
+			["second", "number"],
+			["offset", "object"],
+		]);
+		if (!parsedObject.success) {
+			switch (true) {
+				case parsedObject.otherKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "unrecognized_keys",
+						keys: parsedObject.otherKeys,
+					});
+					break;
+				case parsedObject.missingKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "missing_keys",
+						keys: parsedObject.missingKeys,
+					});
+					break;
+				case parsedObject.invalidKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "invalid_key_type",
+						...parsedObject.invalidKeys[0],
+					});
+					break;
+			}
+			return INVALID;
+		}
+
+		const { hour, minute, second, offset } = parsedObject.obj,
+			parsedOffset = hasKeys<Offset>(offset, [
+				["hour", "number"],
+				["minute", "number"],
+				["direction", "string"],
+			]);
+		if (!parsedOffset.success) {
+			switch (true) {
+				case parsedOffset.otherKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "unrecognized_keys",
+						keys: parsedOffset.otherKeys,
+					});
+					break;
+				case parsedOffset.missingKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "missing_keys",
+						keys: parsedOffset.missingKeys,
+					});
+					break;
+				case parsedOffset.invalidKeys.length > 0:
+					this.setIssueForContext(context, {
+						code: "invalid_key_type",
+						...parsedOffset.invalidKeys[0],
+					});
+					break;
+			}
+			return INVALID;
+		}
+
+		if (hour % 1 !== 0) {
+			this.setIssueForContext(context, {
+				code: "not_whole",
+			});
+			return INVALID;
+		}
+
+		if (hour < 0) {
+			this.setIssueForContext(context, {
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (hour > 23) {
+			this.setIssueForContext(context, {
+				code: "too_big",
+				maximum: 23,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (minute % 1 !== 0) {
+			this.setIssueForContext(context, {
+				code: "not_whole",
+			});
+			return INVALID;
+		}
+
+		if (minute < 0) {
+			this.setIssueForContext(context, {
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (minute > 59) {
+			this.setIssueForContext(context, {
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (second < 0) {
+			this.setIssueForContext(context, {
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		if (second >= 60) {
+			this.setIssueForContext(context, {
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+			return INVALID;
+		}
+
+		// Validate the offset
+		if (parsedOffset.obj.direction !== OffsetDirection.minus && parsedOffset.obj.direction !== OffsetDirection.plus) {
+			this.setIssueForContext(context, {
+				code: "invalid_string",
+				expected: [OffsetDirection.minus, OffsetDirection.plus],
+				received: parsedOffset.obj.direction,
+			});
+			return INVALID;
+		}
+
+		if (parsedOffset.obj.hour % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (parsedOffset.obj.hour < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.hour > 23) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 23,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.minute % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (parsedOffset.obj.minute < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.minute > 59) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		return OK(new TimeTZClass(hour, minute, second, offset));
+	}
+
 	isTimeTZ(object: any): object is TimeTZ {
 		return object instanceof TimeTZClass;
-	},
-};
+	}
+}
 
-class TimeTZClass implements TimeTZ {
-	private _hour: number;
-	private _minute: number;
-	private _second: number;
-	private _offset: Offset;
+const TimeTZ: TimeTZConstructor = new TimeTZConstructorClass();
 
-	constructor(data: TimeTZObject) {
-		this._hour = Number.parseInt(data.hour.toString());
-		this._minute = Number.parseInt(data.minute.toString());
-		this._second = Number.parseFloat(data.second.toString());
-		this._offset = {
-			hour: Number.parseInt(data.offset.hour.toString()),
-			minute: Number.parseInt(data.offset.minute.toString()),
-			direction: data.offset.direction,
-		};
+class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
+	constructor(private _hour: number, private _minute: number, private _second: number, private _offset: Offset) {
+		super();
 	}
 
-	private _prefix(number: number): string {
-		return number < 10 ? `0${number}` : `${number}`;
-	}
-
-	private _format(): string {
-		return `${this._prefix(this._hour)}:${this._prefix(this._minute)}:${this._prefix(this._second)}${this._formatOffset()}`;
-	}
-
-	private _formatOffset(): string {
-		return `${this._offset.direction === OffsetDirection.minus ? "-" : "+"}${this._prefix(this._offset.hour)}:${this._prefix(this._offset.minute)}`;
+	_equals(context: ParseContext): ParseReturnType<{ readonly equals: boolean; readonly data: TimeTZ }> {
+		//@ts-expect-error - _equals receives the same context as _parse
+		const parsed = TimeTZ.safeFrom(...context.data);
+		if (parsed.success) {
+			return OK({
+				equals: parsed.data.toString() === this.toString(),
+				data: parsed.data,
+			});
+		}
+		this.setIssueForContext(context, parsed.error.issue);
+		return INVALID;
 	}
 
 	toString(): string {
-		return this._format();
+		return `${pad(this._hour)}:${pad(this._minute)}:${pad(this._second)}${formatOffset(this._offset, { returnEmpty: true })}`;
 	}
 
 	toJSON(): TimeTZObject {
@@ -203,20 +470,26 @@ class TimeTZClass implements TimeTZ {
 		};
 	}
 
-	equals(otherTimeTZ: string | TimeTZ | TimeTZObject): boolean {
-		if (typeof otherTimeTZ === "string") return otherTimeTZ === this.toString();
-		else if (TimeTZ.isTimeTZ(otherTimeTZ))
-			return isISOEquivalent(`${DateTime.now().toISODate()}T${otherTimeTZ.toString()}`, `${DateTime.now().toISODate()}T${this.toString()}`);
-		else {
-			return (
-				otherTimeTZ.hour === this._hour &&
-				otherTimeTZ.minute === this._minute &&
-				otherTimeTZ.second === this._second &&
-				otherTimeTZ.offset.hour === this._offset.hour &&
-				otherTimeTZ.offset.minute === this._offset.minute &&
-				otherTimeTZ.offset.direction === this._offset.direction
-			);
-		}
+	toTime(): Time {
+		return Time.from({
+			hour: this._hour,
+			minute: this._minute,
+			second: this._second,
+		});
+	}
+
+	toDateTime(zone?: string | Zone | undefined): DateTime {
+		const today = DateTime.now();
+		return DateTime.fromISO(
+			`${pad(today.year, 4)}-${pad(today.month)}-${pad(today.day)}T${pad(this._hour)}:${pad(this._minute)}:${pad(this._second)}${formatOffset(this._offset, {
+				returnZ: true,
+			})}`,
+			{ setZone: true }
+		).setZone(zone);
+	}
+
+	toJSDate(zone?: string | Zone | undefined): globalThis.Date {
+		return this.toDateTime(zone).toJSDate();
 	}
 
 	get hour(): number {
@@ -224,8 +497,38 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set hour(hour: number) {
-		hour = Number.parseInt(hour.toString());
-		if (Number.isNaN(hour) || hour < 0 || hour > 23) throw new Error("Invalid hour");
+		const parsedType = getParsedType(hour);
+		if (parsedType !== ParsedType.number) {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: [ParsedType.number],
+				received: parsedType,
+			});
+		}
+
+		if (hour % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (hour < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (hour > 23) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 23,
+				type: "number",
+				inclusive: true,
+			});
+		}
 
 		this._hour = hour;
 	}
@@ -235,8 +538,38 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set minute(minute: number) {
-		minute = Number.parseInt(minute.toString());
-		if (Number.isNaN(minute) || minute < 0 || minute > 59) throw new Error("Invalid minute");
+		const parsedType = getParsedType(minute);
+		if (parsedType !== ParsedType.number) {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: [ParsedType.number],
+				received: parsedType,
+			});
+		}
+
+		if (minute % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (minute < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (minute > 59) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+		}
 
 		this._minute = minute;
 	}
@@ -246,8 +579,32 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set second(second: number) {
-		second = Number.parseInt(second.toString());
-		if (Number.isNaN(second) || second < 0 || second > 59) throw new Error("Invalid second");
+		const parsedType = getParsedType(second);
+		if (parsedType !== ParsedType.number) {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: [ParsedType.number],
+				received: parsedType,
+			});
+		}
+
+		if (second < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (second >= 60) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+		}
 
 		this._second = second;
 	}
@@ -257,21 +614,109 @@ class TimeTZClass implements TimeTZ {
 	}
 
 	set offset(offset: Offset) {
-		offset.hour = Number.parseInt(offset.hour.toString());
-		if (Number.isNaN(offset.hour) || offset.hour < 0 || offset.hour > 23) throw new Error("Invalid offset hour");
-		offset.minute = Number.parseInt(offset.minute.toString());
-		if (Number.isNaN(offset.minute) || offset.minute < 0 || offset.minute > 59) throw new Error("Invalid offset minute");
-		if (!([OffsetDirection.minus, OffsetDirection.plus] as string[]).includes(offset.direction)) throw new Error("Invalid offset direction");
+		const parsedType = getParsedType(offset);
+		if (parsedType !== ParsedType.object) {
+			throwPGTPError({
+				code: "invalid_type",
+				expected: [ParsedType.object],
+				received: parsedType,
+			});
+		}
 
-		this._offset = offset;
-	}
+		const parsedOffset = hasKeys<Offset>(offset, [
+			["hour", "number"],
+			["minute", "number"],
+			["direction", "string"],
+		]);
+		if (!parsedOffset.success) {
+			switch (true) {
+				case parsedOffset.otherKeys.length > 0:
+					throwPGTPError({
+						code: "unrecognized_keys",
+						keys: parsedOffset.otherKeys,
+					});
+					break;
+				case parsedOffset.missingKeys.length > 0:
+					throwPGTPError({
+						code: "missing_keys",
+						keys: parsedOffset.missingKeys,
+					});
+					break;
+				case parsedOffset.invalidKeys.length > 0:
+					throwPGTPError({
+						code: "invalid_key_type",
+						...parsedOffset.invalidKeys[0],
+					});
+					break;
+				/* c8 ignore next 9 */
+				// Assert never
+			}
 
-	toDateTime(zone?: string | Zone | undefined): DateTime {
-		return DateTime.fromISO(`${DateTime.now().toISODate()}T${this._format()}`).setZone(zone);
-	}
+			throwPGTPError({
+				code: "invalid_type",
+				expected: [ParsedType.object],
+				received: parsedType,
+			});
+		}
 
-	toJSDate(zone?: string | Zone | undefined): globalThis.Date {
-		return this.toDateTime(zone).toJSDate();
+		// Validate the offset
+		if (parsedOffset.obj.direction !== OffsetDirection.minus && parsedOffset.obj.direction !== OffsetDirection.plus) {
+			throwPGTPError({
+				code: "invalid_string",
+				expected: [OffsetDirection.minus, OffsetDirection.plus],
+				received: parsedOffset.obj.direction,
+			});
+		}
+
+		if (parsedOffset.obj.hour % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (parsedOffset.obj.hour < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.hour > 23) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 23,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.minute % 1 !== 0) {
+			throwPGTPError({
+				code: "not_whole",
+			});
+		}
+
+		if (parsedOffset.obj.minute < 0) {
+			throwPGTPError({
+				code: "too_small",
+				minimum: 0,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		if (parsedOffset.obj.minute > 59) {
+			throwPGTPError({
+				code: "too_big",
+				maximum: 59,
+				type: "number",
+				inclusive: true,
+			});
+		}
+
+		this._offset = parsedOffset.obj;
 	}
 }
 

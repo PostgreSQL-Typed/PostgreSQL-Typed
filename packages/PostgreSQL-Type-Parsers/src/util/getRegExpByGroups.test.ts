@@ -81,4 +81,21 @@ describe("getRegExpByGroups", () => {
 
 		expect(test1.match("#")).toBeNull();
 	});
+
+	it("should return the first match if isOrCondition is true", () => {
+		const test1 = getRegExpByGroups<{
+			az: string;
+			az2: string;
+		}>({
+			groups: ["(?<az>[a-zA-Z]*)", "(?<az2>[a-zA-Z]*)"],
+			isOrCondition: true,
+		});
+
+		expect(test1.match("Hello")).not.toBeNull();
+		expect(test1.match("Hello")).toHaveProperty("az");
+		expect(test1.match("Hello")).not.toHaveProperty("az2");
+		expect(test1.match("Hello")?.az).toBe("Hello");
+
+		expect(test1.match("Hello World")).toBeNull();
+	});
 });

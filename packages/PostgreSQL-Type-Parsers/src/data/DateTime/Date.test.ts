@@ -192,14 +192,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestdate (
+				CREATE TABLE public.vitestdate (
 					date date NULL,
 					_date _date NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestdate (date, _date)
+				INSERT INTO public.vitestdate (date, _date)
 				VALUES (
 					'2022-09-02',
 					'{ 1997-08-24, 2022-09-02 }'
@@ -207,7 +207,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestdate
+				SELECT * FROM public.vitestdate
 			`);
 
 			expect(result.rows[0].date.toString()).toStrictEqual(
@@ -234,10 +234,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestdate
+			DROP TABLE public.vitestdate
 		`);
 
 		await client.end();

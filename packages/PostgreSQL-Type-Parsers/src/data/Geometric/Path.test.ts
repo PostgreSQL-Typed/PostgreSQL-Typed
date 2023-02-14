@@ -263,14 +263,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestpath (
+				CREATE TABLE public.vitestpath (
 					path path NULL,
 					_path _path NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestpath (path, _path)
+				INSERT INTO public.vitestpath (path, _path)
 				VALUES (
 					'((1.1,2.2),(3.3,4.4))',
 					'{((1.1\\,2.2)\\,(3.3\\,4.4)),[(5.5\\,6.6)\\,(7.7\\,8.8)]}'
@@ -278,7 +278,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestpath
+				SELECT * FROM public.vitestpath
 			`);
 
 			expect(result.rows[0].path.toString()).toStrictEqual(
@@ -302,10 +302,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestpath
+			DROP TABLE public.vitestpath
 		`);
 
 		await client.end();

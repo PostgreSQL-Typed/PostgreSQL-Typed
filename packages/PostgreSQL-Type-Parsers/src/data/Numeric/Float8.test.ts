@@ -338,49 +338,50 @@ describe("PostgreSQL", () => {
 			application_name: "float8.test.ts",
 		});
 
-		try {
-			await client.connect();
+		await client.connect();
 
+		let error = null;
+		try {
 			await client.query(`
-				CREATE TABLE IF NOT EXISTS public.jestfloat8 (
+				CREATE TABLE IF NOT EXISTS public.vitestfloat8 (
 					float8 float8 NULL,
 					_float8 _float8 NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestfloat8 (float8, _float8)
+				INSERT INTO public.vitestfloat8 (float8, _float8)
 				VALUES (
 					1,
 					'{2, 3}'
 				)
 			`);
-		} catch {
-			expect.fail("Failed to connect to PostgreSQL");
-		}
 
-		const result = await client.query(`
-				SELECT * FROM public.jestfloat8
+			const result = await client.query(`
+				SELECT * FROM public.vitestfloat8
 			`);
 
-		expect(Float8.isFloat8(result.rows[0].float8)).toBe(true);
-		expect(Float8.from(1).equals(result.rows[0].float8)).toBe(true);
+			expect(Float8.isFloat8(result.rows[0].float8)).toBe(true);
+			expect(Float8.from(1).equals(result.rows[0].float8)).toBe(true);
 
-		const [a, b] = result.rows[0]._float8;
-		expect(result.rows[0]._float8).toHaveLength(2);
-		expect(Float8.isFloat8(a)).toBe(true);
-		expect(Float8.from(2).equals(a)).toBe(true);
-		expect(Float8.isFloat8(b)).toBe(true);
-		expect(Float8.from(3).equals(b)).toBe(true);
+			const [a, b] = result.rows[0]._float8;
+			expect(result.rows[0]._float8).toHaveLength(2);
+			expect(Float8.isFloat8(a)).toBe(true);
+			expect(Float8.from(2).equals(a)).toBe(true);
+			expect(Float8.isFloat8(b)).toBe(true);
+			expect(Float8.from(3).equals(b)).toBe(true);
+		} catch (error_) {
+			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
+		}
 
-		try {
-			await client.query(`
-				DROP TABLE public.jestfloat8
+		await client.query(`
+				DROP TABLE public.vitestfloat8
 			`);
 
-			await client.end();
-		} catch {
-			expect.fail("Failed to disconnect from PostgreSQL");
-		}
+		await client.end();
+
+		if (error) throw error;
 	});
 });

@@ -134,14 +134,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestpoint (
+				CREATE TABLE public.vitestpoint (
 					point point NULL,
 					_point _point NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestpoint (point, _point)
+				INSERT INTO public.vitestpoint (point, _point)
 				VALUES (
 					'(1,2)',
 					'{ (1.1\\,2.2), (3.3\\,4.4) }'
@@ -149,7 +149,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestpoint
+				SELECT * FROM public.vitestpoint
 			`);
 
 			expect(result.rows[0].point.toString()).toStrictEqual(Point.from({ x: 1, y: 2 }).toString());
@@ -158,10 +158,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._point[1].toString()).toStrictEqual(Point.from({ x: 3.3, y: 4.4 }).toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestpoint
+			DROP TABLE public.vitestpoint
 		`);
 
 		await client.end();

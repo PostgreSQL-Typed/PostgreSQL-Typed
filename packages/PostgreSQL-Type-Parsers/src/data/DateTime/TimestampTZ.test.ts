@@ -846,14 +846,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jesttimestamptz (
+				CREATE TABLE public.vitesttimestamptz (
 					timestamptz timestamptz NULL,
 					_timestamptz _timestamptz NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jesttimestamptz (timestamptz, _timestamptz)
+				INSERT INTO public.vitesttimestamptz (timestamptz, _timestamptz)
 				VALUES (
 					'2004-10-19 04:05:06.789 -01:00',
 					'{ 2004-10-19T04:05:06.789+01:00, 2004-10-19 10:23:54.678 EST }'
@@ -861,7 +861,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jesttimestamptz
+				SELECT * FROM public.vitesttimestamptz
 			`);
 
 			expect(result.rows[0].timestamptz.toString()).toStrictEqual(TimestampTZ.from("2004-10-19 05:05:06.789 +00:00").toString());
@@ -870,10 +870,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._timestamptz[1].toString()).toStrictEqual(TimestampTZ.from("2004-10-19 15:23:54.678Z").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jesttimestamptz
+			DROP TABLE public.vitesttimestamptz
 		`);
 
 		await client.end();

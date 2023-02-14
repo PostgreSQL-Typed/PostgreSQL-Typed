@@ -161,14 +161,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestint4multirange (
+				CREATE TABLE public.vitestint4multirange (
 					int4multirange int4multirange NULL,
 					_int4multirange _int4multirange NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestint4multirange (int4multirange, _int4multirange)
+				INSERT INTO public.vitestint4multirange (int4multirange, _int4multirange)
 				VALUES (
 					'{[1,3),[11,13),[21,23)}',
 					'{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}'
@@ -176,7 +176,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestint4multirange
+				SELECT * FROM public.vitestint4multirange
 			`);
 
 			expect(result.rows[0].int4multirange.toString()).toStrictEqual(Int4MultiRange.from("{[1,3),[11,13),[21,23)}").toString());
@@ -185,10 +185,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._int4multirange[1].toString()).toStrictEqual(Int4MultiRange.from("{[21,23),[31,33)}").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestint4multirange
+			DROP TABLE public.vitestint4multirange
 		`);
 
 		await client.end();

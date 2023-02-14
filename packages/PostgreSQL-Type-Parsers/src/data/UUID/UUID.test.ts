@@ -206,14 +206,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestuuid (
+				CREATE TABLE public.vitestuuid (
 					uuid uuid NULL,
 					_uuid _uuid NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestuuid (uuid, _uuid)
+				INSERT INTO public.vitestuuid (uuid, _uuid)
 				VALUES (
 					'A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11',
 					'{A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11, A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11}'
@@ -221,7 +221,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestuuid
+				SELECT * FROM public.vitestuuid
 			`);
 
 			expect(result.rows[0].uuid.toString()).toStrictEqual(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").toString());
@@ -230,10 +230,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._uuid[1].toString()).toStrictEqual(UUID.from("A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestuuid
+			DROP TABLE public.vitestuuid
 		`);
 
 		await client.end();

@@ -153,14 +153,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestline (
+				CREATE TABLE public.vitestline (
 					line line NULL,
 					_line _line NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestline (line, _line)
+				INSERT INTO public.vitestline (line, _line)
 				VALUES (
 					'{1.1,2.2,3.3}',
 					'{\\{1.1\\,2.2\\,3.3\\},\\{4.4\\,5.5\\,6.6\\}}'
@@ -168,7 +168,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestline
+				SELECT * FROM public.vitestline
 			`);
 
 			expect(result.rows[0].line.toString()).toStrictEqual(
@@ -195,10 +195,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestline
+			DROP TABLE public.vitestline
 		`);
 
 		await client.end();

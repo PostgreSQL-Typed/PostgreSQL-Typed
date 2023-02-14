@@ -149,14 +149,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestcircle (
+				CREATE TABLE public.vitestcircle (
 					circle circle NULL,
 					_circle _circle NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestcircle (circle, _circle)
+				INSERT INTO public.vitestcircle (circle, _circle)
 				VALUES (
 					'<(1,2),3>',
 					'{ <(1.1\\,2.2)\\,3.3>, <(4\\,5)\\,6> }'
@@ -164,7 +164,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestcircle
+				SELECT * FROM public.vitestcircle
 			`);
 
 			expect(result.rows[0].circle.toString()).toStrictEqual(Circle.from({ x: 1, y: 2, radius: 3 }).toString());
@@ -173,10 +173,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._circle[1].toString()).toStrictEqual(Circle.from({ x: 4, y: 5, radius: 6 }).toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestcircle
+			DROP TABLE public.vitestcircle
 		`);
 
 		await client.end();

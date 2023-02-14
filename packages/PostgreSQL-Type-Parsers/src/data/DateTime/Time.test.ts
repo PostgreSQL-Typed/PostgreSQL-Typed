@@ -261,14 +261,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jesttime (
+				CREATE TABLE public.vitesttime (
 					time time NULL,
 					_time _time NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jesttime (time, _time)
+				INSERT INTO public.vitesttime (time, _time)
 				VALUES (
 					'04:05:06.789',
 					'{ 01:02:03.456, 04:05:06.789 }'
@@ -276,7 +276,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jesttime
+				SELECT * FROM public.vitesttime
 			`);
 
 			expect(result.rows[0].time.toString()).toStrictEqual(
@@ -303,10 +303,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jesttime
+			DROP TABLE public.vitesttime
 		`);
 
 		await client.end();

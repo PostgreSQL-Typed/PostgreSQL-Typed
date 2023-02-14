@@ -215,14 +215,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestpolygon (
+				CREATE TABLE public.vitestpolygon (
 					polygon polygon NULL,
 					_polygon _polygon NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestpolygon (polygon, _polygon)
+				INSERT INTO public.vitestpolygon (polygon, _polygon)
 				VALUES (
 					'((1.1,2.2),(3.3,4.4))',
 					'{((1.1\\,2.2)\\,(3.3\\,4.4)),((5.5\\,6.6)\\,(7.7\\,8.8))}'
@@ -230,7 +230,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestpolygon
+				SELECT * FROM public.vitestpolygon
 			`);
 
 			expect(result.rows[0].polygon.toString()).toStrictEqual(
@@ -251,10 +251,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestpolygon
+			DROP TABLE public.vitestpolygon
 		`);
 
 		await client.end();

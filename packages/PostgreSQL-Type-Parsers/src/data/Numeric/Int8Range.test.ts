@@ -243,14 +243,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestint8range (
+				CREATE TABLE public.vitestint8range (
 					int8range int8range NULL,
 					_int8range _int8range NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestint8range (int8range, _int8range)
+				INSERT INTO public.vitestint8range (int8range, _int8range)
 				VALUES (
 					'[1,3)',
 					'{[1\\,3),(5\\,7]}'
@@ -258,7 +258,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestint8range
+				SELECT * FROM public.vitestint8range
 			`);
 
 			expect(result.rows[0].int8range.toString()).toStrictEqual(Int8Range.from("[1,3)").toString());
@@ -267,10 +267,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._int8range[1].toString()).toStrictEqual(Int8Range.from("[6,8)").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestint8range
+			DROP TABLE public.vitestint8range
 		`);
 
 		await client.end();

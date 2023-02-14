@@ -166,14 +166,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestbox (
+				CREATE TABLE public.vitestbox (
 					box box NULL,
 					_box _box NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestbox (box, _box)
+				INSERT INTO public.vitestbox (box, _box)
 				VALUES (
 					'(1,2),(3,4)',
 					'{(1.1\,2.2)\,(3.3\,4.4);(5.5\,6.6)\,(7.7\,8.8)}'
@@ -181,7 +181,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestbox
+				SELECT * FROM public.vitestbox
 			`);
 
 			expect(result.rows[0].box.toString()).toStrictEqual(Box.from({ x1: 3, y1: 4, x2: 1, y2: 2 }).toString());
@@ -190,10 +190,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._box[1].toString()).toStrictEqual(Box.from({ x1: 7.7, y1: 8.8, x2: 5.5, y2: 6.6 }).toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestbox
+			DROP TABLE public.vitestbox
 		`);
 
 		await client.end();

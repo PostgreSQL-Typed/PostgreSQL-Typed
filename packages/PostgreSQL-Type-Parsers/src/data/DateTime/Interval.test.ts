@@ -591,14 +591,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestinterval (
+				CREATE TABLE public.vitestinterval (
 					interval interval NULL,
 					_interval _interval NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestinterval (interval, _interval)
+				INSERT INTO public.vitestinterval (interval, _interval)
 				VALUES (
 					'1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds',
 					'{ 1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds, 7 years 6 months 5 days 4 hours 3 minutes 2.001 seconds }'
@@ -606,7 +606,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestinterval
+				SELECT * FROM public.vitestinterval
 			`);
 
 			expect(result.rows[0].interval.toString()).toStrictEqual(
@@ -645,10 +645,12 @@ describe("PostgreSQL", () => {
 			);
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestinterval
+			DROP TABLE public.vitestinterval
 		`);
 
 		await client.end();

@@ -322,14 +322,14 @@ describe("PostgreSQL", () => {
 			await client.connect();
 
 			await client.query(`
-				CREATE TABLE IF NOT EXISTS public.jestint2 (
+				CREATE TABLE IF NOT EXISTS public.vitestint2 (
 					int2 int2 NULL,
 					_int2 _int2 NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestint2 (int2, _int2)
+				INSERT INTO public.vitestint2 (int2, _int2)
 				VALUES (
 					1,
 					'{2, 3}'
@@ -340,7 +340,7 @@ describe("PostgreSQL", () => {
 		}
 
 		const result = await client.query(`
-				SELECT * FROM public.jestint2
+				SELECT * FROM public.vitestint2
 			`);
 
 		expect(Int2.isInt2(result.rows[0].int2)).toBe(true);
@@ -355,7 +355,7 @@ describe("PostgreSQL", () => {
 
 		try {
 			await client.query(`
-				DROP TABLE public.jestint2
+				DROP TABLE public.vitestint2
 			`);
 
 			await client.end();

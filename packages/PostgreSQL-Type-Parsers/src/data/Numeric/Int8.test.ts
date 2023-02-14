@@ -332,49 +332,49 @@ describe("PostgreSQL", () => {
 			application_name: "int8.test.ts",
 		});
 
-		try {
-			await client.connect();
+		await client.connect();
 
+		let error = null;
+		try {
 			await client.query(`
-				CREATE TABLE IF NOT EXISTS public.jestint8 (
+				CREATE TABLE IF NOT EXISTS public.vitestint8 (
 					int8 int8 NULL,
 					_int8 _int8 NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestint8 (int8, _int8)
+				INSERT INTO public.vitestint8 (int8, _int8)
 				VALUES (
 					1,
 					'{2, 3}'
 				)
 			`);
-		} catch {
-			expect.fail("Failed to connect to PostgreSQL");
-		}
 
-		const result = await client.query(`
-				SELECT * FROM public.jestint8
+			const result = await client.query(`
+				SELECT * FROM public.vitestint8
 			`);
 
-		expect(Int8.isInt8(result.rows[0].int8)).toBe(true);
-		expect(Int8.from(1).equals(result.rows[0].int8)).toBe(true);
+			expect(Int8.isInt8(result.rows[0].int8)).toBe(true);
+			expect(Int8.from(1).equals(result.rows[0].int8)).toBe(true);
 
-		const [a, b] = result.rows[0]._int8;
-		expect(result.rows[0]._int8).toHaveLength(2);
-		expect(Int8.isInt8(a)).toBe(true);
-		expect(Int8.from(2).equals(a)).toBe(true);
-		expect(Int8.isInt8(b)).toBe(true);
-		expect(Int8.from(3).equals(b)).toBe(true);
-
-		try {
-			await client.query(`
-				DROP TABLE public.jestint8
+			const [a, b] = result.rows[0]._int8;
+			expect(result.rows[0]._int8).toHaveLength(2);
+			expect(Int8.isInt8(a)).toBe(true);
+			expect(Int8.from(2).equals(a)).toBe(true);
+			expect(Int8.isInt8(b)).toBe(true);
+			expect(Int8.from(3).equals(b)).toBe(true);
+		} catch (error_) {
+			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
+		}
+		await client.query(`
+				DROP TABLE public.vitestint8
 			`);
 
-			await client.end();
-		} catch {
-			expect.fail("Failed to disconnect from PostgreSQL");
-		}
+		await client.end();
+
+		if (error) throw error;
 	});
 });

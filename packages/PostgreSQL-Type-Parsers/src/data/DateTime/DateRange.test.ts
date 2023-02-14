@@ -348,14 +348,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestdaterange (
+				CREATE TABLE public.vitestdaterange (
 					daterange daterange NULL,
 					_daterange _daterange NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestdaterange (daterange, _daterange)
+				INSERT INTO public.vitestdaterange (daterange, _daterange)
 				VALUES (
 					'[2022-09-02,2022-10-03)',
 					'{[2022-09-02\\,2022-10-03),(2022-11-02\\,2022-12-03]}'
@@ -363,7 +363,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestdaterange
+				SELECT * FROM public.vitestdaterange
 			`);
 
 			expect(result.rows[0].daterange.toString()).toStrictEqual(DateRange.from("[2022-09-02,2022-10-03)").toString());
@@ -372,10 +372,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._daterange[1].toString()).toStrictEqual(DateRange.from("[2022-11-03,2022-12-04)").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestdaterange
+			DROP TABLE public.vitestdaterange
 		`);
 
 		await client.end();

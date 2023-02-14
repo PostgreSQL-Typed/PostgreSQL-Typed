@@ -258,14 +258,14 @@ describe("PostgreSQL", () => {
 		let error = null;
 		try {
 			await client.query(`
-				CREATE TABLE public.jestdatemultirange (
+				CREATE TABLE public.vitestdatemultirange (
 					datemultirange datemultirange NULL,
 					_datemultirange _datemultirange NULL
 				)
 			`);
 
 			await client.query(`
-				INSERT INTO public.jestdatemultirange (datemultirange, _datemultirange)
+				INSERT INTO public.vitestdatemultirange (datemultirange, _datemultirange)
 				VALUES (
 					'{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}',
 					'{\\{[1999-01-08\\,2022-01-01)\\,[2023-01-08\\,2024-01-01)\\},\\{[2025-01-08\\,2026-01-01)\\,[2027-01-08\\,2028-01-01)\\}}'
@@ -273,7 +273,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			const result = await client.query(`
-				SELECT * FROM public.jestdatemultirange
+				SELECT * FROM public.vitestdatemultirange
 			`);
 
 			expect(result.rows[0].datemultirange.toString()).toStrictEqual(
@@ -284,10 +284,12 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._datemultirange[1].toString()).toStrictEqual(DateMultiRange.from("{[2025-01-08,2026-01-01),[2027-01-08,2028-01-01)}").toString());
 		} catch (error_) {
 			error = error_;
+			// eslint-disable-next-line no-console
+			console.error(error);
 		}
 
 		await client.query(`
-			DROP TABLE public.jestdatemultirange
+			DROP TABLE public.vitestdatemultirange
 		`);
 
 		await client.end();

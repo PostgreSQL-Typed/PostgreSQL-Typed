@@ -158,6 +158,17 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		const version = await client.query<{
+				version: string;
+			}>("SELECT version()"),
+			versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]);
+
+		// Multirange types were introduced in PostgreSQL 14
+		if (versionNumber < 14) {
+			await client.end();
+			return;
+		}
+
 		let error = null;
 		try {
 			await client.query(`

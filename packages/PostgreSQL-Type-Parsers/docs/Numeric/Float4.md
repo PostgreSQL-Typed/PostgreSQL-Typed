@@ -2,7 +2,7 @@
 	Float4
 </h1>
 <p align="center">
-  The <code>Float4</code> parser is used to represet the <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FL``OAT"><code>float4</code></a> and <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT"><code>_float4</code></a> types.
+  The <code>Float4</code> parser is used to represet the <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT"><code>float4</code></a> and <a href="https://www.postgresql.org/docs/current/datatype-numeric.html#DATATYPE-FLOAT"><code>_float4</code></a> types.
 </p>
 <br/>
 

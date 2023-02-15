@@ -1011,6 +1011,7 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 	private _toStringPostgreSQL(style: TimestampPostgreSQLStyles): string {
 		const dateTime = DateTime.fromISO(this._toStringISO(), {
 				setZone: true,
+				locale: "en",
 			}),
 			isShort = style === TimestampStyle.PostgreSQLShort,
 			dayOfWeek = isShort ? dateTime.weekdayShort : dateTime.weekdayLong,

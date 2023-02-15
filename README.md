@@ -19,7 +19,7 @@
 		<img src="https://img.shields.io/github/actions/workflow/status/PostgreSQL-Typed/PostgreSQL-Typed/CI.yml?label=Test%20Packages&logo=github" alt="CI Status"/>
 	</a>
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">
-		<img src="https://img.shields.io/badge/coverage-90.88%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Monorepo Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-98.80%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Monorepo Coverage"/>
 	</a>
 </div>
 <p align="center">
@@ -58,7 +58,7 @@
 	<!-- badges -->
 	<a href="https://www.npmjs.com/package/postgresql-caching">
 		<img src="https://img.shields.io/npm/v/postgresql-caching.svg?logo=npm" alt="PostgreSQL-Caching Version"/>
-		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/PostgreSQL-Caching&logo=vitest&style=flat" alt="PostgreSQL-Caching Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-64.61%25-critical.svg?placeholder=$coverage-url$/packages/PostgreSQL-Caching&logo=vitest&style=flat" alt="PostgreSQL-Caching Coverage"/>
 	</a>
 </div>
 <p align="center">
@@ -94,7 +94,7 @@
 	<!-- badges -->
 	<a href="https://www.npmjs.com/package/postgresql-type-parsers">
 		<img src="https://img.shields.io/npm/v/postgresql-type-parsers.svg?logo=npm" alt="PostgreSQL-Type-Parsers Version"/>
-		<img src="https://img.shields.io/badge/coverage-90.57%25-success.svg?placeholder=$coverage-url$/packages/PostgreSQL-Type-Parsers&logo=vitest&style=flat" alt="PostgreSQL-Type-Parsers Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/PostgreSQL-Type-Parsers&logo=vitest&style=flat" alt="PostgreSQL-Type-Parsers Coverage"/>
 	</a>
 </div>
 <p align="center">

@@ -10,6 +10,8 @@ export function getFilenameTemplate(config: Config, id: TypeId): string {
 			schemaDataFileName,
 			databaseFileName,
 			databaseDataFileName,
+			fullExportFileName,
+			fullExportDataFileName,
 			enumFileName,
 			domainFileName,
 			zod,
@@ -31,6 +33,10 @@ export function getFilenameTemplate(config: Config, id: TypeId): string {
 			return formatFileType(databaseFileName);
 		case "database_data":
 			return formatFileType(databaseDataFileName);
+		case "full_export_type":
+			return formatFileType(fullExportFileName);
+		case "full_export_data":
+			return formatFileType(fullExportDataFileName);
 		case "enum":
 			return formatFileType(enumFileName);
 		case "domain":

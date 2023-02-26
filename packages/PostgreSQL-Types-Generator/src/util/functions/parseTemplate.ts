@@ -1,6 +1,6 @@
 import camelcase from "camelcase";
 import pascalcase from "pascalcase";
-import { plural, singular } from "pluralize";
+import pluralize from "pluralize";
 
 export function parseTemplate(string: string) {
 	const variables = [],
@@ -38,9 +38,9 @@ export function parseTemplate(string: string) {
 							case "camel-case":
 								return camelcase(value);
 							case "plural":
-								return plural(value);
+								return pluralize.plural(value);
 							case "singular":
-								return singular(value);
+								return pluralize.singular(value);
 							default:
 								throw new Error(`Unrecognized filter in type generation config, "${filter}" in: ${string}`);
 						}

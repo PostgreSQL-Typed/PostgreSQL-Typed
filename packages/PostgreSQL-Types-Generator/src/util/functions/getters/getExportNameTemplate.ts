@@ -17,6 +17,10 @@ export function getExportNameTemplate(config: Config, id: TypeId): string {
 			return config.types.databaseTypeName;
 		case "database_data":
 			return config.types.databaseDataTypeName;
+		case "full_export_type":
+			return config.types.fullExportTypeName;
+		case "full_export_data":
+			return config.types.fullExportDataTypeName;
 		case "enum":
 			return config.types.enumTypeName;
 		case "domain":

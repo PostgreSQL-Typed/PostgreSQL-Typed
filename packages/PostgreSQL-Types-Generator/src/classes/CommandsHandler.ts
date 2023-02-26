@@ -9,7 +9,6 @@ import type { Command } from "../types/interfaces/Command.js";
 import { GLOBAL_DEBUG_GLOB, LOGGER } from "../util/constants.js";
 
 export class CommandsHandler {
-	// eslint-disable-next-line no-undefined
 	private selectedCommand: Command | Argument | undefined = undefined;
 	private parsedArguments: Record<string, any> = {};
 	private LOGGER = LOGGER.extend("CommandsHandler");

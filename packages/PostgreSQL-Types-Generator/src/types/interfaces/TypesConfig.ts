@@ -349,6 +349,38 @@ export interface TypesConfig {
 	databaseDataFileName: string;
 
 	/**
+	 * What should the full export of the databases types be called in the generated code
+	 *
+	 * @default "Databases"
+	 */
+	fullExportTypeName: string;
+
+	/**
+	 * Where should the full export of the databases types be located in the generated code
+	 *
+	 * Note: .ts is automatically appended to the end of the path (unless you include it yourself)
+	 *
+	 * @default "index.ts"
+	 */
+	fullExportFileName: string;
+
+	/**
+	 * What should the full export of the databases data be called in the generated code
+	 *
+	 * @default "Databases_Data"
+	 */
+	fullExportDataTypeName: string;
+
+	/**
+	 * Where should the full export of the databases data be located in the generated code
+	 *
+	 * Note: .ts is automatically appended to the end of the path (unless you include it yourself)
+	 *
+	 * @default "index.ts"
+	 */
+	fullExportDataFileName: string;
+
+	/**
 	 * Override column types for some columns. The name can be either:
 	 *
 	 * - "table_name.column_name"
@@ -396,6 +428,10 @@ export const zTypesConfig = z.object({
 	databaseFileName: z.string().default("databases/{{ DATABASE_NAME }}.ts"),
 	databaseDataTypeName: z.string().default("{{ DATABASE_NAME | pascal-case }}_Data"),
 	databaseDataFileName: z.string().default("databases/{{ DATABASE_NAME }}.ts"),
+	fullExportTypeName: z.string().default("Databases"),
+	fullExportFileName: z.string().default("index.ts"),
+	fullExportDataTypeName: z.string().default("Databases_Data"),
+	fullExportDataFileName: z.string().default("index.ts"),
 	columnTypeOverrides: z.record(z.optional(z.string())).default({}),
 	typeOverrides: z.record(z.optional(z.string())).default({}),
 });

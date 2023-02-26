@@ -21,6 +21,8 @@ export type TypeId =
 	| { type: "schema_data"; name: string; databaseName: string }
 	| { type: "database_type"; name: string }
 	| { type: "database_data"; name: string }
+	| { type: "full_export_type" }
+	| { type: "full_export_data" }
 	| { type: "domain"; name: string }
 	| { type: "enum"; name: string; databaseName: string }
 	| {
@@ -58,6 +60,8 @@ export type TypeId =
 				| { type: "schema_data"; name: string; databaseName: string }
 				| { type: "database_type"; name: string }
 				| { type: "database_data"; name: string }
+				| { type: "full_export_type" }
+				| { type: "full_export_data" }
 				| {
 						type: "z_insert_parameters";
 						name: string;

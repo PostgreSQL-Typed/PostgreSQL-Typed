@@ -1,8 +1,8 @@
 import type { TableData } from "../interfaces/TableData.js";
 
-export interface SchemaData {
+export type SchemaData = {
 	name: string;
 	tables: {
 		[table_name: string]: TableData;
 	};
-}
+};

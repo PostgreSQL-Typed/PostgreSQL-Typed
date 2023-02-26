@@ -1,39 +1,56 @@
-import type { QueryResult } from "pg";
-
-import type { Database } from "../classes/Database.js";
-import { QueryBuilder } from "../classes/QueryBuilder.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { SelectOptions } from "../types/interfaces/SelectOptions.js";
-import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable.js";
-import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
-import type { Include } from "../types/types/Include.js";
-import type { PrimaryKeyOfTable } from "../types/types/PrimaryKeyOfTable.js";
+import { PostgresData } from "../types/interfaces/PostgresData.js";
+import { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
+import { Client } from "./Client.js";
+import { Database } from "./Database.js";
+import { Schema } from "./Schema.js";
 
 export class Table<
+	InnerPostgresData extends PostgresData,
 	InnerDatabaseData extends DatabaseData,
 	Ready extends boolean,
-	ClientType extends "client" | "pool",
-	TableLocation extends TableLocations<InnerDatabaseData>
+	SchemaLocation extends SchemaLocations<InnerPostgresData>,
+	TableLocation extends TableLocations<InnerPostgresData>
 > {
-	constructor(public readonly database: Database<InnerDatabaseData, Ready, ClientType>, public readonly tableLocation: TableLocation) {}
+	constructor(
+		public readonly client: Client<InnerPostgresData, Ready>,
+		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
+		public readonly tableLocation: TableLocation
+	) {}
 
-	get table_name(): TableLocation extends `${string}.${infer Table}` ? Table : never {
+	get tableName(): TableLocation extends `${string}.${string}.${infer Table}` ? Table : never {
+		return (this.tableLocation as string).split(".")[2] as any;
+	}
+
+	get schemaName(): TableLocation extends `${string}.${infer Schema}.${string}` ? Schema : never {
 		return (this.tableLocation as string).split(".")[1] as any;
 	}
 
-	get schema_name(): TableLocation extends `${infer Schema}.${string}` ? Schema : never {
+	get schema(): Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation> {
+		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(
+			this.client,
+			this.databaseData,
+			`${this.databaseName}.${this.schemaName}` as any
+		);
+	}
+
+	get databaseName(): TableLocation extends `${infer Database}.${string}.${string}` ? Database : never {
 		return (this.tableLocation as string).split(".")[0] as any;
+	}
+
+	get database(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
+		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
 	}
 
 	get primary_key(): TableLocation extends `${infer SchemaName}.${infer TableName}`
 		? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
 		: undefined {
-		return this.database.database_data.schemas.find(s => s.name === this.schema_name)?.tables.find(t => t.name === (this.table_name as string))
-			?.primary_key as any;
+		return this.databaseData.schemas.find(s => s.name === this.schemaName)?.tables.find(t => t.name === (this.tableName as string))?.primary_key as any;
 	}
 
-	async select<
+	/* async select<
 		ColumNames extends ColumnNamesOfTable<InnerDatabaseData, TableLocation>,
 		Columns extends ColumnsOfTable<InnerDatabaseData, TableLocation>,
 		IncludePrimaryKey extends boolean = false
@@ -53,9 +70,9 @@ export class Table<
 					>]: Columns[Column];
 			  }>
 	> {
-		if (!this.database.ready || !this.database.client) throw new Error("Database is not ready");
+		if (!this.client.ready || !this.client.client) throw new Error("Database is not ready");
 
 		const queryBuilder = new QueryBuilder(this);
-		return this.database.client.query(queryBuilder.getSelectQuery(columns, options, includePrimaryKey)) as any;
-	}
+		return this.client.query(queryBuilder.getSelectQuery(columns, options, includePrimaryKey)) as any;
+	} */
 }

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Client } from "pg";
+import pg from "pg";
 
 import type { ProgressBar } from "../classes/ProgressBar.js";
 import { ClassKind } from "../types/enums/ClassKind.js";
@@ -21,7 +21,7 @@ import { getDataTypes } from "../util/functions/getters/getDataTypes.js";
 import { getTables } from "../util/functions/getters/getTables.js";
 
 export class Fetcher {
-	private client: Client;
+	private client: pg.Client;
 	private dbName = "";
 	private tables: Table[] = [];
 	private dataTypes: DataType[] = [];
@@ -29,8 +29,9 @@ export class Fetcher {
 	private attributes: Attribute[] = [];
 	private constraints: Constraint[] = [];
 	constructor(private readonly config: Config, private readonly progressBar: ProgressBar, private readonly connection: string | Connection) {
-		this.client = new Client({
+		this.client = new pg.Client({
 			connectionString: this.formatted_connection_string,
+			ssl: { rejectUnauthorized: false },
 		});
 	}
 
@@ -38,9 +39,10 @@ export class Fetcher {
 		try {
 			await this.client.connect();
 			await this.setDatabaseName();
-		} catch {
+		} catch (error) {
 			this.progressBar.stop();
 			console.log(
+				error,
 				getConsoleHeader(
 					r("Could not connect to database!"),
 					"Please check your connection settings.",

@@ -9,13 +9,13 @@ import type { ColumnNamesOfTable } from "../types/types/ColumnNamesOfTable.js";
 import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
 import type { Filter } from "../types/types/Filter.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
-import type { TableLocations } from "../types/types/TableLocations.js";
+import type { TableLocationsFromDatabase } from "../types/types/TableLocationsFromDatabase.js";
 
 export class QueryBuilder<
 	InnerDatabaseData extends DatabaseData,
 	Ready extends boolean,
 	ClientType extends "client" | "pool",
-	TableLocation extends TableLocations<InnerDatabaseData>
+	TableLocation extends TableLocationsFromDatabase<InnerDatabaseData>
 > {
 	constructor(private table: Table<InnerDatabaseData, Ready, ClientType, TableLocation>) {}
 
@@ -24,7 +24,7 @@ export class QueryBuilder<
 		Columns extends ColumnsOfTable<InnerDatabaseData, TableLocation>,
 		IncludePrimaryKey extends boolean = false
 	>(columns: ColumNames | "*", options?: SelectOptions<Columns>, includePrimaryKey?: IncludePrimaryKey): string {
-		const { table_name: tableName, schema_name: schemaName, primary_key: primaryKey } = this.table,
+		const { tableName: tableName, schemaName: schemaName, primary_key: primaryKey } = this.table,
 			{ $LIMIT: limit, $FETCH: fetch, $ORDER_BY: orderBy, $WHERE: where } = options || {};
 		let finalColumns: string[] | "*" = columns;
 

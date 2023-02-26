@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { ConfigHandler } from "../classes/ConfigHandler.js";
@@ -52,6 +53,17 @@ export const Generate: Command = {
 
 		await Promise.all(promises);
 		promises = [];
+
+		// For debugging purposes
+		// Write the fetched data to a file
+		writeFileSync(
+			"fetchedData.json",
+			JSON.stringify(
+				fetchers.map(f => f.fetchedData),
+				null,
+				4
+			)
+		);
 
 		progressBar.setStep(5);
 		const printer = new Printer(

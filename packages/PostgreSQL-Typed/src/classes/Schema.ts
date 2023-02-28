@@ -13,8 +13,8 @@ export class Schema<
 	InnerDatabaseData extends DatabaseData,
 	Ready extends boolean,
 	SchemaLocation extends SchemaLocations<InnerPostgresData>,
-	DatabaseName extends SchemaLocation extends `${infer Database}.${string}` ? Database : never,
-	SchemaName extends SchemaLocation extends `${string}.${infer Schema}` ? Schema : never
+	DatabaseName extends keyof InnerPostgresData = SchemaLocation extends `${infer Database}.${string}` ? Database : never,
+	SchemaName extends keyof InnerPostgresData[DatabaseName]["schemas"] = SchemaLocation extends `${string}.${infer Schema}` ? Schema : never
 > {
 	constructor(
 		public readonly client: Client<InnerPostgresData, Ready>,

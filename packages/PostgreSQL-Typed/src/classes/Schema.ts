@@ -34,7 +34,7 @@ export class Schema<
 		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
 	}
 
-	get tableNames(): (keyof InnerDatabaseData["schemas"][SchemaLocation extends `${string}.${infer Schema}` ? Schema : never]["tables"])[] {
+	get tableNames(): (keyof InnerDatabaseData["schemas"][SchemaName]["tables"])[] {
 		return this.databaseData.schemas.flatMap(schema => schema.tables.map(table => table.name as string));
 	}
 
@@ -50,8 +50,6 @@ export class Schema<
 	}
 
 	get tables(): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName>>[] {
-		//TODO Figure out why TS has a symbol type in the array
-		// @ts-expect-error TS has a symbol type in the array
 		return this.tableNames.map(tableName => this.table(tableName));
 	}
 }

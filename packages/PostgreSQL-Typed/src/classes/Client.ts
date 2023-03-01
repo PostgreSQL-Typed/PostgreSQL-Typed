@@ -7,6 +7,7 @@ import { SchemaLocations } from "../types/types/SchemaLocations.js";
 import { TableLocations } from "../types/types/TableLocations.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
+import { Table } from "./Table.js";
 
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> {
 	public readonly client: postgres.Sql;
@@ -54,12 +55,6 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		return this.databaseNames.map(database => this.database(database));
 	}
 
-	get schemaNames(): SchemaLocations<InnerPostgresData>[] {
-		return Object.values(this.postgresData).flatMap(([databaseName, databaseData]: [string, RawDatabaseData<InnerPostgresData[keyof InnerPostgresData]>]) =>
-			databaseData.schemas.map(schema => `${databaseName}.${schema.name.toString()}` as SchemaLocations<InnerPostgresData>)
-		);
-	}
-
 	schema<SchemaLocation extends SchemaLocations<InnerPostgresData>>(
 		schema: SchemaLocation
 	): SchemaLocation extends `${infer Database}.${string}` ? Schema<InnerPostgresData, InnerPostgresData[Database], Ready, SchemaLocation> : never {
@@ -68,10 +63,43 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	}
 
 	get schemas(): Schema<InnerPostgresData, InnerPostgresData[keyof InnerPostgresData], Ready, SchemaLocations<InnerPostgresData>>[] {
-		return this.schemaNames.map(schema => this.schema(schema)) as any;
+		return this.schemaLocations.map(
+			schema => this.schema(schema) as Schema<InnerPostgresData, InnerPostgresData[keyof InnerPostgresData], Ready, SchemaLocations<InnerPostgresData>>
+		);
 	}
 
-	get tableNames(): TableLocations<InnerPostgresData>[] {
+	get schemaLocations(): SchemaLocations<InnerPostgresData>[] {
+		return Object.values(this.postgresData).flatMap(([databaseName, databaseData]: [string, RawDatabaseData<InnerPostgresData[keyof InnerPostgresData]>]) =>
+			databaseData.schemas.map(schema => `${databaseName}.${schema.name.toString()}` as SchemaLocations<InnerPostgresData>)
+		);
+	}
+
+	table<
+		TableLocation extends TableLocations<InnerPostgresData>,
+		TemporarySchemaLocation = TableLocation extends `${infer Database}.${infer Schema}.${string}` ? `${Database}.${Schema}` : never,
+		SchemaLocation extends SchemaLocations<InnerPostgresData> = TemporarySchemaLocation extends SchemaLocations<InnerPostgresData>
+			? TemporarySchemaLocation
+			: never
+	>(table: TableLocation): Table<InnerPostgresData, InnerPostgresData[keyof InnerPostgresData], Ready, SchemaLocation, TableLocation> {
+		const [database] = (table as string).split(".");
+		return new Table<InnerPostgresData, InnerPostgresData[keyof InnerPostgresData], Ready, SchemaLocation, TableLocation>(
+			this,
+			this.postgresData[database as keyof InnerPostgresData],
+			table
+		) as any;
+	}
+
+	get tables(): Table<
+		InnerPostgresData,
+		InnerPostgresData[keyof InnerPostgresData],
+		Ready,
+		SchemaLocations<InnerPostgresData>,
+		TableLocations<InnerPostgresData>
+	>[] {
+		return this.tableLocations.map(table => this.table(table));
+	}
+
+	get tableLocations(): TableLocations<InnerPostgresData>[] {
 		return Object.entries(this.postgresData).flatMap(([databaseName, databaseData]: [string, RawDatabaseData<InnerPostgresData[keyof InnerPostgresData]>]) =>
 			databaseData.schemas.flatMap(schema =>
 				schema.tables.map(table => `${databaseName}.${schema.name.toString()}.${table.name}` as TableLocations<InnerPostgresData>)

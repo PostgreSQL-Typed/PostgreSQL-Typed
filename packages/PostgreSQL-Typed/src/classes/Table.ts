@@ -5,6 +5,7 @@ import { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import { Client } from "./Client.js";
 import { Database } from "./Database.js";
+import { QueryBuilder } from "./QueryBuilder.js";
 import { Schema } from "./Schema.js";
 
 export class Table<
@@ -44,10 +45,14 @@ export class Table<
 		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
 	}
 
-	get primary_key(): TableLocation extends `${infer SchemaName}.${infer TableName}`
+	get primaryKey(): TableLocation extends `${infer SchemaName}.${infer TableName}`
 		? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
 		: undefined {
 		return this.databaseData.schemas.find(s => s.name === this.schemaName)?.tables.find(t => t.name === (this.tableName as string))?.primary_key as any;
+	}
+
+	get query(): QueryBuilder<never, InnerPostgresData, InnerDatabaseData, Ready, this> {
+		return new QueryBuilder<never, InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
 	}
 
 	/* async select<

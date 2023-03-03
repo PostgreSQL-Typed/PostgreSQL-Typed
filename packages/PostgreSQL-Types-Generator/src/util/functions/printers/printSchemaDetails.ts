@@ -49,13 +49,13 @@ export function printSchemaDetails(types: ClassDetails[], printer: Printer) {
 		},
 		(identifier, { getImport }) => [
 			`const ${identifier} = {`,
-			`  name: "${types[0].schema_name}" as "${types[0].schema_name}",`,
+			`  name: "${types[0].schema_name}" as const,`,
 			"  tables: [",
 			types
 				.filter(cls => cls.kind === ClassKind.OrdinaryTable)
 				.map(cls => {
 					const { PrimaryKey } = printClassDetails(cls, printer);
-					return `    {\n      name: "${cls.class_name}" as "${cls.class_name}",\n      primary_key: ${getImport(PrimaryKey)}\n    }`;
+					return `    {\n      name: "${cls.class_name}" as const,\n      primary_key: ${getImport(PrimaryKey)}\n    }`;
 				})
 				.join(",\n"),
 			"  ]",

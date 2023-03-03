@@ -35,7 +35,7 @@ export class QueryBuilder<
 			};
 		}
 	): QueryBuilder<Query, InnerPostgresData, InnerDatabaseData, Ready, JoinedTables | JoinedTable> {
-		console.log(table.tableName, on);
+		console.log(table.name, on);
 		this.tables.push(table);
 		return this;
 	}

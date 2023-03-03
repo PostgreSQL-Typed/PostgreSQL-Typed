@@ -21,7 +21,7 @@ export function printDatabaseZod(types: ClassDetails[], printer: Printer) {
 		},
 		(identifier, { getImport }) => [
 			`const ${identifier} = {`,
-			`  name: "${types[0].database_name}" as "${types[0].database_name}",`,
+			`  name: "${types[0].database_name}" as const,`,
 			"  schemas: [",
 			schemaClassList
 				.map(cls => {

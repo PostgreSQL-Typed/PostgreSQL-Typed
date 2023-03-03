@@ -22,12 +22,8 @@ export class Schema<
 		public readonly schemaLocation: SchemaLocation
 	) {}
 
-	get schemaName(): SchemaLocation extends `${string}.${infer Schema}` ? Schema : never {
+	get name(): SchemaLocation extends `${string}.${infer Schema}` ? Schema : never {
 		return (this.schemaLocation as string).split(".")[1] as any;
-	}
-
-	get databaseName(): SchemaLocation extends `${infer Database}.${string}` ? Database : never {
-		return (this.schemaLocation as string).split(".")[0] as any;
 	}
 
 	get database(): Database<InnerPostgresData, InnerDatabaseData, Ready> {

@@ -14,13 +14,13 @@ export function printSchemaZod(types: ClassDetails[], printer: Printer) {
 		},
 		(identifier, { getImport }) => [
 			`const ${identifier} = {`,
-			`  name: "${types[0].schema_name}" as "${types[0].schema_name}",`,
+			`  name: "${types[0].schema_name}" as const,`,
 			"  tables: [",
 			types
 				.filter(cls => cls.kind === ClassKind.OrdinaryTable)
 				.map(cls => {
 					const { zInsertParameters } = printClassZod(cls, printer);
-					return `    {\n      name: "${cls.class_name}" as "${cls.class_name}",\n      zod: ${getImport(zInsertParameters)}\n    }`;
+					return `    {\n      name: "${cls.class_name}" as const,\n      zod: ${getImport(zInsertParameters)}\n    }`;
 				})
 				.join(",\n"),
 			"  ]",

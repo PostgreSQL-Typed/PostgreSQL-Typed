@@ -21,24 +21,13 @@ export class Table<
 		public readonly tableLocation: TableLocation
 	) {}
 
-	get tableName(): TableLocation extends `${string}.${string}.${infer Table}` ? Table : never {
+	get name(): TableLocation extends `${string}.${string}.${infer Table}` ? Table : never {
 		return (this.tableLocation as string).split(".")[2] as any;
 	}
 
-	get schemaName(): TableLocation extends `${string}.${infer Schema}.${string}` ? Schema : never {
-		return (this.tableLocation as string).split(".")[1] as any;
-	}
-
 	get schema(): Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation> {
-		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(
-			this.client,
-			this.databaseData,
-			`${this.databaseName}.${this.schemaName}` as any
-		);
-	}
-
-	get databaseName(): TableLocation extends `${infer Database}.${string}.${string}` ? Database : never {
-		return (this.tableLocation as string).split(".")[0] as any;
+		const [databaseName, schemaName] = (this.tableLocation as string).split(".");
+		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(this.client, this.databaseData, `${databaseName}.${schemaName}` as any);
 	}
 
 	get database(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
@@ -48,7 +37,8 @@ export class Table<
 	get primaryKey(): TableLocation extends `${infer SchemaName}.${infer TableName}`
 		? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
 		: undefined {
-		return this.databaseData.schemas.find(s => s.name === this.schemaName)?.tables.find(t => t.name === (this.tableName as string))?.primary_key as any;
+		const [, schemaName] = (this.tableLocation as string).split(".");
+		return this.databaseData.schemas.find(s => s.name === schemaName)?.tables.find(t => t.name === (this.name as string))?.primary_key as any;
 	}
 
 	get query(): QueryBuilder<never, InnerPostgresData, InnerDatabaseData, Ready, this> {

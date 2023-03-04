@@ -18,15 +18,15 @@ export class Table<
 	constructor(
 		public readonly client: Client<InnerPostgresData, Ready>,
 		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
-		public readonly tableLocation: TableLocation
+		public readonly location: TableLocation
 	) {}
 
 	get name(): TableLocation extends `${string}.${string}.${infer Table}` ? Table : never {
-		return (this.tableLocation as string).split(".")[2] as any;
+		return (this.location as string).split(".")[2] as any;
 	}
 
 	get schema(): Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation> {
-		const [databaseName, schemaName] = (this.tableLocation as string).split(".");
+		const [databaseName, schemaName] = (this.location as string).split(".");
 		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(this.client, this.databaseData, `${databaseName}.${schemaName}` as any);
 	}
 
@@ -34,10 +34,10 @@ export class Table<
 		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
 	}
 
-	get primaryKey(): TableLocation extends `${infer SchemaName}.${infer TableName}`
+	get primaryKey(): TableLocation extends `${string}.${infer SchemaName}.${infer TableName}`
 		? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["primary_key"]
 		: undefined {
-		const [, schemaName] = (this.tableLocation as string).split(".");
+		const [, schemaName] = (this.location as string).split(".");
 		return this.databaseData.schemas.find(s => s.name === schemaName)?.tables.find(t => t.name === (this.name as string))?.primary_key as any;
 	}
 

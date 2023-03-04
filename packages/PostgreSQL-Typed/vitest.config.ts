@@ -6,7 +6,7 @@ export default defineConfig({
 			interopDefault: true,
 		},
 		coverage: {
-			//100: true,
+			100: true,
 			reporter: ["json-summary", "text"],
 		},
 	},

@@ -3,10 +3,10 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { isReady } from "../functions/isReady";
 import { Client } from "./Client";
-import { Database } from "./Database";
-import { Schema } from "./Schema";
-import { Table } from "./Table";
-import { TestData, testData } from "./testData";
+import type { Database } from "./Database";
+import type { Schema } from "./Schema";
+import type { Table } from "./Table";
+import { type TestData, testData } from "./testData";
 
 describe("Client", () => {
 	test("Client<..., false>.testConnection()", async () => {

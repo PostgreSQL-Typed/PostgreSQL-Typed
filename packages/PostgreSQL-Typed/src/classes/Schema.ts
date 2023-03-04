@@ -19,11 +19,11 @@ export class Schema<
 	constructor(
 		public readonly client: Client<InnerPostgresData, Ready>,
 		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
-		public readonly schemaLocation: SchemaLocation
+		public readonly location: SchemaLocation
 	) {}
 
 	get name(): SchemaLocation extends `${string}.${infer Schema}` ? Schema : never {
-		return (this.schemaLocation as string).split(".")[1] as any;
+		return (this.location as string).split(".")[1] as any;
 	}
 
 	get database(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
@@ -31,21 +31,46 @@ export class Schema<
 	}
 
 	get tableNames(): (keyof InnerDatabaseData["schemas"][SchemaName]["tables"])[] {
-		return this.databaseData.schemas.flatMap(schema => schema.tables.map(table => table.name as string));
+		/* c8 ignore next 2 */
+		// The ?? [] is an assert never. It should never be reached, but if it is, it will return an empty array.
+		return this.databaseData.schemas.find(schema => schema.name === this.name)?.tables.map(table => table.name) ?? [];
 	}
 
 	table<
 		TableName extends keyof InnerDatabaseData["schemas"][SchemaName]["tables"],
 		TableLocation extends TableLocations<InnerPostgresData> = TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
 	>(tableName: TableName): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation> {
+		// Validate the table name exists (Is needed for non-TypeScript users)
+		if (!this.tableNames.includes(tableName)) throw new Error(`Table "${tableName.toString()}" does not exist in schema "${this.name}"`);
+
 		return new Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation>(
 			this.client,
 			this.databaseData,
-			`${this.schemaLocation}.${tableName.toString()}` as TableLocation
+			`${this.location}.${tableName.toString()}` as TableLocation
 		);
 	}
 
-	get tables(): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName>>[] {
-		return this.tableNames.map(tableName => this.table(tableName));
+	get tables(): {
+		[TableName in keyof InnerDatabaseData["schemas"][SchemaName]["tables"]]: Table<
+			InnerPostgresData,
+			InnerDatabaseData,
+			Ready,
+			SchemaLocation,
+			TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
+		>;
+	} {
+		const result: {
+			[TableName in keyof InnerDatabaseData["schemas"][SchemaName]["tables"]]: Table<
+				InnerPostgresData,
+				InnerDatabaseData,
+				Ready,
+				SchemaLocation,
+				TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
+			>;
+		} = {} as any;
+
+		for (const tableName of this.tableNames) result[tableName] = this.table(tableName);
+
+		return result;
 	}
 }

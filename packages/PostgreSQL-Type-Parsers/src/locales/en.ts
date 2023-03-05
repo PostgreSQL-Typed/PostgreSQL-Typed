@@ -77,6 +77,9 @@ const errorMap: ErrorMap = issue => {
 					throw new Error(message);
 			}
 			break;
+		case IssueCode.invalid_bit_length:
+			message = `Invalid bit length: ${issue.received}, n must be ${issue.exact ? "exactly" : "less than or equal to"} ${issue.maximum}`;
+			break;
 		case IssueCode.not_finite:
 			message = "Number must be finite";
 			break;

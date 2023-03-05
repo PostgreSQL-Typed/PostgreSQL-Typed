@@ -4,4 +4,4 @@
 
 ### Minor Changes
 
-- f39c958: support for the full BitString category rename the DateTime category to Date/Time
+- f39c958: support for the full BitString category, rename the DateTime category to Date/Time

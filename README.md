@@ -19,7 +19,7 @@
 		<img src="https://img.shields.io/github/actions/workflow/status/PostgreSQL-Typed/PostgreSQL-Typed/CI.yml?label=Test%20Packages&logo=github" alt="CI Status"/>
 	</a>
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">
-		<img src="https://img.shields.io/badge/coverage-98.80%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Monorepo Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-98.84%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Monorepo Coverage"/>
 	</a>
 </div>
 <p align="center">

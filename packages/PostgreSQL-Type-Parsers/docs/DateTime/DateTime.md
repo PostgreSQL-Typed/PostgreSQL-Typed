@@ -1,8 +1,8 @@
 <h1 align="center">
-	DateTime
+	Date/Time
 </h1>
 <div align="center">
-  <p>The DateTime category includes the following data types:</p>
+  <p>The Date/Time category includes the following data types:</p>
   <a href="./Date.md"><code>Date</code></a><br/>
   <a href="./Interval.md"><code>Interval</code></a><br/>
   <a href="./Time.md"><code>Time</code></a><br/>

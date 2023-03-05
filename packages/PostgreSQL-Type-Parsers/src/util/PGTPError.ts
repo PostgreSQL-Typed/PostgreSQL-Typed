@@ -3,13 +3,14 @@ import { arrayToEnum } from "./arrayToEnum.js";
 import { ParsedType } from "./getParsedType.js";
 
 export const IssueCode = arrayToEnum([
-	"invalid_type",
+	"invalid_bit_length",
 	"invalid_date",
-	"invalid_luxon_date",
 	"invalid_key_type",
+	"invalid_luxon_date",
 	"invalid_range_bound",
 	"invalid_string",
 	"invalid_timezone",
+	"invalid_type",
 	"missing_keys",
 	"not_finite",
 	"not_whole",
@@ -77,6 +78,13 @@ export interface TooBigIssue {
 	type: "array" | "number" | "bigint" | "arguments";
 }
 
+export interface InvalidBitLengthIssue {
+	code: typeof IssueCode.invalid_bit_length;
+	maximum: number;
+	exact?: boolean;
+	received: number;
+}
+
 export interface MissingKeysIssue {
 	code: typeof IssueCode.missing_keys;
 	keys: string[];
@@ -91,19 +99,20 @@ export interface NotWholeIssue {
 }
 
 export type IssueWithoutMessage =
-	| InvalidTypeIssue
+	| InvalidBitLengthIssue
+	| InvalidDateIssue
+	| InvalidKeyTypeIssue
+	| InvalidLuxonDateIssue
+	| InvalidRangeBoundIssue
 	| InvalidStringIssue
 	| InvalidTimezoneIssue
-	| InvalidKeyTypeIssue
-	| InvalidRangeBoundIssue
-	| UnrecognizedKeysIssue
+	| InvalidTypeIssue
 	| MissingKeysIssue
-	| InvalidDateIssue
-	| InvalidLuxonDateIssue
-	| TooSmallIssue
-	| TooBigIssue
 	| NotFiniteIssue
-	| NotWholeIssue;
+	| NotWholeIssue
+	| TooBigIssue
+	| TooSmallIssue
+	| UnrecognizedKeysIssue;
 
 export type Issue = IssueWithoutMessage & {
 	message: string;

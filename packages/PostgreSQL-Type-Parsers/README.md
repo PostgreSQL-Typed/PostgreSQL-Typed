@@ -59,10 +59,20 @@ pnpm i postgresql-type-parsers
       </tr>
     </thead>
     <tbody>
-    <!--- DateTime -->
+      <!--- Bit String -->
       <tr>
         <td>
-          <a href="./docs/DateTime/DateTime.md">DateTime</a>
+          <a href="./docs/BitString/BitString.md">Bit String</a>
+        </td>
+        <td>
+          <code>bit</code><br/>
+          <code>varbit</code><br/>
+        </td>
+      </tr>
+      <!--- Date/Time -->
+      <tr>
+        <td>
+          <a href="./docs/DateTime/DateTime.md">Date/Time</a>
         </td>
         <td>
           <code>date</code><br/>

@@ -3,6 +3,16 @@ import { describe, expect, test } from "vitest";
 import errorMap from "./en";
 
 describe("locales/en", () => {
+	test("IssueCode.invalid_bit_length", () => {
+		expect(() =>
+			errorMap({
+				code: "invalid_bit_length",
+				maximum: 10,
+				received: 11,
+			})
+		).not.toThrowError();
+	});
+
 	test("IssueCode.invalid_type", () => {
 		expect(() =>
 			errorMap({

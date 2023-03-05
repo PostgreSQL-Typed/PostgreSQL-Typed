@@ -1,5 +1,7 @@
 import "source-map-support/register";
 
+export * from "./data/Bit/Bit.js";
+export * from "./data/Bit/BitVarying.js";
 export * from "./data/DateTime/Date.js";
 export * from "./data/DateTime/DateMultiRange.js";
 export * from "./data/DateTime/DateRange.js";

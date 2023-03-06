@@ -8,4 +8,4 @@ export type Filter<Table> =
 	| Partial<Table>
 	| ({
 			[Property in Join<NestedPaths<Table>, ".">]?: Condition<PropertyType<Table, Property>>;
-	  } & RootFilterOperators<Table>);
+	  } & RootFilterOperators<Filter<Table>>);

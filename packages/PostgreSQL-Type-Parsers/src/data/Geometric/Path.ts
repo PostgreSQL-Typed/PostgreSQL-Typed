@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -412,7 +412,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 	}
 }
 
-types.setTypeParser(DataType.path as any, parser(Path));
-types.setTypeParser(DataType._path as any, arrayParser(Path));
+types.setTypeParser(OID.path as any, parser(Path));
+types.setTypeParser(OID._path as any, arrayParser(Path));
 
 export { Connection, ConnectionType, Path, PathObject, RawPathObject };

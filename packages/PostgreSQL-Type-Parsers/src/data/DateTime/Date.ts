@@ -1,6 +1,6 @@
+import { OID } from "@postgresql-typed/oids";
 import { DateTime, Zone } from "luxon";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -404,7 +404,7 @@ class DateClass extends PGTPBase<Date> implements Date {
 	}
 }
 
-types.setTypeParser(DataType.date as any, parser(Date));
-types.setTypeParser(DataType._date as any, arrayParser(Date, ","));
+types.setTypeParser(OID.date as any, parser(Date));
+types.setTypeParser(OID._date as any, arrayParser(Date, ","));
 
 export { Date, DateObject };

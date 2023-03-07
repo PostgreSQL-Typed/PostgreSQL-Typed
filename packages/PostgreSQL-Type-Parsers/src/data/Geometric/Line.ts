@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -288,7 +288,7 @@ class LineClass extends PGTPBase<Line> implements Line {
 	}
 }
 
-types.setTypeParser(DataType.line as any, parser(Line));
-types.setTypeParser(DataType._line as any, arrayParser(Line));
+types.setTypeParser(OID.line as any, parser(Line));
+types.setTypeParser(OID._line as any, arrayParser(Line));
 
 export { Line, LineObject };

@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
@@ -19,7 +19,7 @@ const TimestampMultiRange: MultiRangeConstructor<Timestamp, TimestampObject> = g
 	"TimestampMultiRange"
 );
 
-types.setTypeParser(DataType.tsmultirange as any, parser(TimestampMultiRange));
-types.setTypeParser(DataType._tsmultirange as any, arrayParser(TimestampMultiRange));
+types.setTypeParser(OID.tsmultirange as any, parser(TimestampMultiRange));
+types.setTypeParser(OID._tsmultirange as any, arrayParser(TimestampMultiRange));
 
 export { RawTimestampMultiRangeObject, TimestampMultiRange, TimestampMultiRangeObject };

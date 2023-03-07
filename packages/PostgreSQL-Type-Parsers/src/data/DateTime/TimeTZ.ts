@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/filename-case */
+import { OID } from "@postgresql-typed/oids";
 import { DateTime, Zone } from "luxon";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { Offset } from "../../types/Offset.js";
 import { OffsetDirection, OffsetDirectionType } from "../../types/OffsetDirection.js";
@@ -720,7 +720,7 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 	}
 }
 
-types.setTypeParser(DataType.timetz as any, parser(TimeTZ));
-types.setTypeParser(DataType._timetz as any, arrayParser(TimeTZ, ","));
+types.setTypeParser(OID.timetz as any, parser(TimeTZ));
+types.setTypeParser(OID._timetz as any, arrayParser(TimeTZ, ","));
 
 export { TimeTZ, TimeTZObject };

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/filename-case */
+import { OID } from "@postgresql-typed/oids";
 import { parseInteger } from "jsprim";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";
@@ -177,7 +177,7 @@ class MACAddress8Class implements MACAddress8 {
 	}
 }
 
-types.setTypeParser(DataType.macaddr8 as any, parser(MACAddress8));
-types.setTypeParser(DataType._macaddr8 as any, arrayParser(MACAddress8, ","));
+types.setTypeParser(OID.macaddr8 as any, parser(MACAddress8));
+types.setTypeParser(OID._macaddr8 as any, arrayParser(MACAddress8, ","));
 
 export { MACAddress8, MACAddress8Object };

@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -306,7 +306,7 @@ class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
 	}
 }
 
-types.setTypeParser(DataType.bit as any, parser<Bit<1>>(Bit));
-types.setTypeParser(DataType._bit as any, arrayParser<Bit<1>>(Bit, ","));
+types.setTypeParser(OID.bit as any, parser<Bit<1>>(Bit));
+types.setTypeParser(OID._bit as any, arrayParser<Bit<1>>(Bit, ","));
 
 export { Bit, BitObject };

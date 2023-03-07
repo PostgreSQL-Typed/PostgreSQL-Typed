@@ -1,10 +1,10 @@
 {
-	"name": "postgresql-data-types",
+	"name": "@postgresql-typed/oids",
 	"version": "2.0.0",
-	"description": "A collection of the PostgreSQL data types",
+	"description": "A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.",
 	"type": "module",
-	"exports": "./lib/DataTypes.js",
-	"types": "./lib/DataTypes.d.ts",
+	"exports": "./lib/OIDs.js",
+	"types": "./lib/OIDs.d.ts",
 	"license": "MPL-2.0",
 	"author": {
 		"name": "Bas950",
@@ -14,7 +14,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
-		"directory": "packages/data-types"
+		"directory": "packages/oids"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"

@@ -1,8 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import { randomUUID, RandomUUIDOptions } from "node:crypto";
 
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -188,7 +188,7 @@ class UUIDClass extends PGTPBase<UUID> implements UUID {
 	}
 }
 
-types.setTypeParser(DataType.uuid as any, parser(UUID));
-types.setTypeParser(DataType._uuid as any, arrayParser(UUID, ","));
+types.setTypeParser(OID.uuid as any, parser(UUID));
+types.setTypeParser(OID._uuid as any, arrayParser(UUID, ","));
 
 export { UUID, UUIDObject };

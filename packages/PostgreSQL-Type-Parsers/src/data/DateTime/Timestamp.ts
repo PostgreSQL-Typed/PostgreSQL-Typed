@@ -1,6 +1,6 @@
+import { OID } from "@postgresql-typed/oids";
 import { DateTime, Zone } from "luxon";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { OffsetDirection } from "../../types/OffsetDirection.js";
 import type { ParseContext } from "../../types/ParseContext.js";
@@ -718,7 +718,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	}
 }
 
-types.setTypeParser(DataType.timestamp as any, parser(Timestamp));
-types.setTypeParser(DataType._timestamp as any, arrayParser(Timestamp));
+types.setTypeParser(OID.timestamp as any, parser(Timestamp));
+types.setTypeParser(OID._timestamp as any, arrayParser(Timestamp));
 
 export { Timestamp, TimestampObject };

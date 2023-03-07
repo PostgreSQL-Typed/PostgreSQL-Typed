@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
@@ -20,7 +20,7 @@ const TimestampTZMultiRange: MultiRangeConstructor<TimestampTZ, TimestampTZObjec
 	"TimestampTZMultiRange"
 );
 
-types.setTypeParser(DataType.tstzmultirange as any, parser(TimestampTZMultiRange));
-types.setTypeParser(DataType._tstzmultirange as any, arrayParser(TimestampTZMultiRange));
+types.setTypeParser(OID.tstzmultirange as any, parser(TimestampTZMultiRange));
+types.setTypeParser(OID._tstzmultirange as any, arrayParser(TimestampTZMultiRange));
 
 export { RawTimestampTZMultiRangeObject, TimestampTZMultiRange, TimestampTZMultiRangeObject };

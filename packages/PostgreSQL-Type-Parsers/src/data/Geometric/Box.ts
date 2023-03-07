@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -296,7 +296,7 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	}
 }
 
-types.setTypeParser(DataType.box as any, parser(Box));
-types.setTypeParser(DataType._box as any, arrayParser(Box, ";"));
+types.setTypeParser(OID.box as any, parser(Box));
+types.setTypeParser(OID._box as any, arrayParser(Box, ";"));
 
 export { Box, BoxObject };

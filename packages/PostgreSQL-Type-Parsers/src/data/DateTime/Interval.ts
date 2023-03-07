@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -877,7 +877,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	}
 }
 
-types.setTypeParser(DataType.interval as any, parser(Interval));
-types.setTypeParser(DataType._interval as any, arrayParser(Interval));
+types.setTypeParser(OID.interval as any, parser(Interval));
+types.setTypeParser(OID._interval as any, arrayParser(Interval));
 
 export { Interval, IntervalObject, IntervalStyle, IntervalStyleType };

@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";
@@ -14,7 +14,7 @@ type TimestampRange = Range<Timestamp, TimestampObject>;
 
 const TimestampRange: RangeConstructor<Timestamp, TimestampObject> = getRange<Timestamp, TimestampObject>(Timestamp, Timestamp.isTimestamp, "TimestampRange");
 
-types.setTypeParser(DataType.tsrange as any, parser(TimestampRange));
-types.setTypeParser(DataType._tsrange as any, arrayParser(TimestampRange));
+types.setTypeParser(OID.tsrange as any, parser(TimestampRange));
+types.setTypeParser(OID._tsrange as any, arrayParser(TimestampRange));
 
 export { RawTimestampRangeObject, TimestampRange, TimestampRangeObject };

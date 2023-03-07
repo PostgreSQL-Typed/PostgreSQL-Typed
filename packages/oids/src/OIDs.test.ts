@@ -1,11 +1,12 @@
+/* eslint-disable unicorn/filename-case */
 import { Client } from "pg";
 import { describe, expect, it } from "vitest";
 
-import { DataType } from "./DataTypes.js";
+import { OID } from "./OIDs.js";
 
-describe("DataType", () => {
-	it("PostgreSQL data types should all be defined in DataType", async () => {
-		const allDataTypes = Object.values(DataType).filter((value): value is number => typeof value === "number"),
+describe("OID", () => {
+	it("PostgreSQL object identifiers should all be defined in OIDs", async () => {
+		const allOids = Object.values(OID).filter((value): value is number => typeof value === "number"),
 			query = `
       SELECT
         t.typname AS "name",
@@ -22,7 +23,7 @@ describe("DataType", () => {
         AND pg_catalog.pg_type_is_visible(t.oid)
 				AND t.typname NOT LIKE 'pg_%'
 				AND t.typname NOT LIKE '_pg_%'
-        AND t.oid NOT IN (${allDataTypes.join(", ")})
+        AND t.oid NOT IN (${allOids.join(", ")})
         AND n.nspname = 'pg_catalog'
       ORDER BY 1, 2;
     `,
@@ -32,7 +33,7 @@ describe("DataType", () => {
 				user: "postgres",
 				database: "postgres",
 				port: 5432,
-				application_name: "DataType.test.ts",
+				application_name: "OID.test.ts",
 			});
 
 		await client.connect();
@@ -58,8 +59,8 @@ describe("DataType", () => {
 		if (error) throw error;
 	});
 
-	it("DataType should have the matching name and oid", async () => {
-		const allDataTypes = Object.values(DataType).filter((value): value is number => typeof value === "number"),
+	it("OID should have the matching name and oid", async () => {
+		const allOids = Object.values(OID).filter((value): value is number => typeof value === "number"),
 			query = `
       SELECT
         t.typname AS "name",
@@ -76,7 +77,7 @@ describe("DataType", () => {
           SELECT 1 FROM pg_catalog.pg_type el WHERE el.oid = t.typelem AND el.typarray = t.oid
         )
         AND pg_catalog.pg_type_is_visible(t.oid)
-        AND t.oid IN (${allDataTypes.join(", ")})
+        AND t.oid IN (${allOids.join(", ")})
         AND n.nspname = 'pg_catalog'
       ORDER BY 1, 2;
     `,
@@ -86,7 +87,7 @@ describe("DataType", () => {
 				user: "postgres",
 				database: "postgres",
 				port: 5432,
-				application_name: "DataType.test.ts",
+				application_name: "OID.test.ts",
 			});
 
 		await client.connect();
@@ -98,7 +99,7 @@ describe("DataType", () => {
 				oid: number;
 			}>(query);
 
-			for (const row of response.rows) expect(DataType[row.oid]).toBe(row.name);
+			for (const row of response.rows) expect(OID[row.oid]).toBe(row.name);
 		} catch (error_) {
 			error = error_;
 		}

@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/filename-case */
+import { OID } from "@postgresql-typed/oids";
 import { parseInteger } from "jsprim";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";
@@ -184,7 +184,7 @@ class MACAddressClass implements MACAddress {
 	}
 }
 
-types.setTypeParser(DataType.macaddr as any, parser(MACAddress));
-types.setTypeParser(DataType._macaddr as any, arrayParser(MACAddress, ","));
+types.setTypeParser(OID.macaddr as any, parser(MACAddress));
+types.setTypeParser(OID._macaddr as any, arrayParser(MACAddress, ","));
 
 export { MACAddress, MACAddressObject };

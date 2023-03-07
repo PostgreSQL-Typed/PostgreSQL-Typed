@@ -1,6 +1,6 @@
+import { OID } from "@postgresql-typed/oids";
 import type { BigNumber } from "bignumber.js";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -190,7 +190,7 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 	}
 }
 
-types.setTypeParser(DataType.float4 as any, parser<Float4>(Float4));
-types.setTypeParser(DataType._float4 as any, arrayParser<Float4>(Float4, ","));
+types.setTypeParser(OID.float4 as any, parser<Float4>(Float4));
+types.setTypeParser(OID._float4 as any, arrayParser<Float4>(Float4, ","));
 
 export { Float4, Float4Object };

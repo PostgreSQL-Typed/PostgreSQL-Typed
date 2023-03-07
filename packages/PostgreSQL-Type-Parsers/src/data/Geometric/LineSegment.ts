@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -303,7 +303,7 @@ class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
 	}
 }
 
-types.setTypeParser(DataType.lseg as any, parser(LineSegment));
-types.setTypeParser(DataType._lseg as any, arrayParser(LineSegment));
+types.setTypeParser(OID.lseg as any, parser(LineSegment));
+types.setTypeParser(OID._lseg as any, arrayParser(LineSegment));
 
 export { LineSegment, LineSegmentObject, RawLineSegmentObject };

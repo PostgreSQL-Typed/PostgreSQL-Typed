@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -258,7 +258,7 @@ class PointClass extends PGTPBase<Point> implements Point {
 	}
 }
 
-types.setTypeParser(DataType.point as any, parser(Point));
-types.setTypeParser(DataType._point as any, arrayParser(Point));
+types.setTypeParser(OID.point as any, parser(Point));
+types.setTypeParser(OID._point as any, arrayParser(Point));
 
 export { Point, PointObject };

@@ -73,16 +73,9 @@ importers:
       ts-jest: 28.0.8_mgg23zyyvjoe75wbzvxzqqpmne
       typescript: 4.9.5
 
-  packages/PostgreSQL-Data-Types:
-    specifiers:
-      '@types/pg': ^8.6.5
-      pg: ^8.9.0
-    devDependencies:
-      '@types/pg': 8.6.6
-      pg: 8.9.0
-
   packages/PostgreSQL-Type-Parsers:
     specifiers:
+      '@postgresql-typed/oids': workspace:*
       '@types/luxon': ^3.0.1
       '@types/pg': ^8.6.5
       bignumber.js: ^9.1.1
@@ -90,16 +83,15 @@ importers:
       jsprim: ^1.4.2
       luxon: ^3.0.3
       pg: ^8.8.0
-      postgresql-data-types: workspace:*
       source-map-support: ^0.5.21
       typescript: ^4.9.5
     dependencies:
+      '@postgresql-typed/oids': link:../oids
       bignumber.js: 9.1.1
       ip-address: 8.1.0
       jsprim: 1.4.2
       luxon: 3.2.1
       pg: 8.9.0
-      postgresql-data-types: link:../PostgreSQL-Data-Types
       source-map-support: 0.5.21
     devDependencies:
       '@types/luxon': 3.2.0
@@ -127,6 +119,7 @@ importers:
 
   packages/PostgreSQL-Types-Generator:
     specifiers:
+      '@postgresql-typed/oids': workspace:*
       '@types/command-line-args': ^5.2.0
       '@types/command-line-commands': ^2.0.1
       '@types/command-line-usage': ^5.0.2
@@ -148,12 +141,12 @@ importers:
       pascalcase: 1.0.0
       pg: ^8.7.3
       pluralize: ^8.0.0
-      postgresql-data-types: workspace:*
       source-map-support: ^0.5.21
       ts-node: ^10.9.1
       typescript: ^4.7.4
       zod: ^3.18.0
     dependencies:
+      '@postgresql-typed/oids': link:../oids
       camelcase: 6.3.0
       chalk: 4.1.2
       command-line-args: 5.2.1
@@ -166,7 +159,6 @@ importers:
       pascalcase: 1.0.0
       pg: 8.9.0
       pluralize: 8.0.0
-      postgresql-data-types: link:../PostgreSQL-Data-Types
       ts-node: 10.9.1_bdgp3l2zgaopogaavxusmetvge
       zod: 3.20.2
     devDependencies:
@@ -181,6 +173,14 @@ importers:
       '@types/pluralize': 0.0.29
       source-map-support: 0.5.21
       typescript: 4.9.5
+
+  packages/oids:
+    specifiers:
+      '@types/pg': ^8.6.5
+      pg: ^8.9.0
+    devDependencies:
+      '@types/pg': 8.6.6
+      pg: 8.9.0
 
 packages:
 

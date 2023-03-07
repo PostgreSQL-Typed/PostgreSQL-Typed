@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -224,7 +224,7 @@ class Int8Class extends PGTPBase<Int8> implements Int8 {
 	}
 }
 
-types.setTypeParser(DataType.int8 as any, parser<Int8>(Int8));
-types.setTypeParser(DataType._int8 as any, arrayParser<Int8>(Int8, ","));
+types.setTypeParser(OID.int8 as any, parser<Int8>(Int8));
+types.setTypeParser(OID._int8 as any, arrayParser<Int8>(Int8, ","));
 
 export { Int8, Int8Object };

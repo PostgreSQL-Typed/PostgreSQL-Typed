@@ -2,8 +2,8 @@ import { createHash } from "node:crypto";
 import { promises } from "node:fs";
 import { dirname, join } from "node:path";
 
+import { OID } from "@postgresql-typed/oids";
 import mkdirp from "mkdirp";
-import { DataType as DataTypeID } from "postgresql-data-types";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { ClassKind } from "../types/enums/ClassKind.js";
@@ -48,8 +48,8 @@ export class Printer {
 		const override = this.config.types.typeOverrides[id];
 		if (override !== undefined) return override;
 
-		if (id in DataTypeID) {
-			const string = DataTypeID[id],
+		if (id in OID) {
+			const string = OID[id],
 				override = this.config.types.typeOverrides[string];
 
 			if (override !== undefined) return override;
@@ -79,8 +79,8 @@ export class Printer {
 		const override = this.config.types.typeOverrides[id];
 		if (override !== undefined) return override;
 
-		if (id in DataTypeID) {
-			const string = DataTypeID[id],
+		if (id in OID) {
+			const string = OID[id],
 				override = this.config.types.zod.zodOverrides[string];
 
 			if (override !== undefined) return override;

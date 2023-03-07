@@ -66,21 +66,21 @@
 <p>
 
 <br/>
-<!-- PostgreSQL-Data-Types -->
+<!-- @PostgreSQL-Typed/OIDs -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Data-Types">
-		PostgreSQL-Data-Types
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/oids">
+		@PostgreSQL-Typed/OIDs
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/postgresql-data-types">
-		<img src="https://img.shields.io/npm/v/postgresql-data-types.svg?logo=npm" alt="PostgreSQL-Data-Types Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/PostgreSQL-Data-Types&logo=vitest&style=flat" alt="PostgreSQL-Data-Types Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/oids">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/oids.svg?logo=npm" alt="@PostgreSQL-Typed/OIDs Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/oids&logo=vitest&style=flat" alt="@PostgreSQL-Typed/OIDs Coverage"/>
 	</a>
 </div>
 <p align="center">
-  A collection of the PostgreSQL data types
+  A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.
 <p>
 
 <br/>

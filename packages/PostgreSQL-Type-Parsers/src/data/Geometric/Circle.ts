@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -290,7 +290,7 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 	}
 }
 
-types.setTypeParser(DataType.circle as any, parser(Circle));
-types.setTypeParser(DataType._circle as any, arrayParser(Circle));
+types.setTypeParser(OID.circle as any, parser(Circle));
+types.setTypeParser(OID._circle as any, arrayParser(Circle));
 
 export { Circle, CircleObject };

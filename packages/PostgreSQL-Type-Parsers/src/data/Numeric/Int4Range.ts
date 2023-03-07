@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";
@@ -14,7 +14,7 @@ type Int4Range = Range<Int4, Int4Object>;
 
 const Int4Range: RangeConstructor<Int4, Int4Object> = getRange<Int4, Int4Object>(Int4, Int4.isInt4, "Int4Range");
 
-types.setTypeParser(DataType.int4range as any, parser(Int4Range));
-types.setTypeParser(DataType._int4range as any, arrayParser(Int4Range));
+types.setTypeParser(OID.int4range as any, parser(Int4Range));
+types.setTypeParser(OID._int4range as any, arrayParser(Int4Range));
 
 export { Int4Range, Int4RangeObject, RawInt4RangeObject };

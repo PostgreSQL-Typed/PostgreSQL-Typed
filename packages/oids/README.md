@@ -1,19 +1,19 @@
 <h1 align="center">
-	PostgreSQL-Data-Types
+	@PostgreSQL-Typed/OIDs
 </h1>
 <div align="center">
-	<a href="https://www.npmjs.com/package/postgresql-data-types">
-		<img src="https://img.shields.io/npm/v/postgresql-data-types.svg?logo=npm" alt="NPM Version"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/oids">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/oids.svg?logo=npm" alt="NPM Version"/>
 	</a>
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/actions/workflows/CI.yml">
 		<img src="https://img.shields.io/github/actions/workflow/status/PostgreSQL-Typed/PostgreSQL-Typed/CI.yml?label=Test%20Package&logo=github" alt="CI Status"/>
 	</a>
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Data-Types">
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/oids">
 		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Coverage"/>
 	</a>
 </div>
 <p align="center">
-  A collection of the PostgreSQL data types
+  A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.
 <p>
 <details align="center">
 	<summary>Table of Contents</summary>
@@ -34,13 +34,13 @@
 
 ```bash
 # npm
-npm install postgresql-data-types
+npm install @postgresql-typed/oids
 
 # yarn
-yarn add postgresql-data-types
+yarn add @postgresql-typed/oids
 
 # pnpm
-pnpm i postgresql-data-types
+pnpm i @postgresql-typed/oids
 ```
 
 <!-- Usage -->
@@ -49,13 +49,13 @@ pnpm i postgresql-data-types
 </h2>
 
 ```ts
-import { DataType, DataTypes } from "postgresql-data-types";
+import { OID, OIDs } from "@postgresql-typed/oids";
 
-console.log(DataType.uuid); // 2950
+console.log(OID.uuid); // 2950
 
-let datatype: DataTypes = "uuid"; // Has autocomplete when using DataTypes as the TypeScript type
+let oid: OIDs = "uuid"; // Has autocomplete when using OIDs as the TypeScript type
 
-console.log(DataType[datatype]); // 2950
+console.log(OID[oid]); // 2950
 ```
 
 <!-- Ecosystem -->

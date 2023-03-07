@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -220,7 +220,7 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 	}
 }
 
-types.setTypeParser(DataType.int2 as any, parser<Int2>(Int2));
-types.setTypeParser(DataType._int2 as any, arrayParser<Int2>(Int2, ","));
+types.setTypeParser(OID.int2 as any, parser<Int2>(Int2));
+types.setTypeParser(OID._int2 as any, arrayParser<Int2>(Int2, ","));
 
 export { Int2, Int2Object };

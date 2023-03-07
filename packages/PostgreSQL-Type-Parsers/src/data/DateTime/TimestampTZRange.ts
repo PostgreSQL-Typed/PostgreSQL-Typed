@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";
@@ -19,7 +19,7 @@ const TimestampTZRange: RangeConstructor<TimestampTZ, TimestampTZObject> = getRa
 	"TimestampTZRange"
 );
 
-types.setTypeParser(DataType.tstzrange as any, parser(TimestampTZRange));
-types.setTypeParser(DataType._tstzrange as any, arrayParser(TimestampTZRange));
+types.setTypeParser(OID.tstzrange as any, parser(TimestampTZRange));
+types.setTypeParser(OID._tstzrange as any, arrayParser(TimestampTZRange));
 
 export { RawTimestampTZRangeObject, TimestampTZRange, TimestampTZRangeObject };

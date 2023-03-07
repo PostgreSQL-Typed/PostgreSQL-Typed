@@ -1,4 +1,5 @@
-export enum DataType {
+/* eslint-disable unicorn/filename-case */
+export enum OID {
 	//* Array
 
 	/**
@@ -1001,4 +1002,4 @@ export enum DataType {
 	unknown = 705,
 }
 
-export type DataTypes = keyof typeof DataType;
+export type OIDs = keyof typeof OID;

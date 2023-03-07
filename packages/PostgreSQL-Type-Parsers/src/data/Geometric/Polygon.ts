@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -335,7 +335,7 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 	}
 }
 
-types.setTypeParser(DataType.polygon as any, parser(Polygon));
-types.setTypeParser(DataType._polygon as any, arrayParser(Polygon));
+types.setTypeParser(OID.polygon as any, parser(Polygon));
+types.setTypeParser(OID._polygon as any, arrayParser(Polygon));
 
 export { Polygon, PolygonObject, RawPolygonObject };

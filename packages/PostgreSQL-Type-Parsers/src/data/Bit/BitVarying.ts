@@ -1,5 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
 import { types } from "pg";
-import { DataType } from "postgresql-data-types";
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";
@@ -301,7 +301,7 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 	}
 }
 
-types.setTypeParser(DataType.varbit as any, parser<BitVarying<number>>(BitVarying));
-types.setTypeParser(DataType._varbit as any, arrayParser<BitVarying<number>>(BitVarying, ","));
+types.setTypeParser(OID.varbit as any, parser<BitVarying<number>>(BitVarying));
+types.setTypeParser(OID._varbit as any, arrayParser<BitVarying<number>>(BitVarying, ","));
 
 export { BitVarying, BitVaryingObject };

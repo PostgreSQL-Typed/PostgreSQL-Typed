@@ -63,7 +63,7 @@ describe("Table", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1");
 
 		expectTypeOf(table.query).toEqualTypeOf<
-			QueryBuilder<never, TestData, TestData["db1"], false, Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>
+			QueryBuilder<TestData, TestData["db1"], false, Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>
 		>();
 		expect(table.query).toBeInstanceOf(QueryBuilder);
 	});

@@ -41,8 +41,8 @@ export class Table<
 		return this.databaseData.schemas.find(s => s.name === schemaName)?.tables.find(t => t.name === (this.name as string))?.primary_key as any;
 	}
 
-	get query(): QueryBuilder<never, InnerPostgresData, InnerDatabaseData, Ready, this> {
-		return new QueryBuilder<never, InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
+	get query(): QueryBuilder<InnerPostgresData, InnerDatabaseData, Ready, this> {
+		return new QueryBuilder<InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
 	}
 
 	/* async select<

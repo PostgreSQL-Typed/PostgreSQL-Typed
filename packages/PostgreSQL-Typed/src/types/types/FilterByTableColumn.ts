@@ -1,7 +1,7 @@
 import type { Table } from "../../index.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { FilterOperators } from "../interfaces/FilterOperators.js";
 import type { PostgresData } from "../interfaces/PostgresData.js";
-import type { Condition } from "./Condition.js";
 import type { TableColumnsFromSchemaOnwards } from "./TableColumnsFromSchemaOnwards.js";
 
 export type FilterByTableColumn<
@@ -19,4 +19,4 @@ export type FilterByTableColumn<
 			: never
 		: never,
 	ColumnData extends InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName] = InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName]
-> = Condition<ColumnData>;
+> = FilterOperators<ColumnData>;

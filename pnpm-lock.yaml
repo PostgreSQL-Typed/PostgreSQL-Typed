@@ -73,36 +73,11 @@ importers:
       ts-jest: 28.0.8_mgg23zyyvjoe75wbzvxzqqpmne
       typescript: 4.9.5
 
-  packages/PostgreSQL-Type-Parsers:
-    specifiers:
-      '@postgresql-typed/oids': workspace:*
-      '@types/luxon': ^3.0.1
-      '@types/pg': ^8.6.5
-      bignumber.js: ^9.1.1
-      ip-address: ^8.1.0
-      jsprim: ^1.4.2
-      luxon: ^3.0.3
-      pg: ^8.8.0
-      source-map-support: ^0.5.21
-      typescript: ^4.9.5
-    dependencies:
-      '@postgresql-typed/oids': link:../oids
-      bignumber.js: 9.1.1
-      ip-address: 8.1.0
-      jsprim: 1.4.2
-      luxon: 3.2.1
-      pg: 8.9.0
-      source-map-support: 0.5.21
-    devDependencies:
-      '@types/luxon': 3.2.0
-      '@types/pg': 8.6.6
-      typescript: 4.9.5
-
   packages/PostgreSQL-Typed:
     specifiers:
+      '@postgresql-typed/parsers': workspace:*
       '@types/node': ^18.6.2
       postgres: ^3.3.3
-      postgresql-type-parsers: workspace:*
       postgresql-types-generator: workspace:*
       source-map-support: ^0.5.21
       typescript: ^4.7.4
@@ -110,8 +85,8 @@ importers:
     dependencies:
       postgres: 3.3.3
     devDependencies:
+      '@postgresql-typed/parsers': link:../parsers
       '@types/node': 18.11.18
-      postgresql-type-parsers: link:../PostgreSQL-Type-Parsers
       postgresql-types-generator: link:../PostgreSQL-Types-Generator
       source-map-support: 0.5.21
       typescript: 4.9.5
@@ -181,6 +156,31 @@ importers:
     devDependencies:
       '@types/pg': 8.6.6
       pg: 8.9.0
+
+  packages/parsers:
+    specifiers:
+      '@postgresql-typed/oids': workspace:*
+      '@types/luxon': ^3.0.1
+      '@types/pg': ^8.6.5
+      bignumber.js: ^9.1.1
+      ip-address: ^8.1.0
+      jsprim: ^1.4.2
+      luxon: ^3.0.3
+      pg: ^8.8.0
+      source-map-support: ^0.5.21
+      typescript: ^4.9.5
+    dependencies:
+      '@postgresql-typed/oids': link:../oids
+      bignumber.js: 9.1.1
+      ip-address: 8.1.0
+      jsprim: 1.4.2
+      luxon: 3.2.1
+      pg: 8.9.0
+      source-map-support: 0.5.21
+    devDependencies:
+      '@types/luxon': 3.2.0
+      '@types/pg': 8.6.6
+      typescript: 4.9.5
 
 packages:
 

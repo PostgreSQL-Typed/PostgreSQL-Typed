@@ -1,0 +1,56 @@
+{
+	"name": "@postgresql-typed/parsers",
+	"version": "2.1.0",
+	"description": "Parsers to convert PostgreSQL data types to TypeScript classes",
+	"type": "module",
+	"exports": "./lib/index.js",
+	"types": "./lib/index.d.ts",
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Bas950",
+		"email": "me@bas950.com",
+		"url": "https://bas950.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
+		"directory": "packages/parsers"
+	},
+	"bugs": {
+		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
+	},
+	"files": [
+		"lib"
+	],
+	"keywords": [
+		"postgresql",
+		"postgres",
+		"pg",
+		"typed",
+		"types",
+		"typescript"
+	],
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc",
+		"test": "vitest --run",
+		"test:watch": "vitest --ui --coverage",
+		"test:ci": "vitest --run --coverage",
+		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
+		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+	},
+	"dependencies": {
+		"@postgresql-typed/oids": "workspace:*",
+		"bignumber.js": "^9.1.1",
+		"ip-address": "^8.1.0",
+		"jsprim": "^1.4.2",
+		"luxon": "^3.0.3",
+		"pg": "^8.8.0",
+		"source-map-support": "^0.5.21"
+	},
+	"devDependencies": {
+		"@types/luxon": "^3.0.1",
+		"@types/pg": "^8.6.5",
+		"typescript": "^4.9.5"
+	}
+}

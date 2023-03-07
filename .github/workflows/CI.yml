@@ -16,11 +16,11 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/oids'
-  "PostgreSQL-Type-Parsers":
-    name: PostgreSQL-Type-Parsers
+  "Parsers":
+    name: '@PostgreSQL-Typed/Parsers'
     uses: ./.github/workflows/package.yml
     with:
-      package: postgresql-type-parsers
+      package: '@postgresql-typed/parsers'
   "PostgreSQL-Types-Generator":
     name: PostgreSQL-Types-Generator
     uses: ./.github/workflows/package.yml
@@ -28,7 +28,7 @@ jobs:
       package: postgresql-types-generator
   coverage:
     name: Coverage
-    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, PostgreSQL-Type-Parsers, PostgreSQL-Types-Generator]
+    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, Parsers, PostgreSQL-Types-Generator]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

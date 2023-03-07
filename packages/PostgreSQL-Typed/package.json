@@ -49,8 +49,8 @@
 		"postgres": "^3.3.3"
 	},
 	"devDependencies": {
+		"@postgresql-typed/parsers": "workspace:*",
 		"@types/node": "^18.6.2",
-		"postgresql-type-parsers": "workspace:*",
 		"postgresql-types-generator": "workspace:*",
 		"source-map-support": "^0.5.21",
 		"typescript": "^4.7.4",

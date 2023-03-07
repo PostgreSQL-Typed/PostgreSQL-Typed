@@ -84,17 +84,17 @@
 <p>
 
 <br/>
-<!-- PostgreSQL-Type-Parsers -->
+<!-- @PostgreSQL-Typed/Parsers -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Type-Parsers">
-		PostgreSQL-Type-Parsers
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/parsers">
+		@PostgreSQL-Typed/Parsers
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/postgresql-type-parsers">
-		<img src="https://img.shields.io/npm/v/postgresql-type-parsers.svg?logo=npm" alt="PostgreSQL-Type-Parsers Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/PostgreSQL-Type-Parsers&logo=vitest&style=flat" alt="PostgreSQL-Type-Parsers Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/parsers">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/parsers.svg?logo=npm" alt="@PostgreSQL-Typed/Parsers Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/parsers&logo=vitest&style=flat" alt="@PostgreSQL-Typed/Parsers Coverage"/>
 	</a>
 </div>
 <p align="center">

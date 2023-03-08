@@ -721,4 +721,4 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 types.setTypeParser(OID.timestamp as any, parser(Timestamp));
 types.setTypeParser(OID._timestamp as any, arrayParser(Timestamp));
 
-export { Timestamp, TimestampObject };
+export { Timestamp, TimestampConstructor, TimestampObject };

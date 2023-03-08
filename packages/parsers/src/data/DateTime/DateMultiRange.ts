@@ -13,9 +13,11 @@ type RawDateMultiRangeObject = RawMultiRangeObject<DateObject>;
 
 type DateMultiRange = MultiRange<Date, DateObject>;
 
-const DateMultiRange: MultiRangeConstructor<Date, DateObject> = getMultiRange<Date, DateObject>(DateRange, DateRange.isRange, "DateMultiRange");
+type DateMultiRangeConstructor = MultiRangeConstructor<Date, DateObject>;
+
+const DateMultiRange: DateMultiRangeConstructor = getMultiRange<Date, DateObject>(DateRange, DateRange.isRange, "DateMultiRange");
 
 types.setTypeParser(OID.datemultirange as any, parser(DateMultiRange));
 types.setTypeParser(OID._datemultirange as any, arrayParser(DateMultiRange));
 
-export { DateMultiRange, DateMultiRangeObject, RawDateMultiRangeObject };
+export { DateMultiRange, DateMultiRangeConstructor, DateMultiRangeObject, RawDateMultiRangeObject };

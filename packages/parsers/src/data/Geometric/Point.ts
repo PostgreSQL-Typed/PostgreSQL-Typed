@@ -261,4 +261,4 @@ class PointClass extends PGTPBase<Point> implements Point {
 types.setTypeParser(OID.point as any, parser(Point));
 types.setTypeParser(OID._point as any, arrayParser(Point));
 
-export { Point, PointObject };
+export { Point, PointConstructor, PointObject };

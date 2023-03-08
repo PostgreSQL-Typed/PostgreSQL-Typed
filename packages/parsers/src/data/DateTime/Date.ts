@@ -407,4 +407,4 @@ class DateClass extends PGTPBase<Date> implements Date {
 types.setTypeParser(OID.date as any, parser(Date));
 types.setTypeParser(OID._date as any, arrayParser(Date, ","));
 
-export { Date, DateObject };
+export { Date, DateConstructor, DateObject };

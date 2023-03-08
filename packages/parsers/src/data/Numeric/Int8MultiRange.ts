@@ -13,9 +13,11 @@ type RawInt8MultiRangeObject = RawMultiRangeObject<Int8Object>;
 
 type Int8MultiRange = MultiRange<Int8, Int8Object>;
 
-const Int8MultiRange: MultiRangeConstructor<Int8, Int8Object> = getMultiRange<Int8, Int8Object>(Int8Range, Int8Range.isRange, "Int8MultiRange");
+type Int8MultiRangeConstructor = MultiRangeConstructor<Int8, Int8Object>;
+
+const Int8MultiRange: Int8MultiRangeConstructor = getMultiRange<Int8, Int8Object>(Int8Range, Int8Range.isRange, "Int8MultiRange");
 
 types.setTypeParser(OID.int8multirange as any, parser(Int8MultiRange));
 types.setTypeParser(OID._int8multirange as any, arrayParser(Int8MultiRange));
 
-export { Int8MultiRange, Int8MultiRangeObject, RawInt8MultiRangeObject };
+export { Int8MultiRange, Int8MultiRangeConstructor, Int8MultiRangeObject, RawInt8MultiRangeObject };

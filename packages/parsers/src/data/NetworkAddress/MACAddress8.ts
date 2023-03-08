@@ -180,4 +180,4 @@ class MACAddress8Class implements MACAddress8 {
 types.setTypeParser(OID.macaddr8 as any, parser(MACAddress8));
 types.setTypeParser(OID._macaddr8 as any, arrayParser(MACAddress8, ","));
 
-export { MACAddress8, MACAddress8Object };
+export { MACAddress8, MACAddress8Constructor, MACAddress8Object };

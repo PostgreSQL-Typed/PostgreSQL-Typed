@@ -880,4 +880,4 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 types.setTypeParser(OID.interval as any, parser(Interval));
 types.setTypeParser(OID._interval as any, arrayParser(Interval));
 
-export { Interval, IntervalObject, IntervalStyle, IntervalStyleType };
+export { Interval, IntervalConstructor, IntervalStyle, IntervalStyleType };

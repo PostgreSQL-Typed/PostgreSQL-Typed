@@ -338,4 +338,4 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 types.setTypeParser(OID.polygon as any, parser(Polygon));
 types.setTypeParser(OID._polygon as any, arrayParser(Polygon));
 
-export { Polygon, PolygonObject, RawPolygonObject };
+export { Polygon, PolygonConstructor, PolygonObject, RawPolygonObject };

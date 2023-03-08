@@ -3,10 +3,14 @@ import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getExportNameTemplate(config: Config, id: TypeId): string {
 	switch (id.type) {
-		case "table":
+		case "table_type":
 			return config.types.tableTypeName;
-		case "insert_parameters":
+		case "table_data":
+			return config.types.tableDataTypeName;
+		case "insert_parameters_type":
 			return config.types.tableInsertParametersTypeName;
+		case "insert_parameters_data":
+			return config.types.tableInsertParametersDataTypeName;
 		case "primary_key":
 			return config.types.primaryKeyTypeName;
 		case "schema_type":
@@ -23,18 +27,10 @@ export function getExportNameTemplate(config: Config, id: TypeId): string {
 			return config.types.fullExportDataTypeName;
 		case "enum":
 			return config.types.enumTypeName;
-		case "domain":
+		case "domain_type":
 			return config.types.domainTypeName;
-		case "z_insert_parameters":
-			return config.types.zod.tableInsertParametersZodTypeName;
-		case "z_schema_data":
-			return config.types.zod.schemaDataZodTypeName;
-		case "z_database_data":
-			return config.types.zod.databaseDataZodTypeName;
-		case "z_enum":
-			return config.types.zod.enumZodTypeName;
-		case "z_domain":
-			return config.types.zod.domainZodTypeName;
+		case "domain_data":
+			return config.types.domainDataTypeName;
 		case "re_export":
 			return getExportNameTemplate(config, id.of);
 	}

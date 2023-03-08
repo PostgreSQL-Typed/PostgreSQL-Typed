@@ -2,16 +2,16 @@ import { OID } from "@postgresql-typed/oids";
 
 import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 
-export const DefaultTypeScriptMapping = {
+export const DefaultParserMapping = {
 	get(oid: OID, maxLength?: number): string | [string, ImportStatement[]] | undefined {
 		const lengthString = maxLength ? `<${maxLength}>` : "",
-			TypeScriptMapping: {
+			ParserMapping: {
 				[key in OID]: string | [string, ImportStatement[]];
 			} = {
-				[OID._abstime]: "unknown[]",
-				[OID._aclitem]: "unknown[]",
+				[OID._abstime]: "'unknown', true",
+				[OID._aclitem]: "'unknown', true",
 				[OID._bit]: [
-					`Bit${lengthString}[]`,
+					`Bit.setN(${lengthString}), true`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -21,9 +21,9 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._bool]: "boolean[]",
+				[OID._bool]: "'unknown', true",
 				[OID._box]: [
-					"Box[]",
+					"Box, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -33,12 +33,12 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._bpchar]: "string[]",
-				[OID._bytea]: "Buffer[]",
-				[OID._char]: "string[]",
-				[OID._cid]: "string[]",
+				[OID._bpchar]: "'unknown', true",
+				[OID._bytea]: "'unknown', true",
+				[OID._char]: "'unknown', true",
+				[OID._cid]: "'unknown', true",
 				[OID._cidr]: [
-					"IPAddress[]",
+					"IPAddress, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -49,7 +49,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._circle]: [
-					"Circle[]",
+					"Circle, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -59,9 +59,9 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._cstring]: "string[]",
+				[OID._cstring]: "'unknown', true",
 				[OID._date]: [
-					"Date[]",
+					"Date, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -72,7 +72,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._datemultirange]: [
-					"DateMultiRange[]",
+					"DateMultiRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -83,7 +83,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._daterange]: [
-					"DateRange[]",
+					"DateRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -94,7 +94,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._float4]: [
-					"Float4[]",
+					"Float4, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -104,10 +104,10 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._float8]: "number[]",
-				[OID._gtsvector]: "unknown[]",
+				[OID._float8]: "'unknown', true",
+				[OID._gtsvector]: "'unknown', true",
 				[OID._inet]: [
-					"IPAddress[]",
+					"IPAddress, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -118,7 +118,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int2]: [
-					"Int2[]",
+					"Int2, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -128,9 +128,9 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._int2vector]: "unknown[]",
+				[OID._int2vector]: "'unknown', true",
 				[OID._int4]: [
-					"Int4[]",
+					"Int4, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -141,7 +141,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int4multirange]: [
-					"Int4MultiRange[]",
+					"Int4MultiRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -152,7 +152,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int4range]: [
-					"Int4Range[]",
+					"Int4Range, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -163,7 +163,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int8]: [
-					"Int8[]",
+					"Int8, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -174,7 +174,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int8multirange]: [
-					"Int8MultiRange[]",
+					"Int8MultiRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -185,7 +185,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._int8range]: [
-					"Int8Range[]",
+					"Int8Range, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -196,7 +196,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._interval]: [
-					"Interval[]",
+					"Interval, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -206,11 +206,11 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._json]: "unknown[]",
-				[OID._jsonb]: "unknown[]",
-				[OID._jsonpath]: "unknown[]",
+				[OID._json]: "'unknown', true",
+				[OID._jsonb]: "'unknown', true",
+				[OID._jsonpath]: "'unknown', true",
 				[OID._line]: [
-					"Line[]",
+					"Line, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -221,7 +221,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._lseg]: [
-					"LineSegment[]",
+					"LineSegment, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -232,7 +232,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._macaddr]: [
-					"MACAddress[]",
+					"MACAddress, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -243,7 +243,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._macaddr8]: [
-					"MACAddress8[]",
+					"MACAddress8, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -253,15 +253,15 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._money]: "string[]",
-				[OID._name]: "string[]",
-				[OID._numeric]: "number[]",
-				[OID._nummultirange]: "unknown[]",
-				[OID._numrange]: "unknown[]",
-				[OID._oid]: "number[]",
-				[OID._oidvector]: "unknown[]",
+				[OID._money]: "'unknown', true",
+				[OID._name]: "'unknown', true",
+				[OID._numeric]: "'unknown', true",
+				[OID._nummultirange]: "'unknown', true",
+				[OID._numrange]: "'unknown', true",
+				[OID._oid]: "'unknown', true",
+				[OID._oidvector]: "'unknown', true",
 				[OID._path]: [
-					"Path[]",
+					"Path, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -271,10 +271,10 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._pg_lsn]: "unknown[]",
-				[OID._pg_snapshot]: "unknown[]",
+				[OID._pg_lsn]: "'unknown', true",
+				[OID._pg_snapshot]: "'unknown', true",
 				[OID._point]: [
-					"Point[]",
+					"Point, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -285,7 +285,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._polygon]: [
-					"Polygon[]",
+					"Polygon, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -295,24 +295,24 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._record]: "unknown[]",
-				[OID._refcursor]: "unknown[]",
-				[OID._regclass]: "unknown[]",
-				[OID._regcollation]: "unknown[]",
-				[OID._regconfig]: "unknown[]",
-				[OID._regdictionary]: "unknown[]",
-				[OID._regnamespace]: "unknown[]",
-				[OID._regoper]: "unknown[]",
-				[OID._regoperator]: "unknown[]",
-				[OID._regproc]: "unknown[]",
-				[OID._regprocedure]: "unknown[]",
-				[OID._regrole]: "unknown[]",
-				[OID._regtype]: "unknown[]",
-				[OID._reltime]: "unknown[]",
-				[OID._text]: "string[]",
-				[OID._tid]: "unknown[]",
+				[OID._record]: "'unknown', true",
+				[OID._refcursor]: "'unknown', true",
+				[OID._regclass]: "'unknown', true",
+				[OID._regcollation]: "'unknown', true",
+				[OID._regconfig]: "'unknown', true",
+				[OID._regdictionary]: "'unknown', true",
+				[OID._regnamespace]: "'unknown', true",
+				[OID._regoper]: "'unknown', true",
+				[OID._regoperator]: "'unknown', true",
+				[OID._regproc]: "'unknown', true",
+				[OID._regprocedure]: "'unknown', true",
+				[OID._regrole]: "'unknown', true",
+				[OID._regtype]: "'unknown', true",
+				[OID._reltime]: "'unknown', true",
+				[OID._text]: "'unknown', true",
+				[OID._tid]: "'unknown', true",
 				[OID._time]: [
-					"Time[]",
+					"Time, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -323,7 +323,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._timestamp]: [
-					"Timestamp[]",
+					"Timestamp, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -334,7 +334,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._timestamptz]: [
-					"TimestampTZ[]",
+					"TimestampTZ, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -345,7 +345,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._timetz]: [
-					"TimeTZ[]",
+					"TimeTZ, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -355,10 +355,10 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._tinterval]: "unknown[]",
-				[OID._tsquery]: "unknown[]",
+				[OID._tinterval]: "'unknown', true",
+				[OID._tsquery]: "'unknown', true",
 				[OID._tsmultirange]: [
-					"TimestampMultiRange[]",
+					"TimestampMultiRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -369,7 +369,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._tsrange]: [
-					"TimestampRange[]",
+					"TimestampRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -380,7 +380,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._tstzmultirange]: [
-					"TimestampTZMultiRange[]",
+					"TimestampTZMultiRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -391,7 +391,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._tstzrange]: [
-					"TimestampTZRange[]",
+					"TimestampTZRange, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -401,10 +401,10 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._tsvector]: "unknown[]",
-				[OID._txid_snapshot]: "unknown[]",
+				[OID._tsvector]: "'unknown', true",
+				[OID._txid_snapshot]: "'unknown', true",
 				[OID._uuid]: [
-					"UUID[]",
+					"UUID, true",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -415,7 +415,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID._varbit]: [
-					`BitVarying${lengthString}[]`,
+					`BitVarying.setN(${lengthString}), true`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -425,26 +425,26 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._varchar]: "string[]",
-				[OID._xid]: "unknown[]",
-				[OID._xid8]: "unknown[]",
-				[OID._xml]: "unknown[]",
-				[OID.abstime]: "unknown",
-				[OID.aclitem]: "unknown",
-				[OID.any]: "unknown",
-				[OID.anyarray]: "unknown",
-				[OID.anycompatible]: "unknown",
-				[OID.anycompatiblearray]: "unknown",
-				[OID.anycompatiblemultirange]: "unknown",
-				[OID.anycompatiblenonarray]: "unknown",
-				[OID.anycompatiblerange]: "unknown",
-				[OID.anyelement]: "unknown",
-				[OID.anyenum]: "unknown",
-				[OID.anymultirange]: "unknown",
-				[OID.anynonarray]: "unknown",
-				[OID.anyrange]: "unknown",
+				[OID._varchar]: "'unknown', true",
+				[OID._xid]: "'unknown', true",
+				[OID._xid8]: "'unknown', true",
+				[OID._xml]: "'unknown', true",
+				[OID.abstime]: "'unknown'",
+				[OID.aclitem]: "'unknown'",
+				[OID.any]: "'unknown'",
+				[OID.anyarray]: "'unknown'",
+				[OID.anycompatible]: "'unknown'",
+				[OID.anycompatiblearray]: "'unknown'",
+				[OID.anycompatiblemultirange]: "'unknown'",
+				[OID.anycompatiblenonarray]: "'unknown'",
+				[OID.anycompatiblerange]: "'unknown'",
+				[OID.anyelement]: "'unknown'",
+				[OID.anyenum]: "'unknown'",
+				[OID.anymultirange]: "'unknown'",
+				[OID.anynonarray]: "'unknown'",
+				[OID.anyrange]: "'unknown'",
 				[OID.bit]: [
-					`Bit${lengthString}`,
+					`Bit.setN(${lengthString})`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -454,7 +454,7 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.bool]: "boolean",
+				[OID.bool]: "'unknown'",
 				[OID.box]: [
 					"Box",
 					[
@@ -466,12 +466,12 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.bpchar]: "string",
-				[OID.bytea]: "Buffer",
-				[OID.cardinal_number]: "unknown",
-				[OID.char]: "string",
-				[OID.character_data]: "unknown",
-				[OID.cid]: "string",
+				[OID.bpchar]: "'unknown'",
+				[OID.bytea]: "'unknown'",
+				[OID.cardinal_number]: "'unknown'",
+				[OID.char]: "'unknown'",
+				[OID.character_data]: "'unknown'",
+				[OID.cid]: "'unknown'",
 				[OID.cidr]: [
 					"CIDR",
 					[
@@ -494,7 +494,7 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.cstring]: "string",
+				[OID.cstring]: "'unknown'",
 				[OID.date]: [
 					"Date",
 					[
@@ -528,8 +528,8 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.event_trigger]: "unknown",
-				[OID.fdw_handler]: "unknown",
+				[OID.event_trigger]: "'unknown'",
+				[OID.fdw_handler]: "'unknown'",
 				[OID.float4]: [
 					"Float4",
 					[
@@ -552,8 +552,8 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.gtsvector]: "unknown",
-				[OID.index_am_handler]: "unknown",
+				[OID.gtsvector]: "'unknown'",
+				[OID.index_am_handler]: "'unknown'",
 				[OID.inet]: [
 					"IPAddress",
 					[
@@ -576,7 +576,7 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.int2vector]: "unknown",
+				[OID.int2vector]: "'unknown'",
 				[OID.int4]: [
 					"Int4",
 					[
@@ -643,7 +643,7 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.internal]: "unknown",
+				[OID.internal]: "'unknown'",
 				[OID.interval]: [
 					"Interval",
 					[
@@ -655,10 +655,10 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.json]: "unknown",
-				[OID.jsonb]: "unknown",
-				[OID.jsonpath]: "unknown",
-				[OID.language_handler]: "unknown",
+				[OID.json]: "'unknown'",
+				[OID.jsonb]: "'unknown'",
+				[OID.jsonpath]: "'unknown'",
+				[OID.language_handler]: "'unknown'",
 				[OID.line]: [
 					"Line",
 					[
@@ -703,14 +703,14 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.money]: "string",
-				[OID.name]: "string",
-				[OID.numeric]: "number",
-				[OID.nummultirange]: "unknown",
-				[OID.numrange]: "unknown",
-				[OID.oid]: "number",
-				[OID.oidvector]: "unknown",
-				[OID.opaque]: "unknown",
+				[OID.money]: "'unknown'",
+				[OID.name]: "'unknown'",
+				[OID.numeric]: "'unknown'",
+				[OID.nummultirange]: "'unknown'",
+				[OID.numrange]: "'unknown'",
+				[OID.oid]: "'unknown'",
+				[OID.oidvector]: "'unknown'",
+				[OID.opaque]: "'unknown'",
 				[OID.path]: [
 					"Path",
 					[
@@ -722,15 +722,15 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.pg_brin_bloom_summary]: "unknown",
-				[OID.pg_brin_minmax_multi_summary]: "unknown",
-				[OID.pg_ddl_command]: "unknown",
-				[OID.pg_dependencies]: "unknown",
-				[OID.pg_lsn]: "unknown",
-				[OID.pg_mcv_list]: "unknown",
-				[OID.pg_ndistinct]: "unknown",
-				[OID.pg_node_tree]: "unknown",
-				[OID.pg_snapshot]: "unknown",
+				[OID.pg_brin_bloom_summary]: "'unknown'",
+				[OID.pg_brin_minmax_multi_summary]: "'unknown'",
+				[OID.pg_ddl_command]: "'unknown'",
+				[OID.pg_dependencies]: "'unknown'",
+				[OID.pg_lsn]: "'unknown'",
+				[OID.pg_mcv_list]: "'unknown'",
+				[OID.pg_ndistinct]: "'unknown'",
+				[OID.pg_node_tree]: "'unknown'",
+				[OID.pg_snapshot]: "'unknown'",
 				[OID.point]: [
 					"Point",
 					[
@@ -753,24 +753,24 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.record]: "unknown",
-				[OID.refcursor]: "unknown",
-				[OID.regcollation]: "unknown",
-				[OID.regclass]: "unknown",
-				[OID.regconfig]: "unknown",
-				[OID.regdictionary]: "unknown",
-				[OID.regnamespace]: "unknown",
-				[OID.regoper]: "unknown",
-				[OID.regoperator]: "unknown",
-				[OID.regproc]: "unknown",
-				[OID.regprocedure]: "unknown",
-				[OID.regrole]: "unknown",
-				[OID.regtype]: "unknown",
-				[OID.reltime]: "unknown",
-				[OID.smgr]: "unknown",
-				[OID.table_am_handler]: "unknown",
-				[OID.text]: "string",
-				[OID.tid]: "unknown",
+				[OID.record]: "'unknown'",
+				[OID.refcursor]: "'unknown'",
+				[OID.regcollation]: "'unknown'",
+				[OID.regclass]: "'unknown'",
+				[OID.regconfig]: "'unknown'",
+				[OID.regdictionary]: "'unknown'",
+				[OID.regnamespace]: "'unknown'",
+				[OID.regoper]: "'unknown'",
+				[OID.regoperator]: "'unknown'",
+				[OID.regproc]: "'unknown'",
+				[OID.regprocedure]: "'unknown'",
+				[OID.regrole]: "'unknown'",
+				[OID.regtype]: "'unknown'",
+				[OID.reltime]: "'unknown'",
+				[OID.smgr]: "'unknown'",
+				[OID.table_am_handler]: "'unknown'",
+				[OID.text]: "'unknown'",
+				[OID.tid]: "'unknown'",
 				[OID.time]: [
 					"Time",
 					[
@@ -815,11 +815,11 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.tinterval]: "unknown",
-				[OID.trigger]: "unknown",
-				[OID.tsm_handler]: "unknown",
-				[OID.tsmultirange]: "unknown",
-				[OID.tsquery]: "unknown",
+				[OID.tinterval]: "'unknown'",
+				[OID.trigger]: "'unknown'",
+				[OID.tsm_handler]: "'unknown'",
+				[OID.tsmultirange]: "'unknown'",
+				[OID.tsquery]: "'unknown'",
 				[OID.tsrange]: [
 					"TimestampRange",
 					[
@@ -853,9 +853,9 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.tsvector]: "unknown",
-				[OID.txid_snapshot]: "unknown",
-				[OID.unknown]: "unknown",
+				[OID.tsvector]: "'unknown'",
+				[OID.txid_snapshot]: "'unknown'",
+				[OID.unknown]: "'unknown'",
 				[OID.uuid]: [
 					"UUID",
 					[
@@ -868,7 +868,7 @@ export const DefaultTypeScriptMapping = {
 					],
 				],
 				[OID.varbit]: [
-					`BitVarying${lengthString}`,
+					`BitVarying.setN(${lengthString})`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -878,13 +878,13 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.varchar]: "string",
-				[OID.void]: "unknown",
-				[OID.xid]: "unknown",
-				[OID.xid8]: "unknown",
-				[OID.xml]: "unknown",
+				[OID.varchar]: "'unknown'",
+				[OID.void]: "'unknown'",
+				[OID.xid]: "'unknown'",
+				[OID.xid8]: "'unknown'",
+				[OID.xml]: "'unknown'",
 			};
 
-		return TypeScriptMapping[oid];
+		return ParserMapping[oid];
 	},
 };

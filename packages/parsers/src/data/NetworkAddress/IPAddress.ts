@@ -167,4 +167,4 @@ types.setTypeParser(OID._inet as any, arrayParser(IPAddress, ","));
 types.setTypeParser(OID.cidr as any, parser(IPAddress));
 types.setTypeParser(OID._cidr as any, arrayParser(IPAddress, ","));
 
-export { IPAddress, IPAddressObject };
+export { IPAddress, IPAddressConstructor, IPAddressObject };

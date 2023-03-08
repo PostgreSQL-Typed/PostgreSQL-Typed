@@ -193,4 +193,4 @@ class Float8Class extends PGTPBase<Float8> implements Float8 {
 types.setTypeParser(OID.float8 as any, parser<Float8>(Float8));
 types.setTypeParser(OID._float8 as any, arrayParser<Float8>(Float8, ","));
 
-export { Float8, Float8Object };
+export { Float8, Float8Constructor, Float8Object };

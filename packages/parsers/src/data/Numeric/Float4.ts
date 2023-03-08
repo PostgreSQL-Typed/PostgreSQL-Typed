@@ -193,4 +193,4 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 types.setTypeParser(OID.float4 as any, parser<Float4>(Float4));
 types.setTypeParser(OID._float4 as any, arrayParser<Float4>(Float4, ","));
 
-export { Float4, Float4Object };
+export { Float4, Float4Constructor, Float4Object };

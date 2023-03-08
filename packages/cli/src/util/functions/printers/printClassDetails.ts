@@ -8,9 +8,9 @@ import type { FileContext } from "../../../types/interfaces/FileContext.js";
 export function printClassDetails(type: ClassDetails, printer: Printer) {
 	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printClassDetails only supports ordinary tables at the moment.");
 
-	const DatabaseRecord = printer.context.pushTypeDeclaration(
+	const ColumnsTypeRecord = printer.context.pushTypeDeclaration(
 		{
-			type: "table",
+			type: "table_type",
 			name: type.class_name,
 			databaseName: type.database_name,
 			schemaName: type.schema_name,
@@ -29,18 +29,51 @@ export function printClassDetails(type: ClassDetails, printer: Printer) {
 		{
 			type: "re_export",
 			of: {
-				type: "table",
+				type: "table_type",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
 			},
 		},
-		DatabaseRecord
+		ColumnsTypeRecord
 	);
 
-	const InsertParameters = printer.context.pushTypeDeclaration(
+	const ColumnsValueRecord = printer.context.pushValueDeclaration(
 		{
-			type: "insert_parameters",
+			type: "table_data",
+			name: type.class_name,
+			databaseName: type.database_name,
+			schemaName: type.schema_name,
+		},
+		(identifierName, file) => [
+			...getClassComment(type),
+			`const ${identifierName} = {`,
+			...type.attributes
+				.filter(a => a.attribute_number >= 0)
+				.flatMap(attribute => [
+					...getAttributeComment(type, attribute),
+					`  ${attribute.attribute_name}: PGTPParser(${getAttributeValue(type, attribute, printer, file)})${nullable(attribute)},`,
+				]),
+			"};",
+		]
+	);
+
+	printer.context.pushReExport(
+		{
+			type: "re_export",
+			of: {
+				type: "table_data",
+				name: type.class_name,
+				databaseName: type.database_name,
+				schemaName: type.schema_name,
+			},
+		},
+		ColumnsValueRecord
+	);
+
+	const InsertParametersTypeRecord = printer.context.pushTypeDeclaration(
+		{
+			type: "insert_parameters_type",
 			name: type.class_name,
 			databaseName: type.database_name,
 			schemaName: type.schema_name,
@@ -62,13 +95,46 @@ export function printClassDetails(type: ClassDetails, printer: Printer) {
 		{
 			type: "re_export",
 			of: {
-				type: "insert_parameters",
+				type: "insert_parameters_type",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
 			},
 		},
-		InsertParameters
+		InsertParametersTypeRecord
+	);
+
+	const InsertParametersValueRecord = printer.context.pushValueDeclaration(
+		{
+			type: "insert_parameters_data",
+			name: type.class_name,
+			databaseName: type.database_name,
+			schemaName: type.schema_name,
+		},
+		(identifierName, file) => [
+			...getClassComment(type),
+			`const ${identifierName} = {`,
+			...type.attributes
+				.filter(a => a.attribute_number >= 0)
+				.flatMap(attribute => [
+					...getAttributeComment(type, attribute),
+					`  ${attribute.attribute_name}: PGTPParser(${getAttributeValue(type, attribute, printer, file)})${nullable(attribute)}${optional(attribute)},`,
+				]),
+			"};",
+		]
+	);
+
+	printer.context.pushReExport(
+		{
+			type: "re_export",
+			of: {
+				type: "insert_parameters_data",
+				name: type.class_name,
+				databaseName: type.database_name,
+				schemaName: type.schema_name,
+			},
+		},
+		InsertParametersValueRecord
 	);
 
 	const PrimaryKey = printer.context.pushValueDeclaration(
@@ -103,7 +169,7 @@ export function printClassDetails(type: ClassDetails, printer: Printer) {
 		PrimaryKey
 	);
 
-	return { DatabaseRecord, InsertParameters, PrimaryKey };
+	return { ColumnsTypeRecord, InsertParametersTypeRecord, PrimaryKey, ColumnsValueRecord, InsertParametersValueRecord };
 }
 
 function getClassComment(cls: ClassDetails): string[] {
@@ -112,6 +178,7 @@ function getClassComment(cls: ClassDetails): string[] {
 
 	return commentLines.length > 0 ? ["/**", ...commentLines.map(l => ` * ${l}`), " */"] : [];
 }
+
 function getAttributeComment(type: ClassDetails, attribute: Attribute): string[] {
 	const commentLines = [];
 	if (attribute.comment?.trim()) commentLines.push(...attribute.comment.trim().split("\n"));
@@ -157,19 +224,69 @@ function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Pri
 					referencedAttribute = referencedClass.attributes.find(a => a.attribute_number === referencedAttributeNumber);
 
 				if (referencedAttribute) {
-					const { DatabaseRecord } = printClassDetails(referencedClass, printer);
+					const { ColumnsTypeRecord } = printClassDetails(referencedClass, printer);
 
-					return `${file.getImport(DatabaseRecord)}['${referencedAttribute.attribute_name}']`;
+					return `${file.getImport(ColumnsTypeRecord)}['${referencedAttribute.attribute_name}']`;
 				}
 			}
 		}
 	}
 
-	return printer.getTypeScriptType(attribute.type_id, file);
+	return printer.getTypeScriptType(attribute.type_id, file, attribute.character_maximum_length ?? undefined);
 }
 
 function optionalOnInsert(attribute: Attribute): string {
 	if (!attribute.not_null) return "?";
 	if (attribute.has_default) return "?";
+	return "";
+}
+
+function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
+	file.addImportStatement({
+		module: "@postgresql-typed/parsers",
+		name: "PGTPParser",
+		type: "named",
+	});
+
+	const columnTypeOverride =
+		printer.config.types.columnParserOverrides[`${type.schema_name}.${type.class_name}.${attribute.attribute_name}`] ||
+		printer.config.types.columnParserOverrides[`${type.class_name}.${attribute.attribute_name}`];
+
+	if (columnTypeOverride) {
+		const [importString, importStatement] = columnTypeOverride;
+		for (const statement of importStatement) file.addImportStatement(statement);
+		return importString;
+	}
+
+	for (const constraint of type.constraints) {
+		if (
+			constraint.table_attribute_numbers.includes(attribute.attribute_number) &&
+			constraint.constraint_type === ConstraintType.ForeignKey &&
+			constraint.referenced_class_id !== type.class_id
+		) {
+			const referencedClass = printer.getClass(constraint.referenced_class_id);
+			if (referencedClass) {
+				const referencedAttributeNumber = constraint.referenced_attribute_numbers[constraint.table_attribute_numbers.indexOf(attribute.attribute_number)],
+					referencedAttribute = referencedClass.attributes.find(a => a.attribute_number === referencedAttributeNumber);
+
+				if (referencedAttribute) {
+					const { ColumnsValueRecord } = printClassDetails(referencedClass, printer);
+
+					return `${file.getImport(ColumnsValueRecord)}['${referencedAttribute.attribute_name}']`;
+				}
+			}
+		}
+	}
+
+	return printer.getParserType(attribute.type_id, file);
+}
+
+function nullable(attribute: Attribute): string {
+	return attribute.not_null ? "" : ".nullable()";
+}
+
+function optional(attribute: Attribute): string {
+	if (!attribute.not_null) return ".optional()";
+	if (attribute.has_default) return ".optional()";
 	return "";
 }

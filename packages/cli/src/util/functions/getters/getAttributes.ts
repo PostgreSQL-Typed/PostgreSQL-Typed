@@ -30,7 +30,8 @@ export async function getAttributes(
       col_description(a.attrelid, a.attnum) AS "comment",
       a.atttypid AS "type_id",
       a.atttypmod AS "type_length",
-      format_type(a.atttypid, a.atttypmod) as "type_name"
+      format_type(a.atttypid, a.atttypmod) as "type_name",
+      clmns.character_maximum_length
     FROM pg_catalog.pg_attribute a
     INNER JOIN pg_catalog.pg_class cls
       ON (a.attrelid = cls.oid)
@@ -38,6 +39,8 @@ export async function getAttributes(
       ON (cls.relnamespace = ns.oid)
     LEFT OUTER JOIN pg_catalog.pg_attrdef def -- default values
       ON (def.adrelid = cls.oid AND def.adnum = a.attnum)
+    INNER JOIN information_schema.COLUMNS clmns -- character_maximum_length
+      ON (clmns.table_catalog = current_database() AND clmns.table_schema = ns.nspname AND clmns.table_name = cls.relname AND clmns.column_name = a.attname)
     ${conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""}
     ORDER BY ns.nspname ASC, cls.relname ASC, a.attname ASC;
   `);

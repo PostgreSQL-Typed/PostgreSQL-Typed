@@ -19,10 +19,10 @@ export function printSchemaDetails(types: ClassDetails[], printer: Printer) {
 			...types
 				.filter(cls => cls.kind === ClassKind.OrdinaryTable)
 				.map(cls => {
-					const { DatabaseRecord, InsertParameters, PrimaryKey } = printClassDetails(cls, printer);
+					const { ColumnsTypeRecord, InsertParametersTypeRecord, PrimaryKey } = printClassDetails(cls, printer);
 					return `    ${cls.class_name}: {\n      name: "${cls.class_name}";\n      primary_key: typeof ${getImport(PrimaryKey)};\n      columns: ${getImport(
-						DatabaseRecord
-					)};\n      insert_parameters: ${getImport(InsertParameters)};\n    };`;
+						ColumnsTypeRecord
+					)};\n      insert_parameters: ${getImport(InsertParametersTypeRecord)};\n    };`;
 				}),
 			"  };",
 			"};",
@@ -54,8 +54,10 @@ export function printSchemaDetails(types: ClassDetails[], printer: Printer) {
 			types
 				.filter(cls => cls.kind === ClassKind.OrdinaryTable)
 				.map(cls => {
-					const { PrimaryKey } = printClassDetails(cls, printer);
-					return `    {\n      name: "${cls.class_name}" as const,\n      primary_key: ${getImport(PrimaryKey)}\n    }`;
+					const { PrimaryKey, ColumnsValueRecord, InsertParametersValueRecord } = printClassDetails(cls, printer);
+					return `    {\n      name: "${cls.class_name}" as const,\n      primary_key: ${getImport(PrimaryKey)},\n      columns: ${getImport(
+						ColumnsValueRecord
+					)},\n      insert_parameters: ${getImport(InsertParametersValueRecord)}\n    }`;
 				})
 				.join(",\n"),
 			"  ]",

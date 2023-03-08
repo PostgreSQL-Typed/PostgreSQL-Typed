@@ -415,4 +415,4 @@ class PathClass extends PGTPBase<Path> implements Path {
 types.setTypeParser(OID.path as any, parser(Path));
 types.setTypeParser(OID._path as any, arrayParser(Path));
 
-export { Connection, ConnectionType, Path, PathObject, RawPathObject };
+export { Connection, ConnectionType, Path, PathConstructor, PathObject, RawPathObject };

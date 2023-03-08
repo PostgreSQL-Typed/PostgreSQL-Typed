@@ -723,4 +723,4 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 types.setTypeParser(OID.timetz as any, parser(TimeTZ));
 types.setTypeParser(OID._timetz as any, arrayParser(TimeTZ, ","));
 
-export { TimeTZ, TimeTZObject };
+export { TimeTZ, TimeTZConstructor, TimeTZObject };

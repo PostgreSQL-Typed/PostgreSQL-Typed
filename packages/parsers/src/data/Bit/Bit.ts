@@ -309,4 +309,4 @@ class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
 types.setTypeParser(OID.bit as any, parser<Bit<1>>(Bit));
 types.setTypeParser(OID._bit as any, arrayParser<Bit<1>>(Bit, ","));
 
-export { Bit, BitObject };
+export { Bit, BitConstructor, BitObject };

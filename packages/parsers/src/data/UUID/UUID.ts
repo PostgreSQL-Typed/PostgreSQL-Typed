@@ -191,4 +191,4 @@ class UUIDClass extends PGTPBase<UUID> implements UUID {
 types.setTypeParser(OID.uuid as any, parser(UUID));
 types.setTypeParser(OID._uuid as any, arrayParser(UUID, ","));
 
-export { UUID, UUIDObject };
+export { UUID, UUIDConstructor, UUIDObject };

@@ -293,4 +293,4 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 types.setTypeParser(OID.circle as any, parser(Circle));
 types.setTypeParser(OID._circle as any, arrayParser(Circle));
 
-export { Circle, CircleObject };
+export { Circle, CircleConstructor, CircleObject };

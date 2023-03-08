@@ -13,13 +13,11 @@ type RawTimestampTZRangeObject = RawRangeObject<TimestampTZObject>;
 
 type TimestampTZRange = Range<TimestampTZ, TimestampTZObject>;
 
-const TimestampTZRange: RangeConstructor<TimestampTZ, TimestampTZObject> = getRange<TimestampTZ, TimestampTZObject>(
-	TimestampTZ,
-	TimestampTZ.isTimestampTZ,
-	"TimestampTZRange"
-);
+type TimestampTZRangeConstructor = RangeConstructor<TimestampTZ, TimestampTZObject>;
+
+const TimestampTZRange: TimestampTZRangeConstructor = getRange<TimestampTZ, TimestampTZObject>(TimestampTZ, TimestampTZ.isTimestampTZ, "TimestampTZRange");
 
 types.setTypeParser(OID.tstzrange as any, parser(TimestampTZRange));
 types.setTypeParser(OID._tstzrange as any, arrayParser(TimestampTZRange));
 
-export { RawTimestampTZRangeObject, TimestampTZRange, TimestampTZRangeObject };
+export { RawTimestampTZRangeObject, TimestampTZRange, TimestampTZRangeConstructor, TimestampTZRangeObject };

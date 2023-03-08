@@ -304,4 +304,4 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 types.setTypeParser(OID.varbit as any, parser<BitVarying<number>>(BitVarying));
 types.setTypeParser(OID._varbit as any, arrayParser<BitVarying<number>>(BitVarying, ","));
 
-export { BitVarying, BitVaryingObject };
+export { BitVarying, BitVaryingConstructor, BitVaryingObject };

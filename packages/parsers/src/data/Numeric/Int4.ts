@@ -223,4 +223,4 @@ class Int4Class extends PGTPBase<Int4> implements Int4 {
 types.setTypeParser(OID.int4 as any, parser<Int4>(Int4));
 types.setTypeParser(OID._int4 as any, arrayParser<Int4>(Int4, ","));
 
-export { Int4, Int4Object };
+export { Int4, Int4Constructor, Int4Object };

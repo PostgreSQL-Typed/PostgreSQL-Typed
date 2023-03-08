@@ -187,4 +187,4 @@ class MACAddressClass implements MACAddress {
 types.setTypeParser(OID.macaddr as any, parser(MACAddress));
 types.setTypeParser(OID._macaddr as any, arrayParser(MACAddress, ","));
 
-export { MACAddress, MACAddressObject };
+export { MACAddress, MACAddressConstructor, MACAddressObject };

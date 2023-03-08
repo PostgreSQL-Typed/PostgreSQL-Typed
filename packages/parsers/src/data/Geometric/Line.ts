@@ -291,4 +291,4 @@ class LineClass extends PGTPBase<Line> implements Line {
 types.setTypeParser(OID.line as any, parser(Line));
 types.setTypeParser(OID._line as any, arrayParser(Line));
 
-export { Line, LineObject };
+export { Line, LineConstructor, LineObject };

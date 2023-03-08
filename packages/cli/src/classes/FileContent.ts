@@ -4,6 +4,7 @@ import { ImportState } from "../classes/ImportState.js";
 import type { Config } from "../types/interfaces/Config.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
 import type { FileExport } from "../types/interfaces/FileExport.js";
+import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 import type { FileName } from "../types/types/FileName.js";
 import type { IdentifierName } from "../types/types/IdentifierName.js";
 import type { TypeId } from "../types/types/TypeId.js";
@@ -12,7 +13,7 @@ import { resolveExportName } from "../util/functions/resolveExportName.js";
 export class FileContent {
 	public readonly file: FileName;
 	private readonly _imports = new Map<FileName, ImportState>();
-	private readonly _stringImports = new Set<string>();
+	private readonly _importStatements: ImportStatement[] = [];
 	private readonly _declarationNames = new Set<string>();
 	private readonly _declarations: (() => string[])[] = [];
 	private readonly _reExports: {
@@ -40,8 +41,19 @@ export class FileContent {
 		return newImportState;
 	}
 
-	private _addStringImport(importString: string) {
-		this._stringImports.add(importString);
+	private _addImportStatement(importStatement: ImportStatement) {
+		if (
+			this._importStatements.some(
+				s =>
+					s.module === importStatement.module &&
+					s.name === importStatement.name &&
+					s.as === importStatement.as &&
+					s.type === importStatement.type &&
+					s.isType === importStatement.isType
+			)
+		)
+			return;
+		this._importStatements.push(importStatement);
 	}
 
 	public pushDeclaration(typeID: TypeId, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
@@ -50,7 +62,7 @@ export class FileContent {
 			this._declarationNames.add(identifierName);
 			const declarationLines = declaration(identifierName, {
 				getImport: (id: FileExport) => this._getImportState(id.file).getImport(id),
-				addStringImport: (importString: string) => this._addStringImport(importString),
+				addImportStatement: (importStatement: ImportStatement) => this._addImportStatement(importStatement),
 			});
 
 			this._declarations.push(() => [...declarationLines, `export ${mode === "type" ? "type " : ""}{${identifierName}}`]);
@@ -75,9 +87,90 @@ export class FileContent {
 		});
 	}
 
+	private _getImportStatements(): string {
+		//* Group import statements by module
+		const groupedImportStatements = new Map<string, ImportStatement[]>();
+		for (const importStatement of this._importStatements) {
+			const group = groupedImportStatements.get(importStatement.module);
+			if (group === undefined) groupedImportStatements.set(importStatement.module, [importStatement]);
+			else group.push(importStatement);
+		}
+
+		type T = ImportStatement & {
+			names: [string, boolean][];
+		};
+		const mergedImportStatements = new Map<string, T[]>();
+
+		//* For all import statements in a group, where the type is "named" and the names are the same (and they don't have an as), merge them into a single import statement
+		for (const [module, group] of groupedImportStatements.entries()) {
+			let newStatement: T | undefined;
+			for (const statement of group) {
+				if (statement.type !== "named" || statement.as !== undefined) {
+					const mergedGroup = mergedImportStatements.get(module);
+					if (mergedGroup === undefined) {
+						mergedImportStatements.set(module, [
+							{
+								...statement,
+								names: [],
+							},
+						]);
+					} else {
+						mergedGroup.push({
+							...statement,
+							names: [],
+						});
+					}
+				}
+
+				if (newStatement === undefined) {
+					newStatement = {
+						...statement,
+						isType: statement.isType ?? false,
+						names: [[statement.name, statement.isType ?? false]],
+					};
+					continue;
+				}
+
+				const hasSameNameIndex = newStatement.names.findIndex(([name]) => name === statement.name);
+				if (hasSameNameIndex === -1) newStatement.names.push([statement.name, statement.isType ?? false]);
+				else {
+					const sameName = newStatement.names[hasSameNameIndex],
+						isType = sameName[1] || (statement.isType ?? false);
+
+					newStatement.names[hasSameNameIndex] = [sameName[0], isType];
+				}
+			}
+
+			if (newStatement === undefined) continue;
+
+			//* If all the names in the statement are types, mark the statement as a type statement
+			newStatement.isType = newStatement.names.every(([, isType]) => isType);
+
+			const mergedGroup = mergedImportStatements.get(module);
+			if (mergedGroup === undefined) mergedImportStatements.set(module, [newStatement]);
+			else mergedGroup.push(newStatement);
+		}
+
+		//* Generate import statements
+		const importStrings: string[] = [];
+		for (const [module, group] of mergedImportStatements.entries()) {
+			for (const statement of group) {
+				if (statement.type === "default") importStrings.push(`import ${statement.as ?? statement.name} from "${module}";`);
+				else if (statement.type === "named") {
+					const names = statement.names.map(([name]) => name).join(", ") || statement.name;
+					importStrings.push(
+						`import${statement.isType ? " type" : ""} ${statement.as === undefined ? `{${names}}` : `{${names}} as ${statement.as}`} from "${module}";`
+					);
+				}
+			}
+		}
+
+		return importStrings.join("\n");
+	}
+
 	public getContent() {
 		return `${[
-			[...this._stringImports.values()].join("\n"),
+			this._getImportStatements(),
 			...(this._imports.size > 0
 				? [
 						[...this._imports.values()]

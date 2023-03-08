@@ -37,4 +37,5 @@ export * from "./data/UUID/UUID.js";
 export * from "./types/IpType.js";
 export * from "./types/Offset.js";
 export * from "./types/OffsetDirection.js";
+export * from "./util/PGTPParser.js";
 export { LowerRange, LowerRangeType, UpperRange, UpperRangeType } from "./util/Range.js";

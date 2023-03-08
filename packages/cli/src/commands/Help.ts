@@ -4,7 +4,7 @@ import commandLineUsage from "command-line-usage";
 import { commands, globalArugments } from "../commands/index.js";
 import type { Argument } from "../types/interfaces/Argument.js";
 import type { Command } from "../types/interfaces/Command.js";
-import { DESCRIPTION, LOGGER as logger } from "../util/constants.js";
+import { DESCRIPTION, LOGGER as logger, MODULE_NAME } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Help: Argument = {
@@ -27,7 +27,7 @@ function runner(_: unknown, command?: Command) {
 	LOGGER("Printing help for all commands");
 	const sections: Section[] = [
 			{
-				content: getConsoleHeader(DESCRIPTION, "Usage: `pgtg <command> [options ...]`", true),
+				content: getConsoleHeader(DESCRIPTION, `Usage: \`${MODULE_NAME} <command> [options ...]\``, true),
 				raw: true,
 			},
 			{
@@ -42,7 +42,7 @@ function runner(_: unknown, command?: Command) {
 				optionList: globalArugments,
 			},
 			{
-				content: "Run `pgtg <command> -h` for help with a specific command.",
+				content: `Run \`${MODULE_NAME} <command> -h\` for help with a specific command.`,
 				raw: true,
 			},
 		],
@@ -55,7 +55,7 @@ function runner(_: unknown, command?: Command) {
 function commandHelp(command: Command) {
 	const sections: Section[] = [
 			{
-				content: getConsoleHeader(DESCRIPTION, `Usage: \`pgtg ${command.name} [options ...]\``, true),
+				content: getConsoleHeader(DESCRIPTION, `Usage: \`${MODULE_NAME} ${command.name} [options ...]\``, true),
 				raw: true,
 			},
 			{

@@ -12,9 +12,11 @@ type RawTimestampRangeObject = RawRangeObject<TimestampObject>;
 
 type TimestampRange = Range<Timestamp, TimestampObject>;
 
-const TimestampRange: RangeConstructor<Timestamp, TimestampObject> = getRange<Timestamp, TimestampObject>(Timestamp, Timestamp.isTimestamp, "TimestampRange");
+type TimestampRangeConstructor = RangeConstructor<Timestamp, TimestampObject>;
+
+const TimestampRange: TimestampRangeConstructor = getRange<Timestamp, TimestampObject>(Timestamp, Timestamp.isTimestamp, "TimestampRange");
 
 types.setTypeParser(OID.tsrange as any, parser(TimestampRange));
 types.setTypeParser(OID._tsrange as any, arrayParser(TimestampRange));
 
-export { RawTimestampRangeObject, TimestampRange, TimestampRangeObject };
+export { RawTimestampRangeObject, TimestampRange, TimestampRangeConstructor, TimestampRangeObject };

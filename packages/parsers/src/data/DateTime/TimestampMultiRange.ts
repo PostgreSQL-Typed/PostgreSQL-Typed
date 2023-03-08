@@ -13,7 +13,9 @@ type RawTimestampMultiRangeObject = RawMultiRangeObject<TimestampObject>;
 
 type TimestampMultiRange = MultiRange<Timestamp, TimestampObject>;
 
-const TimestampMultiRange: MultiRangeConstructor<Timestamp, TimestampObject> = getMultiRange<Timestamp, TimestampObject>(
+type TimestampMultiRangeConstructor = MultiRangeConstructor<Timestamp, TimestampObject>;
+
+const TimestampMultiRange: TimestampMultiRangeConstructor = getMultiRange<Timestamp, TimestampObject>(
 	TimestampRange,
 	TimestampRange.isRange,
 	"TimestampMultiRange"
@@ -22,4 +24,4 @@ const TimestampMultiRange: MultiRangeConstructor<Timestamp, TimestampObject> = g
 types.setTypeParser(OID.tsmultirange as any, parser(TimestampMultiRange));
 types.setTypeParser(OID._tsmultirange as any, arrayParser(TimestampMultiRange));
 
-export { RawTimestampMultiRangeObject, TimestampMultiRange, TimestampMultiRangeObject };
+export { RawTimestampMultiRangeObject, TimestampMultiRange, TimestampMultiRangeConstructor, TimestampMultiRangeObject };

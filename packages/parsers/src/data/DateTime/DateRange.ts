@@ -12,9 +12,11 @@ type RawDateRangeObject = RawRangeObject<DateObject>;
 
 type DateRange = Range<Date, DateObject>;
 
-const DateRange: RangeConstructor<Date, DateObject> = getRange<Date, DateObject>(Date, Date.isDate, "DateRange");
+type DateRangeConstructor = RangeConstructor<Date, DateObject>;
+
+const DateRange: DateRangeConstructor = getRange<Date, DateObject>(Date, Date.isDate, "DateRange");
 
 types.setTypeParser(OID.daterange as any, parser(DateRange));
 types.setTypeParser(OID._daterange as any, arrayParser(DateRange));
 
-export { DateRange, DateRangeObject, RawDateRangeObject };
+export { DateRange, DateRangeConstructor, DateRangeObject, RawDateRangeObject };

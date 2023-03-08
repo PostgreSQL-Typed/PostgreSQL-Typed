@@ -11,14 +11,14 @@ import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
 import type { Config } from "../types/interfaces/Config.js";
 import type { FetchedData } from "../types/interfaces/FetchedData.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
+import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 import type { DataType } from "../types/types/DataType.js";
 import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
+import { DefaultParserMapping } from "../util/DefaultParserMapping.js";
 import { DefaultTypeScriptMapping } from "../util/DefaultTypeScriptMapping.js";
-import { DefaultZodMapping } from "../util/DefaultZodMapping.js";
+import { getParserType } from "../util/functions/getters/getParserType.js";
 import { getTypeScriptType } from "../util/functions/getters/getTypeScriptType.js";
-import { getZodType } from "../util/functions/getters/getZodType.js";
 import { printAllDetails } from "../util/functions/printers/printAllDetails.js";
-import { printDatabaseZod } from "../util/functions/printers/printDatabaseZod.js";
 
 export class Printer {
 	public readonly classes: Map<number, ClassDetails>;
@@ -44,7 +44,7 @@ export class Printer {
 		return this.config.types.typeOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.types.typeOverrides[`${type.type_name}`] ?? null;
 	}
 
-	public getTypeScriptType(id: number, file: FileContext): string {
+	public getTypeScriptType(id: number, file: FileContext, maxLength?: number): string {
 		const override = this.config.types.typeOverrides[id];
 		if (override !== undefined) return override;
 
@@ -55,47 +55,62 @@ export class Printer {
 			if (override !== undefined) return override;
 		}
 
-		const builtin = DefaultTypeScriptMapping.get(id);
-		if (builtin) {
+		const builtin = DefaultTypeScriptMapping.get(id, maxLength);
+		if (builtin !== undefined) {
 			if (!Array.isArray(builtin)) return builtin;
 
 			const [type, imports] = builtin;
-			for (const stringImport of imports) file.addStringImport(stringImport);
+			for (const importStatement of imports) file.addImportStatement(importStatement);
 			return type;
 		}
 
 		const type = this.types.get(id);
 		if (!type) return "unknown";
-		return this._getTypeOverride(type) ?? getTypeScriptType(type, this, file);
+		return this._getTypeOverride(type) ?? getTypeScriptType(type, this, file, maxLength);
 	}
 
-	private _getZodOverride(type: DataType): string | null {
-		return this.config.types.zod.zodOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.types.zod.zodOverrides[`${type.type_name}`] ?? null;
+	private _getParserOverride(type: DataType): [string, ImportStatement[]] | null {
+		return this.config.types.parserOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.types.parserOverrides[`${type.type_name}`] ?? null;
 	}
 
-	public getZodType(id: number, file: FileContext) {
-		file.addStringImport('import { z } from "zod";');
-
-		const override = this.config.types.typeOverrides[id];
-		if (override !== undefined) return override;
+	public getParserType(id: number, file: FileContext, maxLength?: number): string {
+		const override = this.config.types.parserOverrides[id];
+		if (override !== undefined) {
+			const [type, imports] = override;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
 
 		if (id in OID) {
 			const string = OID[id],
-				override = this.config.types.zod.zodOverrides[string];
+				override = this.config.types.parserOverrides[string];
 
-			if (override !== undefined) return override;
+			if (override !== undefined) {
+				const [type, imports] = override;
+				for (const importStatement of imports) file.addImportStatement(importStatement);
+				return type;
+			}
 		}
 
-		const builtin = DefaultZodMapping.get(id);
-		if (builtin) {
+		const builtin = DefaultParserMapping.get(id, maxLength);
+		if (builtin !== undefined) {
 			if (!Array.isArray(builtin)) return builtin;
 
-			for (const stringImport of builtin[1]) file.addStringImport(stringImport);
-			return builtin[0];
+			const [type, imports] = builtin;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
 		}
+
 		const type = this.types.get(id);
-		if (!type) return "z.string()";
-		return this._getZodOverride(type) ?? getZodType(type, this, file);
+		if (!type) return "unknown";
+
+		const globalOverride = this._getParserOverride(type);
+		if (globalOverride !== null) {
+			const [type, imports] = globalOverride;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+		return getParserType(type, this, file, maxLength);
 	}
 
 	public async print() {
@@ -109,7 +124,6 @@ export class Printer {
 		}
 
 		printAllDetails(databaseClassLists, this);
-		if (this.config.types.zod.enabled) for (const classList of databaseClassLists) printDatabaseZod(classList, this);
 
 		return await this.writeFiles();
 	}

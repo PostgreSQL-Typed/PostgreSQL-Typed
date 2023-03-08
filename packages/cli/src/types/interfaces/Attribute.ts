@@ -11,6 +11,7 @@ export interface Attribute {
 	type_name: string;
 	not_null: boolean;
 	has_default: boolean;
-	default: string;
-	comment: string;
+	default: string | null;
+	comment: string | null;
+	character_maximum_length: number | null;
 }

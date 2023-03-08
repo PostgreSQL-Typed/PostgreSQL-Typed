@@ -299,4 +299,4 @@ class BoxClass extends PGTPBase<Box> implements Box {
 types.setTypeParser(OID.box as any, parser(Box));
 types.setTypeParser(OID._box as any, arrayParser(Box, ";"));
 
-export { Box, BoxObject };
+export { Box, BoxConstructor, BoxObject };

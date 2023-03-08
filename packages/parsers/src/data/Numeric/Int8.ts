@@ -227,4 +227,4 @@ class Int8Class extends PGTPBase<Int8> implements Int8 {
 types.setTypeParser(OID.int8 as any, parser<Int8>(Int8));
 types.setTypeParser(OID._int8 as any, arrayParser<Int8>(Int8, ","));
 
-export { Int8, Int8Object };
+export { Int8, Int8Constructor, Int8Object };

@@ -14,7 +14,9 @@ type RawTimestampTZMultiRangeObject = RawMultiRangeObject<TimestampTZObject>;
 
 type TimestampTZMultiRange = MultiRange<TimestampTZ, TimestampTZObject>;
 
-const TimestampTZMultiRange: MultiRangeConstructor<TimestampTZ, TimestampTZObject> = getMultiRange<TimestampTZ, TimestampTZObject>(
+type TimestampTZMultiRangeConstructor = MultiRangeConstructor<TimestampTZ, TimestampTZObject>;
+
+const TimestampTZMultiRange: TimestampTZMultiRangeConstructor = getMultiRange<TimestampTZ, TimestampTZObject>(
 	TimestampTZRange,
 	TimestampTZRange.isRange,
 	"TimestampTZMultiRange"
@@ -23,4 +25,4 @@ const TimestampTZMultiRange: MultiRangeConstructor<TimestampTZ, TimestampTZObjec
 types.setTypeParser(OID.tstzmultirange as any, parser(TimestampTZMultiRange));
 types.setTypeParser(OID._tstzmultirange as any, arrayParser(TimestampTZMultiRange));
 
-export { RawTimestampTZMultiRangeObject, TimestampTZMultiRange, TimestampTZMultiRangeObject };
+export { RawTimestampTZMultiRangeObject, TimestampTZMultiRange, TimestampTZMultiRangeConstructor, TimestampTZMultiRangeObject };

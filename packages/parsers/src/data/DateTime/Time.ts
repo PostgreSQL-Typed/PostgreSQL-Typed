@@ -478,4 +478,4 @@ class TimeClass extends PGTPBase<Time> implements Time {
 types.setTypeParser(OID.time as any, parser(Time));
 types.setTypeParser(OID._time as any, arrayParser(Time, ","));
 
-export { Time, TimeObject };
+export { Time, TimeConstructor, TimeObject };

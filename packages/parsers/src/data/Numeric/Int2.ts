@@ -223,4 +223,4 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 types.setTypeParser(OID.int2 as any, parser<Int2>(Int2));
 types.setTypeParser(OID._int2 as any, arrayParser<Int2>(Int2, ","));
 
-export { Int2, Int2Object };
+export { Int2, Int2Constructor, Int2Object };

@@ -1424,4 +1424,4 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 types.setTypeParser(OID.timestamptz as any, parser(TimestampTZ));
 types.setTypeParser(OID._timestamptz as any, arrayParser(TimestampTZ));
 
-export { TimestampStyle, TimestampStyleType, TimestampTZ, TimestampTZObject };
+export { TimestampStyle, TimestampStyleType, TimestampTZ, TimestampTZConstructor, TimestampTZObject };

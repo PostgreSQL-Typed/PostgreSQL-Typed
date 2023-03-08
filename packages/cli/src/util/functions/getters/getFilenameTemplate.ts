@@ -3,26 +3,31 @@ import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getFilenameTemplate(config: Config, id: TypeId): string {
 	const {
-			tableFileName,
-			tableInsertParametersFileName,
-			primaryKeyFileName,
-			schemaFileName,
-			schemaDataFileName,
-			databaseFileName,
-			databaseDataFileName,
-			fullExportFileName,
-			fullExportDataFileName,
-			enumFileName,
-			domainFileName,
-			zod,
-		} = config.types,
-		{ tableInsertParametersZodFileName, schemaDataZodFileName, databaseDataZodFileName, enumZodFileName, domainZodFileName } = zod;
+		tableFileName,
+		tableDataFileName,
+		tableInsertParametersFileName,
+		tableInsertParametersDataFileName,
+		primaryKeyFileName,
+		schemaFileName,
+		schemaDataFileName,
+		databaseFileName,
+		databaseDataFileName,
+		fullExportFileName,
+		fullExportDataFileName,
+		enumFileName,
+		domainFileName,
+		domainDataFileName,
+	} = config.types;
 
 	switch (id.type) {
-		case "table":
+		case "table_type":
 			return formatFileType(tableFileName);
-		case "insert_parameters":
+		case "table_data":
+			return formatFileType(tableDataFileName);
+		case "insert_parameters_type":
 			return formatFileType(tableInsertParametersFileName);
+		case "insert_parameters_data":
+			return formatFileType(tableInsertParametersDataFileName);
 		case "primary_key":
 			return formatFileType(primaryKeyFileName);
 		case "schema_type":
@@ -39,18 +44,10 @@ export function getFilenameTemplate(config: Config, id: TypeId): string {
 			return formatFileType(fullExportDataFileName);
 		case "enum":
 			return formatFileType(enumFileName);
-		case "domain":
+		case "domain_type":
 			return formatFileType(domainFileName);
-		case "z_insert_parameters":
-			return formatFileType(tableInsertParametersZodFileName);
-		case "z_schema_data":
-			return formatFileType(schemaDataZodFileName);
-		case "z_database_data":
-			return formatFileType(databaseDataZodFileName);
-		case "z_enum":
-			return formatFileType(enumZodFileName);
-		case "z_domain":
-			return formatFileType(domainZodFileName);
+		case "domain_data":
+			return formatFileType(domainDataFileName);
 		case "re_export":
 			return getFilenameTemplate(config, id.of);
 	}

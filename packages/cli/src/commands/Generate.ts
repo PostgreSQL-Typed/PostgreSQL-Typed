@@ -7,6 +7,7 @@ import { Printer } from "../classes/Printer.js";
 import { ProgressBar } from "../classes/ProgressBar.js";
 import type { Command } from "../types/interfaces/Command.js";
 import { g, I, y } from "../util/chalk.js";
+import { MODULE_NAME } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Generate: Command = {
@@ -28,7 +29,7 @@ export const Generate: Command = {
 				waiter: {
 					line1: connections.length > 1 ? g(`Connecting to ${connections.length} databases`) : g("Connecting to the database"),
 					line2: filepath ? `Using configuration file: ${filepath}` : y("No configuration file found! Using default configuration."),
-					line3: filepath ? "" : I("You can run `pgtg init` to create a configuration file."),
+					line3: filepath ? "" : I(`You can run \`${MODULE_NAME} init\` to create a configuration file.`),
 					spinnerColor: g,
 				},
 			});

@@ -1,4 +1,5 @@
 import type { Config } from "../../../types/interfaces/Config.js";
+import { MODULE_NAME, NAME } from "../../constants.js";
 
 export function getNewConfigFile(config: Config): string {
 	return `${CONFIG_HEADER}${getStringifyedConfig(config)}${CONFIG_FOOTER}`;
@@ -31,12 +32,12 @@ function getStringifyedConfig(cfg: Record<string, any>, tabCount = 1): string {
 }
 
 const CONFIG_HEADER = `/**
- * Configuration file for pgtg (PostgreSQL Types Generator)
+ * Configuration file for ${MODULE_NAME} (${NAME})
  *
  * For a detailed explanation regarding each configuration property, and the default values, see the README.md file.
  */
 
-/** @type {import('postgresql-types-generator/lib/types/types/ConfigFile').ConfigFile} */
+/** @type {import('${NAME.toLowerCase()}/lib/types/types/ConfigFile').ConfigFile} */
 module.exports = {
 `,
 	CONFIG_FOOTER = "};";

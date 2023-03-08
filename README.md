@@ -102,21 +102,21 @@
 <p>
 
 <br/>
-<!-- PostgreSQL-Types-Generator -->
+<!-- @PostgreSQL-Typed/CLI -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Types-Generator">
-		PostgreSQL-Types-Generator
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/cli">
+		@PostgreSQL-Typed/CLI
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/postgresql-types-generator">
-		<img src="https://img.shields.io/npm/v/postgresql-types-generator.svg?logo=npm" alt="PostgreSQL-Types-Generator Version"/>
-		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/PostgreSQL-Types-Generator&logo=vitest&style=flat" alt="PostgreSQL-Types-Generator Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/cli">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/cli.svg?logo=npm" alt="@PostgreSQL-Typed/CLI Version"/>
+		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/cli&logo=vitest&style=flat" alt="@PostgreSQL-Typed/CLI Coverage"/>
 	</a>
 </div>
 <p align="center">
-  Generate TypeScript types and Zod schemas from a PostgreSQL database
+  Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.
 <p>
 
 <br/>

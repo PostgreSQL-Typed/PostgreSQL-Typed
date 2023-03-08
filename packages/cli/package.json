@@ -1,8 +1,8 @@
 {
 	"private": true,
-	"name": "postgresql-types-generator",
+	"name": "@postgresql-typed/cli",
 	"version": "1.0.0",
-	"description": "Generate TypeScript types and Zod schemas from a PostgreSQL database",
+	"description": "Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.",
 	"type": "module",
 	"exports": "./lib/index.js",
 	"types": "./lib/index.d.ts",
@@ -15,7 +15,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
-		"directory": "packages/types-generator"
+		"directory": "packages/cli"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
@@ -24,7 +24,7 @@
 		"lib"
 	],
 	"bin": {
-		"pgtg": "./lib/cli.js"
+		"pgt": "./lib/cli.js"
 	},
 	"keywords": [
 		"postgresql",
@@ -35,7 +35,8 @@
 		"type-safe",
 		"generator",
 		"generate",
-		"typescript"
+		"typescript",
+		"cli"
 	],
 	"scripts": {
 		"dev": "tsc -w",

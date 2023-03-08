@@ -21,14 +21,14 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/parsers'
-  "PostgreSQL-Types-Generator":
-    name: PostgreSQL-Types-Generator
+  "CLI":
+    name: '@PostgreSQL-Typed/CLI'
     uses: ./.github/workflows/package.yml
     with:
-      package: postgresql-types-generator
+      package: '@postgresql-typed/cli'
   coverage:
     name: Coverage
-    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, Parsers, PostgreSQL-Types-Generator]
+    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, Parsers, CLI]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

@@ -75,24 +75,24 @@ importers:
 
   packages/PostgreSQL-Typed:
     specifiers:
+      '@postgresql-typed/cli': workspace:*
       '@postgresql-typed/parsers': workspace:*
       '@types/node': ^18.6.2
       postgres: ^3.3.3
-      postgresql-types-generator: workspace:*
       source-map-support: ^0.5.21
       typescript: ^4.7.4
       zod: ^3.18.0
     dependencies:
       postgres: 3.3.3
     devDependencies:
+      '@postgresql-typed/cli': link:../cli
       '@postgresql-typed/parsers': link:../parsers
       '@types/node': 18.11.18
-      postgresql-types-generator: link:../PostgreSQL-Types-Generator
       source-map-support: 0.5.21
       typescript: 4.9.5
       zod: 3.20.2
 
-  packages/PostgreSQL-Types-Generator:
+  packages/cli:
     specifiers:
       '@postgresql-typed/oids': workspace:*
       '@types/command-line-args': ^5.2.0

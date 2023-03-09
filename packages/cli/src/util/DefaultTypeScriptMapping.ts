@@ -284,7 +284,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._name]: "string[]",
+				[OID._name]: [
+					"Name[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Name",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._numeric]: "number[]",
 				[OID._nummultirange]: "unknown[]",
 				[OID._numrange]: "unknown[]",
@@ -784,7 +794,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.name]: "string",
+				[OID.name]: [
+					"Name",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Name",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.numeric]: "number",
 				[OID.nummultirange]: "unknown",
 				[OID.numrange]: "unknown",

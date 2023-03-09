@@ -75,7 +75,7 @@ export interface TooBigIssue {
 	maximum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "bigint" | "arguments";
+	type: "array" | "number" | "bigint" | "arguments" | "bytes";
 }
 
 export interface InvalidNLengthIssue {

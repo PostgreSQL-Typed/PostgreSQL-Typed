@@ -72,6 +72,9 @@ const errorMap: ErrorMap = issue => {
 				case "arguments":
 					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} argument(s)`;
 					break;
+				case "bytes":
+					message = `String must be ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} byte(s) long`;
+					break;
 				default:
 					message = "Invalid input";
 					throw new Error(message);

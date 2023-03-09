@@ -1,9 +1,13 @@
 /* eslint-disable unicorn/filename-case */
+//* BitString
 import type { BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
+//* Character
 import type { CharacterConstructor } from "../data/Character/Character.js";
 import type { CharacterVaryingConstructor } from "../data/Character/CharacterVarying.js";
+import type { NameConstructor } from "../data/Character/Name.js";
 import type { TextConstructor } from "../data/Character/Text.js";
+//* DateTime
 import type { DateConstructor } from "../data/DateTime/Date.js";
 import type { DateMultiRangeConstructor } from "../data/DateTime/DateMultiRange.js";
 import type { DateRangeConstructor } from "../data/DateTime/DateRange.js";
@@ -16,6 +20,7 @@ import type { TimestampTZConstructor } from "../data/DateTime/TimestampTZ.js";
 import type { TimestampTZMultiRangeConstructor } from "../data/DateTime/TimestampTZMultiRange.js";
 import type { TimestampTZRangeConstructor } from "../data/DateTime/TimestampTZRange.js";
 import type { TimeTZConstructor } from "../data/DateTime/TimeTZ.js";
+//* Geometric
 import type { BoxConstructor } from "../data/Geometric/Box.js";
 import type { CircleConstructor } from "../data/Geometric/Circle.js";
 import type { LineConstructor } from "../data/Geometric/Line.js";
@@ -23,10 +28,13 @@ import type { LineSegmentConstructor } from "../data/Geometric/LineSegment.js";
 import type { PathConstructor } from "../data/Geometric/Path.js";
 import type { PointConstructor } from "../data/Geometric/Point.js";
 import type { PolygonConstructor } from "../data/Geometric/Polygon.js";
+//* Monetary
 import type { MoneyConstructor } from "../data/Monetary/Money.js";
+//* NetworkAddress
 // import type { IPAddressConstructor } from "../data/NetworkAddress/IPAddress.js";
 // import type { MACAddressConstructor } from "../data/NetworkAddress/MACAddress.js";
 // import type { MACAddress8Constructor } from "../data/NetworkAddress/MACAddress8.js";
+//* Numeric
 import type { Float4Constructor } from "../data/Numeric/Float4.js";
 import type { Float8Constructor } from "../data/Numeric/Float8.js";
 import type { Int2Constructor } from "../data/Numeric/Int2.js";
@@ -36,6 +44,7 @@ import type { Int4RangeConstructor } from "../data/Numeric/Int4Range.js";
 import type { Int8Constructor } from "../data/Numeric/Int8.js";
 import type { Int8MultiRangeConstructor } from "../data/Numeric/Int8MultiRange.js";
 import type { Int8RangeConstructor } from "../data/Numeric/Int8Range.js";
+//* UUID
 import type { UUIDConstructor } from "../data/UUID/UUID.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
@@ -46,6 +55,7 @@ type Parsers =
 	//* Character
 	| CharacterConstructor<number>
 	| CharacterVaryingConstructor<number>
+	| NameConstructor
 	| TextConstructor
 	//* DateTime
 	| DateConstructor

@@ -250,7 +250,16 @@ export const DefaultParserMapping = {
 						},
 					],
 				],
-				[OID._money]: "'unknown', true",
+				[OID._money]: [
+					"Money, true",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Money",
+							type: "named",
+						},
+					],
+				],
 				[OID._name]: "'unknown', true",
 				[OID._numeric]: "'unknown', true",
 				[OID._nummultirange]: "'unknown', true",
@@ -692,7 +701,16 @@ export const DefaultParserMapping = {
 						},
 					],
 				],
-				[OID.money]: "'unknown'",
+				[OID.money]: [
+					"Money",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Money",
+							type: "named",
+						},
+					],
+				],
 				[OID.name]: "'unknown'",
 				[OID.numeric]: "'unknown'",
 				[OID.nummultirange]: "'unknown'",

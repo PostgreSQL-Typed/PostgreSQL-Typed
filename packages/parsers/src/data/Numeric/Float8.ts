@@ -16,7 +16,10 @@ import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
-const bigNumber = getBigNumber("-10e307", "10e307");
+const bigNumber = getBigNumber("-10e307", "10e307", {
+	allowInfinity: true,
+	allowNaN: true,
+});
 
 interface Float8Object {
 	float8: string;

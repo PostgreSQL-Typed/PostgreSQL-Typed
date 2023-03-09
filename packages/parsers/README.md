@@ -109,6 +109,15 @@ pnpm i @postgresql-typed/parsers
           <code>polygon</code><br/>
         </td>
       </tr>
+      <!-- Monetary -->
+      <tr>
+        <td>
+          <a href="./docs/Monetary/Money.md">Money</a>
+        </td>
+        <td>
+          <code>money</code><br/>
+        </td>
+      </tr>
       <!-- Numeric -->
       <tr>
         <td>
@@ -130,6 +139,7 @@ pnpm i @postgresql-typed/parsers
         <td>
           <code>uuid</code><br/>
         </td>
+      </tr>
     </tbody>
   </table>
   <p>

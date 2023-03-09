@@ -22,6 +22,7 @@ import type { LineSegmentConstructor } from "../data/Geometric/LineSegment.js";
 import type { PathConstructor } from "../data/Geometric/Path.js";
 import type { PointConstructor } from "../data/Geometric/Point.js";
 import type { PolygonConstructor } from "../data/Geometric/Polygon.js";
+import type { MoneyConstructor } from "../data/Monetary/Money.js";
 // import type { IPAddressConstructor } from "../data/NetworkAddress/IPAddress.js";
 // import type { MACAddressConstructor } from "../data/NetworkAddress/MACAddress.js";
 // import type { MACAddress8Constructor } from "../data/NetworkAddress/MACAddress8.js";
@@ -38,10 +39,13 @@ import type { UUIDConstructor } from "../data/UUID/UUID.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 type Parsers =
+	//* BitString
 	| BitConstructor<number>
 	| BitVaryingConstructor<number>
+	//* Character
 	| CharacterConstructor<number>
 	| CharacterVaryingConstructor<number>
+	//* DateTime
 	| DateConstructor
 	| DateMultiRangeConstructor
 	| DateRangeConstructor
@@ -54,6 +58,7 @@ type Parsers =
 	| TimestampTZMultiRangeConstructor
 	| TimestampTZRangeConstructor
 	| TimeTZConstructor
+	//* Geometric
 	| BoxConstructor
 	| CircleConstructor
 	| LineConstructor
@@ -61,6 +66,13 @@ type Parsers =
 	| PathConstructor
 	| PointConstructor
 	| PolygonConstructor
+	//* Monetary
+	| MoneyConstructor
+	//* NetworkAddress
+	// | IPAddressConstructor
+	// | MACAddressConstructor
+	// | MACAddress8Constructor
+	//* Numeric
 	| Float4Constructor
 	| Float8Constructor
 	| Int2Constructor
@@ -70,6 +82,7 @@ type Parsers =
 	| Int8Constructor
 	| Int8MultiRangeConstructor
 	| Int8RangeConstructor
+	//* UUID
 	| UUIDConstructor
 	| ObjectFunction<any>;
 

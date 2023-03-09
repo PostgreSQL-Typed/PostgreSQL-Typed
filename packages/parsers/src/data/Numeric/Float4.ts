@@ -16,7 +16,10 @@ import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
-const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999999999999999999999999999999999999");
+const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999999999999999999999999999999999999", {
+	allowInfinity: true,
+	allowNaN: true,
+});
 
 interface Float4Object {
 	float4: string;

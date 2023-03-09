@@ -23,6 +23,7 @@ export * from "./data/Geometric/LineSegment.js";
 export * from "./data/Geometric/Path.js";
 export * from "./data/Geometric/Point.js";
 export * from "./data/Geometric/Polygon.js";
+export * from "./data/Monetary/Money.js";
 // export * from "./data/NetworkAddress/IPAddress.js";
 // export * from "./data/NetworkAddress/MACAddress.js";
 // export * from "./data/NetworkAddress/MACAddress8.js";

@@ -273,7 +273,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._money]: "string[]",
+				[OID._money]: [
+					"Money[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Money",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._name]: "string[]",
 				[OID._numeric]: "number[]",
 				[OID._nummultirange]: "unknown[]",
@@ -753,7 +763,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.money]: "string",
+				[OID.money]: [
+					"Money",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Money",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.name]: "string",
 				[OID.numeric]: "number",
 				[OID.nummultirange]: "unknown",

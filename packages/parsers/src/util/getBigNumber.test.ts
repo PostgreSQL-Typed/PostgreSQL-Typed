@@ -9,7 +9,10 @@ describe("getBigNumber", () => {
 });
 
 describe("BigNumber", () => {
-	const BigNumber = getBigNumber("-1000", "1000");
+	const BigNumber = getBigNumber("-1000", "1000", {
+		allowInfinity: true,
+		allowNaN: true,
+	});
 	it("should parse Infinity", () => {
 		const test1 = BigNumber(Number.POSITIVE_INFINITY);
 		expect(test1.success).toBe(true);
@@ -48,6 +51,37 @@ describe("BigNumber", () => {
 		expect(test7.success).toBe(true);
 		if (!test7.success) expect.fail();
 		expect(test7.data.toNumber()).toBe(Number.POSITIVE_INFINITY);
+
+		const bigNumber2 = getBigNumber("-1000", "1000", {
+				allowInfinity: false,
+			}),
+			test8 = bigNumber2("Infinity");
+		expect(test8.success).toBe(false);
+		if (test8.success) expect.fail();
+
+		const test9 = bigNumber2("-Infinity");
+		expect(test9.success).toBe(false);
+		if (test9.success) expect.fail();
+
+		const test10 = bigNumber2("+Infinity");
+		expect(test10.success).toBe(false);
+		if (test10.success) expect.fail();
+
+		const test11 = bigNumber2("iNfInItY");
+		expect(test11.success).toBe(false);
+		if (test11.success) expect.fail();
+
+		const test12 = bigNumber2("-iNfInItY");
+		expect(test12.success).toBe(false);
+		if (test12.success) expect.fail();
+
+		const test13 = bigNumber2(Number.POSITIVE_INFINITY);
+		expect(test13.success).toBe(false);
+		if (test13.success) expect.fail();
+
+		const test14 = bigNumber2(Number.NEGATIVE_INFINITY);
+		expect(test14.success).toBe(false);
+		if (test14.success) expect.fail();
 	});
 
 	it("should parse NaN", () => {
@@ -66,6 +100,21 @@ describe("BigNumber", () => {
 		expect(test3.success).toBe(true);
 		if (!test3.success) expect.fail();
 		expect(test3.data.isNaN()).toBe(true);
+
+		const bigNumber2 = getBigNumber("-1000", "1000", {
+				allowNaN: false,
+			}),
+			test4 = bigNumber2("NaN");
+		expect(test4.success).toBe(false);
+		if (test4.success) expect.fail();
+
+		const test5 = bigNumber2(Number.NaN);
+		expect(test5.success).toBe(false);
+		if (test5.success) expect.fail();
+
+		const test6 = bigNumber2("nan");
+		expect(test6.success).toBe(false);
+		if (test6.success) expect.fail();
 	});
 
 	it("should parse numbers", () => {
@@ -279,5 +328,43 @@ describe("BigNumber", () => {
 		expect(test4.success).toBe(false);
 		if (test4.success) expect.fail();
 		expect(test4.error.code).toBe("invalid_string");
+	});
+
+	it("should parse monetary values", () => {
+		const higherNumber = getBigNumber("-10000000", "10000000"),
+			test1 = higherNumber("€10,000.00");
+		expect(test1.success).toBe(true);
+		if (!test1.success) expect.fail();
+		expect(test1.data.toNumber()).toBe(10_000);
+
+		const test2 = higherNumber("EUR 10,000.00");
+		expect(test2.success).toBe(true);
+		if (!test2.success) expect.fail();
+		expect(test2.data.toNumber()).toBe(10_000);
+
+		const test3 = higherNumber("€ 10,000.00");
+		expect(test3.success).toBe(true);
+		if (!test3.success) expect.fail();
+		expect(test3.data.toNumber()).toBe(10_000);
+
+		const test4 = higherNumber("10,000.00€");
+		expect(test4.success).toBe(true);
+		if (!test4.success) expect.fail();
+		expect(test4.data.toNumber()).toBe(10_000);
+
+		const test5 = higherNumber("10.000,00 EUR");
+		expect(test5.success).toBe(true);
+		if (!test5.success) expect.fail();
+		expect(test5.data.toNumber()).toBe(10_000);
+
+		const test6 = higherNumber("+10.000,00€");
+		expect(test6.success).toBe(true);
+		if (!test6.success) expect.fail();
+		expect(test6.data.toNumber()).toBe(10_000);
+
+		const test7 = higherNumber("-10.000,00€");
+		expect(test7.success).toBe(true);
+		if (!test7.success) expect.fail();
+		expect(test7.data.toNumber()).toBe(-10_000);
 	});
 });

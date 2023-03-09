@@ -49,16 +49,16 @@ if (BitVarying.isAnyBitVarying(bit1)) {
   console.log("bit1 is an BitVarying of any N value");
 }
 
-//* Afterwards, you can get/set the properties of the Bit:
+//* Afterwards, you can get/set the properties of the BitVarying:
 bit1.bit; // "1"
 
-//* It has a `toString()` method that returns a string representation of the Bit:
+//* It has a `toString()` method that returns a string representation of the BitVarying:
 bit1.toString(); // "1"
 
-//* It has a `toNumber()` method that returns a big number representation of the Bit:
+//* It has a `toNumber()` method that returns a big number representation of the BitVarying:
 bit1.toNumber(); // 1
 
-//* It has a `toJSON()` method that returns a JSON representation of the Bit:
+//* It has a `toJSON()` method that returns a JSON representation of the BitVarying:
 bit1.toJSON(); // { bit: "1" }
 
 //* It has a `equals()` method that returns whether two bits are equal:
@@ -70,7 +70,7 @@ bit1.equals("abc"); // throws an error
 //* You can also use the `safeEquals` method to return a `success` boolean instead of throwing an error:
 bit1.safeEquals("abc"); // { success: false, error: Error }
 bit1.safeEquals(bit2); // { success: true, equals: true, data: bit2 }
-bit1.safeEquals("0"); // { success: true, equals: false, data: Bit(0) }
+bit1.safeEquals("0"); // { success: true, equals: false, data: BitVarying(0) }
 ```
 
 <p align="center">

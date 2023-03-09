@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
-import type { BitConstructor } from "../data/Bit/Bit.js";
-import type { BitVaryingConstructor } from "../data/Bit/BitVarying.js";
+import type { BitConstructor } from "../data/BitString/Bit.js";
+import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
 import type { DateConstructor } from "../data/DateTime/Date.js";
 import type { DateMultiRangeConstructor } from "../data/DateTime/DateMultiRange.js";
 import type { DateRangeConstructor } from "../data/DateTime/DateRange.js";

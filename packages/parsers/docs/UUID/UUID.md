@@ -2,7 +2,7 @@
 	UUID
 </h1>
 <p align="center">
-  The <code>UUID</code> parser is used to represet the <a href="ttps://www.postgresql.org/docs/current/datatype-uuid.html"><code>uuid</code></a> and <a href="ttps://www.postgresql.org/docs/current/datatype-uuid.html"><code>_uuid</code></a> types.
+  The <code>UUID</code> parser is used to represet the <a href="https://www.postgresql.org/docs/current/datatype-uuid.html"><code>uuid</code></a> and <a href="https://www.postgresql.org/docs/current/datatype-uuid.html"><code>_uuid</code></a> types.
 </p>
 <br/>
 

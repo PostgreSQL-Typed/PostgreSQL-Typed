@@ -278,7 +278,7 @@ function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Pr
 		}
 	}
 
-	return printer.getParserType(attribute.type_id, file);
+	return printer.getParserType(attribute.type_id, file, attribute.character_maximum_length ?? undefined);
 }
 
 function nullable(attribute: Attribute): string {

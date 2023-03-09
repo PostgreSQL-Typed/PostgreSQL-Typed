@@ -4,7 +4,7 @@ import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 
 export const DefaultTypeScriptMapping = {
 	get(oid: OID, maxLength?: number): string | [string, ImportStatement[]] | undefined {
-		const lengthString = maxLength ? `<${maxLength}>` : "",
+		const lengthString = maxLength === undefined ? "" : `<${maxLength}>`,
 			TypeScriptMapping: {
 				[key in OID]: string | [string, ImportStatement[]];
 			} = {
@@ -33,9 +33,29 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._bpchar]: "string[]",
+				[OID._bpchar]: [
+					`Character${lengthString}[]`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Character",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._bytea]: "Buffer[]",
-				[OID._char]: "string[]",
+				[OID._char]: [
+					`Character${lengthString}[]`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Character",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._cid]: "string[]",
 				[OID._cidr]: [
 					"IPAddress[]",
@@ -425,7 +445,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._varchar]: "string[]",
+				[OID._varchar]: [
+					`CharacterVarying${lengthString}[]`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterVarying",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._xid]: "unknown[]",
 				[OID._xid8]: "unknown[]",
 				[OID._xml]: "unknown[]",
@@ -466,10 +496,30 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.bpchar]: "string",
+				[OID.bpchar]: [
+					`Character${lengthString}`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Character",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.bytea]: "Buffer",
 				[OID.cardinal_number]: "unknown",
-				[OID.char]: "string",
+				[OID.char]: [
+					`Character${lengthString}`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Character",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.character_data]: "unknown",
 				[OID.cid]: "string",
 				[OID.cidr]: [
@@ -878,7 +928,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.varchar]: "string",
+				[OID.varchar]: [
+					`CharacterVarying${lengthString}`,
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterVarying",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.void]: "unknown",
 				[OID.xid]: "unknown",
 				[OID.xid8]: "unknown",

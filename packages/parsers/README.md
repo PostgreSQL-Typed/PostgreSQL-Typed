@@ -69,6 +69,17 @@ pnpm i @postgresql-typed/parsers
           <code>varbit</code><br/>
         </td>
       </tr>
+      <!--- Character -->
+      <tr>
+        <td>
+          <a href="./docs/Character/CharacterCategory.md">Character</a>
+        </td>
+        <td>
+          <code>bpchar</code><br/>
+          <code>char</code><br/>
+          <code>varchar</code><br/>
+        </td>
+      </tr>
       <!--- Date/Time -->
       <tr>
         <td>

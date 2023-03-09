@@ -44,24 +44,24 @@ interface BitVaryingConstructor<N extends number> {
 	safeFrom(number: number): SafeFrom<BitVarying<N>>;
 	safeFrom(object: BitVarying<N> | BitVaryingObject): SafeFrom<BitVarying<N>>;
 	/**
-	 * Returns `true` if `object` is a `Bit`, `false` otherwise.
+	 * Returns `true` if `object` is a `BitVarying`, `false` otherwise.
 	 */
 	isBitVarying(object: any): object is BitVarying<N>;
 	/**
-	 * Returns `true` if `object` is a `Bit<N>`, `false` otherwise.
+	 * Returns `true` if `object` is a `BitVarying<N>`, `false` otherwise.
 	 */
 	isBitVarying<N extends number = number>(object: any, n: N): object is BitVarying<N>;
 	/**
-	 * Returns `true` if `object` is a `Bit<N>`, `false` otherwise.
+	 * Returns `true` if `object` is a `BitVarying<N>`, `false` otherwise.
 	 */
 	isAnyBitVarying(object: any): object is BitVarying<number>;
 	/**
-	 * Get a `Bit` constructor for a specific `n`.
+	 * Get a `BitVarying` constructor for a specific `n`.
 	 * @param n The number of bits.
 	 */
 	setN<N extends number = number>(n: N): BitVaryingConstructor<N>;
 	/**
-	 * Get the `n` value for this `Bit` constructor.
+	 * Get the `n` value for this `BitVarying` constructor.
 	 * @returns The `n` value.
 	 */
 	get n(): N;

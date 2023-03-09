@@ -312,7 +312,16 @@ export const DefaultParserMapping = {
 				[OID._regrole]: "'unknown', true",
 				[OID._regtype]: "'unknown', true",
 				[OID._reltime]: "'unknown', true",
-				[OID._text]: "'unknown', true",
+				[OID._text]: [
+					"Text, true",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Text",
+							type: "named",
+						},
+					],
+				],
 				[OID._tid]: "'unknown', true",
 				[OID._time]: [
 					"Time, true",
@@ -773,7 +782,16 @@ export const DefaultParserMapping = {
 				[OID.reltime]: "'unknown'",
 				[OID.smgr]: "'unknown'",
 				[OID.table_am_handler]: "'unknown'",
-				[OID.text]: "'unknown'",
+				[OID.text]: [
+					"Text",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Text",
+							type: "named",
+						},
+					],
+				],
 				[OID.tid]: "'unknown'",
 				[OID.time]: [
 					"Time",

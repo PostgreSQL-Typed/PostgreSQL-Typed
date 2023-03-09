@@ -5,6 +5,7 @@
   <p>The Character category includes the following data types:</p>
   <a href="./Character.md"><code>Character</code></a><br/>
   <a href="./CharacterVarying.md"><code>CharacterVarying</code></a><br/>
+  <a href="./Text.md"><code>Text</code></a><br/>
   <br/>
   <p>It also includes all of the array data types of the same name.</p>
 </div>

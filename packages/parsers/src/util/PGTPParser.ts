@@ -3,6 +3,7 @@ import type { BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
 import type { CharacterConstructor } from "../data/Character/Character.js";
 import type { CharacterVaryingConstructor } from "../data/Character/CharacterVarying.js";
+import type { TextConstructor } from "../data/Character/Text.js";
 import type { DateConstructor } from "../data/DateTime/Date.js";
 import type { DateMultiRangeConstructor } from "../data/DateTime/DateMultiRange.js";
 import type { DateRangeConstructor } from "../data/DateTime/DateRange.js";
@@ -45,6 +46,7 @@ type Parsers =
 	//* Character
 	| CharacterConstructor<number>
 	| CharacterVaryingConstructor<number>
+	| TextConstructor
 	//* DateTime
 	| DateConstructor
 	| DateMultiRangeConstructor

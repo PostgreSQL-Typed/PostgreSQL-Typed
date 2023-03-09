@@ -339,7 +339,17 @@ export const DefaultTypeScriptMapping = {
 				[OID._regrole]: "unknown[]",
 				[OID._regtype]: "unknown[]",
 				[OID._reltime]: "unknown[]",
-				[OID._text]: "string[]",
+				[OID._text]: [
+					"Text[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Text",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._tid]: "unknown[]",
 				[OID._time]: [
 					"Time[]",
@@ -839,7 +849,17 @@ export const DefaultTypeScriptMapping = {
 				[OID.reltime]: "unknown",
 				[OID.smgr]: "unknown",
 				[OID.table_am_handler]: "unknown",
-				[OID.text]: "string",
+				[OID.text]: [
+					"Text",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Text",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.tid]: "unknown",
 				[OID.time]: [
 					"Time",

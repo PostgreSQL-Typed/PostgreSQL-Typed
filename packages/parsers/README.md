@@ -78,6 +78,7 @@ pnpm i @postgresql-typed/parsers
           <code>bpchar</code><br/>
           <code>char</code><br/>
           <code>varchar</code><br/>
+          <code>text</code><br/>
         </td>
       </tr>
       <!--- Date/Time -->

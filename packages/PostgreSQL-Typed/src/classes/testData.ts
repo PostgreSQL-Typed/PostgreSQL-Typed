@@ -1,3 +1,5 @@
+import { PGTPParser, UUID } from "@postgresql-typed/parsers";
+
 export type TestData = {
 	db1: {
 		name: "db1";
@@ -9,20 +11,20 @@ export type TestData = {
 						name: "table1";
 						primary_key: "id";
 						columns: {
-							id: number;
+							id: UUID;
 						};
 						insert_parameters: {
-							id: number;
+							id: UUID;
 						};
 					};
 					table2: {
 						name: "table2";
 						primary_key: "id";
 						columns: {
-							id: number;
+							id: UUID;
 						};
 						insert_parameters: {
-							id: number;
+							id: UUID;
 						};
 					};
 				};
@@ -34,10 +36,10 @@ export type TestData = {
 						name: "table3";
 						primary_key: "id";
 						columns: {
-							id: number;
+							id: UUID;
 						};
 						insert_parameters: {
-							id: number;
+							id: UUID;
 						};
 					};
 				};
@@ -86,10 +88,22 @@ export const testData = {
 					{
 						name: "table1" as const,
 						primary_key: "id" as const,
+						columns: {
+							id: PGTPParser(UUID),
+						},
+						insert_parameters: {
+							id: PGTPParser(UUID).optional(),
+						},
 					},
 					{
 						name: "table2" as const,
 						primary_key: "id" as const,
+						columns: {
+							id: PGTPParser(UUID),
+						},
+						insert_parameters: {
+							id: PGTPParser(UUID).optional(),
+						},
 					},
 				],
 			},
@@ -99,6 +113,12 @@ export const testData = {
 					{
 						name: "table3" as const,
 						primary_key: "id" as const,
+						columns: {
+							id: PGTPParser(UUID),
+						},
+						insert_parameters: {
+							id: PGTPParser(UUID).optional(),
+						},
 					},
 				],
 			},
@@ -113,10 +133,22 @@ export const testData = {
 					{
 						name: "table4" as const,
 						primary_key: "id" as const,
+						columns: {
+							id: PGTPParser(UUID),
+						},
+						insert_parameters: {
+							id: PGTPParser(UUID).optional(),
+						},
 					},
 					{
 						name: "table5" as const,
 						primary_key: "id" as const,
+						columns: {
+							id: PGTPParser(UUID),
+						},
+						insert_parameters: {
+							id: PGTPParser(UUID).optional(),
+						},
 					},
 				],
 			},

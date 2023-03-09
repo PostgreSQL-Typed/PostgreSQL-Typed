@@ -150,10 +150,10 @@ describe("BitVaryingConstructor", () => {
 		if (invalidBitLength.success) expect.fail();
 		else {
 			expect(invalidBitLength.error.issue).toStrictEqual({
-				code: "invalid_bit_length",
+				code: "invalid_n_length",
 				maximum: 1,
 				received: 2,
-				message: "Invalid bit length: 2, n must be less than or equal to 1",
+				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
 			});
 		}
 		//#endregion
@@ -306,7 +306,7 @@ describe("BitVarying", () => {
 		bit.bit = "0" as any;
 		expect(bit.bit).toEqual("0");
 
-		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid bit length: 3, n must be less than or equal to 2");
+		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
 	});
 });
 

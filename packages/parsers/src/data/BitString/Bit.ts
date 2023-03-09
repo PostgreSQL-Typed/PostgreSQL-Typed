@@ -157,7 +157,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 		// Make sure the bit is the correct length
 		if (argument.length > this._n) {
 			this.setIssueForContext(context, {
-				code: "invalid_bit_length",
+				code: "invalid_n_length",
 				maximum: this._n,
 				received: argument.length,
 				exact: true,
@@ -201,7 +201,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 			// Make sure the bit is the correct length
 			if (argument.n !== this._n) {
 				this.setIssueForContext(context, {
-					code: "invalid_bit_length",
+					code: "invalid_n_length",
 					maximum: this._n,
 					received: argument.n,
 					exact: true,

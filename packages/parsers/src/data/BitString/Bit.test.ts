@@ -67,11 +67,11 @@ describe("BitConstructor", () => {
 		if (tooBig.success) expect.fail();
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
-				code: "invalid_bit_length",
+				code: "invalid_n_length",
 				maximum: 1,
 				received: 3,
 				exact: true,
-				message: "Invalid bit length: 3, n must be exactly 1",
+				message: "Invalid 'n' length: 3, 'n' must be exactly 1",
 			});
 		}
 
@@ -163,11 +163,11 @@ describe("BitConstructor", () => {
 		if (invalidBitLength.success) expect.fail();
 		else {
 			expect(invalidBitLength.error.issue).toStrictEqual({
-				code: "invalid_bit_length",
+				code: "invalid_n_length",
 				exact: true,
 				maximum: 1,
 				received: 2,
-				message: "Invalid bit length: 2, n must be exactly 1",
+				message: "Invalid 'n' length: 2, 'n' must be exactly 1",
 			});
 		}
 		//#endregion
@@ -320,7 +320,7 @@ describe("Bit", () => {
 		bit.bit = "0" as any;
 		expect(bit.bit).toEqual("0");
 
-		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid bit length: 3, n must be exactly 1");
+		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
 	});
 });
 

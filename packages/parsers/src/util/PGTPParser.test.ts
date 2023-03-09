@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/filename-case */
 import { describe, expect, it, test } from "vitest";
 
-import { Bit } from "../data/Bit/Bit.js";
+import { Bit } from "../data/BitString/Bit.js";
 import { PGTPParser } from "./PGTPParser.js";
 
 describe("PGTPParser", () => {

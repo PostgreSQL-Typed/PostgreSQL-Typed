@@ -3,7 +3,7 @@ import { arrayToEnum } from "./arrayToEnum.js";
 import { ParsedType } from "./getParsedType.js";
 
 export const IssueCode = arrayToEnum([
-	"invalid_bit_length",
+	"invalid_n_length",
 	"invalid_date",
 	"invalid_key_type",
 	"invalid_luxon_date",
@@ -78,8 +78,8 @@ export interface TooBigIssue {
 	type: "array" | "number" | "bigint" | "arguments";
 }
 
-export interface InvalidBitLengthIssue {
-	code: typeof IssueCode.invalid_bit_length;
+export interface InvalidNLengthIssue {
+	code: typeof IssueCode.invalid_n_length;
 	maximum: number;
 	exact?: boolean;
 	received: number;
@@ -99,7 +99,7 @@ export interface NotWholeIssue {
 }
 
 export type IssueWithoutMessage =
-	| InvalidBitLengthIssue
+	| InvalidNLengthIssue
 	| InvalidDateIssue
 	| InvalidKeyTypeIssue
 	| InvalidLuxonDateIssue

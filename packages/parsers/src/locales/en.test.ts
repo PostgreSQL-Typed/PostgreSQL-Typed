@@ -3,10 +3,10 @@ import { describe, expect, test } from "vitest";
 import errorMap from "./en";
 
 describe("locales/en", () => {
-	test("IssueCode.invalid_bit_length", () => {
+	test("IssueCode.invalid_n_length", () => {
 		expect(() =>
 			errorMap({
-				code: "invalid_bit_length",
+				code: "invalid_n_length",
 				maximum: 10,
 				received: 11,
 			})

@@ -2,7 +2,7 @@
 	Bit
 </h1>
 <p align="center">
-  The <code>Bit</code> parser is used to represet the <a href="https://www.postgresql.org/docs/8.1/datatype-bit.html"><code>bit</code></a> and <a href="https://www.postgresql.org/docs/8.1/datatype-bit.html"><code>_bit</code></a> types.
+  The <code>Bit</code> parser is used to represet the <a href="https://www.postgresql.org/docs/current/datatype-bit.html"><code>bit</code></a> and <a href="https://www.postgresql.org/docs/current/datatype-bit.html"><code>_bit</code></a> types.
 </p>
 <br/>
 
@@ -55,7 +55,7 @@ bit1.bit; // "1"
 //* It has a `toString()` method that returns a string representation of the Bit:
 bit1.toString(); // "1"
 
-//* It has a `toBigNumber()` method that returns a big number representation of the Bit:
+//* It has a `toNumber()` method that returns a big number representation of the Bit:
 bit1.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the Bit:

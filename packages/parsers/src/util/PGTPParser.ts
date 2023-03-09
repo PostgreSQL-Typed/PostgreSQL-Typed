@@ -1,6 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import type { BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
+import type { CharacterConstructor } from "../data/Character/Character.js";
+import type { CharacterVaryingConstructor } from "../data/Character/CharacterVarying.js";
 import type { DateConstructor } from "../data/DateTime/Date.js";
 import type { DateMultiRangeConstructor } from "../data/DateTime/DateMultiRange.js";
 import type { DateRangeConstructor } from "../data/DateTime/DateRange.js";
@@ -38,6 +40,8 @@ import type { ObjectFunction } from "../types/ObjectFunction.js";
 type Parsers =
 	| BitConstructor<number>
 	| BitVaryingConstructor<number>
+	| CharacterConstructor<number>
+	| CharacterVaryingConstructor<number>
 	| DateConstructor
 	| DateMultiRangeConstructor
 	| DateRangeConstructor

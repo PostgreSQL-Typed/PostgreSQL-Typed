@@ -298,7 +298,7 @@ describe("PostgreSQL", () => {
 		try {
 			await client.query(`
 				CREATE TABLE IF NOT EXISTS public.vitestchar (
-					char char NULL,
+					char "char" NULL,
 					_char _char NULL,
 					bpchar bpchar NULL,
 					_bpchar _bpchar NULL

@@ -21,7 +21,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._bool]: "boolean[]",
+				[OID._bool]: [
+					"Boolean[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Boolean",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._box]: [
 					"Box[]",
 					[
@@ -524,7 +534,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID.bool]: "boolean",
+				[OID.bool]: [
+					"Boolean",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Boolean",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.box]: [
 					"Box",
 					[

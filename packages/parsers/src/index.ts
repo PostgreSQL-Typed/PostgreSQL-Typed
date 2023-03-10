@@ -3,6 +3,8 @@ import "source-map-support/register";
 //* BitString
 export * from "./data/BitString/Bit.js";
 export * from "./data/BitString/BitVarying.js";
+//* Boolean
+export * from "./data/Boolean/Boolean.js";
 //* Character
 export * from "./data/Character/Character.js";
 export * from "./data/Character/CharacterVarying.js";

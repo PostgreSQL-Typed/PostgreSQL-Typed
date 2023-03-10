@@ -2,6 +2,8 @@
 //* BitString
 import type { BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
+//* Boolean
+import type { BooleanConstructor } from "../data/Boolean/Boolean.js";
 //* Character
 import type { CharacterConstructor } from "../data/Character/Character.js";
 import type { CharacterVaryingConstructor } from "../data/Character/CharacterVarying.js";
@@ -54,6 +56,8 @@ type Parsers =
 	//* BitString
 	| BitConstructor<number>
 	| BitVaryingConstructor<number>
+	//* Boolean
+	| BooleanConstructor
 	//* Character
 	| CharacterConstructor<number>
 	| CharacterVaryingConstructor<number>

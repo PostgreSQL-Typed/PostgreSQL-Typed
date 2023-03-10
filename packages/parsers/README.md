@@ -69,6 +69,15 @@ pnpm i @postgresql-typed/parsers
           <code>varbit</code><br/>
         </td>
       </tr>
+      <!-- Boolean -->
+      <tr>
+        <td>
+          <a href="./docs/Boolean/Boolean.md">Boolean</a>
+        </td>
+        <td>
+          <code>bool</code><br/>
+        </td>
+      </tr>
       <!--- Character -->
       <tr>
         <td>

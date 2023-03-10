@@ -20,7 +20,16 @@ export const DefaultParserMapping = {
 						},
 					],
 				],
-				[OID._bool]: "'unknown', true",
+				[OID._bool]: [
+					"Boolean, true",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Boolean",
+							type: "named",
+						},
+					],
+				],
 				[OID._box]: [
 					"Box, true",
 					[
@@ -482,7 +491,16 @@ export const DefaultParserMapping = {
 						},
 					],
 				],
-				[OID.bool]: "'unknown'",
+				[OID.bool]: [
+					"Boolean",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Boolean",
+							type: "named",
+						},
+					],
+				],
 				[OID.box]: [
 					"Box",
 					[

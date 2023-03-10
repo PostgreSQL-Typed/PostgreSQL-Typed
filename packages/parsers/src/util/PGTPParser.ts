@@ -44,6 +44,8 @@ import type { Int4RangeConstructor } from "../data/Numeric/Int4Range.js";
 import type { Int8Constructor } from "../data/Numeric/Int8.js";
 import type { Int8MultiRangeConstructor } from "../data/Numeric/Int8MultiRange.js";
 import type { Int8RangeConstructor } from "../data/Numeric/Int8Range.js";
+//* ObjectIdentifier
+import type { OIDConstructor } from "../data/ObjectIdentifier/OID.js";
 //* UUID
 import type { UUIDConstructor } from "../data/UUID/UUID.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
@@ -94,6 +96,8 @@ type Parsers =
 	| Int8Constructor
 	| Int8MultiRangeConstructor
 	| Int8RangeConstructor
+	//* ObjectIdentifier
+	| OIDConstructor
 	//* UUID
 	| UUIDConstructor
 	| ObjectFunction<any>;

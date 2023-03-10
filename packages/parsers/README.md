@@ -133,6 +133,15 @@ pnpm i @postgresql-typed/parsers
           <code>int8</code><br/>
         </td>
       </tr>
+      <!-- OID -->
+      <tr>
+        <td>
+          <a href="./docs/ObjectIdentifier/OID.md">OID</a>
+        </td>
+        <td>
+          <code>oid</code><br/>
+        </td>
+      </tr>
       <!-- UUID -->
       <tr>
         <td>

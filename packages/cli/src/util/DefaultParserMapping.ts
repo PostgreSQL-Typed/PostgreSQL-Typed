@@ -273,7 +273,16 @@ export const DefaultParserMapping = {
 				[OID._numeric]: "'unknown', true",
 				[OID._nummultirange]: "'unknown', true",
 				[OID._numrange]: "'unknown', true",
-				[OID._oid]: "'unknown', true",
+				[OID._oid]: [
+					"OID, true",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OID",
+							type: "named",
+						},
+					],
+				],
 				[OID._oidvector]: "'unknown', true",
 				[OID._path]: [
 					"Path, true",
@@ -742,7 +751,16 @@ export const DefaultParserMapping = {
 				[OID.numeric]: "'unknown'",
 				[OID.nummultirange]: "'unknown'",
 				[OID.numrange]: "'unknown'",
-				[OID.oid]: "'unknown'",
+				[OID.oid]: [
+					"OID",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OID",
+							type: "named",
+						},
+					],
+				],
 				[OID.oidvector]: "'unknown'",
 				[OID.opaque]: "'unknown'",
 				[OID.path]: [

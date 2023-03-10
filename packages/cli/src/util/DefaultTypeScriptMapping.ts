@@ -298,7 +298,17 @@ export const DefaultTypeScriptMapping = {
 				[OID._numeric]: "number[]",
 				[OID._nummultirange]: "unknown[]",
 				[OID._numrange]: "unknown[]",
-				[OID._oid]: "number[]",
+				[OID._oid]: [
+					"OID[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OID",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._oidvector]: "unknown[]",
 				[OID._path]: [
 					"Path[]",
@@ -808,7 +818,17 @@ export const DefaultTypeScriptMapping = {
 				[OID.numeric]: "number",
 				[OID.nummultirange]: "unknown",
 				[OID.numrange]: "unknown",
-				[OID.oid]: "number",
+				[OID.oid]: [
+					"OID",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OID",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.oidvector]: "unknown",
 				[OID.opaque]: "unknown",
 				[OID.path]: [

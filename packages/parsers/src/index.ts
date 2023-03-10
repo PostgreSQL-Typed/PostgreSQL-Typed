@@ -45,6 +45,8 @@ export * from "./data/Numeric/Int4Range.js";
 export * from "./data/Numeric/Int8.js";
 export * from "./data/Numeric/Int8MultiRange.js";
 export * from "./data/Numeric/Int8Range.js";
+//* ObjectIdentifier
+export * from "./data/ObjectIdentifier/OID.js";
 //* UUID
 export * from "./data/UUID/UUID.js";
 

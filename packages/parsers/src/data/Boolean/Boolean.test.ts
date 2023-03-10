@@ -226,6 +226,7 @@ describe("Boolean", () => {
 	test("toNumber()", () => {
 		const boolean = Boolean.from(1);
 		expect(boolean.toNumber()).toEqual(1);
+		expect(Boolean.from(0).toNumber()).toEqual(0);
 	});
 
 	test("toBoolean()", () => {

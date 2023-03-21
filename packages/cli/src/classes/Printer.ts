@@ -263,7 +263,7 @@ export class Printer {
 			);
 
 		return {
-			type: "debug",
+			type: "debug" as const,
 			date: `${this.pad(now.getFullYear(), 4)}-${this.pad(now.getMonth() + 1, 2)}-${this.pad(now.getDate(), 2)}`,
 			time: `${this.pad(now.getHours(), 2)}-${this.pad(now.getMinutes(), 2)}-${this.pad(now.getSeconds(), 2)}.${this.pad(now.getMilliseconds(), 3)}`,
 			timestamp: `${this.pad(now.getFullYear(), 4)}-${this.pad(now.getMonth() + 1, 2)}-${this.pad(now.getDate(), 2)}_${this.pad(now.getHours(), 2)}-${this.pad(

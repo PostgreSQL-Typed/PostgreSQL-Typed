@@ -13,5 +13,7 @@ export interface Attribute {
 	has_default: boolean;
 	default: string | null;
 	comment: string | null;
-	character_maximum_length: number | null;
+	max_length: number | null;
+	precision: number | null;
+	scale: number | null;
 }

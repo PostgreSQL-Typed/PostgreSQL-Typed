@@ -29,6 +29,19 @@ export function getTemplateValues(id: TypeId): any {
 			return { TYPE_NAME: id.name };
 		case "domain_data":
 			return { TYPE_NAME: id.name };
+		case "debug":
+			return {
+				DATE: id.date,
+				TIME: id.time,
+				TIMESTAMP: id.timestamp,
+				YEAR: id.year,
+				MONTH: id.month,
+				DAY: id.day,
+				HOUR: id.hour,
+				MINUTE: id.minute,
+				SECOND: id.second,
+				MILLISECOND: id.millisecond,
+			};
 		case "re_export":
 			return getTemplateValues(id.of);
 	}

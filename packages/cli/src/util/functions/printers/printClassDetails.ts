@@ -232,7 +232,7 @@ function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Pri
 		}
 	}
 
-	return printer.getTypeScriptType(attribute.type_id, file, attribute.character_maximum_length ?? undefined);
+	return printer.getTypeScriptType(attribute.type_id, file, attribute.max_length ?? undefined);
 }
 
 function optionalOnInsert(attribute: Attribute): string {
@@ -278,7 +278,7 @@ function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Pr
 		}
 	}
 
-	return printer.getParserType(attribute.type_id, file, attribute.character_maximum_length ?? undefined);
+	return printer.getParserType(attribute.type_id, file, attribute.max_length ?? undefined);
 }
 
 function nullable(attribute: Attribute): string {

@@ -5,7 +5,13 @@ import type { Table } from "../../../types/interfaces/Table.js";
 
 export async function getTables(client: Client, config: Config, databaseName: string): Promise<Table[]> {
 	const { rows } = await client.query<Table>(`
-			SELECT t.table_schema as schema_name, pn.oid as schema_id, t.table_name, psut.relid as table_id FROM information_schema.tables t
+			SELECT
+				t.table_schema as schema_name,
+				pn.oid as schema_id,
+				t.table_name,
+				psut.relid as table_id,
+				pg_total_relation_size(psut.relid) AS "size"
+			FROM information_schema.tables t
 			JOIN pg_catalog.pg_statio_user_tables psut
 			ON t.table_name = psut.relname AND t.table_schema = psut.schemaname
 			JOIN pg_catalog.pg_namespace pn

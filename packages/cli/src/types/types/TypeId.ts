@@ -39,6 +39,19 @@ export type TypeId =
 	| { type: "domain_data"; name: string }
 	| { type: "enum"; name: string; databaseName: string }
 	| {
+			type: "debug";
+			date: string;
+			time: string;
+			timestamp: string;
+			year: string;
+			month: string;
+			day: string;
+			hour: string;
+			minute: string;
+			second: string;
+			millisecond: string;
+	  }
+	| {
 			type: "re_export";
 			of:
 				| {

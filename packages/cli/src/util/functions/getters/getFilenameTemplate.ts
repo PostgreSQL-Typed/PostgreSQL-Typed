@@ -17,6 +17,7 @@ export function getFilenameTemplate(config: Config, id: TypeId): string {
 		enumFileName,
 		domainFileName,
 		domainDataFileName,
+		debugFileName,
 	} = config.types;
 
 	switch (id.type) {
@@ -48,11 +49,13 @@ export function getFilenameTemplate(config: Config, id: TypeId): string {
 			return formatFileType(domainFileName);
 		case "domain_data":
 			return formatFileType(domainDataFileName);
+		case "debug":
+			return formatFileType(debugFileName, "json");
 		case "re_export":
 			return getFilenameTemplate(config, id.of);
 	}
 }
 
-function formatFileType(fileName: string) {
-	return fileName.endsWith(".ts") ? fileName : `${fileName}.ts`;
+function formatFileType(fileName: string, extension = "ts") {
+	return fileName.endsWith(`.${extension}`) ? fileName : `${fileName}.${extension}`;
 }

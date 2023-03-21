@@ -31,6 +31,8 @@ export function getExportNameTemplate(config: Config, id: TypeId): string {
 			return config.types.domainTypeName;
 		case "domain_data":
 			return config.types.domainDataTypeName;
+		case "debug":
+			return "";
 		case "re_export":
 			return getExportNameTemplate(config, id.of);
 	}

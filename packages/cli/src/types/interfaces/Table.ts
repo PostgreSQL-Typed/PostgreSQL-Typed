@@ -3,4 +3,5 @@ export interface Table {
 	schema_id: number;
 	table_name: string;
 	table_id: number;
+	size: string;
 }

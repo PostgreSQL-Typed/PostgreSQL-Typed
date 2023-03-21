@@ -4,12 +4,13 @@ import { join } from "node:path";
 
 import { cosmiconfig } from "cosmiconfig";
 import { TypeScriptLoader } from "cosmiconfig-typescript-loader";
+import debug from "debug";
 
 import type { Config } from "../types/interfaces/Config.js";
 import { DEFAULT_CONFIG, zConfig } from "../types/interfaces/Config.js";
 import type { Connection } from "../types/interfaces/Connection.js";
 import { g, r, y } from "../util/chalk.js";
-import { LOGGER, MODULE_NAME } from "../util/constants.js";
+import { GLOBAL_DEBUG_GLOB, LOGGER, MODULE_NAME } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile.js";
 
@@ -37,7 +38,7 @@ export class ConfigHandler {
 	});
 
 	public async loadConfig(): Promise<this> {
-		this.LOGGER("loadConfig");
+		this.LOGGER("Loading config file...");
 		const config = await this.cosmi.search();
 		if (!config || config.isEmpty) {
 			this.LOGGER("No config file found");
@@ -62,11 +63,15 @@ export class ConfigHandler {
 
 		this.config = parseResult.data;
 		this.filepath = config.filepath;
+		if (this.config.types.debug) {
+			debug.enable(GLOBAL_DEBUG_GLOB);
+			this.LOGGER("Debug mode enabled at a later point, to enable it earlier, use the --debug flag");
+		}
 		return this;
 	}
 
 	public async initConfig(): Promise<0 | 1> {
-		this.LOGGER("initConfig");
+		this.LOGGER("Initializing config file...");
 		const config = await this.cosmi.search();
 		if (config && !config.isEmpty) {
 			this.LOGGER("Config file already exists");
@@ -87,8 +92,15 @@ export class ConfigHandler {
 	}
 
 	get connections(): (string | Connection)[] {
-		const environmentVariable = process.env[this.config.connectionStringEnvironmentVariable];
-		if (environmentVariable) return [environmentVariable];
+		const environmentVariable = Object.keys(process.env)
+			.filter(key => {
+				if (key === this.config.connectionStringEnvironmentVariable) return true;
+				const regex = new RegExp(`^${this.config.connectionStringEnvironmentVariable}_\\d+$`);
+				return regex.test(key);
+			})
+			.map(key => process.env[key])
+			.filter((value): value is string => typeof value === "string");
+		if (environmentVariable.length > 0) return environmentVariable;
 		if (Array.isArray(this.config.connections)) return this.config.connections;
 		return [this.config.connections];
 	}

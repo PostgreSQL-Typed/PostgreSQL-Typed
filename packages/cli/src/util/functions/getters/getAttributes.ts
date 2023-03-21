@@ -17,7 +17,7 @@ export async function getAttributes(
 
 	const { rows: attributes } = await client.query<Attribute>(`
     SELECT
-      current_database() as "database_name",
+      current_database() AS "database_name",
       ns.oid AS "schema_id",
       ns.nspname AS "schema_name",
       cls.oid AS "class_id",
@@ -30,8 +30,16 @@ export async function getAttributes(
       col_description(a.attrelid, a.attnum) AS "comment",
       a.atttypid AS "type_id",
       a.atttypmod AS "type_length",
-      format_type(a.atttypid, a.atttypmod) as "type_name",
-      clmns.character_maximum_length
+      format_type(a.atttypid, a.atttypmod) AS "type_name",
+      clmns.character_maximum_length AS "max_length",
+      clmns.numeric_precision AS "precision",
+      CASE
+        WHEN clmns.numeric_scale <= 1000
+          THEN clmns.numeric_scale
+        WHEN clmns.numeric_scale > 1000
+          THEN (-(2048 - clmns.numeric_scale))
+        ELSE null
+      END AS scale
     FROM pg_catalog.pg_attribute a
     INNER JOIN pg_catalog.pg_class cls
       ON (a.attrelid = cls.oid)

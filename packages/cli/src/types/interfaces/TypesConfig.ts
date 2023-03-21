@@ -17,6 +17,28 @@ export interface TypesConfig {
 	debug: boolean;
 
 	/**
+	 * What should the debug file be called
+	 *
+	 * You may use the following placeholders:
+	 * - `DATE`: The current date (YYYY-MM-DD)
+	 * - `TIME`: The current time (HH:MM:SS.sss)
+	 * - `TIMESTAMP`: The current timestamp (YYYY-MM-DD_HH:MM:SS.sss)
+	 * - `YEAR`: The current year (YYYY)
+	 * - `MONTH`: The current month (MM)
+	 * - `DAY`: The current day (DD)
+	 * - `HOUR`: The current hour (HH)
+	 * - `MINUTE`: The current minute (MM)
+	 * - `SECOND`: The current second (SS)
+	 * - `MILLISECOND`: The current millisecond (sss)
+	 *
+	 * Note: The timestamp is in UTC time
+	 * Note: .json is automatically appended to the end of the path (unless you include it yourself)
+	 *
+	 * @default "debug_{{ TIMESTAMP }}.json"
+	 */
+	debugFileName: string;
+
+	/**
 	 * What should custom types be called in the generated code
 	 *
 	 * You may use the following placeholders:
@@ -536,6 +558,7 @@ export interface TypesConfig {
 export const zTypesConfig = z.object({
 	directory: z.string().default("__generated__"),
 	debug: z.boolean().default(false),
+	debugFileName: z.string().default("debug_{{ TIMESTAMP }}.json"),
 	domainTypeName: z.string().default("{{ TYPE_NAME | pascal-case }}"),
 	domainFileName: z.string().default("_custom_types.ts"),
 	domainDataTypeName: z.string().default("{{ TYPE_NAME | pascal-case }}_Data"),

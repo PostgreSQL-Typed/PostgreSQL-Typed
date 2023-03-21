@@ -3,6 +3,7 @@ import clCommands from "command-line-commands";
 import debug from "debug";
 
 import { Debug } from "../commands/Debug.js";
+import { DebugOnly } from "../commands/DebugOnly.js";
 import { commands, DEFAULT_COMMAND, globalArugments, priorityArguments } from "../commands/index.js";
 import type { Argument } from "../types/interfaces/Argument.js";
 import type { Command } from "../types/interfaces/Command.js";
@@ -16,7 +17,7 @@ export class CommandsHandler {
 	constructor() {
 		let arguments_ = process.argv.slice(2);
 
-		if (arguments_.includes(`--${Debug.name}`)) debug.enable(GLOBAL_DEBUG_GLOB);
+		if (arguments_.includes(`--${Debug.name}`) || arguments_.includes(`--${DebugOnly.name}`)) debug.enable(GLOBAL_DEBUG_GLOB);
 
 		if (arguments_.length > 0 && !arguments_[0].includes("-")) {
 			try {

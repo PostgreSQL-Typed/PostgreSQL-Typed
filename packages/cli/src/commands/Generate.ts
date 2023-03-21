@@ -1,4 +1,3 @@
-import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 import { ConfigHandler } from "../classes/ConfigHandler.js";
@@ -7,14 +6,16 @@ import { Printer } from "../classes/Printer.js";
 import { ProgressBar } from "../classes/ProgressBar.js";
 import type { Command } from "../types/interfaces/Command.js";
 import { g, I, y } from "../util/chalk.js";
-import { MODULE_NAME } from "../util/constants.js";
+import { LOGGER, MODULE_NAME } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Generate: Command = {
 	name: "generate",
 	description: "Generates the types",
 	arguments: [],
-	run: async () => {
+	run: async (arguments_: Record<string, any>) => {
+		const log = LOGGER.extend("Command").extend("Generate");
+		log("Running command...");
 		const configHandler = await new ConfigHandler().loadConfig(),
 			{ connections, filepath, config } = configHandler,
 			//fetches * steps in fetcher + steps in printer
@@ -39,6 +40,7 @@ export const Generate: Command = {
 		let promises: Promise<void>[] = [];
 		const fetchers: Fetcher[] = [];
 
+		log("Connecting to database(s)...");
 		for (const connection of connections) {
 			const fetcher = new Fetcher(config, progressBar, connection);
 			fetchers.push(fetcher);
@@ -47,35 +49,42 @@ export const Generate: Command = {
 
 		await Promise.all(promises);
 		promises = [];
+		log("Connected to database(s)!");
 
 		progressBar.startProgress();
 
-		for (const fetcher of fetchers) promises.push(fetcher.fetch());
-
-		await Promise.all(promises);
-		promises = [];
-
-		// For debugging purposes
-		// Write the fetched data to a file
-		writeFileSync(
-			"fetchedData.json",
-			JSON.stringify(
-				fetchers.map(f => f.fetchedData),
-				null,
-				4
-			)
-		);
+		log("Fetching data...");
+		log("Fetching tables...");
+		progressBar.setStep(0);
+		await Promise.all(fetchers.map(f => f.fetchTables()));
+		log("Fetching data types...");
+		progressBar.setStep(1);
+		await Promise.all(fetchers.map(f => f.fetchDataTypes()));
+		log("Fetching classes...");
+		progressBar.setStep(2);
+		await Promise.all(fetchers.map(f => f.fetchClasses()));
+		log("Fetching attributes...");
+		progressBar.setStep(3);
+		await Promise.all(fetchers.map(f => f.fetchAttributes()));
+		log("Fetching constraints...");
+		progressBar.setStep(4);
+		await Promise.all(fetchers.map(f => f.fetchConstraints()));
+		log("Fetched data!");
 
 		progressBar.setStep(5);
 		const printer = new Printer(
 			config,
-			fetchers.map(f => f.fetchedData)
+			fetchers.map(f => f.fetchedData),
+			arguments_
 		);
 
+		log("Printing types...");
 		progressBar.setProgressLine1(g("Generating types"));
 		await printer.print();
+		log("Printed types!");
 		progressBar.incrementProgress();
 
+		log("Disconnecting from database(s)...");
 		progressBar.setProgressLine1(g("Finalizing"));
 
 		for (const fetcher of fetchers) promises.push(fetcher.disconnect());
@@ -83,6 +92,7 @@ export const Generate: Command = {
 		await Promise.all(promises);
 		promises = [];
 
+		log("Disconnected from database(s)!");
 		progressBar.stop();
 
 		// eslint-disable-next-line no-console

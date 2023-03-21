@@ -138,6 +138,7 @@ export class ProgressBar {
 		const frameString = this.frameProgress();
 
 		if (!this.stream.isTTY) return this;
+		if (isDebugEnabled()) return this;
 
 		if (this.lastProgressString !== frameString) {
 			this.updateETA();

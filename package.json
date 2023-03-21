@@ -42,7 +42,7 @@
 	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
 		"@recodive/configs": "^1.1.0",
-		"@recodive/eslint-config": "^1.2.0",
+		"@recodive/eslint-config": "^1.2.1",
 		"@rushstack/eslint-patch": "^1.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.50.0",
 		"@typescript-eslint/parser": "^5.50.0",

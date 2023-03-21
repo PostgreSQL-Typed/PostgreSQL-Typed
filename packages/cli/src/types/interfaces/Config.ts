@@ -12,6 +12,8 @@ export interface Config {
 	 *
 	 * Note that if the enviroment variable is set, the `connections` option is ignored.
 	 *
+	 * If you want to connect to multiple databases, you can use the same environment variable with a "_1" suffix for the second database, "_2" for the third database, etc.
+	 *
 	 * @default "DATABASE_URL"
 	 */
 	connectionStringEnvironmentVariable: string;

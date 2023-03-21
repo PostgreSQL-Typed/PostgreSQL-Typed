@@ -37,7 +37,7 @@ const CONFIG_HEADER = `/**
  * For a detailed explanation regarding each configuration property, and the default values, see the README.md file.
  */
 
-/** @type {import('${NAME.toLowerCase()}/lib/types/types/ConfigFile').ConfigFile} */
+/** @type {import('${NAME.toLowerCase()}').ConfigFile} */
 module.exports = {
 `,
 	CONFIG_FOOTER = "};";

@@ -7,7 +7,9 @@
 		"usernamehw.errorlens",
 		"atlassian.atlascode",
 		"aaron-bond.better-comments",
-		"eamodio.gitlens"
+		"eamodio.gitlens",
+		"Vue.volar",
+		"Vue.vscode-typescript-vue-plugin"
 	],
 	"unwantedRecommendations": ["ms-vscode.vscode-typescript-tslint-plugin"]
 }

@@ -21,4 +21,5 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
+  "unocss.root": "packages/ui"
 }

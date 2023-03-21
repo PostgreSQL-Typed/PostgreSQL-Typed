@@ -26,9 +26,14 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/cli'
+  "UI":
+    name: '@PostgreSQL-Typed/UI'
+    uses: ./.github/workflows/package.yml
+    with:
+      package: '@postgresql-typed/ui'
   coverage:
     name: Coverage
-    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, Parsers, CLI]
+    needs: [PostgreSQL-Typed, PostgreSQL-Caching, OIDs, Parsers, CLI, UI]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

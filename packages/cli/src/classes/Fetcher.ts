@@ -2,6 +2,7 @@
 import pg from "pg";
 
 import type { ProgressBar } from "../classes/ProgressBar.js";
+import { GenerateArguments } from "../commands/Generate.js";
 import { ClassKind } from "../types/enums/ClassKind.js";
 import type { Attribute } from "../types/interfaces/Attribute.js";
 import type { Class } from "../types/interfaces/Class.js";
@@ -30,7 +31,12 @@ export class Fetcher {
 	private attributes: Attribute[] = [];
 	private constraints: Constraint[] = [];
 	private LOGGER = LOGGER.extend("Fetcher");
-	constructor(private readonly config: Config, private readonly progressBar: ProgressBar, private readonly connection: string | Connection) {
+	constructor(
+		private readonly config: Config,
+		private readonly progressBar: ProgressBar,
+		private readonly connection: string | Connection,
+		private readonly generatorConfig?: GenerateArguments<boolean>
+	) {
 		this.client = new pg.Client({
 			connectionString: this.formatted_connection_string,
 			ssl: { rejectUnauthorized: false },
@@ -41,17 +47,20 @@ export class Fetcher {
 		try {
 			await this.client.connect();
 			await this.setDatabaseName();
-		} catch (error) {
+		} catch {
 			this.progressBar.stop();
-			console.log(
-				error,
-				getConsoleHeader(
-					r("Could not connect to database!"),
-					"Please check your connection settings.",
-					false,
-					`Used connection string: ${this.formatted_connection_string}`
-				)
-			);
+			if (this.generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not connect to database!"),
+						"Please check your connection settings.",
+						false,
+						`Used connection string: ${this.formatted_connection_string}`
+					)
+				);
+			}
+
+			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not connect to database!");
 			process.exit(1);
 		}
 	}
@@ -85,14 +94,17 @@ export class Fetcher {
 		this.LOGGER("Fetched %d tables", tables.length);
 		if (tables.length === 0) {
 			this.progressBar.stop();
-			console.log(
-				getConsoleHeader(
-					r("Could not fetch any tables!"),
-					"Please check your schemas/tables settings.",
-					false,
-					`Used connection string: ${this.formatted_connection_string}`
-				)
-			);
+			if (this.generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not fetch any tables!"),
+						"Please check your schemas/tables settings.",
+						false,
+						`Used connection string: ${this.formatted_connection_string}`
+					)
+				);
+			}
+			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any tables!");
 			process.exit(1);
 		}
 		this.tables = tables;
@@ -105,14 +117,17 @@ export class Fetcher {
 		this.LOGGER("Fetched %d data types", types.length);
 		if (types.length === 0) {
 			this.progressBar.stop();
-			console.log(
-				getConsoleHeader(
-					r("Could not fetch any data types!"),
-					"Please check your schemas/tables settings.",
-					false,
-					`Used connection string: ${this.formatted_connection_string}`
-				)
-			);
+			if (this.generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not fetch any data types!"),
+						"Please check your schemas/tables settings.",
+						false,
+						`Used connection string: ${this.formatted_connection_string}`
+					)
+				);
+			}
+			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any data types!");
 			process.exit(1);
 		}
 		this.dataTypes = types;
@@ -128,14 +143,17 @@ export class Fetcher {
 		this.LOGGER("Fetched %d classes", classes.length);
 		if (classes.length === 0) {
 			this.progressBar.stop();
-			console.log(
-				getConsoleHeader(
-					r("Could not fetch any classes!"),
-					"Please check your schemas/tables settings.",
-					false,
-					`Used connection string: ${this.formatted_connection_string}`
-				)
-			);
+			if (this.generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not fetch any classes!"),
+						"Please check your schemas/tables settings.",
+						false,
+						`Used connection string: ${this.formatted_connection_string}`
+					)
+				);
+			}
+			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any classes!");
 			process.exit(1);
 		}
 		this.classes = classes;
@@ -151,14 +169,17 @@ export class Fetcher {
 		this.LOGGER("Fetched %d attributes", attributes.length);
 		if (attributes.length === 0) {
 			this.progressBar.stop();
-			console.log(
-				getConsoleHeader(
-					r("Could not fetch any attributes!"),
-					"Please check your schemas/tables settings.",
-					false,
-					`Used connection string: ${this.formatted_connection_string}`
-				)
-			);
+			if (this.generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not fetch any attributes!"),
+						"Please check your schemas/tables settings.",
+						false,
+						`Used connection string: ${this.formatted_connection_string}`
+					)
+				);
+			}
+			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any attributes!");
 			process.exit(1);
 		}
 		this.attributes = attributes;

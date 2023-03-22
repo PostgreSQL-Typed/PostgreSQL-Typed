@@ -29,7 +29,7 @@ export interface Config {
 	 *
 	 * To set the connection string using environment variables, you need to set the `connectionStringEnvironmentVariable` to the name of the environment variable.
 	 * If you want to connect to multiple databases, you can use an array of connection strings or connection objects.
-	 * @default "postgres://postgres:postgres@localhost:5432/postgres"
+	 * @default "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
 	 */
 	connections: string | string[] | Connection | Connection[];
 
@@ -77,13 +77,17 @@ export interface Config {
 
 export const zConfig = z.object({
 	connectionStringEnvironmentVariable: z.string().default("DATABASE_URL"),
-	connections: z.string().or(z.array(z.string())).or(zConnection).or(z.array(zConnection)).default("postgres://postgres:postgres@localhost:5432/postgres"),
+	connections: z
+		.string()
+		.or(z.array(z.string()))
+		.or(zConnection)
+		.or(z.array(zConnection))
+		.default("postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"),
 	schemas: z.string().or(z.array(z.string())).or(z.number()).or(z.array(z.number())).default("*"),
 	tables: z.string().or(z.array(z.string())).or(z.number()).or(z.array(z.number())).default("*"),
 	types: zTypesConfig.default({}),
 });
 
 const cfg = (zConfig.safeParse({}) as unknown as { data: Config }).data;
-cfg.types = {} as TypesConfig;
 
 export const DEFAULT_CONFIG: Config = cfg;

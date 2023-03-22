@@ -6,6 +6,7 @@ import { cosmiconfig } from "cosmiconfig";
 import { TypeScriptLoader } from "cosmiconfig-typescript-loader";
 import debug from "debug";
 
+import { GenerateArguments } from "../commands/Generate.js";
 import type { Config } from "../types/interfaces/Config.js";
 import { DEFAULT_CONFIG, zConfig } from "../types/interfaces/Config.js";
 import type { Connection } from "../types/interfaces/Connection.js";
@@ -37,7 +38,7 @@ export class ConfigHandler {
 		},
 	});
 
-	public async loadConfig(): Promise<this> {
+	public async loadConfig(generatorConfig?: GenerateArguments<boolean>): Promise<this> {
 		this.LOGGER("Loading config file...");
 		const config = await this.cosmi.search();
 		if (!config || config.isEmpty) {
@@ -49,14 +50,18 @@ export class ConfigHandler {
 		if (!parseResult.success) {
 			this.LOGGER(`Config file is not valid ${JSON.stringify(parseResult.error.errors)}`);
 			const error = parseResult.error.errors[0];
-			console.log(
-				getConsoleHeader(
-					r("Could not parse configuration file, please check your syntax!"),
-					`Error message: ${error.message}`,
-					false,
-					`Error location: ${error.path.join(" -> ")}`
-				)
-			);
+			if (generatorConfig?.noConsoleLogs !== true) {
+				console.log(
+					getConsoleHeader(
+						r("Could not parse configuration file, please check your syntax!"),
+						`Error message: ${error.message}`,
+						false,
+						`Error location: ${error.path.join(" -> ")}`
+					)
+				);
+			}
+			if (generatorConfig?.throwOnError === true)
+				throw new Error(`Could not parse configuration file, please check your syntax! Error message: ${error.message}`);
 			process.exit(1);
 		}
 		this.LOGGER("Config file loaded");

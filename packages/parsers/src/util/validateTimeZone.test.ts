@@ -4,9 +4,9 @@ import { validateTimeZone } from "./validateTimeZone.js";
 
 describe("validateTimeZone", () => {
 	it("should return the offset minutes for valid timezones", () => {
-		expect(validateTimeZone("Asia/Tokyo")).toBe(540);
-		expect(validateTimeZone("America/New_York")).toBe(-300);
-		expect(validateTimeZone("Europe/London")).toBe(0);
+		expect(validateTimeZone("Asia/Seoul")).toBe(540);
+		expect(validateTimeZone("Pacific/Honolulu")).toBe(-600);
+		expect(validateTimeZone("Atlantic/Reykjavik")).toBe(0);
 		expect(validateTimeZone("JST")).toBe(540);
 		expect(validateTimeZone("EST")).toBe(-300);
 		expect(validateTimeZone("UTC")).toBe(0);

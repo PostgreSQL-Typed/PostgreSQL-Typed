@@ -30,7 +30,7 @@ export class Fetcher {
 	private classes: Class[] = [];
 	private attributes: Attribute[] = [];
 	private constraints: Constraint[] = [];
-	private LOGGER = LOGGER.extend("Fetcher");
+	private LOGGER = LOGGER?.extend("Fetcher");
 	constructor(
 		private readonly config: Config,
 		private readonly progressBar: ProgressBar,
@@ -60,7 +60,8 @@ export class Fetcher {
 				);
 			}
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not connect to database!");
+			if (this.generatorConfig?.throwOnError === true)
+				throw new Error(`Could not connect to database! Used connection string: ${this.formatted_connection_string}`);
 			process.exit(1);
 		}
 	}
@@ -72,8 +73,8 @@ export class Fetcher {
 			SELECT current_database();
 		`);
 		this.dbName = currentDatabase;
-		this.LOGGER = LOGGER.extend("Fetcher").extend(currentDatabase);
-		this.LOGGER("Connected to database: %s", currentDatabase);
+		this.LOGGER = LOGGER?.extend("Fetcher").extend(currentDatabase);
+		this.LOGGER?.("Connected to database: %s", currentDatabase);
 	}
 
 	private get formatted_connection_string(): string {
@@ -89,9 +90,9 @@ export class Fetcher {
 	}
 
 	async fetchTables(): Promise<void> {
-		this.LOGGER("Fetching tables...");
+		this.LOGGER?.("Fetching tables...");
 		const tables = await getTables(this.client, this.config, this.dbName);
-		this.LOGGER("Fetched %d tables", tables.length);
+		this.LOGGER?.("Fetched %d tables", tables.length);
 		if (tables.length === 0) {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
@@ -112,9 +113,9 @@ export class Fetcher {
 	}
 
 	async fetchDataTypes(): Promise<void> {
-		this.LOGGER("Fetching data types...");
+		this.LOGGER?.("Fetching data types...");
 		const types = await getDataTypes(this.client, this.schema_names);
-		this.LOGGER("Fetched %d data types", types.length);
+		this.LOGGER?.("Fetched %d data types", types.length);
 		if (types.length === 0) {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
@@ -135,12 +136,12 @@ export class Fetcher {
 	}
 
 	async fetchClasses(): Promise<void> {
-		this.LOGGER("Fetching classes...");
+		this.LOGGER?.("Fetching classes...");
 		const classes = await getClasses(this.client, {
 			schema_names: this.schema_names,
 			kind: [ClassKind.OrdinaryTable, ClassKind.View, ClassKind.MaterializedView],
 		});
-		this.LOGGER("Fetched %d classes", classes.length);
+		this.LOGGER?.("Fetched %d classes", classes.length);
 		if (classes.length === 0) {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
@@ -161,12 +162,12 @@ export class Fetcher {
 	}
 
 	async fetchAttributes(): Promise<void> {
-		this.LOGGER("Fetching attributes...");
+		this.LOGGER?.("Fetching attributes...");
 		const attributes = await getAttributes(this.client, {
 			schema_names: this.schema_names,
 			database_name: this.dbName,
 		});
-		this.LOGGER("Fetched %d attributes", attributes.length);
+		this.LOGGER?.("Fetched %d attributes", attributes.length);
 		if (attributes.length === 0) {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
@@ -187,9 +188,9 @@ export class Fetcher {
 	}
 
 	async fetchConstraints(): Promise<void> {
-		this.LOGGER("Fetching constraints...");
+		this.LOGGER?.("Fetching constraints...");
 		const constraints = await getConstraints(this.client, this.schema_names);
-		this.LOGGER("Fetched %d constraints", constraints.length);
+		this.LOGGER?.("Fetched %d constraints", constraints.length);
 		this.constraints = constraints;
 		this.progressBar.incrementProgress();
 	}
@@ -210,8 +211,8 @@ export class Fetcher {
 	}
 
 	public async disconnect(): Promise<void> {
-		this.LOGGER("Disconnecting from database...");
+		this.LOGGER?.("Disconnecting from database...");
 		await this.client.end();
-		this.LOGGER("Disconnected from database");
+		this.LOGGER?.("Disconnected from database");
 	}
 }

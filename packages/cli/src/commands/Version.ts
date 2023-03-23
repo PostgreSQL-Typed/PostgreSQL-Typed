@@ -7,7 +7,7 @@ export const Version: Argument = {
 	type: Boolean,
 	alias: "v",
 	run: () => {
-		LOGGER.extend("VersionArgument")("Printing version");
+		LOGGER?.extend("Argument").extend("Version")("Printing version");
 		// eslint-disable-next-line no-console
 		console.log(`v${VERSION}`);
 		process.exit(0);

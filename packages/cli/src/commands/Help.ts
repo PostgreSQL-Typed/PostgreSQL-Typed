@@ -15,16 +15,16 @@ export const Help: Argument = {
 	run: runner,
 };
 
-const LOGGER = logger.extend("HelpArgument");
+const LOGGER = logger?.extend("Argument").extend("Help");
 
 function runner(_: unknown, command?: Command) {
-	LOGGER("Running Help Argument");
+	LOGGER?.("Running Help Argument");
 	if (command) {
-		LOGGER(`Printing help for command ${command.name}`);
+		LOGGER?.(`Printing help for command ${command.name}`);
 		return commandHelp(command);
 	}
 
-	LOGGER("Printing help for all commands");
+	LOGGER?.("Printing help for all commands");
 	const sections: Section[] = [
 			{
 				content: getConsoleHeader(DESCRIPTION, `Usage: \`${MODULE_NAME} <command> [options ...]\``, true),

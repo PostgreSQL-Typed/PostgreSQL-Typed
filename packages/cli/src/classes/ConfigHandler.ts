@@ -18,7 +18,7 @@ import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile.js"
 export class ConfigHandler {
 	filepath: string | null = null;
 	config: Config = DEFAULT_CONFIG;
-	private LOGGER = LOGGER.extend("ConfigHandler");
+	private LOGGER = LOGGER?.extend("ConfigHandler");
 	private cosmi = cosmiconfig(MODULE_NAME, {
 		searchPlaces: [
 			"package.json",
@@ -39,16 +39,16 @@ export class ConfigHandler {
 	});
 
 	public async loadConfig(generatorConfig?: GenerateArguments<boolean>): Promise<this> {
-		this.LOGGER("Loading config file...");
+		this.LOGGER?.("Loading config file...");
 		const config = await this.cosmi.search();
 		if (!config || config.isEmpty) {
-			this.LOGGER("No config file found");
+			this.LOGGER?.("No config file found");
 			return this;
 		}
 
 		const parseResult = zConfig.safeParse(config.config);
 		if (!parseResult.success) {
-			this.LOGGER(`Config file is not valid ${JSON.stringify(parseResult.error.errors)}`);
+			this.LOGGER?.(`Config file is not valid ${JSON.stringify(parseResult.error.errors)}`);
 			const error = parseResult.error.errors[0];
 			if (generatorConfig?.noConsoleLogs !== true) {
 				console.log(
@@ -64,29 +64,29 @@ export class ConfigHandler {
 				throw new Error(`Could not parse configuration file, please check your syntax! Error message: ${error.message}`);
 			process.exit(1);
 		}
-		this.LOGGER("Config file loaded");
+		this.LOGGER?.("Config file loaded");
 
 		this.config = parseResult.data;
 		this.filepath = config.filepath;
 		if (this.config.types.debug) {
 			debug.enable(GLOBAL_DEBUG_GLOB);
-			this.LOGGER("Debug mode enabled at a later point, to enable it earlier, use the --debug flag");
+			this.LOGGER?.("Debug mode enabled at a later point, to enable it earlier, use the --debug flag");
 		}
 		return this;
 	}
 
 	public async initConfig(): Promise<0 | 1> {
-		this.LOGGER("Initializing config file...");
+		this.LOGGER?.("Initializing config file...");
 		const config = await this.cosmi.search();
 		if (config && !config.isEmpty) {
-			this.LOGGER("Config file already exists");
+			this.LOGGER?.("Config file already exists");
 			console.log(getConsoleHeader(y("A configuration file is already present, skipping initialization..."), `File location: ${config.filepath}`));
 			return 0;
 		}
 
 		try {
 			const location = config?.filepath ?? join(process.cwd(), `${MODULE_NAME}.config.js`);
-			this.LOGGER("Writing config file to", location);
+			this.LOGGER?.("Writing config file to", location);
 			writeFileSync(location, getNewConfigFile(DEFAULT_CONFIG));
 			console.log(getConsoleHeader(g("Successfully created configuration file!"), `File location: ${location}`));
 			return 0;

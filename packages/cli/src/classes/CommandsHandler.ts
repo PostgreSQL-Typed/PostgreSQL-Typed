@@ -12,7 +12,7 @@ import { GLOBAL_DEBUG_GLOB, LOGGER } from "../util/constants.js";
 export class CommandsHandler {
 	private selectedCommand: Command | Argument | undefined = undefined;
 	private parsedArguments: Record<string, any> = {};
-	private LOGGER = LOGGER.extend("CommandsHandler");
+	private LOGGER = LOGGER?.extend("CommandsHandler");
 
 	constructor() {
 		let arguments_ = process.argv.slice(2);
@@ -27,10 +27,10 @@ export class CommandsHandler {
 				);
 				this.selectedCommand = commands.find(c => c.name === parsedCommand.command);
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-				this.LOGGER(`Found command: ${this.selectedCommand!.name}`);
+				this.LOGGER?.(`Found command: ${this.selectedCommand!.name}`);
 				arguments_ = parsedCommand.argv;
 			} catch (error: any) {
-				this.LOGGER(error);
+				this.LOGGER?.(error);
 				if (error.name === "INVALID_COMMAND") {
 					this.selectedCommand = DEFAULT_COMMAND;
 					this.runCommand();
@@ -43,9 +43,9 @@ export class CommandsHandler {
 			this.parsedArguments = clArgs(globalArugments, {
 				argv: arguments_,
 			});
-			this.LOGGER(`Parsed global arguments: ${JSON.stringify(this.parsedArguments)}`);
+			this.LOGGER?.(`Parsed global arguments: ${JSON.stringify(this.parsedArguments)}`);
 		} catch (error: any) {
-			this.LOGGER(error);
+			this.LOGGER?.(error);
 			if (error.name === "UNKNOWN_OPTION" || error.name === "INVALID_VALUE" || error.name === "UNKNOWN_VALUE") {
 				this.selectedCommand = DEFAULT_COMMAND;
 				this.runCommand();
@@ -59,14 +59,14 @@ export class CommandsHandler {
 	private runCommand() {
 		for (const argument of Object.keys(this.parsedArguments)) {
 			if (priorityArguments.map(a => a.name).includes(argument)) {
-				this.LOGGER(`Found priority argument: ${argument}`);
+				this.LOGGER?.(`Found priority argument: ${argument}`);
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				return priorityArguments.find(a => a.name === argument)!.run(this.parsedArguments[argument], this.selectedCommand);
 			}
 		}
 
 		if (this.selectedCommand) {
-			this.LOGGER(`Running command: ${this.selectedCommand.name}`);
+			this.LOGGER?.(`Running command: ${this.selectedCommand.name}`);
 			this.selectedCommand.run(this.parsedArguments);
 		} else this.runArgument();
 	}
@@ -74,11 +74,11 @@ export class CommandsHandler {
 	private runArgument() {
 		for (const argument of globalArugments) {
 			if (argument.name in this.parsedArguments) {
-				this.LOGGER(`Found global argument: ${argument.name}`);
+				this.LOGGER?.(`Found global argument: ${argument.name}`);
 				return argument.run(this.parsedArguments[argument.name]);
 			}
 		}
-		this.LOGGER("No argument found... running default command");
+		this.LOGGER?.("No argument found... running default command");
 		return DEFAULT_COMMAND.run(this.parsedArguments);
 	}
 }

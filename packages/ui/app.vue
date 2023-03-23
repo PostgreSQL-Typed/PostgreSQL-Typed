@@ -1,12 +1,10 @@
 <script lang="ts" setup>
-	import ky from "ky";
 	import { Pane, Splitpanes } from "splitpanes";
-	import { dashboardVisible, initNavigation } from "@/composables/navigation";
-	import { setData } from "@/composables/data";
+	import { dashboardVisible } from "@/composables/navigation";
+	import { fetchData } from "@/composables/data";
 
 	onMounted(async () => {
-		setData(await ky("/fetchedData.json").json());
-		initNavigation();
+		fetchData();
 	});
 
 	const mainSizes = reactive([33, 67]);
@@ -26,18 +24,20 @@
 </script>
 
 <template>
-	<div h-screen w-screen overflow="hidden">
-		<Splitpanes @resized="onMainResized" @ready="resizeMain">
-			<Pane min-size="20" :size="mainSizes[0]">
-				<Navigation />
-			</Pane>
-			<Pane :size="mainSizes[1]">
-				<transition>
-					<Dashboard v-if="dashboardVisible" />
-					<TableDetails v-else />
-				</transition>
-			</Pane>
-		</Splitpanes>
-	</div>
-	<NoData />
+	<ClientOnly>
+		<div h-screen w-screen overflow="hidden">
+			<Splitpanes @resized="onMainResized" @ready="resizeMain">
+				<Pane min-size="20" :size="mainSizes[0]">
+					<Navigation />
+				</Pane>
+				<Pane :size="mainSizes[1]">
+					<transition>
+						<Dashboard v-if="dashboardVisible" />
+						<TableDetails v-else />
+					</transition>
+				</Pane>
+			</Splitpanes>
+		</div>
+		<NoData />
+	</ClientOnly>
 </template>

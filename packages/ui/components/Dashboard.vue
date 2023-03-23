@@ -19,7 +19,7 @@
 									<div v-if="!hasMultipleDatabases" text-4xl min-w-2em>
 										{{ activeDatabase }}
 									</div>
-									<Select v-model="activeDatabase" :options="databases">
+									<Select v-else v-model="activeDatabase" :options="databases">
 										<template #selected="{ item }">
 											<div text-4xl min-w-2em>
 												{{ item }}

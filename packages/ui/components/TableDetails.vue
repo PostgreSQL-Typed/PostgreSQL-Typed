@@ -1,10 +1,12 @@
 <script setup lang="ts">
 	import { activeTable, activeTableClass } from "@/composables/data";
 	import { getRelationGraph, type RelationGraph } from "@/composables/graph";
+	import { getERD } from "@/composables/diagram";
 	import { activeTableId } from "@/composables/navigation";
 	import { viewMode, type Params, activeDatabase } from "@/composables/navigation";
 
 	const graph = ref<RelationGraph>({ nodes: [], links: [] });
+	const erd = ref("");
 	const hasGraphBeenDisplayed = ref(false);
 	const hasDiagramBeenDisplayed = ref(false);
 	debouncedWatch(
@@ -12,6 +14,7 @@
 		async (c, o) => {
 			if (c && c !== o) {
 				graph.value = getRelationGraph();
+				erd.value = getERD();
 			}
 		},
 		{ debounce: 100, immediate: true }
@@ -25,6 +28,7 @@
 	onMounted(() => {
 		changeViewMode(viewMode.value);
 		graph.value = getRelationGraph();
+		erd.value = getERD();
 	});
 
 	const comment = computed(() => {
@@ -63,7 +67,7 @@
 				<ViewGraph :graph="graph" />
 			</div>
 			<div v-if="hasDiagramBeenDisplayed" v-show="viewMode === 'diagram'" flex-1>
-				<ViewDiagram />
+				<ViewDiagram :diagram="erd" />
 			</div>
 			<ViewEditor v-if="viewMode === 'editor'" @draft="onDraft" />
 			<ViewTable v-if="!viewMode" />

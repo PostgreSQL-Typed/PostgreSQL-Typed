@@ -18,15 +18,15 @@ export interface GenerateArguments<ReturnDebug extends boolean> {
 }
 
 export const Generate = {
-	name: "generate",
+	name: "gen",
 	description: "Generates the types",
 	arguments: [],
 	run,
 } satisfies Command;
 
 async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<ReturnDebug>): Promise<ReturnDebug extends true ? FetchedData[] : void> {
-	const log = LOGGER.extend("Command").extend("Generate");
-	log("Running command...");
+	const log = LOGGER?.extend("Command").extend("Generate");
+	log?.("Running command...");
 	const configHandler = await new ConfigHandler().loadConfig(arguments_),
 		{ connections, filepath, config } = configHandler,
 		//fetches * steps in fetcher + steps in printer
@@ -51,7 +51,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	let promises: Promise<void>[] = [];
 	const fetchers: Fetcher[] = [];
 
-	log("Connecting to database(s)...");
+	log?.("Connecting to database(s)...");
 	for (const connection of connections) {
 		const fetcher = new Fetcher(config, progressBar, connection, arguments_);
 		fetchers.push(fetcher);
@@ -60,27 +60,27 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 
 	await Promise.all(promises);
 	promises = [];
-	log("Connected to database(s)!");
+	log?.("Connected to database(s)!");
 
 	if (arguments_.noConsoleLogs !== true) progressBar.startProgress();
 
-	log("Fetching data...");
-	log("Fetching tables...");
+	log?.("Fetching data...");
+	log?.("Fetching tables...");
 	progressBar.setStep(0);
 	await Promise.all(fetchers.map(f => f.fetchTables()));
-	log("Fetching data types...");
+	log?.("Fetching data types...");
 	progressBar.setStep(1);
 	await Promise.all(fetchers.map(f => f.fetchDataTypes()));
-	log("Fetching classes...");
+	log?.("Fetching classes...");
 	progressBar.setStep(2);
 	await Promise.all(fetchers.map(f => f.fetchClasses()));
-	log("Fetching attributes...");
+	log?.("Fetching attributes...");
 	progressBar.setStep(3);
 	await Promise.all(fetchers.map(f => f.fetchAttributes()));
-	log("Fetching constraints...");
+	log?.("Fetching constraints...");
 	progressBar.setStep(4);
 	await Promise.all(fetchers.map(f => f.fetchConstraints()));
-	log("Fetched data!");
+	log?.("Fetched data!");
 
 	progressBar.setStep(5);
 	const printer = new Printer(
@@ -89,13 +89,13 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 		arguments_
 	);
 
-	log("Printing types...");
+	log?.("Printing types...");
 	if (arguments_.noConsoleLogs !== true) progressBar.setProgressLine1(g("Generating types"));
 	await printer.print();
-	log("Printed types!");
+	log?.("Printed types!");
 	progressBar.incrementProgress();
 
-	log("Disconnecting from database(s)...");
+	log?.("Disconnecting from database(s)...");
 	if (arguments_.noConsoleLogs !== true) progressBar.setProgressLine1(g("Finalizing"));
 
 	for (const fetcher of fetchers) promises.push(fetcher.disconnect());
@@ -103,7 +103,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	await Promise.all(promises);
 	promises = [];
 
-	log("Disconnected from database(s)!");
+	log?.("Disconnected from database(s)!");
 	progressBar.stop();
 
 	if (arguments_.noConsoleLogs !== true) {

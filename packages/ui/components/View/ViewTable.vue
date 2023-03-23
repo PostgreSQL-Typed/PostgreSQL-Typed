@@ -1,5 +1,6 @@
 <script setup lang="ts">
-	import { activeTableClass, parseColumnComment } from "@/composables/data";
+	import { activeTableClass } from "@/composables/data";
+	import { parseColumnComment } from "@/util/functions";
 
 	const columns = computed((): Record<string, any>[] => {
 		return (activeTableClass.value?.attributes || []).map(attr => {

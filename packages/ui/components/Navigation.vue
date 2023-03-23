@@ -1,6 +1,6 @@
 <script setup lang="ts">
 	import { isDark, toggleDark } from "@/composables/dark";
-	import { tables } from "@/composables/data";
+	import { tables, fetchData } from "@/composables/data";
 	import { dashboardVisible, showDashboard, activeTableId } from "@/composables/navigation";
 	import type { Table } from "@postgresql-typed/cli/lib/types/interfaces/Table";
 
@@ -27,6 +27,7 @@
 					icon="i-carbon-dashboard"
 					@click="showDashboard(true)"
 				/>
+				<IconButton v-tooltip.bottom="'Refresh'" icon="i-carbon-renew" @click="fetchData()" />
 				<IconButton v-tooltip.bottom="`Toggle to ${toggleMode} mode`" icon="dark:i-carbon-moon i-carbon-sun" @click="toggleDark()" />
 			</div>
 		</template>

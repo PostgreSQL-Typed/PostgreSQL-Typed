@@ -6,8 +6,9 @@ import { Version } from "../commands/Version.js";
 import type { Argument } from "../types/interfaces/Argument.js";
 import type { Command } from "../types/interfaces/Command.js";
 import { DebugOnly } from "./DebugOnly.js";
+import { UI } from "./ui.js";
 
-export const commands: Command[] = [Init, Generate];
+export const commands: Command[] = [Init, Generate, UI];
 export const priorityArguments: Argument[] = [Version, Help];
 export const globalArugments: Argument[] = [...priorityArguments, Debug, DebugOnly];
 

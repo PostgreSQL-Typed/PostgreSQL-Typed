@@ -27,7 +27,7 @@ export class Printer {
 	public readonly classes: Map<number, ClassDetails>;
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
-	private LOGGER = LOGGER.extend("Printer");
+	private LOGGER = LOGGER?.extend("Printer");
 	constructor(public readonly config: Config, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
 		this.classes = new Map(
 			data
@@ -147,7 +147,7 @@ export class Printer {
 					.filter(fileName => !filenames.has(fileName));
 
 			if (directoryFilesToDelete.length > 0) {
-				this.LOGGER(`Deleting ${directoryFilesToDelete.length} files...`);
+				this.LOGGER?.(`Deleting ${directoryFilesToDelete.length} files...`);
 				await Promise.all(
 					directoryFilesToDelete.map(async fileName => {
 						const filePath = join(directory, fileName),
@@ -155,13 +155,13 @@ export class Printer {
 						if (file.isFile()) {
 							const source = await promises.readFile(filePath, "utf8");
 							if (source.includes(GENERATED_STATEMENT)) {
-								this.LOGGER(`Deleting: ${fileName}`);
+								this.LOGGER?.(`Deleting: ${fileName}`);
 								await promises.unlink(filePath);
 							}
 						}
 					})
 				);
-			} else this.LOGGER("No files to delete.");
+			} else this.LOGGER?.("No files to delete.");
 
 			await Promise.all(
 				files.map(async f => {
@@ -173,13 +173,13 @@ export class Printer {
 						try {
 							const existingSource = await promises.readFile(filename, "utf8");
 							if (existingSource.includes(checksum)) {
-								this.LOGGER(`Skipping: ${f.filename} (unchanged)`);
+								this.LOGGER?.(`Skipping: ${f.filename} (unchanged)`);
 								return;
 							}
-							this.LOGGER(`Updating: ${f.filename}`);
+							this.LOGGER?.(`Updating: ${f.filename}`);
 						} catch (error: any) {
 							if (error.code !== "ENOENT") throw error;
-							this.LOGGER(`Writing: ${f.filename}`);
+							this.LOGGER?.(`Writing: ${f.filename}`);
 						}
 
 						//* Double check nested folders exist
@@ -208,10 +208,10 @@ export class Printer {
 						try {
 							const existingSource = await promises.readFile(filename, "utf8");
 							if (existingSource === f.content) return;
-							this.LOGGER(`Updating: ${f.filename}`);
+							this.LOGGER?.(`Updating: ${f.filename}`);
 						} catch (error: any) {
 							if (error.code !== "ENOENT") throw error;
-							this.LOGGER(`Writing: ${f.filename}`);
+							this.LOGGER?.(`Writing: ${f.filename}`);
 						}
 
 						await promises.writeFile(filename, f.content);
@@ -221,10 +221,10 @@ export class Printer {
 		}
 
 		if (isDebugEnabled()) {
-			this.LOGGER("Writing debug file...");
+			this.LOGGER?.("Writing debug file...");
 			//* Get the Date in UTC
 			const debugFileName = resolveFilename(this.config, this.getDebugConfigType());
-			this.LOGGER(`Writing: ${debugFileName}`);
+			this.LOGGER?.(`Writing: ${debugFileName}`);
 			await promises.writeFile(join(directory, debugFileName), JSON.stringify(this.data, null, 4));
 		}
 	}

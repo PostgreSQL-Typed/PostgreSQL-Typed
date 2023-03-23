@@ -1,8 +1,33 @@
 import type { FetchedData } from "@postgresql-typed/cli/lib/types/interfaces/FetchedData";
+import ky, { HTTPError } from "ky";
 import prettyBytes from "pretty-bytes";
+import { defaultCardinality, defaultRelationship, parseColumnComment } from "@/util/functions";
 import { activeDatabase, activeTableId } from "./navigation";
 
-const data = ref<FetchedData[]>([]);
+export const data = ref<FetchedData[]>([]);
+const defaultError = "Check your terminal or make a new build with `pgt --ui`";
+export const errorMessage = ref(defaultError);
+
+export const loading = ref(false);
+
+export const fetchData = async () => {
+	if (loading.value) return;
+	try {
+		loading.value = true;
+		setData(
+			await ky("/api/data", {
+				timeout: false,
+			}).json()
+		);
+		initNavigation();
+		loading.value = false;
+	} catch (e) {
+		if (!(e instanceof HTTPError)) {
+			errorMessage.value = defaultError;
+		} else errorMessage.value = (await e.response.json()).message;
+		loading.value = false;
+	}
+};
 
 export const setData = (newData: FetchedData[]) => {
 	newData.sort((a, b) => a.database.localeCompare(b.database));
@@ -88,6 +113,30 @@ export const attByPath = (path: string) => {
 
 	return undefined;
 };
+export const attIsPK = (attribute_number: number, class_id: number): boolean => {
+	const cls = classById(class_id);
+	if (!cls) return false;
+
+	return cls.constraints.some(c => c.constraint_type === "p" && c.table_attribute_numbers.includes(attribute_number));
+};
+export const attIsFK = (attribute_number: number, class_id: number): boolean => {
+	const cls = classById(class_id);
+	if (!cls) return false;
+
+	const att = cls.attributes.find(a => a.attribute_number === attribute_number);
+	if (!att) return false;
+
+	const parsedComment = parseColumnComment(att.comment ?? "");
+
+	return cls.constraints.some(c => c.constraint_type === "f" && c.table_attribute_numbers.includes(attribute_number)) || parsedComment.link !== undefined;
+};
+export const attIsUnique = (attribute_number: number, class_id: number): boolean => {
+	const cls = classById(class_id);
+	if (!cls) return false;
+
+	return cls.constraints.some(c => c.constraint_type === "u" && c.table_attribute_numbers.includes(attribute_number));
+};
+
 export const relations = computed(() => {
 	const nodes: {
 			class_id: number;
@@ -97,6 +146,8 @@ export const relations = computed(() => {
 			source: number;
 			target: number;
 			text: string;
+			cardinality: string;
+			relationship: string;
 		}[] = [];
 
 	const database = data.value.find(d => d.database === activeDatabase.value);
@@ -121,6 +172,8 @@ export const relations = computed(() => {
 					source: cls.class_id,
 					target: refClass.class_id,
 					text,
+					cardinality: defaultCardinality,
+					relationship: defaultRelationship,
 				});
 		}
 
@@ -144,6 +197,8 @@ export const relations = computed(() => {
 					source: cls.class_id,
 					target: refClass.class_id,
 					text,
+					cardinality: commentData.cardinality ?? defaultCardinality,
+					relationship: commentData.relationship ?? defaultRelationship,
 				});
 		}
 	}
@@ -164,6 +219,8 @@ export const getRelationsRelatedTo = (
 		source: string;
 		target: string;
 		text: string;
+		cardinality: string;
+		relationship: string;
 	}[];
 } => {
 	const rel = relations.value,
@@ -171,6 +228,8 @@ export const getRelationsRelatedTo = (
 			source: number;
 			target: number;
 			text: string;
+			cardinality: string;
+			relationship: string;
 		}[] = rel.links.filter(l => l.source === classId || l.target === classId),
 		nodes: {
 			class_id: number;
@@ -183,101 +242,8 @@ export const getRelationsRelatedTo = (
 			source: l.source.toString(),
 			target: l.target.toString(),
 			text: l.text,
+			cardinality: l.cardinality,
+			relationship: l.relationship,
 		})),
 	};
 };
-
-/**
- * Parses link and extra columns from a column comment
- *
- * @param comment Comment to parse
- * @param splitChar Character to split comment into lines
- * @returns Object containing links, extra columns and description
- */
-export function parseColumnComment(comment: string) {
-	const splitChar = "|"; //TODO: make this configurable
-	//* Split comment into lines using splitChar as delimiter (as long as the splitChar is not escaped)
-	const lines = comment.split(new RegExp(`(?<!\\\\)[${splitChar}]`)).map(line => line.replace(/\\\|/g, "|"));
-	const links = parseLink(lines);
-	if (links.succeeded) lines.splice(lines.indexOf(links.originalLine), 1);
-	const extraColumns = parseExtraColumns(lines);
-	if (extraColumns.succeeded) for (const originalLine of extraColumns.originalLines) lines.splice(lines.indexOf(originalLine), 1);
-
-	return {
-		link: links.succeeded ? links.link : undefined,
-		extraColumns: extraColumns.succeeded ? extraColumns.extraColumns : undefined,
-		description: lines.filter(Boolean).join(splitChar),
-	};
-}
-
-/**
- * Parses link from a column comment
- *
- * @example link:schema.table.column
- * @example link=schema.table.column
- *
- * @param lines Lines to parse
- * @returns Object containing links and original line
- */
-function parseLink(lines: string[]):
-	| {
-			succeeded: true;
-			link: string;
-			originalLine: string;
-	  }
-	| {
-			succeeded: false;
-	  } {
-	//* If the line starts with links: or links=, the rest of the line is the link
-	const linksLine = lines.find(line => line.startsWith("link:") || line.startsWith("link="));
-	if (!linksLine) return { succeeded: false };
-	return {
-		succeeded: true,
-		link: linksLine.replace(/^link[:=]/, ""),
-		originalLine: linksLine,
-	};
-}
-
-/**
- * Parses extra columns from a column comment
- *
- * @example [key]:value
- * @example [key]=value
- *
- * @param lines Lines to parse
- * @returns Object containing extra columns and original lines
- */
-function parseExtraColumns(lines: string[]):
-	| {
-			succeeded: true;
-			extraColumns: { [key: string]: string };
-			originalLines: string[];
-	  }
-	| {
-			succeeded: false;
-	  } {
-	const extraColumns: { [key: string]: string } = {};
-	const originalLines: string[] = [];
-	for (const line of lines) {
-		//* If the line starts with [key]: or [key]=, parse the rest of the line as the value (it must also contain the square brackets)
-		const match = line.match(/^(?<key>[^:]+):(?<value>.+)/) || line.match(/^(?<key>[^=]+)=(?<value>.+)/);
-		if (!match) continue;
-		let { key, value } = match.groups!;
-		if (!key || !value) continue;
-		//* Try to parse the value
-		try {
-			value = JSON.parse(value);
-		} catch {}
-
-		//* Remove the square brackets from the key
-		extraColumns[key.replace(/^\[|\]$/g, "")] = value;
-		originalLines.push(line);
-	}
-
-	if (Object.keys(extraColumns).length === 0) return { succeeded: false };
-	return {
-		succeeded: true,
-		extraColumns,
-		originalLines: originalLines,
-	};
-}

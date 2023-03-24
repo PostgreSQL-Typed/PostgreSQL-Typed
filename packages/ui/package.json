@@ -60,5 +60,13 @@
 	},
 	"peerDependencies": {
 		"@postgresql-typed/cli": "workspace:*"
+	},
+	"resolutions": {
+		"@nuxt/kit": "3.3.2"
+	},
+	"pnpm": {
+		"resolutions": {
+			"@nuxt/kit": "3.3.2"
+		}
 	}
 }

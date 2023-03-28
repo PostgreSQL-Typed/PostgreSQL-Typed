@@ -1,4 +1,4 @@
-import { PGTPParser, UUID } from "@postgresql-typed/parsers";
+import { PGTPParser, PGTPParserClass, UUID, UUIDConstructor } from "@postgresql-typed/parsers";
 
 export type TestData = {
 	db1: {
@@ -89,20 +89,20 @@ export const testData = {
 						name: "table1" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID),
+							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional(),
+							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
 						},
 					},
 					{
 						name: "table2" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID),
+							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional(),
+							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
 						},
 					},
 				],
@@ -114,10 +114,10 @@ export const testData = {
 						name: "table3" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID),
+							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional(),
+							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
 						},
 					},
 				],
@@ -134,20 +134,20 @@ export const testData = {
 						name: "table4" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID),
+							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional(),
+							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
 						},
 					},
 					{
 						name: "table5" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID),
+							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional(),
+							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
 						},
 					},
 				],

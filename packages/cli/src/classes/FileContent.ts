@@ -96,14 +96,14 @@ export class FileContent {
 			else group.push(importStatement);
 		}
 
-		type T = ImportStatement & {
+		type ImportStatementGrouped = ImportStatement & {
 			names: [string, boolean][];
 		};
-		const mergedImportStatements = new Map<string, T[]>();
+		const mergedImportStatements = new Map<string, ImportStatementGrouped[]>();
 
 		//* For all import statements in a group, where the type is "named" and the names are the same (and they don't have an as), merge them into a single import statement
 		for (const [module, group] of groupedImportStatements.entries()) {
-			let newStatement: T | undefined;
+			let newStatement: ImportStatementGrouped | undefined;
 			for (const statement of group) {
 				if (statement.type !== "named" || statement.as !== undefined) {
 					const mergedGroup = mergedImportStatements.get(module);
@@ -134,8 +134,10 @@ export class FileContent {
 				const hasSameNameIndex = newStatement.names.findIndex(([name]) => name === statement.name);
 				if (hasSameNameIndex === -1) newStatement.names.push([statement.name, statement.isType ?? false]);
 				else {
-					const sameName = newStatement.names[hasSameNameIndex],
-						isType = sameName[1] || (statement.isType ?? false);
+					const sameName = newStatement.names[hasSameNameIndex];
+					let isType = sameName[1];
+
+					if (isType && !statement.isType) isType = false;
 
 					newStatement.names[hasSameNameIndex] = [sameName[0], isType];
 				}
@@ -157,9 +159,15 @@ export class FileContent {
 			for (const statement of group) {
 				if (statement.type === "default") importStrings.push(`import ${statement.as ?? statement.name} from "${module}";`);
 				else if (statement.type === "named") {
-					const names = statement.names.map(([name]) => name).join(", ") || statement.name;
+					const names =
+						statement.names
+							.sort(([a], [b]) => a.localeCompare(b))
+							.map(([name, isType]) => `${!statement.isType && isType ? "type " : ""}${name}`)
+							.join(",\n  ") || statement.name;
 					importStrings.push(
-						`import${statement.isType ? " type" : ""} ${statement.as === undefined ? `{${names}}` : `{${names}} as ${statement.as}`} from "${module}";`
+						`import${statement.isType ? " type" : ""} ${
+							statement.as === undefined ? `{\n  ${names}\n}` : `{\n  ${names}\n} as ${statement.as}`
+						} from "${module}";`
 					);
 				}
 			}
@@ -177,7 +185,11 @@ export class FileContent {
 							.sort((a, b) => (a.file < b.file ? -1 : 1))
 							.map(imp => {
 								const relativePath = relative(dirname(this.file), imp.file);
-								return imp.getImportStatement(`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}`);
+								return imp.getImportStatement(
+									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
+										this.config.type === "cjs" ? "" : ".js"
+									}`
+								);
 							})
 							.join("\n"),
 				  ]

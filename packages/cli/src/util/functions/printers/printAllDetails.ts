@@ -35,7 +35,7 @@ export function printAllDetails(databaseClassLists: ClassDetails[][], printer: P
 			`const ${identifier} = {`,
 			...databaseClassLists.map(databaseClasses => {
 				const { DatabaseValueRecord } = printDatabaseDetails(databaseClasses, printer);
-				return `  "${databaseClasses[0].database_name}": ${getImport(DatabaseValueRecord)}`;
+				return `  "${databaseClasses[0].database_name}": ${getImport(DatabaseValueRecord)},`;
 			}),
 			"}",
 		]

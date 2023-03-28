@@ -8,465 +8,732 @@ export const DefaultParserMapping = {
 			ParserMapping: {
 				[key in OID]: string | [string, ImportStatement[]];
 			} = {
-				[OID._abstime]: "'unknown', true",
-				[OID._aclitem]: "'unknown', true",
+				[OID._abstime]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._aclitem]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._bit]: [
-					`Bit.setN(${lengthString}), true`,
+					`PGTPParser(Bit.setN(${lengthString}), true)%others% as PGTPParserClass<BitConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Bit",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BitConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._bool]: [
-					"Boolean, true",
+					"PGTPParser(Boolean, true)%others% as PGTPParserClass<BooleanConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Boolean",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BooleanConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._box]: [
-					"Box, true",
+					"PGTPParser(Box, true)%others% as PGTPParserClass<BoxConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Box",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BoxConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._bpchar]: [
-					`Character.setN(${lengthString}), true`,
+					`PGTPParser(Character.setN(${lengthString}), true)%others% as PGTPParserClass<CharacterConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Character",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._bytea]: "'unknown', true",
+				[OID._bytea]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._char]: [
-					`Character.setN(${lengthString}), true`,
+					`PGTPParser(Character.setN(${lengthString}), true)%others% as PGTPParserClass<CharacterConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Character",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._cid]: "'unknown', true",
+				[OID._cid]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._cidr]: [
-					"IPAddress, true",
+					"PGTPParser(IPAddress, true)%others% as PGTPParserClass<IPAddressConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "IPAddress",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IPAddressConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._circle]: [
-					"Circle, true",
+					"PGTPParser(Circle, true)%others% as PGTPParserClass<CircleConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Circle",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CircleConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._cstring]: "'unknown', true",
+				[OID._cstring]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._date]: [
-					"Date, true",
+					"PGTPParser(Date, true)%others% as PGTPParserClass<DateConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Date",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._datemultirange]: [
-					"DateMultiRange, true",
+					"PGTPParser(DateMultiRange, true)%others% as PGTPParserClass<DateMultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "DateMultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._daterange]: [
-					"DateRange, true",
+					"PGTPParser(DateRange, true)%others% as PGTPParserClass<DateRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "DateRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._float4]: [
-					"Float4, true",
+					"PGTPParser(Float4, true)%others% as PGTPParserClass<Float4Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Float4",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float4Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._float8]: "'unknown', true",
-				[OID._gtsvector]: "'unknown', true",
+				[OID._float8]: [
+					"PGTPParser(Float8, true)%others% as PGTPParserClass<Float8Constructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float8",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float8Constructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID._gtsvector]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._inet]: [
-					"IPAddress, true",
+					"PGTPParser(IPAddress, true)%others% as PGTPParserClass<IPAddressConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "IPAddress",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IPAddressConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int2]: [
-					"Int2, true",
+					"PGTPParser(Int2, true)%others% as PGTPParserClass<Int2Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int2",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int2Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._int2vector]: "'unknown', true",
+				[OID._int2vector]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._int4]: [
-					"Int4, true",
+					"PGTPParser(Int4, true)%others% as PGTPParserClass<Int4Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int4multirange]: [
-					"Int4MultiRange, true",
+					"PGTPParser(Int4MultiRange, true)%others% as PGTPParserClass<Int4MultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4MultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4MultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int4range]: [
-					"Int4Range, true",
+					"PGTPParser(Int4Range, true)%others% as PGTPParserClass<Int4RangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4Range",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4RangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int8]: [
-					"Int8, true",
+					"PGTPParser(Int8, true)%others% as PGTPParserClass<Int8Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int8multirange]: [
-					"Int8MultiRange, true",
+					"PGTPParser(Int8MultiRange, true)%others% as PGTPParserClass<Int8MultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8MultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8MultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._int8range]: [
-					"Int8Range, true",
+					"PGTPParser(Int8Range, true)%others% as PGTPParserClass<Int8RangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8Range",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8RangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._interval]: [
-					"Interval, true",
+					"PGTPParser(Interval, true)%others% as PGTPParserClass<IntervalConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Interval",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IntervalConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._json]: "'unknown', true",
-				[OID._jsonb]: "'unknown', true",
-				[OID._jsonpath]: "'unknown', true",
+				[OID._json]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._jsonb]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._jsonpath]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._line]: [
-					"Line, true",
+					"PGTPParser(Line, true)%others% as PGTPParserClass<LineConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Line",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "LineConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._lseg]: [
-					"LineSegment, true",
+					"PGTPParser(LineSegment, true)%others% as PGTPParserClass<LineSegmentConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "LineSegment",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "LineSegmentConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._macaddr]: [
-					"MACAddress, true",
+					"PGTPParser(MACAddress, true)%others% as PGTPParserClass<MacAddressConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "MACAddress",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MacAddressConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._macaddr8]: [
-					"MACAddress8, true",
+					"PGTPParser(MACAddress8, true)%others% as PGTPParserClass<MacAddress8Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "MACAddress8",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MacAddress8Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._money]: [
-					"Money, true",
+					"PGTPParser(Money, true)%others% as PGTPParserClass<MoneyConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Money",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MoneyConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._name]: [
-					"Name, true",
+					"PGTPParser(Name, true)%others% as PGTPParserClass<NameConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Name",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "NameConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._numeric]: "'unknown', true",
-				[OID._nummultirange]: "'unknown', true",
-				[OID._numrange]: "'unknown', true",
+				[OID._numeric]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._nummultirange]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._numrange]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._oid]: [
-					"OID, true",
+					"PGTPParser(OID, true)%others% as PGTPParserClass<OIDConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "OID",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OIDConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._oidvector]: "'unknown', true",
+				[OID._oidvector]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._path]: [
-					"Path, true",
+					"PGTPParser(Path, true)%others% as PGTPParserClass<PathConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Path",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PathConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._pg_lsn]: "'unknown', true",
-				[OID._pg_snapshot]: "'unknown', true",
+				[OID._pg_lsn]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._pg_snapshot]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._point]: [
-					"Point, true",
+					"PGTPParser(Point, true)%others% as PGTPParserClass<PointConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Point",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PointConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._polygon]: [
-					"Polygon, true",
+					"PGTPParser(Polygon, true)%others% as PGTPParserClass<PolygonConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Polygon",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PolygonConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._record]: "'unknown', true",
-				[OID._refcursor]: "'unknown', true",
-				[OID._regclass]: "'unknown', true",
-				[OID._regcollation]: "'unknown', true",
-				[OID._regconfig]: "'unknown', true",
-				[OID._regdictionary]: "'unknown', true",
-				[OID._regnamespace]: "'unknown', true",
-				[OID._regoper]: "'unknown', true",
-				[OID._regoperator]: "'unknown', true",
-				[OID._regproc]: "'unknown', true",
-				[OID._regprocedure]: "'unknown', true",
-				[OID._regrole]: "'unknown', true",
-				[OID._regtype]: "'unknown', true",
-				[OID._reltime]: "'unknown', true",
+				[OID._record]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._refcursor]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regclass]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regcollation]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regconfig]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regdictionary]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regnamespace]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regoper]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regoperator]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regproc]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regprocedure]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regrole]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._regtype]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._reltime]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._text]: [
-					"Text, true",
+					"PGTPParser(Text, true)%others% as PGTPParserClass<TextConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Text",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TextConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._tid]: "'unknown', true",
+				[OID._tid]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._time]: [
-					"Time, true",
+					"PGTPParser(Time, true)%others% as PGTPParserClass<TimeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Time",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._timestamp]: [
-					"Timestamp, true",
+					"PGTPParser(Timestamp, true)%others% as PGTPParserClass<TimestampConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Timestamp",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._timestamptz]: [
-					"TimestampTZ, true",
+					"PGTPParser(TimestampTZ, true)%others% as PGTPParserClass<TimestampTZConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZ",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._timetz]: [
-					"TimeTZ, true",
+					"PGTPParser(TimeTZ, true)%others% as PGTPParserClass<TimeTZConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimeTZ",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimeTZConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._tinterval]: "'unknown', true",
-				[OID._tsquery]: "'unknown', true",
+				[OID._tinterval]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._tsquery]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._tsmultirange]: [
-					"TimestampMultiRange, true",
+					"PGTPParser(TimestampMultiRange, true)%others% as PGTPParserClass<TimestampMultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampMultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._tsrange]: [
-					"TimestampRange, true",
+					"PGTPParser(TimestampRange, true)%others% as PGTPParserClass<TimestampRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._tstzmultirange]: [
-					"TimestampTZMultiRange, true",
+					"PGTPParser(TimestampTZMultiRange, true)%others% as PGTPParserClass<TimestampTZMultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZMultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._tstzrange]: [
-					"TimestampTZRange, true",
+					"PGTPParser(TimestampTZRange, true)%others% as PGTPParserClass<TimestampTZRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._tsvector]: "'unknown', true",
-				[OID._txid_snapshot]: "'unknown', true",
+				[OID._tsvector]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._txid_snapshot]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID._uuid]: [
-					"UUID, true",
+					"PGTPParser(UUID, true)%others% as PGTPParserClass<UUIDConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "UUID",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "UUIDConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._varbit]: [
-					`BitVarying.setN(${lengthString}), true`,
+					`PGTPParser(BitVarying.setN(${lengthString}), true)%others% as PGTPParserClass<BitVaryingConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "BitVarying",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BitVaryingConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID._varchar]: [
-					`CharacterVarying.setN(${lengthString}), true`,
+					`PGTPParser(CharacterVarying.setN(${lengthString}), true)%others% as PGTPParserClass<CharacterVaryingConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "CharacterVarying",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterVaryingConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
-				[OID._xid]: "'unknown', true",
-				[OID._xid8]: "'unknown', true",
-				[OID._xml]: "'unknown', true",
+				[OID._xid]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._xid8]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
+				[OID._xml]: "PGTPParser('unknown', true)%others% as PGTPParserClass<'unknown'>",
 				[OID.abstime]: "'unknown'",
 				[OID.aclitem]: "'unknown'",
 				[OID.any]: "'unknown'",
@@ -482,223 +749,349 @@ export const DefaultParserMapping = {
 				[OID.anynonarray]: "'unknown'",
 				[OID.anyrange]: "'unknown'",
 				[OID.bit]: [
-					`Bit.setN(${lengthString})`,
+					`PGTPParser(Bit.setN(${lengthString}))%others% as PGTPParserClass<BitConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Bit",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BitConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.bool]: [
-					"Boolean",
+					"PGTPParser(Boolean)%others% as PGTPParserClass<BooleanConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Boolean",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BooleanConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.box]: [
-					"Box",
+					"PGTPParser(Box)%others% as PGTPParserClass<BoxConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Box",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BoxConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.bpchar]: [
-					`Character.setN(${lengthString})`,
+					`PGTPParser(Character.setN(${lengthString}))%others% as PGTPParserClass<CharacterConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Character",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
 				[OID.bytea]: "'unknown'",
 				[OID.cardinal_number]: "'unknown'",
 				[OID.char]: [
-					`Character.setN(${lengthString})`,
+					`PGTPParser(Character.setN(${lengthString}))%others% as PGTPParserClass<CharacterConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Character",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.character_data]: "'unknown'",
 				[OID.cid]: "'unknown'",
 				[OID.cidr]: [
-					"CIDR",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "CIDR",
-							type: "named",
-						},
-					],
-				],
-				[OID.circle]: [
-					"Circle",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "Circle",
-							type: "named",
-						},
-					],
-				],
-				[OID.cstring]: "'unknown'",
-				[OID.date]: [
-					"Date",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "Date",
-							type: "named",
-						},
-					],
-				],
-				[OID.datemultirange]: [
-					"DateMultiRange",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "DateMultiRange",
-							type: "named",
-						},
-					],
-				],
-				[OID.daterange]: [
-					"DateRange",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "DateRange",
-							type: "named",
-						},
-					],
-				],
-				[OID.event_trigger]: "'unknown'",
-				[OID.fdw_handler]: "'unknown'",
-				[OID.float4]: [
-					"Float4",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "Float4",
-							type: "named",
-						},
-					],
-				],
-				[OID.float8]: [
-					"Float8",
-					[
-						{
-							module: "@postgresql-typed/parsers",
-							name: "Float8",
-							type: "named",
-						},
-					],
-				],
-				[OID.gtsvector]: "'unknown'",
-				[OID.index_am_handler]: "'unknown'",
-				[OID.inet]: [
-					"IPAddress",
+					"PGTPParser(IPAddress)%others% as PGTPParserClass<IPAddressConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "IPAddress",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IPAddressConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.circle]: [
+					"PGTPParser(Circle)%others% as PGTPParserClass<CircleConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Circle",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CircleConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.cstring]: "'unknown'",
+				[OID.date]: [
+					"PGTPParser(Date)%others% as PGTPParserClass<DateConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Date",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.datemultirange]: [
+					"PGTPParser(DateMultiRange)%others% as PGTPParserClass<DateMultiRangeConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateMultiRange",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.daterange]: [
+					"PGTPParser(DateRange)%others% as PGTPParserClass<DateRangeConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateRange",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "DateRangeConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.event_trigger]: "'unknown'",
+				[OID.fdw_handler]: "'unknown'",
+				[OID.float4]: [
+					"PGTPParser(Float4)%others% as PGTPParserClass<Float4Constructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float4",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float4Constructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.float8]: [
+					"PGTPParser(Float8)%others% as PGTPParserClass<Float8Constructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float8",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float8Constructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
+				[OID.gtsvector]: "'unknown'",
+				[OID.index_am_handler]: "'unknown'",
+				[OID.inet]: [
+					"PGTPParser(IPAddress)%others% as PGTPParserClass<IPAddressConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IPAddress",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IPAddressConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int2]: [
-					"Int2",
+					"PGTPParser(Int2)%others% as PGTPParserClass<Int2Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int2",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int2Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int2vector]: "'unknown'",
 				[OID.int4]: [
-					"Int4",
+					"PGTPParser(Int4)%others% as PGTPParserClass<Int4Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int4multirange]: [
-					"Int4MultiRange",
+					"PGTPParser(Int4MultiRange)%others% as PGTPParserClass<Int4MultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4MultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4MultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int4range]: [
-					"Int4Range",
+					"PGTPParser(Int4Range)%others% as PGTPParserClass<Int4RangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int4Range",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int4RangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int8]: [
-					"Int8",
+					"PGTPParser(Int8)%others% as PGTPParserClass<Int8Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int8multirange]: [
-					"Int8MultiRange",
+					"PGTPParser(Int8MultiRange)%others% as PGTPParserClass<Int8MultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8MultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8MultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.int8range]: [
-					"Int8Range",
+					"PGTPParser(Int8Range)%others% as PGTPParserClass<Int8RangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Int8Range",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Int8RangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.internal]: "'unknown'",
 				[OID.interval]: [
-					"Interval",
+					"PGTPParser(Interval)%others% as PGTPParserClass<IntervalConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Interval",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "IntervalConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
@@ -707,62 +1100,98 @@ export const DefaultParserMapping = {
 				[OID.jsonpath]: "'unknown'",
 				[OID.language_handler]: "'unknown'",
 				[OID.line]: [
-					"Line",
+					"PGTPParser(Line)%others% as PGTPParserClass<LineConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Line",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "LineConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.lseg]: [
-					"LineSegment",
+					"PGTPParser(LineSegment)%others% as PGTPParserClass<LineSegmentConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "LineSegment",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "LineSegmentConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.macaddr]: [
-					"MACAddress",
+					"PGTPParser(MACAddress)%others% as PGTPParserClass<MacAddressConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "MACAddress",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MacAddressConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.macaddr8]: [
-					"MACAddress8",
+					"PGTPParser(MACAddress8)%others% as PGTPParserClass<MacAddress8Constructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "MACAddress8",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MacAddress8Constructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.money]: [
-					"Money",
+					"PGTPParser(Money)%others% as PGTPParserClass<MoneyConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Money",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "MoneyConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.name]: [
-					"Name",
+					"PGTPParser(Name)%others% as PGTPParserClass<NameConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Name",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "NameConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
@@ -770,24 +1199,36 @@ export const DefaultParserMapping = {
 				[OID.nummultirange]: "'unknown'",
 				[OID.numrange]: "'unknown'",
 				[OID.oid]: [
-					"OID",
+					"PGTPParser(OID)%others% as PGTPParserClass<OIDConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "OID",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "OIDConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.oidvector]: "'unknown'",
 				[OID.opaque]: "'unknown'",
 				[OID.path]: [
-					"Path",
+					"PGTPParser(Path)%others% as PGTPParserClass<PathConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Path",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PathConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
@@ -801,22 +1242,34 @@ export const DefaultParserMapping = {
 				[OID.pg_node_tree]: "'unknown'",
 				[OID.pg_snapshot]: "'unknown'",
 				[OID.point]: [
-					"Point",
+					"PGTPParser(Point)%others% as PGTPParserClass<PointConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Point",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PointConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.polygon]: [
-					"Polygon",
+					"PGTPParser(Polygon)%others% as PGTPParserClass<PolygonConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Polygon",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "PolygonConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
@@ -837,48 +1290,72 @@ export const DefaultParserMapping = {
 				[OID.smgr]: "'unknown'",
 				[OID.table_am_handler]: "'unknown'",
 				[OID.text]: [
-					"Text",
+					"PGTPParser(Text)%others% as PGTPParserClass<TextConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Text",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TextConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.tid]: "'unknown'",
 				[OID.time]: [
-					"Time",
+					"PGTPParser(Time)%others% as PGTPParserClass<TimeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Time",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.timestamp]: [
-					"Timestamp",
+					"PGTPParser(Timestamp)%others% as PGTPParserClass<TimestampConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "Timestamp",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.timestamptz]: [
-					"TimestampTZ",
+					"PGTPParser(TimestampTZ)%others% as PGTPParserClass<TimestampTZConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZ",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.timetz]: [
-					"TimeTZ",
+					"PGTPParser(TimeTZ)%others% as PGTPParserClass<TimeTZConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
@@ -893,32 +1370,50 @@ export const DefaultParserMapping = {
 				[OID.tsmultirange]: "'unknown'",
 				[OID.tsquery]: "'unknown'",
 				[OID.tsrange]: [
-					"TimestampRange",
+					"PGTPParser(TimestampRange)%others% as PGTPParserClass<TimestampRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.tstzmultirange]: [
-					"TimestampTZMultiRange",
+					"PGTPParser(TimestampTZMultiRange)%others% as PGTPParserClass<TimestampTZMultiRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZMultiRange",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.tstzrange]: [
-					"TimestampTZRange",
+					"PGTPParser(TimestampTZRange)%others% as PGTPParserClass<TimestampTZRangeConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "TimestampTZRange",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampTZRangeConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],
@@ -926,32 +1421,50 @@ export const DefaultParserMapping = {
 				[OID.txid_snapshot]: "'unknown'",
 				[OID.unknown]: "'unknown'",
 				[OID.uuid]: [
-					"UUID",
+					"PGTPParser(UUID)%others% as PGTPParserClass<UUIDConstructor>",
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "UUID",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "UUIDConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.varbit]: [
-					`BitVarying.setN(${lengthString})`,
+					`PGTPParser(BitVarying.setN(${lengthString}))%others% as PGTPParserClass<BitVaryingConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "BitVarying",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "BitVaryingConstructor",
+							type: "named",
+							isType: true,
+						},
 					],
 				],
 				[OID.varchar]: [
-					`CharacterVarying.setN(${lengthString})`,
+					`PGTPParser(CharacterVarying.setN(${lengthString}))%others% as PGTPParserClass<CharacterVaryingConstructor<${lengthString}>>`,
 					[
 						{
 							module: "@postgresql-typed/parsers",
 							name: "CharacterVarying",
 							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "CharacterVaryingConstructor",
+							type: "named",
+							isType: true,
 						},
 					],
 				],

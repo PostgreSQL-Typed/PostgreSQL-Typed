@@ -1,7 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/oids";
 import { Address4, Address6 } from "ip-address";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import { IPVersion, IPVersionType } from "../../types/IpType.js";
 import { arrayParser } from "../../util/arrayParser.js";

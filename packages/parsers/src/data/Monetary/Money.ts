@@ -1,6 +1,7 @@
 import { OID } from "@postgresql-typed/oids";
 import type { BigNumber } from "bignumber.js";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { ParseReturnType } from "../../types/ParseReturnType.js";

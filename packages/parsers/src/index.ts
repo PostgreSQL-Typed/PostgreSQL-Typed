@@ -1,4 +1,4 @@
-import "source-map-support/register";
+import "source-map-support/register.js";
 
 //* BitString
 export * from "./data/BitString/Bit.js";

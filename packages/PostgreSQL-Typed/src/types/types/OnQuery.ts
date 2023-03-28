@@ -1,4 +1,4 @@
-import type { Table } from "../../index.js";
+import type { Table } from "../../classes/Table.js";
 import type { RootFilterOperators } from "../interfaces/RootFilterOperators.js";
 import type { FilterByTableColumn } from "./FilterByTableColumn.js";
 import type { TableColumnsFromSchemaOnwards } from "./TableColumnsFromSchemaOnwards.js";

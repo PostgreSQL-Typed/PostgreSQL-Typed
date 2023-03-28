@@ -73,6 +73,13 @@ export interface Config {
 	 * @default {}
 	 */
 	types: TypesConfig;
+
+	/**
+	 * The TypeScript module type you use in your project (if you are using esm it adds the .js import extension)
+	 *
+	 * @default "cjs"
+	 */
+	type: "esm" | "cjs";
 }
 
 export const zConfig = z.object({
@@ -86,6 +93,7 @@ export const zConfig = z.object({
 	schemas: z.string().or(z.array(z.string())).or(z.number()).or(z.array(z.number())).default("*"),
 	tables: z.string().or(z.array(z.string())).or(z.number()).or(z.array(z.number())).default("*"),
 	types: zTypesConfig.default({}),
+	type: z.union([z.literal("esm"), z.literal("cjs")]).default("cjs"),
 });
 
 const cfg = (zConfig.safeParse({}) as unknown as { data: Config }).data;

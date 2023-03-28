@@ -1,8 +1,8 @@
-import { Table } from "../../index.js";
-import { DatabaseData } from "../interfaces/DatabaseData.js";
-import { Join } from "./Join.js";
-import { NestedPaths } from "./NestedPaths.js";
-import { TableLocations } from "./TableLocations.js";
+import type { Table } from "../../classes/Table.js";
+import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { Join } from "./Join.js";
+import type { NestedPaths } from "./NestedPaths.js";
+import type { TableLocations } from "./TableLocations.js";
 
 export type TableColumnsFromSchemaOnwards<
 	Tables extends Table<any, any, any, any, any>,

@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/oids";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";

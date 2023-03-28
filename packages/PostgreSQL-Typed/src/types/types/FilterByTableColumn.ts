@@ -19,4 +19,4 @@ export type FilterByTableColumn<
 			: never
 		: never,
 	ColumnData extends InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName] = InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName]
-> = FilterOperators<ColumnData>;
+> = FilterOperators<NonNullable<ColumnData>>;

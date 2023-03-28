@@ -1,6 +1,7 @@
 import { OID } from "@postgresql-typed/oids";
 import { DateTime, Zone } from "luxon";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import { OffsetDirection } from "../../types/OffsetDirection.js";
 import type { ParseContext } from "../../types/ParseContext.js";

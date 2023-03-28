@@ -1,12 +1,12 @@
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import { PostgresData } from "../types/interfaces/PostgresData.js";
-import { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
-import { SchemaLocations } from "../types/types/SchemaLocations.js";
+import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import { Client } from "./Client.js";
 import { Database } from "./Database.js";
-import { QueryBuilder } from "./QueryBuilder.js";
 import { Schema } from "./Schema.js";
+import { SelectBuilder } from "./SelectBuilder.js";
 
 export class Table<
 	InnerPostgresData extends PostgresData,
@@ -41,8 +41,8 @@ export class Table<
 		return this.databaseData.schemas.find(s => s.name === schemaName)?.tables.find(t => t.name === (this.name as string))?.primary_key as any;
 	}
 
-	get query(): QueryBuilder<InnerPostgresData, InnerDatabaseData, Ready, this> {
-		return new QueryBuilder<InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
+	get select(): SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, this> {
+		return new SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
 	}
 
 	/* async select<

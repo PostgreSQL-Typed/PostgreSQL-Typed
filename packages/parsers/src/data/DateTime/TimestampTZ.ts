@@ -1,7 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/oids";
 import { DateTime, Zone } from "luxon";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import type { Offset } from "../../types/Offset.js";
 import { OffsetDirection, type OffsetDirectionType } from "../../types/OffsetDirection.js";

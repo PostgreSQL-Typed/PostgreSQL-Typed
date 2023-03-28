@@ -85,7 +85,7 @@ export class ConfigHandler {
 		}
 
 		try {
-			const location = config?.filepath ?? join(process.cwd(), `${MODULE_NAME}.config.js`);
+			const location = config?.filepath ?? join(process.cwd(), `${MODULE_NAME}.config.cjs`);
 			this.LOGGER?.("Writing config file to", location);
 			writeFileSync(location, getNewConfigFile(DEFAULT_CONFIG));
 			console.log(getConsoleHeader(g("Successfully created configuration file!"), `File location: ${location}`));

@@ -108,7 +108,7 @@ type Parsers =
 
 export const PGTPParser = <Parser extends Parsers | "unknown">(parser: Parser, isArray = false) => new PGTPParserClass(parser, isArray);
 
-class PGTPParserClass<Parser extends Parsers | "unknown"> {
+export class PGTPParserClass<Parser extends Parsers | "unknown"> {
 	_nullable = false;
 	_optional = false;
 	constructor(public parser: Parser, public isArray: boolean) {}

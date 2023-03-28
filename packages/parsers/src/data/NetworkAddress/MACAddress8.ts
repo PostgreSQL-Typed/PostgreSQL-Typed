@@ -1,7 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/oids";
 import { parseInteger } from "jsprim";
-import { types } from "pg";
+import pg from "pg";
+const { types } = pg;
 
 import { arrayParser } from "../../util/arrayParser.js";
 import { parser } from "../../util/parser.js";

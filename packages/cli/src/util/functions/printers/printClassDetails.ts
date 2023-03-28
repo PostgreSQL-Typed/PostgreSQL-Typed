@@ -52,7 +52,7 @@ export function printClassDetails(type: ClassDetails, printer: Printer) {
 				.filter(a => a.attribute_number >= 0)
 				.flatMap(attribute => [
 					...getAttributeComment(type, attribute),
-					`  ${attribute.attribute_name}: PGTPParser(${getAttributeValue(type, attribute, printer, file)})${nullable(attribute)},`,
+					`  ${attribute.attribute_name}: ${getAttributeValue(type, attribute, printer, file).replace("%others%", nullable(attribute))},`,
 				]),
 			"};",
 		]
@@ -118,7 +118,10 @@ export function printClassDetails(type: ClassDetails, printer: Printer) {
 				.filter(a => a.attribute_number >= 0)
 				.flatMap(attribute => [
 					...getAttributeComment(type, attribute),
-					`  ${attribute.attribute_name}: PGTPParser(${getAttributeValue(type, attribute, printer, file)})${nullable(attribute)}${optional(attribute)},`,
+					`  ${attribute.attribute_name}: ${getAttributeValue(type, attribute, printer, file).replace(
+						"%others%",
+						`${nullable(attribute)}${optional(attribute)}`
+					)},`,
 				]),
 			"};",
 		]
@@ -246,6 +249,12 @@ function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Pr
 		module: "@postgresql-typed/parsers",
 		name: "PGTPParser",
 		type: "named",
+	});
+	file.addImportStatement({
+		module: "@postgresql-typed/parsers",
+		name: "PGTPParserClass",
+		type: "named",
+		isType: true,
 	});
 
 	const columnTypeOverride =

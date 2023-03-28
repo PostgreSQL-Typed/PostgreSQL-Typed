@@ -2,7 +2,7 @@
 import { describe, expect, it, test } from "vitest";
 
 import { Bit } from "../data/BitString/Bit.js";
-import { PGTPParser } from "./PGTPParser.js";
+import { PGTPParser, PGTPParserClass } from "./PGTPParser.js";
 
 describe("PGTPParser", () => {
 	test("nullable()", () => {
@@ -14,6 +14,8 @@ describe("PGTPParser", () => {
 		//When nullable is not set, it should return false
 		const parser2 = PGTPParser(Bit);
 		expect(parser2.isValid(null)).toBe(false);
+
+		expect(parser2).toBeInstanceOf(PGTPParserClass);
 	});
 
 	test("optional()", () => {

@@ -2,11 +2,10 @@ import type { Table } from "../../classes/Table.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
 import type { FilterOperators } from "../interfaces/FilterOperators.js";
 import type { PostgresData } from "../interfaces/PostgresData.js";
-import type { TableColumnsFromSchemaOnwards } from "./TableColumnsFromSchemaOnwards.js";
 
 export type FilterByTableColumn<
 	FromTable extends Table<any, any, any, any, any>,
-	ColumnLocation extends TableColumnsFromSchemaOnwards<FromTable>,
+	ColumnLocation extends string,
 	InnerPostgresData extends PostgresData = FromTable extends Table<infer PGData, any, any, any, any> ? PGData : never,
 	InnerDatabaseData extends DatabaseData = FromTable extends Table<InnerPostgresData, infer DBData, any, any, any> ? DBData : never,
 	SchemaName extends keyof InnerDatabaseData["schemas"] = ColumnLocation extends `${infer InnerSchemaName}.${string}.${string}` ? InnerSchemaName : never,

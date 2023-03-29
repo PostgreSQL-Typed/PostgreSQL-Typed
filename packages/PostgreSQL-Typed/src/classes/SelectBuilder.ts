@@ -10,6 +10,7 @@ import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
+import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
 import type { Client } from "./Client.js";
 import type { Table } from "./Table.js";
@@ -69,10 +70,10 @@ export class SelectBuilder<
 		return this as any;
 	}
 
-	where(where: WhereQuery<JoinedTables>) {
+	where(where: WhereQuery<JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>) {
 		//TODO make sure input is valid
 
-		const rawQuery = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>(where);
+		const rawQuery = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>(where);
 		this._where = {
 			query: `WHERE ${rawQuery.query}`,
 			variables: rawQuery.variables,

@@ -8,7 +8,7 @@ export type SelectQuery<
 	InnerDatabaseData extends DatabaseData,
 	Ready extends boolean,
 	JoinedTables extends Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>,
-	JoinedTablesColumns extends TableColumnsFromSchemaOnwards<JoinedTables> = TableColumnsFromSchemaOnwards<JoinedTables>
+	JoinedTablesColumns extends string = TableColumnsFromSchemaOnwards<JoinedTables>
 > =
 	| "*"
 	| "COUNT(*)"

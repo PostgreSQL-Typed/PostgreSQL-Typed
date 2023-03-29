@@ -1,6 +1,7 @@
 import type { Table } from "../classes/Table.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { RootFilterOperators } from "../types/interfaces/RootFilterOperators.js";
 import type { OnQuery } from "../types/types/OnQuery.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
 import { isRootFilterOperator } from "./isRootFilterOperator.js";
@@ -28,13 +29,13 @@ export function getRawOnQuery<
 	}
 
 	const key = keys[0],
-		spaces = " ".repeat(depth * 2 + 4);
+		spaces = " ".repeat(depth * 2 + 2);
 
 	if (isRootFilterOperator(key as string)) {
-		const queries = on.$AND?.map(andValue => getRawOnQuery(andValue as any, depth + 1));
+		const queries = on[key as keyof RootFilterOperators<any>]?.map(andValue => getRawOnQuery(andValue as any, depth + 1));
 		if (!queries) throw new Error("No queries found");
 		return {
-			query: `\n${spaces}(\n${spaces} ${queries.map(query => query.query.trim()).join(`\n${spaces} ${(key as string).replace("$", "")} `)}\n${spaces})`,
+			query: `\n${spaces}(\n${spaces}  ${queries.map(query => query.query.trim()).join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
 			variables: queries.flatMap(query => query.variables),
 		};
 	} else {

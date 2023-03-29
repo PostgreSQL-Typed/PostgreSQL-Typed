@@ -1,14 +1,14 @@
-import { Table } from "../classes/Table.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import { PostgresData } from "../types/interfaces/PostgresData.js";
-import { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
-import { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
-import { SchemaLocations } from "../types/types/SchemaLocations.js";
-import { TableLocationByPath } from "../types/types/TableLocationByPath.js";
-import { TableLocations } from "../types/types/TableLocations.js";
-import { TableLocationsByDatabase } from "../types/types/TableLocationsByDatabase.js";
-import { Client } from "./Client.js";
+import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
+import type { SchemaLocations } from "../types/types/SchemaLocations.js";
+import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
+import type { TableLocationsByDatabase } from "../types/types/TableLocationsByDatabase.js";
+import type { Client } from "./Client.js";
 import { Schema } from "./Schema.js";
+import { Table } from "./Table.js";
 
 export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData extends DatabaseData, Ready extends boolean> {
 	constructor(public readonly client: Client<InnerPostgresData, Ready>, private readonly databaseData: RawDatabaseData<InnerDatabaseData>) {}

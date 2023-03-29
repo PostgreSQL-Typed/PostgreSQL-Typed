@@ -3,6 +3,7 @@ import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
+import { isRootFilterOperator } from "./isRootFilterOperator.js";
 
 export function getRawWhereQuery<
 	InnerPostgresData extends PostgresData,
@@ -28,31 +29,20 @@ export function getRawWhereQuery<
 	const key = keys[0],
 		spaces = " ".repeat(depth * 2 + 2);
 
-	switch (key) {
-		case "$AND": {
-			const queries = where.$AND?.map(andValue => getRawWhereQuery(andValue as any, depth + 1));
-			if (!queries) throw new Error("No queries found");
-			return {
-				query: `\n${spaces}(\n${spaces}  ${queries.map(query => query.query.trim()).join(`\n${spaces}  AND `)}\n${spaces})`,
-				variables: queries.flatMap(query => query.variables),
-			};
-		}
-		case "$OR": {
-			const queries = where.$OR?.map(orValue => getRawWhereQuery(orValue as any, depth + 1));
-			if (!queries) throw new Error("No queries found");
-			return {
-				query: `\n${spaces}(\n${spaces}  ${queries.map(query => query.query.trim()).join(`\n${spaces}  OR `)}\n${spaces})`,
-				variables: queries.flatMap(query => query.variables),
-			};
-		}
-		default: {
-			//TODO make sure the key is a valid column location
-			const [rawFilterOperator, ...variables] = getRawFilterOperator(where[key] as any);
+	if (isRootFilterOperator(key as string)) {
+		const queries = where.$AND?.map(andValue => getRawWhereQuery(andValue as any, depth + 1));
+		if (!queries) throw new Error("No queries found");
+		return {
+			query: `\n${spaces}(\n${spaces}  ${queries.map(query => query.query.trim()).join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
+			variables: queries.flatMap(query => query.variables),
+		};
+	} else {
+		//TODO make sure the key is a valid column location
+		const [rawFilterOperator, ...variables] = getRawFilterOperator(where[key] as any);
 
-			return {
-				query: `${key.toString()} ${rawFilterOperator}`,
-				variables,
-			};
-		}
+		return {
+			query: `${key.toString()} ${rawFilterOperator}`,
+			variables,
+		};
 	}
 }

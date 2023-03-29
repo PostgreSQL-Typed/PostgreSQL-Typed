@@ -1,9 +1,10 @@
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
+import { isFilterOperator } from "./isFilterOperator.js";
 
 export function getRawFilterOperator(filter: FilterOperators<unknown>): [string, ...unknown[]] {
-	let keys = Object.keys(filter) as (keyof FilterOperators<unknown>)[];
+	let keys = Object.keys(filter);
 	//* Filter out the keys that have a value of undefined
-	keys = keys.filter(key => filter[key] !== undefined);
+	keys = keys.filter(key => filter[key as keyof typeof filter] !== undefined);
 	//* Make sure there is only one key
 	if (keys.length !== 1) {
 		//TODO make this a custom error
@@ -11,6 +12,11 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 	}
 
 	const key = keys[0];
+	if (!isFilterOperator(key)) {
+		//TODO make this a custom error
+		throw new Error("Invalid filter operator");
+	}
+
 	switch (key) {
 		case "$EQUAL":
 			return ["= ?", filter.$EQUAL];
@@ -94,8 +100,9 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 			return ["IS NULL"];
 		case "$IS_NOT_NULL":
 			return ["IS NOT NULL"];
+		/* c8 ignore next 4 */
 		default:
-			//TODO make this a custom error
+			//TODO make this a custom error (assert never)
 			throw new Error("Filter must have a valid operator");
 	}
 }

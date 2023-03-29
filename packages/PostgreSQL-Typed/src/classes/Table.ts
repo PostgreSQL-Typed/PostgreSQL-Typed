@@ -3,7 +3,7 @@ import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
-import { Client } from "./Client.js";
+import type { Client } from "./Client.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { SelectBuilder } from "./SelectBuilder.js";

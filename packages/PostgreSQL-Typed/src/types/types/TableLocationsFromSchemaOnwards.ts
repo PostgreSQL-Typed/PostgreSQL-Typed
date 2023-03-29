@@ -1,5 +1,5 @@
-import { Table } from "../../index.js";
-import { TableLocations } from "./TableLocations.js";
+import type { Table } from "../../classes/Table.js";
+import type { TableLocations } from "./TableLocations.js";
 
 export type TableLocationsFromSchemaOnwards<
 	Tables extends Table<any, any, any, any, any>,

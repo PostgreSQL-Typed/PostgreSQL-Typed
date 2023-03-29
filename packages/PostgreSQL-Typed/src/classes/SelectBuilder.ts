@@ -1,3 +1,5 @@
+import type { PendingQuery } from "postgres";
+
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
@@ -9,8 +11,8 @@ import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import { Client } from "./Client.js";
-import { Table } from "./Table.js";
+import type { Client } from "./Client.js";
+import type { Table } from "./Table.js";
 
 export class SelectBuilder<
 	InnerPostgresData extends PostgresData,
@@ -31,7 +33,6 @@ export class SelectBuilder<
 	private _groupBy = "";
 	private _limit = "";
 	private _fetch = "";
-	private _execute = "";
 
 	constructor(
 		private readonly client: Client<InnerPostgresData, Ready>,
@@ -91,10 +92,6 @@ export class SelectBuilder<
 	//TODO
 	//having() { }
 
-	//select() {}
-
-	//distinct() {}
-
 	orderBy(orderBy: OrderBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>) {
 		//TODO make sure input is valid
 
@@ -126,6 +123,10 @@ export class SelectBuilder<
 		return this;
 	}
 
+	execute(): PendingQuery<any[]>;
+	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>): PendingQuery<any[]>;
+	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>, rawQuery: true): string;
+	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>, rawQuery: false): PendingQuery<any[]>;
 	execute<
 		Select extends SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables> = SelectQuery<
 			InnerPostgresData,
@@ -133,7 +134,7 @@ export class SelectBuilder<
 			Ready,
 			JoinedTables
 		>
-	>(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables> = "*") {
+	>(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables> = "*", rawQuery = false) {
 		const query = `SELECT ${getRawSelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, Select>(select as Select)}\nFROM ${this.table.location
 			.split(".")
 			.slice(1)
@@ -141,6 +142,6 @@ export class SelectBuilder<
 			this._groupBy ? `\n${this._groupBy}` : ""
 		}${this._limit ? `\n${this._limit}` : ""}${this._fetch ? `\n${this._fetch}` : ""}`;
 
-		return query;
+		return rawQuery ? query : this.client.client.unsafe(query, [...this._where.variables, ...this._joins.flatMap(join => join.variables)] as any[]);
 	}
 }

@@ -1,12 +1,12 @@
 import postgres from "postgres";
 
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
-import { RawPostgresData } from "../types/types/RawPostgresData.js";
-import { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
-import { SchemaLocations } from "../types/types/SchemaLocations.js";
-import { TableLocationByPath } from "../types/types/TableLocationByPath.js";
-import { TableLocations } from "../types/types/TableLocations.js";
+import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { RawPostgresData } from "../types/types/RawPostgresData.js";
+import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
+import type { SchemaLocations } from "../types/types/SchemaLocations.js";
+import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";

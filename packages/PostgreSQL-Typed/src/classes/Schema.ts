@@ -1,9 +1,9 @@
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
-import { TableLocationByPath } from "../types/types/TableLocationByPath.js";
-import { TableLocations } from "../types/types/TableLocations.js";
+import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
+import type { TableLocations } from "../types/types/TableLocations.js";
 import type { Client } from "./Client.js";
 import { Database } from "./Database.js";
 import { Table } from "./Table.js";

@@ -56,20 +56,20 @@ export type TestData = {
 						name: "table4";
 						primary_key: "id";
 						columns: {
-							id: number;
+							id: UUID;
 						};
 						insert_parameters: {
-							id: number;
+							id: UUID;
 						};
 					};
 					table5: {
 						name: "table5";
 						primary_key: "id";
 						columns: {
-							id: number;
+							id: UUID;
 						};
 						insert_parameters: {
-							id: number;
+							id: UUID;
 						};
 					};
 				};

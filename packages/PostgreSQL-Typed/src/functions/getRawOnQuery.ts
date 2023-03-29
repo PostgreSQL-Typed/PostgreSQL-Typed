@@ -3,6 +3,7 @@ import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { OnQuery } from "../types/types/OnQuery.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
+import { isRootFilterOperator } from "./isRootFilterOperator.js";
 
 export function getRawOnQuery<
 	InnerPostgresData extends PostgresData,
@@ -29,38 +30,27 @@ export function getRawOnQuery<
 	const key = keys[0],
 		spaces = " ".repeat(depth * 2 + 4);
 
-	switch (key) {
-		case "$AND": {
-			const queries = on.$AND?.map(andValue => getRawOnQuery(andValue as any, depth + 1));
-			if (!queries) throw new Error("No queries found");
+	if (isRootFilterOperator(key as string)) {
+		const queries = on.$AND?.map(andValue => getRawOnQuery(andValue as any, depth + 1));
+		if (!queries) throw new Error("No queries found");
+		return {
+			query: `\n${spaces}(\n${spaces} ${queries.map(query => query.query.trim()).join(`\n${spaces} ${(key as string).replace("$", "")} `)}\n${spaces})`,
+			variables: queries.flatMap(query => query.variables),
+		};
+	} else {
+		//TODO make sure the key is a valid column location
+		//* table.column = otherTable.otherColumn
+		if (typeof on[key] !== "object") {
 			return {
-				query: `\n${spaces}(\n${spaces} ${queries.map(query => query.query.trim()).join(`\n${spaces} AND `)}\n${spaces})`,
-				variables: queries.flatMap(query => query.variables),
+				query: `${key.toString()} = ${on[key]}`,
+				variables: [],
 			};
 		}
-		case "$OR": {
-			const queries = on.$OR?.map(orValue => getRawOnQuery(orValue as any, depth + 1));
-			if (!queries) throw new Error("No queries found");
-			return {
-				query: `\n${spaces}(\n${spaces} ${queries.map(query => query.query.trim()).join(`\n${spaces} OR `)}\n${spaces})`,
-				variables: queries.flatMap(query => query.variables),
-			};
-		}
-		default: {
-			//TODO make sure the key is a valid column location
-			//* table.column = otherTable.otherColumn
-			if (typeof on[key] !== "object") {
-				return {
-					query: `${key.toString()} = ${on[key]}`,
-					variables: [],
-				};
-			}
-			const [rawFilterOperator, ...variables] = getRawFilterOperator(on[key] as any);
+		const [rawFilterOperator, ...variables] = getRawFilterOperator(on[key] as any);
 
-			return {
-				query: `${key.toString()} ${rawFilterOperator}`,
-				variables,
-			};
-		}
+		return {
+			query: `${key.toString()} ${rawFilterOperator}`,
+			variables,
+		};
 	}
 }

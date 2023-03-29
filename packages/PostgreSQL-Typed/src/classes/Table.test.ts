@@ -2,8 +2,8 @@ import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { Client } from "./Client";
 import type { Database } from "./Database";
-import { QueryBuilder } from "./QueryBuilder";
 import type { Schema } from "./Schema";
+import { SelectBuilder } from "./SelectBuilder";
 import type { Table } from "./Table";
 import { type TestData, testData } from "./testData";
 
@@ -59,12 +59,12 @@ describe("Table", () => {
 		expect(table.primaryKey).toBe("id");
 	});
 
-	test("get query()", () => {
+	test("get select()", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1");
 
-		expectTypeOf(table.query).toEqualTypeOf<
-			QueryBuilder<TestData, TestData["db1"], false, Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>
+		expectTypeOf(table.select).toEqualTypeOf<
+			SelectBuilder<TestData, TestData["db1"], false, Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>
 		>();
-		expect(table.query).toBeInstanceOf(QueryBuilder);
+		expect(table.select).toBeInstanceOf(SelectBuilder);
 	});
 });

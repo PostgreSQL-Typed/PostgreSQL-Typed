@@ -1,4 +1,4 @@
-import type { Table } from "../../index.js";
+import type { Table } from "../../classes/Table.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
 import type { FilterOperators } from "../interfaces/FilterOperators.js";
 import type { PostgresData } from "../interfaces/PostgresData.js";

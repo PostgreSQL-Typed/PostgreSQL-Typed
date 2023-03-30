@@ -153,6 +153,10 @@ export class SelectBuilder<
 			usedTableLocations.push(joinTableShort);
 		}
 
+		//* Replace all ? with $1, $2, etc
+		const count = query.match(/%\?%/g)?.length ?? 0;
+		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
+
 		return rawQuery ? query : this.client.client.unsafe(query, [...this._where.variables, ...this._joins.flatMap(join => join.variables)] as any[]);
 	}
 }

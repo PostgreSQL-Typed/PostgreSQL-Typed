@@ -55,7 +55,7 @@ describe("SelectBuilder", () => {
 				.execute("*", true);
 
 		expectTypeOf(query).toEqualTypeOf<string>();
-		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nWHERE t.id ILIKE ?");
+		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nWHERE t.id ILIKE $1");
 	});
 
 	test("groupBy(...)", () => {

@@ -19,26 +19,26 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 
 	switch (key) {
 		case "$EQUAL":
-			return ["= ?", filter.$EQUAL];
+			return ["= %?%", filter.$EQUAL];
 		case "$NOT_EQUAL":
-			return ["!= ?", filter.$NOT_EQUAL];
+			return ["!= %?%", filter.$NOT_EQUAL];
 		case "$GREATER_THAN":
-			return ["> ?", filter.$GREATER_THAN];
+			return ["> %?%", filter.$GREATER_THAN];
 		case "$GREATER_THAN_OR_EQUAL":
-			return [">= ?", filter.$GREATER_THAN_OR_EQUAL];
+			return [">= %?%", filter.$GREATER_THAN_OR_EQUAL];
 		case "$LESS_THAN":
-			return ["< ?", filter.$LESS_THAN];
+			return ["< %?%", filter.$LESS_THAN];
 		case "$LESS_THAN_OR_EQUAL":
-			return ["<= ?", filter.$LESS_THAN_OR_EQUAL];
+			return ["<= %?%", filter.$LESS_THAN_OR_EQUAL];
 		case "$LIKE":
-			return ["LIKE ?", filter.$LIKE];
+			return ["LIKE %?%", filter.$LIKE];
 		case "$NOT_LIKE":
-			return ["NOT LIKE ?", filter.$NOT_LIKE];
+			return ["NOT LIKE %?%", filter.$NOT_LIKE];
 		case "$ILIKE":
-			return ["ILIKE ?", filter.$ILIKE];
+			return ["ILIKE %?%", filter.$ILIKE];
 		case "$NOT_ILIKE":
-			return ["NOT ILIKE ?", filter.$NOT_ILIKE];
-		case "$IN":
+			return ["NOT ILIKE %?%", filter.$NOT_ILIKE];
+		case "$IN": {
 			//* Make sure the value is an array
 			if (!Array.isArray(filter.$IN)) {
 				//TODO make this a custom error
@@ -51,9 +51,10 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 				throw new Error("IN filter must have atleast 2 entries");
 			}
 
-			return ["IN ?", filter.$IN];
-
-		case "$NOT_IN":
+			const questionMarks = filter.$IN.map(() => "%?%").join(", ");
+			return [`IN (${questionMarks})`, filter.$IN];
+		}
+		case "$NOT_IN": {
 			//* Make sure the value is an array
 			if (!Array.isArray(filter.$NOT_IN)) {
 				//TODO make this a custom error
@@ -66,7 +67,9 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 				throw new Error("NOT IN filter must have atleast 2 entries");
 			}
 
-			return ["NOT IN ?", filter.$NOT_IN];
+			const questionMarks = filter.$NOT_IN.map(() => "%?%").join(", ");
+			return [`NOT IN (${questionMarks})`, filter.$NOT_IN];
+		}
 		case "$BETWEEN":
 			//* Make sure the value is an array
 			if (!Array.isArray(filter.$BETWEEN)) {
@@ -80,7 +83,7 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 				throw new Error("BETWEEN filter must have exactly 2 entries");
 			}
 
-			return ["BETWEEN ? AND ?", filter.$BETWEEN[0], filter.$BETWEEN[1]];
+			return ["BETWEEN %?% AND %?%", filter.$BETWEEN[0], filter.$BETWEEN[1]];
 
 		case "$NOT_BETWEEN":
 			//* Make sure the value is an array
@@ -95,7 +98,7 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 				throw new Error("NOT BETWEEN filter must have exactly 2 entries");
 			}
 
-			return ["NOT BETWEEN ? AND ?", filter.$NOT_BETWEEN[0], filter.$NOT_BETWEEN[1]];
+			return ["NOT BETWEEN %?% AND %?%", filter.$NOT_BETWEEN[0], filter.$NOT_BETWEEN[1]];
 		case "$IS_NULL":
 			return ["IS NULL"];
 		case "$IS_NOT_NULL":

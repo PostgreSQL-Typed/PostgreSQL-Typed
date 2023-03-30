@@ -34,7 +34,7 @@ describe("getRawOnQuery", () => {
 				},
 			})
 		).toEqual({
-			query: "schema1.table2.id = ?",
+			query: "schema1.table2.id = %?%",
 			variables: [uuid],
 		});
 	});
@@ -59,7 +59,7 @@ describe("getRawOnQuery", () => {
 				],
 			})
 		).toEqual({
-			query: "\n  (\n    schema1.table2.id = ?\n    AND schema1.table2.id = schema1.table1.id\n  )",
+			query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
 			variables: [uuid],
 		});
 	});

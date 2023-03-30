@@ -136,7 +136,7 @@
 					<label font-light text-sm ws-nowrap overflow-hidden capitalize truncate for="show-label">Show Column Labels</label>
 				</div>
 				<div>
-					<IconButton v-tooltip.bottom="'Reset'" icon="i-carbon-reset" @click="resetGraphController" />
+					<IconButton id="resetController" v-tooltip.bottom="'Reset'" icon="i-carbon-reset" @click="resetGraphController" />
 				</div>
 			</div>
 		</div>

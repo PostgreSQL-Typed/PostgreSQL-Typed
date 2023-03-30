@@ -53,10 +53,10 @@
 				</div>
 			</div>
 			<div flex="~" items-center bg-header border="b-2 base" text-sm h-41px>
-				<button tab-button :class="{ 'tab-button-active': viewMode === undefined }" @click="changeViewMode(undefined)">Table</button>
-				<button tab-button :class="{ 'tab-button-active': viewMode === 'graph' }" @click="changeViewMode('graph')">Relation Graph</button>
-				<button tab-button :class="{ 'tab-button-active': viewMode === 'diagram' }" @click="changeViewMode('diagram')">ER Diagram</button>
-				<button tab-button :class="{ 'tab-button-active': viewMode === 'editor' }" @click="changeViewMode('editor')">
+				<button tab-button id="tableBtn" :class="{ 'tab-button-active': viewMode === undefined }" @click="changeViewMode(undefined)">Table</button>
+				<button tab-button id="graphBtn" :class="{ 'tab-button-active': viewMode === 'graph' }" @click="changeViewMode('graph')">Relation Graph</button>
+				<button tab-button id="diagramBtn" :class="{ 'tab-button-active': viewMode === 'diagram' }" @click="changeViewMode('diagram')">ER Diagram</button>
+				<button tab-button id="editorBtn" :class="{ 'tab-button-active': viewMode === 'editor' }" @click="changeViewMode('editor')">
 					{{ editorDraft ? "*&#160;" : "" }}Editor
 				</button>
 			</div>

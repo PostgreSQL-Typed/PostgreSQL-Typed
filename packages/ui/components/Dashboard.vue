@@ -37,15 +37,15 @@
 					<div grid="~ cols-[min-content_1fr_min-content]" items-center gap="x-2 y-3" p="x4" relative font-light w-80 op80>
 						<div i-carbon-result />
 						<div>Schemas</div>
-						<div class="number">{{ schemaCount }}</div>
+						<div id="schemaCount" class="number">{{ schemaCount }}</div>
 
 						<div i-carbon-document />
 						<div>Tables</div>
-						<div class="number">{{ tableCount }}</div>
+						<div id="tableCount" class="number">{{ tableCount }}</div>
 
 						<div i-carbon-maximize />
 						<div>Size</div>
-						<div class="number">{{ dbSize }}</div>
+						<div id="dbSize" class="number">{{ dbSize }}</div>
 					</div>
 				</div>
 			</div>

@@ -113,7 +113,7 @@
 
 <template>
 	<div class="scrolls" w-full h-full>
-		<table min-w-full max-h-full>
+		<table id="dataTable" min-w-full max-h-full>
 			<thead text-left>
 				<tr>
 					<th v-for="[header, text] in Object.entries(headers)" :key="header" @click="changeSort(header)" px-2 border="1 base" cursor-pointer select-none>

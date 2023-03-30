@@ -12,7 +12,7 @@ export function getRawJoinQuery<
 	JoinedTables extends Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>,
 	JoinedTable extends Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>,
 	Filter extends JoinQuery<JoinedTables, JoinedTable> = JoinQuery<JoinedTables, JoinedTable>
->(filter: Filter, table: JoinedTable): { query: string; variables: unknown[] } {
+>(filter: Filter, table: JoinedTable): { query: string; variables: unknown[]; tableLocation: string } {
 	//* Table.location is in the format of "database.schema.table" but we only want "schema.table"
 	const tableLocation = table.location.split(".").slice(1).join(".");
 
@@ -27,13 +27,14 @@ export function getRawJoinQuery<
 		case "NATURAL INNER":
 		case "NATURAL LEFT":
 		case "NATURAL RIGHT":
-			return { query: `${filter.$TYPE} JOIN ${tableLocation}`, variables: [] };
+			return { query: `${filter.$TYPE} JOIN ${tableLocation}`, variables: [], tableLocation };
 
 		default: {
 			const onQuery = getRawOnQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, JoinedTable>(filter.$ON);
 			return {
-				query: `${filter.$TYPE ?? "INNER"} JOIN ${tableLocation}\nON ${onQuery.query}`,
+				query: `${filter.$TYPE ?? "INNER"} JOIN ${tableLocation} %${tableLocation}%\nON ${onQuery.query}`,
 				variables: onQuery.variables,
+				tableLocation,
 			};
 		}
 	}

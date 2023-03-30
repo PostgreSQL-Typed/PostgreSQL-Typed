@@ -20,6 +20,7 @@ describe("getRawJoinQuery", () => {
 		).toEqual({
 			query: "CROSS JOIN schema1.table2",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -38,6 +39,7 @@ describe("getRawJoinQuery", () => {
 		).toEqual({
 			query: "NATURAL JOIN schema1.table2",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -56,6 +58,7 @@ describe("getRawJoinQuery", () => {
 		).toEqual({
 			query: "NATURAL INNER JOIN schema1.table2",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -74,6 +77,7 @@ describe("getRawJoinQuery", () => {
 		).toEqual({
 			query: "NATURAL LEFT JOIN schema1.table2",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -92,6 +96,7 @@ describe("getRawJoinQuery", () => {
 		).toEqual({
 			query: "NATURAL RIGHT JOIN schema1.table2",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -111,8 +116,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "INNER JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 
 		expect(
@@ -125,8 +131,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "INNER JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -146,8 +153,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "LEFT JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "LEFT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -167,8 +175,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "RIGHT JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "RIGHT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -188,8 +197,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "FULL JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "FULL JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 
@@ -209,8 +219,9 @@ describe("getRawJoinQuery", () => {
 				table2
 			)
 		).toEqual({
-			query: "FULL OUTER JOIN schema1.table2\nON schema1.table2.id = schema1.table1.id",
+			query: "FULL OUTER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 			variables: [],
+			tableLocation: "schema1.table2",
 		});
 	});
 

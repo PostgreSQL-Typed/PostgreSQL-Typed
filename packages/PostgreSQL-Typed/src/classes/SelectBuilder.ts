@@ -3,6 +3,7 @@ import type { PendingQuery } from "postgres";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
+import { getTableIdentifier } from "../functions/getTableIdentifier.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
@@ -26,6 +27,7 @@ export class SelectBuilder<
 	private _joins: {
 		query: string;
 		variables: unknown[];
+		tableLocation: string;
 	}[] = [];
 	private _where = {
 		query: "",
@@ -85,7 +87,7 @@ export class SelectBuilder<
 	groupBy(groupBy: GroupBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>) {
 		//TODO make sure input is valid
 
-		this._groupBy = `GROUP BY ${Array.isArray(groupBy) ? [...new Set(groupBy)].join(",") : groupBy}`;
+		this._groupBy = `GROUP BY ${Array.isArray(groupBy) ? [...new Set(groupBy)].join(", ") : groupBy}`;
 
 		return this;
 	}
@@ -99,7 +101,7 @@ export class SelectBuilder<
 		const { columns, nulls } = orderBy,
 			orderByColumns = columns ? Object.entries(columns).map(([column, direction]) => `${column} ${direction}`) : undefined;
 
-		this._groupBy = `ORDER BY${orderByColumns ? ` ${orderByColumns.join(",")}` : ""}${nulls ? ` ${nulls}` : ""}`;
+		this._groupBy = `ORDER BY${orderByColumns ? ` ${orderByColumns.join(", ")}` : ""}${nulls ? ` ${nulls}` : ""}`;
 
 		return this;
 	}
@@ -124,24 +126,32 @@ export class SelectBuilder<
 		return this;
 	}
 
-	execute(): PendingQuery<any[]>;
-	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>): PendingQuery<any[]>;
-	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>, rawQuery: true): string;
-	execute(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>, rawQuery: false): PendingQuery<any[]>;
-	execute<
-		Select extends SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables> = SelectQuery<
-			InnerPostgresData,
-			InnerDatabaseData,
-			Ready,
-			JoinedTables
-		>
-	>(select: SelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables> = "*", rawQuery = false) {
-		const query = `SELECT ${getRawSelectQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, Select>(select as Select)}\nFROM ${this.table.location
-			.split(".")
-			.slice(1)
-			.join(".")}${this._joins.length > 0 ? `\n${this._joins.map(join => join.query).join("\n")}` : ""}\n${this._where.query}${
-			this._groupBy ? `\n${this._groupBy}` : ""
-		}${this._limit ? `\n${this._limit}` : ""}${this._fetch ? `\n${this._fetch}` : ""}`;
+	execute(select?: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>): PendingQuery<any[]>;
+	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: true): string;
+	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: false): PendingQuery<any[]>;
+	execute<Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>>(
+		select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = "*",
+		rawQuery = false
+	) {
+		const tableLocation = this.table.location.split(".").slice(1).join("."),
+			usedTableLocations: string[] = [];
+
+		let query = `SELECT ${getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select)}\nFROM ${tableLocation} %${tableLocation}%${
+			this._joins.length > 0 ? `\n${this._joins.map(join => join.query).join("\n")}` : ""
+		}${this._where.query ? `\n${this._where.query}` : ""}${this._groupBy ? `\n${this._groupBy}` : ""}${this._limit ? `\n${this._limit}` : ""}${
+			this._fetch ? `\n${this._fetch}` : ""
+		}`;
+
+		//* Replace the table locations with the short names
+		const mainTableShort = getTableIdentifier(tableLocation, usedTableLocations);
+		query = query.replaceAll(`%${tableLocation}%`, mainTableShort).replaceAll(`${tableLocation}.`, `${mainTableShort}.`);
+		usedTableLocations.push(mainTableShort);
+
+		for (const join of this._joins) {
+			const joinTableShort = getTableIdentifier(join.tableLocation, usedTableLocations);
+			query = query.replaceAll(`%${join.tableLocation}%`, joinTableShort).replaceAll(`${join.tableLocation}.`, `${joinTableShort}.`);
+			usedTableLocations.push(joinTableShort);
+		}
 
 		return rawQuery ? query : this.client.client.unsafe(query, [...this._where.variables, ...this._joins.flatMap(join => join.variables)] as any[]);
 	}

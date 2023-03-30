@@ -61,14 +61,14 @@ describe("getRawFilterOperator", () => {
 	});
 
 	test("$IN", () => {
-		expect(getRawFilterOperator({ $IN: [1, 2, 3, 4, 5] })).toEqual(["IN (%?%, %?%, %?%, %?%, %?%)", [1, 2, 3, 4, 5]]);
+		expect(getRawFilterOperator({ $IN: [1, 2, 3, 4, 5] })).toEqual(["IN (%?%, %?%, %?%, %?%, %?%)", 1, 2, 3, 4, 5]);
 
 		expect(() => getRawFilterOperator({ $IN: 1 } as any)).toThrowError();
 		expect(() => getRawFilterOperator({ $IN: [1] })).toThrowError();
 	});
 
 	test("$NOT_IN", () => {
-		expect(getRawFilterOperator({ $NOT_IN: [1, 2, 3, 4, 5] })).toEqual(["NOT IN (%?%, %?%, %?%, %?%, %?%)", [1, 2, 3, 4, 5]]);
+		expect(getRawFilterOperator({ $NOT_IN: [1, 2, 3, 4, 5] })).toEqual(["NOT IN (%?%, %?%, %?%, %?%, %?%)", 1, 2, 3, 4, 5]);
 
 		expect(() => getRawFilterOperator({ $NOT_IN: 1 } as any)).toThrowError();
 		expect(() => getRawFilterOperator({ $NOT_IN: [1] })).toThrowError();

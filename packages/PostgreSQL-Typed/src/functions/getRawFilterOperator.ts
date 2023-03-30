@@ -52,7 +52,7 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 			}
 
 			const questionMarks = filter.$IN.map(() => "%?%").join(", ");
-			return [`IN (${questionMarks})`, filter.$IN];
+			return [`IN (${questionMarks})`, ...filter.$IN];
 		}
 		case "$NOT_IN": {
 			//* Make sure the value is an array
@@ -68,7 +68,7 @@ export function getRawFilterOperator(filter: FilterOperators<unknown>): [string,
 			}
 
 			const questionMarks = filter.$NOT_IN.map(() => "%?%").join(", ");
-			return [`NOT IN (${questionMarks})`, filter.$NOT_IN];
+			return [`NOT IN (${questionMarks})`, ...filter.$NOT_IN];
 		}
 		case "$BETWEEN":
 			//* Make sure the value is an array

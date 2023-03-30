@@ -38,12 +38,7 @@
 		"lint:ci": "eslint --ext .ts ./ && prettier --check .",
 		"test": "vitest --run",
 		"test:watch": "vitest --ui --coverage",
-		"test:ci": "vitest --run --coverage",
-		"test:prepare": "pnpm run build:util && pnpm run gen-types",
-		"gen-types": "pnpm run gen-types:setup && pnpm run gen-types:run && pnpm run gen-types:clean",
-		"gen-types:setup": "cd util/dist && node createTable.js && node removeOld.js",
-		"gen-types:run": "pgtg generate",
-		"gen-types:clean": "cd util/dist && node deleteTable.js && node fixImports.js"
+		"test:ci": "vitest --run --coverage"
 	},
 	"dependencies": {
 		"postgres": "^3.3.3"

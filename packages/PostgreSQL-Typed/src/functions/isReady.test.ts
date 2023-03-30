@@ -24,8 +24,11 @@ describe("isReady", () => {
 
 	test("true", async () => {
 		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData, {
-			username: "postgres",
-			password: "postgres",
+			password: "password",
+			host: "localhost",
+			user: "postgres",
+			database: "postgres",
+			port: 5432,
 		});
 
 		client = await client.testConnection();

@@ -33,7 +33,6 @@
 	"scripts": {
 		"dev": "tsc -w",
 		"build": "tsc",
-		"build:util": "cd util && tsc",
 		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
 		"lint:ci": "eslint --ext .ts ./ && prettier --check .",
 		"test": "vitest --run",

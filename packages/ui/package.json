@@ -27,7 +27,7 @@
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
 		"cy:run": "cypress run",
-		"test": "start-server-and-test preview http://localhost:3000 cy:run"
+		"test:ci": "start-server-and-test preview http://localhost:3000 cy:run"
 	},
 	"dependencies": {
 		"@iconify-json/carbon": "^1.1.16",

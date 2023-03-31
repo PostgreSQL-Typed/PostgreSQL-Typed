@@ -221,11 +221,13 @@ describe("SelectBuilder", () => {
 
 	test("execute(...)", async () => {
 		const table = new Client<TestData>(testData, {
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
+				options: {
+					password: "password",
+					host: "localhost",
+					user: "postgres",
+					database: "postgres",
+					port: 5432,
+				},
 			}).table("db1.schema1.table1"),
 			query = table.select.execute("*");
 

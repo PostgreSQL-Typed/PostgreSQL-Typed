@@ -53,6 +53,7 @@ export * from "./data/ObjectIdentifier/OID.js";
 export * from "./data/UUID/UUID.js";
 
 //* Types
+export * from "./types/FromParameters.js";
 export * from "./types/IpType.js";
 export * from "./types/Offset.js";
 export * from "./types/OffsetDirection.js";

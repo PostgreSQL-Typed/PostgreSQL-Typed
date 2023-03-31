@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { resolve } from "node:path/posix";
 
 import { ConfigHandler } from "../classes/ConfigHandler.js";
 import { Fetcher } from "../classes/Fetcher.js";

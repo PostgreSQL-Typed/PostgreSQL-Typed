@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join } from "node:path/posix";
 
 import { cosmiconfig } from "cosmiconfig";
 import { TypeScriptLoader } from "cosmiconfig-typescript-loader";

@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { promises } from "node:fs";
-import { dirname, join } from "node:path";
+import { dirname, join } from "node:path/posix";
 
 import { OID } from "@postgresql-typed/oids";
 import mkdirp from "mkdirp";
@@ -151,13 +151,12 @@ export class Printer {
 				const folders: string[] = [];
 				await Promise.all(
 					directoryFilesToDelete.map(async fileName => {
-						const filePath = join(directory, fileName);
-						this.LOGGER?.(`Deleting: ${filePath} (directory: ${directory}, fileName: ${fileName})`);
-						const file = await promises.stat(filePath);
+						const filePath = join(directory, fileName),
+							file = await promises.stat(filePath);
 						if (file.isFile()) {
 							const source = await promises.readFile(filePath, "utf8");
 							if (source.includes(GENERATED_STATEMENT)) {
-								this.LOGGER?.(`Deleting: ${fileName}`);
+								this.LOGGER?.(`Deleting: ${filePath}`);
 								await promises.unlink(filePath);
 							}
 						} else if (file.isDirectory()) folders.push(filePath);
@@ -171,7 +170,7 @@ export class Printer {
 				for (const folder of folders) {
 					const files = await promises.readdir(folder);
 					if (files.length === 0) {
-						this.LOGGER?.(`Deleting Folder: ${folder}`);
+						this.LOGGER?.(`Deleting folder: ${folder}`);
 						await promises.rmdir(folder);
 					}
 				}
@@ -187,13 +186,13 @@ export class Printer {
 						try {
 							const existingSource = await promises.readFile(filename, "utf8");
 							if (existingSource.includes(checksum)) {
-								this.LOGGER?.(`Skipping: ${f.filename} (unchanged)`);
+								this.LOGGER?.(`Skipping: ${filename} (unchanged)`);
 								return;
 							}
-							this.LOGGER?.(`Updating: ${f.filename}`);
+							this.LOGGER?.(`Updating: ${filename}`);
 						} catch (error: any) {
 							if (error.code !== "ENOENT") throw error;
-							this.LOGGER?.(`Writing: ${f.filename}`);
+							this.LOGGER?.(`Writing: ${filename}`);
 						}
 
 						//* Double check nested folders exist
@@ -237,9 +236,10 @@ export class Printer {
 		if (isDebugEnabled()) {
 			this.LOGGER?.("Writing debug file...");
 			//* Get the Date in UTC
-			const debugFileName = resolveFilename(this.config, this.getDebugConfigType());
-			this.LOGGER?.(`Writing: ${debugFileName}`);
-			await promises.writeFile(join(directory, debugFileName), JSON.stringify(this.data, null, 4));
+			const debugFileName = resolveFilename(this.config, this.getDebugConfigType()),
+				filePath = join(directory, debugFileName);
+			this.LOGGER?.(`Writing: ${filePath}`);
+			await promises.writeFile(filePath, JSON.stringify(this.data, null, 4));
 		}
 	}
 
@@ -248,9 +248,8 @@ export class Printer {
 			files: string[] = [];
 
 		for (const fileName of directoryFiles) {
-			const filePath = join(directory, fileName);
-			this.LOGGER?.(`getAllFiles: ${filePath} (directory: ${directory}, fileName: ${fileName})`);
-			const file = await promises.stat(filePath);
+			const filePath = join(directory, fileName),
+				file = await promises.stat(filePath);
 
 			if (file.isDirectory()) {
 				const newFiles = await this.getAllFiles(filePath);

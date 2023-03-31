@@ -1,4 +1,4 @@
-import { dirname, relative } from "node:path";
+import { dirname, relative } from "node:path/posix";
 
 import { ImportState } from "../classes/ImportState.js";
 import type { Config } from "../types/interfaces/Config.js";

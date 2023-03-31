@@ -55,12 +55,12 @@ importers:
 
   packages/PostgreSQL-Caching:
     specifiers:
+      '@postgresql-typed/core': workspace:*
       '@types/jest': ^28.1.6
       '@types/pg': ^8.6.5
       jest: ^28.1.3
       keyv: ^4.3.3
       pg: ^8.7.3
-      postgresql-typed: workspace:*
       source-map-support: ^0.5.21
       ts-jest: ^28.0.7
       typescript: ^4.7.4
@@ -68,29 +68,12 @@ importers:
       keyv: 4.5.2
       pg: 8.9.0
     devDependencies:
+      '@postgresql-typed/core': link:../core
       '@types/jest': 28.1.8
       '@types/pg': 8.6.6
       jest: 28.1.3
-      postgresql-typed: link:../PostgreSQL-Typed
       source-map-support: 0.5.21
       ts-jest: 28.0.8_mgg23zyyvjoe75wbzvxzqqpmne
-      typescript: 4.9.5
-
-  packages/PostgreSQL-Typed:
-    specifiers:
-      '@postgresql-typed/cli': workspace:*
-      '@postgresql-typed/parsers': workspace:*
-      '@types/node': ^18.6.2
-      postgres: ^3.3.3
-      source-map-support: ^0.5.21
-      typescript: ^4.9.5
-    dependencies:
-      postgres: 3.3.3
-    devDependencies:
-      '@postgresql-typed/cli': link:../cli
-      '@postgresql-typed/parsers': link:../parsers
-      '@types/node': 18.11.18
-      source-map-support: 0.5.21
       typescript: 4.9.5
 
   packages/cli:
@@ -148,6 +131,23 @@ importers:
       '@types/pascalcase': 1.0.1
       '@types/pg': 8.6.6
       '@types/pluralize': 0.0.29
+      typescript: 4.9.5
+
+  packages/core:
+    specifiers:
+      '@postgresql-typed/cli': workspace:*
+      '@postgresql-typed/parsers': workspace:*
+      '@types/node': ^18.6.2
+      postgres: ^3.3.3
+      source-map-support: ^0.5.21
+      typescript: ^4.9.5
+    dependencies:
+      postgres: 3.3.3
+    devDependencies:
+      '@postgresql-typed/cli': link:../cli
+      '@postgresql-typed/parsers': link:../parsers
+      '@types/node': 18.15.3
+      source-map-support: 0.5.21
       typescript: 4.9.5
 
   packages/oids:

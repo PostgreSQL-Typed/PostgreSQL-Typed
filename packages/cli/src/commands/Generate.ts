@@ -15,6 +15,7 @@ export interface GenerateArguments<ReturnDebug extends boolean> {
 	throwOnError?: boolean;
 	returnDebug?: ReturnDebug;
 	noConsoleLogs?: boolean;
+	noFiles?: boolean;
 }
 
 export const Generate = {
@@ -91,7 +92,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 
 	log?.("Printing types...");
 	if (arguments_.noConsoleLogs !== true) progressBar.setProgressLine1(g("Generating types"));
-	await printer.print();
+	if (arguments_.noFiles !== true) await printer.print();
 	log?.("Printed types!");
 	progressBar.incrementProgress();
 

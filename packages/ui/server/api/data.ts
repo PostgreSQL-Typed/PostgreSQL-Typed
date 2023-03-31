@@ -20,5 +20,6 @@ export async function generateData() {
 		noConsoleLogs: true,
 		throwOnError: true,
 		returnDebug: true,
+		noFiles: true,
 	});
 }

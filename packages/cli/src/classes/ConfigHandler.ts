@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import { writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { join } from "node:path/posix";
 
 import { cosmiconfig } from "cosmiconfig";
-import { TypeScriptLoader } from "cosmiconfig-typescript-loader";
+import { Loaders } from "cosmiconfig/dist/types.js";
 import debug from "debug";
 
 import { GenerateArguments } from "../commands/Generate.js";
@@ -15,27 +16,35 @@ import { GLOBAL_DEBUG_GLOB, LOGGER, MODULE_NAME } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile.js";
 
+const require = createRequire(import.meta.url),
+	loaders: Loaders = {},
+	searchPlaces = [
+		"package.json",
+		`.${MODULE_NAME}rc`,
+		`.${MODULE_NAME}rc.json`,
+		`.${MODULE_NAME}rc.yaml`,
+		`.${MODULE_NAME}rc.yml`,
+		`.${MODULE_NAME}rc.js`,
+		`.${MODULE_NAME}rc.cjs`,
+		`${MODULE_NAME}.config.js`,
+		`${MODULE_NAME}.config.cjs`,
+	];
+
+try {
+	require.resolve("typescript");
+	const cosmiconfigTypescriptLoader = require("cosmiconfig-typescript-loader");
+
+	searchPlaces.push(`.${MODULE_NAME}rc.ts`, `${MODULE_NAME}.config.ts`);
+	loaders[".ts"] = cosmiconfigTypescriptLoader.TypeScriptLoader();
+} catch {}
+
 export class ConfigHandler {
 	filepath: string | null = null;
 	config: Config = DEFAULT_CONFIG;
 	private LOGGER = LOGGER?.extend("ConfigHandler");
 	private cosmi = cosmiconfig(MODULE_NAME, {
-		searchPlaces: [
-			"package.json",
-			`.${MODULE_NAME}rc`,
-			`.${MODULE_NAME}rc.json`,
-			`.${MODULE_NAME}rc.yaml`,
-			`.${MODULE_NAME}rc.yml`,
-			`.${MODULE_NAME}rc.js`,
-			`.${MODULE_NAME}rc.ts`,
-			`.${MODULE_NAME}rc.cjs`,
-			`${MODULE_NAME}.config.js`,
-			`${MODULE_NAME}.config.ts`,
-			`${MODULE_NAME}.config.cjs`,
-		],
-		loaders: {
-			".ts": TypeScriptLoader(),
-		},
+		searchPlaces,
+		loaders,
 	});
 
 	public async loadConfig(generatorConfig?: GenerateArguments<boolean>): Promise<this> {

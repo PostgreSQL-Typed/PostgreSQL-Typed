@@ -1,7 +1,6 @@
 {
-	"private": true,
 	"name": "@postgresql-typed/cli",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.",
 	"type": "module",
 	"exports": "./lib/index.js",
@@ -75,8 +74,7 @@
 		"typescript": "^4.7.4"
 	},
 	"peerDependencies": {
-		"@postgresql-typed/ui": "workspace:*",
-		"postgresql-typed": "workspace:*"
+		"@postgresql-typed/ui": "workspace:*"
 	},
 	"peerDependenciesMeta": {
 		"@postgresql-typed/ui": {

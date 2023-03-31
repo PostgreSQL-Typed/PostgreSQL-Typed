@@ -1,6 +1,6 @@
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
-import type { LastPath } from "../types/LastPath.js";
-import type { NestedPaths } from "../types/NestedPaths.js";
+import type { LastPath } from "./LastPath.js";
+import type { NestedPaths } from "./NestedPaths.js";
 
 export type Tables<InnerDatabaseData extends DatabaseData> = LastPath<
 	NestedPaths<{

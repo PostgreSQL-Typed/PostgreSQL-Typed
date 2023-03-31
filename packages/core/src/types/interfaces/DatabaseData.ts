@@ -1,4 +1,4 @@
-import type { SchemaData } from "../interfaces/SchemaData.js";
+import type { SchemaData } from "./SchemaData.js";
 
 export type DatabaseData = {
 	name: string;

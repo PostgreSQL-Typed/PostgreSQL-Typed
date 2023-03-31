@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "postgresql-typed",
+	"name": "@postgresql-typed/core",
 	"version": "1.0.0",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
@@ -15,7 +15,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
-		"directory": "packages/postgresql-typed"
+		"directory": "packages/core"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"

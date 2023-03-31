@@ -13,7 +13,7 @@
 </script>
 
 <template>
-	<TableList border="r base" :tables="tables" :on-item-click="onItemClick">
+	<TableList :tables="tables" :on-item-click="onItemClick">
 		<template #header>
 			<img w-6 h-6 src="/favicon.svg" alt="PostgreSQL-Typed logo" />
 			<span font-light text-sm flex-1 ws-nowrap>PostgreSQL-Typed</span>

@@ -170,9 +170,9 @@ describe("Relation Graph", () => {
 		cy.get("#type-outgoing").check();
 
 		cy.get("#show-label").should("not.be.checked");
-		cy.get(".link__label").should("not.be.visible");
+		cy.get(".link__label").should("have.css", "opacity", "0");
 		cy.get("#show-label").check();
-		cy.get(".link__label").should("be.visible");
+		cy.get(".link__label").should("have.css", "opacity", "1");
 		cy.get(".link__label").should("have.text", "oid* → id");
 		cy.get("#resetController").click();
 		cy.get("#show-label").should("not.be.checked");

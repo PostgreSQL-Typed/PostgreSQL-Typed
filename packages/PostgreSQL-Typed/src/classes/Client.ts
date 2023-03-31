@@ -18,17 +18,42 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	constructor(
 		private readonly postgresData: RawPostgresData<InnerPostgresData>,
-		// eslint-disable-next-line @typescript-eslint/ban-types
-		options?: postgres.Options<{}>
+		connectionOptions?:
+			| string
+			| {
+					url?: string;
+					// eslint-disable-next-line @typescript-eslint/ban-types
+					options?: postgres.Options<{}>;
+			  }
 	) {
-		this._client = postgres(options);
+		this._client =
+			typeof connectionOptions === "string"
+				? postgres(connectionOptions)
+				: connectionOptions !== undefined && "url" in connectionOptions && typeof connectionOptions.url === "string"
+				? postgres(connectionOptions.url, connectionOptions.options)
+				: postgres(connectionOptions?.options);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	async testConnection(options?: postgres.Options<{}>): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
+	async testConnection(
+		connectionOptions?:
+			| string
+			| {
+					url?: string;
+					// eslint-disable-next-line @typescript-eslint/ban-types
+					options?: postgres.Options<{}>;
+			  }
+	): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
 		this._connectionError = undefined;
-		if (options) this._client = postgres(options);
+		if (connectionOptions !== undefined) {
+			this._client =
+				typeof connectionOptions === "string"
+					? postgres(connectionOptions)
+					: "url" in connectionOptions && typeof connectionOptions.url === "string"
+					? postgres(connectionOptions.url, connectionOptions.options)
+					: postgres(connectionOptions.options);
+		}
 		try {
 			await this._client`SELECT 1`;
 			this._ready = true;

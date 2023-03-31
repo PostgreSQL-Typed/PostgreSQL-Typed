@@ -54,6 +54,10 @@ class TestClass extends PGTPBase<TestClass> {
 		if (!parsed.error.message.includes("nan")) this.setIssueForContext(input, parsed.error.issue);
 		return INVALID;
 	}
+
+	get value(): string {
+		return this._data;
+	}
 }
 
 describe("PGTPBase", () => {

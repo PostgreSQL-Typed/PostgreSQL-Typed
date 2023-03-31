@@ -112,6 +112,20 @@ describe("Circle", () => {
 		circle.radius = 5;
 		expect(circle.radius).toBe(5);
 	});
+
+	test("get value()", () => {
+		const circle = Circle.from("<(2,2),1>");
+		expect(circle.value).toBe("<(2,2),1>");
+	});
+
+	test("set value(...)", () => {
+		const circle = Circle.from("<(2,2),1>");
+		circle.value = "<(1,1),3>";
+		expect(circle.value).toBe("<(1,1),3>");
+		expect(() => {
+			circle.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

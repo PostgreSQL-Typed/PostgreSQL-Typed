@@ -31,6 +31,14 @@ describe("TimestampTZMultiRange", () => {
 	test.todo("set ranges(...)", () => {
 		//
 	});
+
+	test.todo("get value()", () => {
+		//
+	});
+
+	test.todo("set value(...)", () => {
+		//
+	});
 });
 
 describe("PostgreSQL", () => {

@@ -40,6 +40,8 @@ interface Path {
 	points: Point[];
 	connection: Connection | ConnectionType;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): RawPathObject;
 
@@ -410,6 +412,18 @@ class PathClass extends PGTPBase<Path> implements Path {
 		}
 
 		this._connection = connection;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(path: string) {
+		const parsed = Path.safeFrom(path);
+		if (parsed.success) {
+			this._connection = parsed.data.connection;
+			this._points = parsed.data.points;
+		} else throw parsed.error;
 	}
 }
 

@@ -39,6 +39,8 @@ date1.year; // 2020
 date1.month; // 1
 date1.day; // 1
 
+date1.value; // "2020-01-01"
+
 //* It has a `toString()` method that returns a string representation of the date:
 date1.toString(); // "2020-01-01"
 

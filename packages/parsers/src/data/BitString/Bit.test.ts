@@ -11,7 +11,7 @@ describe("BitConstructor", () => {
 		expect(Bit.safeFrom(Bit.from(1)).success).toBe(true);
 		expect(
 			Bit.safeFrom({
-				bit: "1",
+				value: "1",
 			}).success
 		).toBe(true);
 
@@ -22,7 +22,7 @@ describe("BitConstructor", () => {
 		expect(Bit2.safeFrom(Bit2.from(5)).success).toBe(true);
 		expect(
 			Bit2.safeFrom({
-				bit: "101",
+				value: "101",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -117,7 +117,7 @@ describe("BitConstructor", () => {
 		}
 
 		const unrecognizedKeys = Bit.safeFrom({
-			bit: "1",
+			value: "1",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -131,30 +131,30 @@ describe("BitConstructor", () => {
 		}
 
 		const missingKeys = Bit.safeFrom({
-			// bit: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["bit"],
-				message: "Missing key in object: 'bit'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Bit.safeFrom({
-			bit: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "bit",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'bit', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 
@@ -181,7 +181,7 @@ describe("BitConstructor", () => {
 		expect(Bit.isBit(1)).toEqual(false);
 		expect(Bit.isBit("1")).toEqual(false);
 		expect(Bit.isBit({})).toEqual(false);
-		expect(Bit.isBit({ bit: "1" })).toEqual(false);
+		expect(Bit.isBit({ value: "1" })).toEqual(false);
 
 		//* it should return true in isBit when value is a Bit of specified length
 		expect(Bit.isBit(Bit.from(1), 1)).toBe(true);
@@ -201,7 +201,7 @@ describe("BitConstructor", () => {
 		expect(Bit.isAnyBit(1)).toEqual(false);
 		expect(Bit.isAnyBit("1")).toEqual(false);
 		expect(Bit.isAnyBit({})).toEqual(false);
-		expect(Bit.isAnyBit({ bit: "1" })).toEqual(false);
+		expect(Bit.isAnyBit({ value: "1" })).toEqual(false);
 	});
 
 	test("setN(...)", () => {
@@ -231,8 +231,8 @@ describe("Bit", () => {
 		expect(bit.equals(0)).toEqual(false);
 		expect(bit.equals("1")).toBe(true);
 		expect(bit.equals("0")).toEqual(false);
-		expect(bit.equals({ bit: "1" })).toBe(true);
-		expect(bit.equals({ bit: "0" })).toEqual(false);
+		expect(bit.equals({ value: "1" })).toBe(true);
+		expect(bit.equals({ value: "0" })).toEqual(false);
 
 		const safeEquals1 = bit.safeEquals(Bit.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -264,12 +264,12 @@ describe("Bit", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = bit.safeEquals({ bit: "1" });
+		const safeEquals7 = bit.safeEquals({ value: "1" });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = bit.safeEquals({ bit: "0" });
+		const safeEquals8 = bit.safeEquals({ value: "0" });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -306,21 +306,21 @@ describe("Bit", () => {
 
 	test("toJSON()", () => {
 		const bit = Bit.from(1);
-		expect(bit.toJSON()).toStrictEqual({ bit: "1" });
+		expect(bit.toJSON()).toStrictEqual({ value: "1" });
 	});
 
-	test("get bit()", () => {
-		expect(Bit.setN(3).from(5).bit).toEqual("101");
-		expect(Bit.setN(3).from("100").bit).toEqual("100");
-		expect(Bit.setN(3).from({ bit: "100" }).bit).toEqual("100");
+	test("get value()", () => {
+		expect(Bit.setN(3).from(5).value).toEqual("101");
+		expect(Bit.setN(3).from("100").value).toEqual("100");
+		expect(Bit.setN(3).from({ value: "100" }).value).toEqual("100");
 	});
 
-	test("set bit(...)", () => {
+	test("set value(...)", () => {
 		const bit = Bit.from(1);
-		bit.bit = "0" as any;
-		expect(bit.bit).toEqual("0");
+		bit.value = "0" as any;
+		expect(bit.value).toEqual("0");
 
-		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (bit.value = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
 	});
 });
 

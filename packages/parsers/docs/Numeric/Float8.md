@@ -18,7 +18,7 @@ import { BigNumber } from "bignumber.js";
 //* Float8s can be created in the following ways:
 const float81 = Float8.from(1);
 const float82 = Float8.from({
-  float8: "1",
+  value: "1",
 });
 const float83 = Float8.from("1");
 const float84 = Float8.from(BigInt("1"));
@@ -39,6 +39,8 @@ if (Float8.isFloat8(float81)) {
 //* Afterwards, you can get/set the properties of the Float8:
 float81.float8; // BigNumber(1)
 
+float81.value; // "1"
+
 //* It has a `toString()` method that returns a string representation of the Float8:
 float81.toString(); // "1"
 
@@ -46,7 +48,7 @@ float81.toString(); // "1"
 float81.toBigNumber(); // BigNumber(1)
 
 //* It has a `toJSON()` method that returns a JSON representation of the Float8:
-float81.toJSON(); // { float8: "1" }
+float81.toJSON(); // { value: "1" }
 
 //* It has a `equals()` method that returns whether two float8s are equal:
 float81.equals(float82); // true

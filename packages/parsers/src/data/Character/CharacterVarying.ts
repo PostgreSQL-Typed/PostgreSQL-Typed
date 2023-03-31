@@ -17,11 +17,11 @@ import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface CharacterVaryingObject {
-	character: string;
+	value: string;
 }
 
 interface CharacterVarying<N extends number> {
-	character: string;
+	value: string;
 
 	get n(): N;
 
@@ -172,11 +172,11 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 				return INVALID;
 			}
 
-			return OK(new CharacterVaryingClass(argument.character, this._n));
+			return OK(new CharacterVaryingClass(argument.value, this._n));
 		}
 
-		const parsedObject = hasKeys<CharacterVaryingObject>(argument, [["character", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.character);
+		const parsedObject = hasKeys<CharacterVaryingObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -246,15 +246,15 @@ class CharacterVaryingClass<N extends number> extends PGTPBase<CharacterVarying<
 
 	toJSON(): CharacterVaryingObject {
 		return {
-			character: this._character,
+			value: this._character,
 		};
 	}
 
-	get character(): string {
+	get value(): string {
 		return this._character;
 	}
 
-	set character(character: string) {
+	set value(character: string) {
 		const parsed = new CharacterVaryingConstructorClass(this._n).safeFrom(character);
 		if (parsed.success) this._character = parsed.data.toString();
 		else throw parsed.error;

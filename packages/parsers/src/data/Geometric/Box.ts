@@ -29,6 +29,8 @@ interface Box {
 	x2: number;
 	y2: number;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): BoxObject;
 
@@ -294,6 +296,20 @@ class BoxClass extends PGTPBase<Box> implements Box {
 			});
 		}
 		this._y2 = y2;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(box: string) {
+		const parsed = Box.safeFrom(box);
+		if (parsed.success) {
+			this._x1 = parsed.data.x1;
+			this._y1 = parsed.data.y1;
+			this._x2 = parsed.data.x2;
+			this._y2 = parsed.data.y2;
+		} else throw parsed.error;
 	}
 }
 

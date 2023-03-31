@@ -17,7 +17,7 @@ import { OID } from "@postgresql-typed/parsers";
 //* OIDs can be created in the following ways:
 const oid1 = OID.from(1);
 const oid2 = OID.from({
-  oid: 1,
+  value: 1,
 });
 const oid3 = OID.from("1");
 
@@ -35,7 +35,7 @@ if (OID.isOID(oid1)) {
 }
 
 //* Afterwards, you can get/set the properties of the OID:
-oid1.oid; // 1
+oid1.value; // 1
 
 //* It has a `toString()` method that returns a string representation of the OID:
 oid1.toString(); // "1"
@@ -44,7 +44,7 @@ oid1.toString(); // "1"
 oid1.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the OID:
-oid1.toJSON(); // { oid: 1 }
+oid1.toJSON(); // { value: 1 }
 
 //* It has a `equals()` method that returns whether two oids are equal:
 oid1.equals(oid2); // true

@@ -23,11 +23,13 @@ const bigNumber = getBigNumber("-10e307", "10e307", {
 });
 
 interface Float8Object {
-	float8: string;
+	value: string;
 }
 
 interface Float8 {
 	float8: BigNumber;
+
+	value: string;
 
 	toString(): string;
 	toBigNumber(): BigNumber;
@@ -118,8 +120,8 @@ class Float8ConstructorClass extends PGTPConstructorBase<Float8> implements Floa
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Float8> {
 		if (this.isFloat8(argument)) return OK(new Float8Class(argument.float8));
-		const parsedObject = hasKeys<Float8Object>(argument, [["float8", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.float8);
+		const parsedObject = hasKeys<Float8Object>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -179,7 +181,7 @@ class Float8Class extends PGTPBase<Float8> implements Float8 {
 
 	toJSON(): Float8Object {
 		return {
-			float8: this._float8.toString(),
+			value: this._float8.toString(),
 		};
 	}
 
@@ -190,6 +192,16 @@ class Float8Class extends PGTPBase<Float8> implements Float8 {
 	set float8(float8: BigNumber) {
 		const parsed = Float8.safeFrom(float8);
 		if (parsed.success) this._float8 = parsed.data.toBigNumber();
+		else throw parsed.error;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(float8: string) {
+		const parsed = Float8.safeFrom(float8);
+		if (parsed.success) this._float8 = parsed.data.float8;
 		else throw parsed.error;
 	}
 }

@@ -37,6 +37,8 @@ box1.y1; // 2
 box1.x2; // 3
 box1.y2; // 4
 
+box1.value; // "(1,2),(3,4)"
+
 //* It has a `toString()` method that returns a string representation of the box:
 box1.toString(); // "(1,2),(3,4)"
 

@@ -129,6 +129,20 @@ describe("Box", () => {
 		box.y2 = 5;
 		expect(box.y2).toBe(5);
 	});
+
+	test("get value()", () => {
+		const box = Box.from("(2.0,2.0),(0.0,0.0)");
+		expect(box.value).toBe("(2,2),(0,0)");
+	});
+
+	test("set value(...)", () => {
+		const box = Box.from("(2.0,2.0),(0.0,0.0)");
+		box.value = "(1.0,1.0),(3.0,3.0)";
+		expect(box.value).toBe("(1,1),(3,3)");
+		expect(() => {
+			box.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

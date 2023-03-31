@@ -28,17 +28,17 @@ describe("Int8MultiRangeConstructor", () => {
 				{
 					lower: LowerRange.include,
 					upper: UpperRange.exclude,
-					value: [{ int8: BigInt(1) }, { int8: BigInt(3) }],
+					values: [{ value: "1" }, { value: "3" }],
 				},
 				{
 					lower: "(",
 					upper: "]",
-					value: [{ int8: BigInt(11) }, { int8: BigInt(13) }],
+					values: [{ value: "11" }, { value: "13" }],
 				},
 				{
 					lower: LowerRange.include,
 					upper: "]",
-					value: [{ int8: BigInt(21) }, { int8: BigInt(23) }],
+					values: [{ value: "21" }, { value: "23" }],
 				},
 			],
 		});
@@ -102,17 +102,17 @@ describe("Int8MultiRange", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int8: BigInt(1) }, { int8: BigInt(3) }],
+					values: [{ value: "1" }, { value: "3" }],
 				},
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int8: BigInt(11) }, { int8: BigInt(13) }],
+					values: [{ value: "11" }, { value: "13" }],
 				},
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int8: BigInt(21) }, { int8: BigInt(23) }],
+					values: [{ value: "21" }, { value: "23" }],
 				},
 			],
 		});
@@ -133,6 +133,20 @@ describe("Int8MultiRange", () => {
 		expect(int8MultiRange.ranges[0].equals(Int8Range.from("[1,3)"))).toBe(true);
 		expect(int8MultiRange.ranges[1].equals(Int8Range.from("[11,15)"))).toBe(true);
 		expect(int8MultiRange.ranges[2].equals(Int8Range.from("[21,23)"))).toBe(true);
+	});
+
+	test("get value()", () => {
+		const int8MultiRange = Int8MultiRange.from("{[1,3),[11,13)}");
+		expect(int8MultiRange.value).toBe("{[1,3),[11,13)}");
+	});
+
+	test("set value(...)", () => {
+		const int8MultiRange = Int8MultiRange.from("{[1,3),[11,13)}");
+		int8MultiRange.value = "{[3,5),[11,13)}";
+		expect(int8MultiRange.value).toBe("{[3,5),[11,13)}");
+		expect(() => {
+			int8MultiRange.value = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
 	});
 });
 

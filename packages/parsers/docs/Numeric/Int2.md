@@ -17,7 +17,7 @@ import { Int2 } from "@postgresql-typed/parsers";
 //* Int2s can be created in the following ways:
 const int21 = Int2.from(1);
 const int22 = Int2.from({
-  int2: 1,
+  value: 1,
 });
 const int23 = Int2.from("1");
 
@@ -35,7 +35,7 @@ if (Int2.isInt2(int21)) {
 }
 
 //* Afterwards, you can get/set the properties of the Int2:
-int21.int2; // 1
+int21.value; // 1
 
 //* It has a `toString()` method that returns a string representation of the Int2:
 int21.toString(); // "1"
@@ -44,7 +44,7 @@ int21.toString(); // "1"
 int21.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the Int2:
-int21.toJSON(); // { int2: 1 }
+int21.toJSON(); // { value: 1 }
 
 //* It has a `equals()` method that returns whether two int2s are equal:
 int21.equals(int22); // true

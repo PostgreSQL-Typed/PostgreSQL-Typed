@@ -51,6 +51,8 @@ timeTZ1.offset.hours; // 5
 timeTZ1.offset.minutes; // 0
 timeTZ1.offset.direction; // "minus"
 
+timeTZ1.value; // "12:34:56.789-05:00"
+
 //* It has a `toString()` method that returns a string representation of the timeTZ:
 timeTZ1.toString(); // "12:34:56.789-05:00"
 

@@ -17,17 +17,17 @@ describe("Int4Constructor", () => {
 		expect(Int4.safeFrom(Int4.from(-2_147_483_648)).success).toBe(true);
 		expect(
 			Int4.safeFrom({
-				int4: 1,
+				value: 1,
 			}).success
 		).toBe(true);
 		expect(
 			Int4.safeFrom({
-				int4: 2_147_483_647,
+				value: 2_147_483_647,
 			}).success
 		).toBe(true);
 		expect(
 			Int4.safeFrom({
-				int4: -2_147_483_648,
+				value: -2_147_483_648,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -132,7 +132,7 @@ describe("Int4Constructor", () => {
 		}
 
 		const unrecognizedKeys = Int4.safeFrom({
-			int4: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -146,30 +146,30 @@ describe("Int4Constructor", () => {
 		}
 
 		const missingKeys = Int4.safeFrom({
-			// int4: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["int4"],
-				message: "Missing key in object: 'int4'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Int4.safeFrom({
-			int4: "abc",
+			value: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "int4",
+				objectKey: "value",
 				expected: "number",
 				received: "string",
-				message: "Expected 'number' for key 'int4', received 'string'",
+				message: "Expected 'number' for key 'value', received 'string'",
 			});
 		}
 		//#endregion
@@ -183,7 +183,7 @@ describe("Int4Constructor", () => {
 		expect(Int4.isInt4(1)).toEqual(false);
 		expect(Int4.isInt4("1")).toEqual(false);
 		expect(Int4.isInt4({})).toEqual(false);
-		expect(Int4.isInt4({ int4: 1 })).toEqual(false);
+		expect(Int4.isInt4({ value: 1 })).toEqual(false);
 	});
 });
 
@@ -197,8 +197,8 @@ describe("Int4", () => {
 		expect(int4.equals(2)).toEqual(false);
 		expect(int4.equals("1")).toBe(true);
 		expect(int4.equals("2")).toEqual(false);
-		expect(int4.equals({ int4: 1 })).toBe(true);
-		expect(int4.equals({ int4: 2 })).toEqual(false);
+		expect(int4.equals({ value: 1 })).toBe(true);
+		expect(int4.equals({ value: 2 })).toEqual(false);
 
 		const safeEquals1 = int4.safeEquals(Int4.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -230,12 +230,12 @@ describe("Int4", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = int4.safeEquals({ int4: 1 });
+		const safeEquals7 = int4.safeEquals({ value: 1 });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = int4.safeEquals({ int4: 2 });
+		const safeEquals8 = int4.safeEquals({ value: 2 });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -270,21 +270,21 @@ describe("Int4", () => {
 
 	test("toJSON()", () => {
 		const int4 = Int4.from(1);
-		expect(int4.toJSON()).toStrictEqual({ int4: 1 });
+		expect(int4.toJSON()).toStrictEqual({ value: 1 });
 	});
 
-	test("get int4()", () => {
-		expect(Int4.from(1).int4).toEqual(1);
-		expect(Int4.from("2").int4).toEqual(2);
-		expect(Int4.from({ int4: 3 }).int4).toEqual(3);
+	test("get value()", () => {
+		expect(Int4.from(1).value).toEqual(1);
+		expect(Int4.from("2").value).toEqual(2);
+		expect(Int4.from({ value: 3 }).value).toEqual(3);
 	});
 
-	test("set int4(...)", () => {
+	test("set value(...)", () => {
 		const int4 = Int4.from(1);
-		int4.int4 = 2;
-		expect(int4.int4).toEqual(2);
+		int4.value = 2;
+		expect(int4.value).toEqual(2);
 
-		expect(() => (int4.int4 = 2_147_483_648)).toThrowError("Number must be less than or equal to 2147483647");
+		expect(() => (int4.value = 2_147_483_648)).toThrowError("Number must be less than or equal to 2147483647");
 	});
 });
 

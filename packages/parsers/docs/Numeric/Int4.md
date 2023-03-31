@@ -17,7 +17,7 @@ import { Int4 } from "@postgresql-typed/parsers";
 //* Int4s can be created in the following ways:
 const int41 = Int4.from(1);
 const int42 = Int4.from({
-  int4: 1,
+  value: 1,
 });
 const int43 = Int4.from("1");
 
@@ -35,7 +35,7 @@ if (Int4.isInt4(int41)) {
 }
 
 //* Afterwards, you can get/set the properties of the Int4:
-int41.int4; // 1
+int41.value; // 1
 
 //* It has a `toString()` method that returns a string representation of the int4:
 int41.toString(); // "1"
@@ -44,7 +44,7 @@ int41.toString(); // "1"
 int41.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the int4:
-int41.toJSON(); // { int4: 1 }
+int41.toJSON(); // { value: 1 }
 
 //* It has a `equals()` method that returns whether two int4s are equal:
 int41.equals(int42); // true

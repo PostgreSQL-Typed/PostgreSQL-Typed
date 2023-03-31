@@ -103,6 +103,20 @@ describe("Point", () => {
 		circle.y = Number.NaN;
 		expect(circle.y).toBe(Number.NaN);
 	});
+
+	test("get value()", () => {
+		const point = Point.from("(2.0,2.0)");
+		expect(point.value).toBe("(2,2)");
+	});
+
+	test("set value(...)", () => {
+		const point = Point.from("(2.0,2.0)");
+		point.value = "(1.0,1.0)";
+		expect(point.value).toBe("(1,1)");
+		expect(() => {
+			point.value = true as any;
+		}).toThrowError("Expected 'number' | 'nan' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

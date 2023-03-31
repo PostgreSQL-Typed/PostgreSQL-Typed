@@ -17,7 +17,7 @@ import { Bit } from "@postgresql-typed/parsers";
 //* Bits can be created in the following ways:
 const bit1 = Bit.from(1);
 const bit2 = Bit.from({
-  bit: "1",
+  value: "1",
 });
 const bit3 = Bit.from("1");
 
@@ -50,7 +50,7 @@ if (Bit.isAnyBit(bit1)) {
 }
 
 //* Afterwards, you can get/set the properties of the Bit:
-bit1.bit; // "1"
+bit1.value; // "1"
 
 //* It has a `toString()` method that returns a string representation of the Bit:
 bit1.toString(); // "1"
@@ -59,7 +59,7 @@ bit1.toString(); // "1"
 bit1.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the Bit:
-bit1.toJSON(); // { bit: "1" }
+bit1.toJSON(); // { value: "1" }
 
 //* It has a `equals()` method that returns whether two bits are equal:
 bit1.equals(bit2); // true

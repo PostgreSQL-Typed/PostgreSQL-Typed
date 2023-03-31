@@ -41,6 +41,8 @@ interface Timestamp {
 	minute: number;
 	second: number;
 
+	value: string;
+
 	/**
 	 * @param style The style to use when converting the timestamp to a string. Defaults to `ISO`.
 	 * @returns The timestamp as a string.
@@ -716,6 +718,22 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		this._second = second;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(timestamp: string) {
+		const parsed = Timestamp.safeFrom(timestamp);
+		if (parsed.success) {
+			this._year = parsed.data.year;
+			this._month = parsed.data.month;
+			this._day = parsed.data.day;
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+		} else throw parsed.error;
 	}
 }
 

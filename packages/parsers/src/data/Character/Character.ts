@@ -17,11 +17,11 @@ import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface CharacterObject {
-	character: string;
+	value: string;
 }
 
 interface Character<N extends number> {
-	character: string;
+	value: string;
 
 	get n(): N;
 
@@ -177,11 +177,11 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 				return INVALID;
 			}
 
-			return OK(new CharacterClass(argument.character, this._n));
+			return OK(new CharacterClass(argument.value, this._n));
 		}
 
-		const parsedObject = hasKeys<CharacterObject>(argument, [["character", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.character);
+		const parsedObject = hasKeys<CharacterObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -251,15 +251,15 @@ class CharacterClass<N extends number> extends PGTPBase<Character<N>> implements
 
 	toJSON(): CharacterObject {
 		return {
-			character: this._character,
+			value: this._character,
 		};
 	}
 
-	get character(): string {
+	get value(): string {
 		return this._character;
 	}
 
-	set character(character: string) {
+	set value(character: string) {
 		const parsed = new CharacterConstructorClass(this._n).safeFrom(character);
 		if (parsed.success) this._character = parsed.data.toString();
 		else throw parsed.error;

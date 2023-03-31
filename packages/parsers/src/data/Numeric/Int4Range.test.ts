@@ -17,7 +17,7 @@ describe("Int4RangeConstructor", () => {
 		const int4RangeFromObject = Int4Range.from({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [Int4.from(1), Int4.from(3)],
+			values: [Int4.from(1), Int4.from(3)],
 		});
 		expect(int4RangeFromObject).not.toBeNull();
 
@@ -25,7 +25,7 @@ describe("Int4RangeConstructor", () => {
 			Int4Range.from({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [] as any,
+				values: [] as any,
 			});
 		}).toThrowError("Array must contain exactly 2 element(s)");
 
@@ -33,7 +33,7 @@ describe("Int4RangeConstructor", () => {
 			Int4Range.from({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [Int4.from(1), Int4.from(3), Int4.from(5)] as any,
+				values: [Int4.from(1), Int4.from(3), Int4.from(5)] as any,
 			});
 		}).toThrowError("Array must contain exactly 2 element(s)");
 
@@ -41,29 +41,29 @@ describe("Int4RangeConstructor", () => {
 			Int4Range.from({
 				lower: "heya",
 				upper: UpperRange.exclude,
-				value: [Int4.from(1), Int4.from(3)],
+				values: [Int4.from(1), Int4.from(3)],
 			} as any);
 		}).toThrowError("Expected '[' | '(', received 'heya'");
 
 		const int4RangeFromObject2 = Int4Range.from({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [{ int4: 1 }, { int4: 3 }],
+			values: [{ value: 1 }, { value: 3 }],
 		});
 		expect(int4RangeFromObject2).not.toBeNull();
 
 		expect(() => {
 			Int4Range.from({} as any);
-		}).toThrowError("Missing keys in object: 'lower', 'upper', 'value'");
+		}).toThrowError("Missing keys in object: 'lower', 'upper', 'values'");
 
-		const int4RangeFromArgumentsArray = Int4Range.from(Int4.from({ int4: 1 }), Int4.from({ int4: 3 }));
+		const int4RangeFromArgumentsArray = Int4Range.from(Int4.from({ value: 1 }), Int4.from({ value: 3 }));
 		expect(int4RangeFromArgumentsArray).not.toBeNull();
 
 		expect(() => {
-			Int4Range.from(Int4.from({ int4: 1 }), "int4" as any);
+			Int4Range.from(Int4.from({ value: 1 }), "int4" as any);
 		}).toThrowError("Expected 'number', received 'nan'");
 
-		const int4RangeFromArray = Int4Range.from([Int4.from({ int4: 1 }), Int4.from({ int4: 3 })]);
+		const int4RangeFromArray = Int4Range.from([Int4.from({ value: 1 }), Int4.from({ value: 3 })]);
 		expect(int4RangeFromArray).not.toBeNull();
 
 		expect(() => {
@@ -89,7 +89,7 @@ describe("Int4RangeConstructor", () => {
 			Int4Range.isRange({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [Int4.from({ int4: 1 }), Int4.from({ int4: 3 })],
+				value: [Int4.from({ value: 1 }), Int4.from({ value: 3 })],
 			})
 		).toBe(false);
 	});
@@ -157,28 +157,28 @@ describe("Int4Range", () => {
 		expect(int4Range1.toJSON()).toStrictEqual({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [{ int4: 1 }, { int4: 3 }],
+			values: [{ value: 1 }, { value: 3 }],
 		});
 
 		const int4Range2 = Int4Range.from("[1,3]");
 		expect(int4Range2.toJSON()).toStrictEqual({
 			lower: LowerRange.include,
 			upper: UpperRange.include,
-			value: [{ int4: 1 }, { int4: 3 }],
+			values: [{ value: 1 }, { value: 3 }],
 		});
 
 		const int4Range3 = Int4Range.from("(1,3)");
 		expect(int4Range3.toJSON()).toStrictEqual({
 			lower: LowerRange.exclude,
 			upper: UpperRange.exclude,
-			value: [{ int4: 1 }, { int4: 3 }],
+			values: [{ value: 1 }, { value: 3 }],
 		});
 
 		const int4Range4 = Int4Range.from("(1,3]");
 		expect(int4Range4.toJSON()).toStrictEqual({
 			lower: LowerRange.exclude,
 			upper: UpperRange.include,
-			value: [{ int4: 1 }, { int4: 3 }],
+			values: [{ value: 1 }, { value: 3 }],
 		});
 	});
 
@@ -204,19 +204,19 @@ describe("Int4Range", () => {
 		expect(int4Range.upper).toBe("]");
 	});
 
-	test("get value()", () => {
+	test("get values()", () => {
 		const int4Range = Int4Range.from("[1,3)");
-		expect(int4Range.value).toHaveLength(2);
-		expect(int4Range.value?.[0].equals(Int4.from({ int4: 1 }))).toBe(true);
-		expect(int4Range.value?.[1].equals(Int4.from({ int4: 3 }))).toBe(true);
+		expect(int4Range.values).toHaveLength(2);
+		expect(int4Range.values?.[0].equals(Int4.from({ value: 1 }))).toBe(true);
+		expect(int4Range.values?.[1].equals(Int4.from({ value: 3 }))).toBe(true);
 	});
 
-	test("set value(...)", () => {
+	test("set values(...)", () => {
 		const int4Range = Int4Range.from("[1,3)");
-		int4Range.value = [Int4.from(2), Int4.from(6)];
-		expect(int4Range.value).toHaveLength(2);
-		expect(int4Range.value?.[0].equals(Int4.from({ int4: 2 }))).toBe(true);
-		expect(int4Range.value?.[1].equals(Int4.from({ int4: 6 }))).toBe(true);
+		int4Range.values = [Int4.from(2), Int4.from(6)];
+		expect(int4Range.values).toHaveLength(2);
+		expect(int4Range.values?.[0].equals(Int4.from({ value: 2 }))).toBe(true);
+		expect(int4Range.values?.[1].equals(Int4.from({ value: 6 }))).toBe(true);
 	});
 
 	test("get empty()", () => {
@@ -228,6 +228,23 @@ describe("Int4Range", () => {
 		expect(int4Range3.empty).toBe(true);
 		const int4Range4 = Int4Range.from("empty");
 		expect(int4Range4.empty).toBe(true);
+	});
+
+	test("get value()", () => {
+		const int4Range1 = Int4Range.from("[1,3)");
+		expect(int4Range1.value).toBe("[1,3)");
+		const int4Range2 = Int4Range.from("[1,1)");
+		expect(int4Range2.value).toBe("empty");
+		const int4Range3 = Int4Range.from("(1,1]");
+		expect(int4Range3.value).toBe("empty");
+		const int4Range4 = Int4Range.from("empty");
+		expect(int4Range4.value).toBe("empty");
+	});
+
+	test("set value(...)", () => {
+		const int4Range = Int4Range.from("[1,3)");
+		int4Range.value = "(1,3]";
+		expect(int4Range.value).toBe("(1,3]");
 	});
 });
 

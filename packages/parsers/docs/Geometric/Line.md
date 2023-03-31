@@ -36,6 +36,8 @@ line1.a; // 1
 line1.b; // 2
 line1.c; // 3
 
+line1.value; // "{1,2,3}"
+
 //* It has a `toString()` method that returns a string representation of the line:
 line1.toString(); // "{1,2,3}"
 

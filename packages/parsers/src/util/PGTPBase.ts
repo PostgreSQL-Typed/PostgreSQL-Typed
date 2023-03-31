@@ -12,6 +12,8 @@ export abstract class PGTPBase<DataType> {
 		this.safeEquals = this.safeEquals.bind(this);
 	}
 
+	abstract value: string | number | boolean;
+
 	abstract _equals(context: ParseContext): ParseReturnType<{
 		readonly equals: boolean;
 		readonly data: DataType;

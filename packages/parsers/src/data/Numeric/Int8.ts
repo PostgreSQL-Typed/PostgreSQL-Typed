@@ -16,11 +16,13 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface Int8Object {
-	int8: bigint;
+	value: string;
 }
 
 interface Int8 {
 	int8: bigint;
+
+	value: string;
 
 	toString(): string;
 	toBigint(): bigint;
@@ -149,8 +151,8 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Int8> {
 		if (this.isInt8(argument)) return OK(new Int8Class(argument.int8));
-		const parsedObject = hasKeys<Int8Object>(argument, [["int8", "bigint"]]);
-		if (parsedObject.success) return this._parseBigint(context, parsedObject.obj.int8);
+		const parsedObject = hasKeys<Int8Object>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -210,7 +212,7 @@ class Int8Class extends PGTPBase<Int8> implements Int8 {
 
 	toJSON(): Int8Object {
 		return {
-			int8: this._int8,
+			value: this.toString(),
 		};
 	}
 
@@ -221,6 +223,16 @@ class Int8Class extends PGTPBase<Int8> implements Int8 {
 	set int8(int8: bigint) {
 		const parsed = Int8.safeFrom(int8);
 		if (parsed.success) this._int8 = parsed.data.toBigint();
+		else throw parsed.error;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(int8: string) {
+		const parsed = Int8.safeFrom(int8);
+		if (parsed.success) this._int8 = parsed.data.int8;
 		else throw parsed.error;
 	}
 }

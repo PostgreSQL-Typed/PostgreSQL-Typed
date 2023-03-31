@@ -17,7 +17,7 @@ import { Character } from "@postgresql-typed/parsers";
 //* Characters can be created in the following ways:
 const character1 = Character.from("a");
 const character2 = Character.from({
-  character: "a",
+  value: "a",
 });
 
 //* By default the n value of the Character is 1, you can use the `setN` method to customize this:
@@ -48,13 +48,13 @@ if (Character.isAnyCharacter(character1)) {
 }
 
 //* Afterwards, you can get/set the properties of the Character:
-character1.character; // "a"
+character1.value; // "a"
 
 //* It has a `toString()` method that returns a string representation of the Character:
 character1.toString(); // "a"
 
 //* It has a `toJSON()` method that returns a JSON representation of the Character:
-character1.toJSON(); // { character: "a" }
+character1.toJSON(); // { value: "a" }
 
 //* It has a `equals()` method that returns whether two characters are equal:
 character1.equals(character2); // true

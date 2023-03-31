@@ -112,6 +112,20 @@ describe("Line", () => {
 		line.c = 5;
 		expect(line.c).toBe(5);
 	});
+
+	test("get value()", () => {
+		const line = Line.from("{1,2,3}");
+		expect(line.value).toBe("{1,2,3}");
+	});
+
+	test("set value(...)", () => {
+		const line = Line.from("{1,2,3}");
+		line.value = "{3,4,5}";
+		expect(line.value).toBe("{3,4,5}");
+		expect(() => {
+			line.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

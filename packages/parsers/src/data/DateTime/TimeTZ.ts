@@ -39,6 +39,8 @@ interface TimeTZ {
 	second: number;
 	offset: Offset;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): TimeTZObject;
 
@@ -718,6 +720,20 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		this._offset = parsedOffset.obj;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(time: string) {
+		const parsed = TimeTZ.safeFrom(time);
+		if (parsed.success) {
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+			this._offset = parsed.data.offset;
+		} else throw parsed.error;
 	}
 }
 

@@ -17,17 +17,17 @@ describe("Float8Constructor", () => {
 		expect(Float8.safeFrom(Float8.from(-2_147_483_648)).success).toBe(true);
 		expect(
 			Float8.safeFrom({
-				float8: "1",
+				value: "1",
 			}).success
 		).toBe(true);
 		expect(
 			Float8.safeFrom({
-				float8: "2147483647",
+				value: "2147483647",
 			}).success
 		).toBe(true);
 		expect(
 			Float8.safeFrom({
-				float8: "-2147483648",
+				value: "-2147483648",
 			}).success
 		).toBe(true);
 		expect(Float8.safeFrom(Number.POSITIVE_INFINITY).success).toBe(true);
@@ -118,7 +118,7 @@ describe("Float8Constructor", () => {
 		}
 
 		const unrecognizedKeys = Float8.safeFrom({
-			float8: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -132,30 +132,30 @@ describe("Float8Constructor", () => {
 		}
 
 		const missingKeys = Float8.safeFrom({
-			// float8: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["float8"],
-				message: "Missing key in object: 'float8'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Float8.safeFrom({
-			float8: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "float8",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'float8', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 		//#endregion
@@ -169,7 +169,7 @@ describe("Float8Constructor", () => {
 		expect(Float8.isFloat8(1)).toEqual(false);
 		expect(Float8.isFloat8("1")).toEqual(false);
 		expect(Float8.isFloat8({})).toEqual(false);
-		expect(Float8.isFloat8({ float8: 1 })).toEqual(false);
+		expect(Float8.isFloat8({ value: 1 })).toEqual(false);
 	});
 });
 
@@ -183,8 +183,8 @@ describe("Float8", () => {
 		expect(float8.equals(2)).toEqual(false);
 		expect(float8.equals("1")).toBe(true);
 		expect(float8.equals("2")).toEqual(false);
-		expect(float8.equals({ float8: "1" })).toBe(true);
-		expect(float8.equals({ float8: "2" })).toEqual(false);
+		expect(float8.equals({ value: "1" })).toBe(true);
+		expect(float8.equals({ value: "2" })).toEqual(false);
 
 		const safeEquals1 = float8.safeEquals(Float8.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -216,12 +216,12 @@ describe("Float8", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = float8.safeEquals({ float8: "1" });
+		const safeEquals7 = float8.safeEquals({ value: "1" });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = float8.safeEquals({ float8: "2" });
+		const safeEquals8 = float8.safeEquals({ value: "2" });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -256,13 +256,13 @@ describe("Float8", () => {
 
 	test("toJSON()", () => {
 		const float8 = Float8.from(1);
-		expect(float8.toJSON()).toStrictEqual({ float8: "1" });
+		expect(float8.toJSON()).toStrictEqual({ value: "1" });
 	});
 
 	test("get float8()", () => {
 		expect(Float8.from(1).float8.toNumber()).toEqual(1);
 		expect(Float8.from("2").float8.toNumber()).toEqual(2);
-		expect(Float8.from({ float8: "3" }).float8.toNumber()).toEqual(3);
+		expect(Float8.from({ value: "3" }).float8.toNumber()).toEqual(3);
 	});
 
 	test("set float8(...)", () => {
@@ -271,6 +271,20 @@ describe("Float8", () => {
 		expect(float8.float8.toNumber()).toEqual(2);
 
 		expect(() => (float8.float8 = "10e400" as any)).toThrowError("Number must be less than or equal to 1e+308");
+	});
+
+	test("get value()", () => {
+		expect(Float8.from(1).value).toEqual("1");
+		expect(Float8.from("2").value).toEqual("2");
+		expect(Float8.from({ value: "3" }).value).toEqual("3");
+	});
+
+	test("set value(...)", () => {
+		const float8 = Float8.from(1);
+		float8.value = "2";
+		expect(float8.value).toEqual("2");
+
+		expect(() => (float8.value = "10e400")).toThrowError("Number must be less than or equal to 1e+308");
 	});
 });
 

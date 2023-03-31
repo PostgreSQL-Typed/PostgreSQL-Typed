@@ -52,6 +52,8 @@ timestamp1.hours; // 12
 timestamp1.minutes; // 34
 timestamp1.seconds; // 56.789
 
+timestamp1.value; // "2020-01-01 12:34:56.789"
+
 //* It has a `toString()` method that returns a string representation of the timestamp:
 timestamp1.toString(); // "2020-01-01 12:34:56.789"
 

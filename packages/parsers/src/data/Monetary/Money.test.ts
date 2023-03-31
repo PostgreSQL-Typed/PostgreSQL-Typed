@@ -17,21 +17,21 @@ describe("MoneyConstructor", () => {
 		expect(Money.safeFrom(Money.from(-10.5)).success).toBe(true);
 		expect(
 			Money.safeFrom({
-				money: "1",
+				value: "1",
 			}).success
 		).toBe(true);
 		expect(
 			Money.safeFrom({
-				money: "92233720368547758.07",
+				value: "92233720368547758.07",
 			}).success
 		).toBe(true);
 		expect(
 			Money.safeFrom({
-				money: "-92233720368547758.08",
+				value: "-92233720368547758.08",
 			}).success
 		).toBe(true);
 		expect(Money.safeFrom(BigInt(1)).success).toBe(true);
-		expect(Money.safeFrom(Money.from(-1).money).success).toBe(true);
+		expect(Money.safeFrom(Money.from(-1).value).success).toBe(true);
 		expect(Money.safeFrom(1.5).success).toBe(true);
 		//#endregion
 
@@ -115,7 +115,7 @@ describe("MoneyConstructor", () => {
 		}
 
 		const unrecognizedKeys = Money.safeFrom({
-			money: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -129,30 +129,30 @@ describe("MoneyConstructor", () => {
 		}
 
 		const missingKeys = Money.safeFrom({
-			// money: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["money"],
-				message: "Missing key in object: 'money'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Money.safeFrom({
-			money: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "money",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'money', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 		//#endregion
@@ -180,8 +180,8 @@ describe("Money", () => {
 		expect(money.equals(2)).toEqual(false);
 		expect(money.equals("1")).toBe(true);
 		expect(money.equals("2")).toEqual(false);
-		expect(money.equals({ money: "1" })).toBe(true);
-		expect(money.equals({ money: "2" })).toEqual(false);
+		expect(money.equals({ value: "1" })).toBe(true);
+		expect(money.equals({ value: "2" })).toEqual(false);
 
 		const safeEquals1 = money.safeEquals(Money.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -213,12 +213,12 @@ describe("Money", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = money.safeEquals({ money: "1" });
+		const safeEquals7 = money.safeEquals({ value: "1" });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = money.safeEquals({ money: "2" });
+		const safeEquals8 = money.safeEquals({ value: "2" });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -261,13 +261,13 @@ describe("Money", () => {
 
 	test("toJSON()", () => {
 		const money = Money.from(1);
-		expect(money.toJSON()).toStrictEqual({ money: "1.00" });
+		expect(money.toJSON()).toStrictEqual({ value: "1.00" });
 	});
 
 	test("get money()", () => {
 		expect(Money.from(1).money.toNumber()).toEqual(1);
 		expect(Money.from("2").money.toNumber()).toEqual(2);
-		expect(Money.from({ money: "3" }).money.toNumber()).toEqual(3);
+		expect(Money.from({ value: "3" }).money.toNumber()).toEqual(3);
 	});
 
 	test("set money(...)", () => {
@@ -276,6 +276,20 @@ describe("Money", () => {
 		expect(money.money.toNumber()).toEqual(2);
 
 		expect(() => (money.money = "10e400" as any)).toThrowError("Number must be less than or equal to 92233720368547758.07");
+	});
+
+	test("get value()", () => {
+		expect(Money.from(1).value).toEqual("1.00");
+		expect(Money.from("2").value).toEqual("2.00");
+		expect(Money.from({ value: "3" }).value).toEqual("3.00");
+	});
+
+	test("set value(...)", () => {
+		const money = Money.from("1");
+		money.value = "2.00";
+		expect(money.value).toEqual("2.00");
+
+		expect(() => (money.value = "10e400")).toThrowError("Number must be less than or equal to 92233720368547758.07");
 	});
 });
 

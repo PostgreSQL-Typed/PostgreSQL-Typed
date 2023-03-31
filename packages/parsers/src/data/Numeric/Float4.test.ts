@@ -17,24 +17,24 @@ describe("Float4Constructor", () => {
 		expect(Float4.safeFrom(Float4.from(-2_147_483_648)).success).toBe(true);
 		expect(
 			Float4.safeFrom({
-				float4: "1",
+				value: "1",
 			}).success
 		).toBe(true);
 		expect(
 			Float4.safeFrom({
-				float4: "2147483647",
+				value: "2147483647",
 			}).success
 		).toBe(true);
 		expect(
 			Float4.safeFrom({
-				float4: "-2147483648",
+				value: "-2147483648",
 			}).success
 		).toBe(true);
 		expect(Float4.safeFrom(Number.POSITIVE_INFINITY).success).toBe(true);
 		expect(Float4.safeFrom(Number.NEGATIVE_INFINITY).success).toBe(true);
 		expect(Float4.safeFrom(Number.NaN).success).toBe(true);
 		expect(Float4.safeFrom(BigInt(1)).success).toBe(true);
-		expect(Float4.safeFrom(Float4.from(-1).float4).success).toBe(true);
+		expect(Float4.safeFrom(Float4.from(-1).value).success).toBe(true);
 		expect(Float4.safeFrom(1.5).success).toBe(true);
 		//#endregion
 
@@ -118,7 +118,7 @@ describe("Float4Constructor", () => {
 		}
 
 		const unrecognizedKeys = Float4.safeFrom({
-			float4: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -132,30 +132,30 @@ describe("Float4Constructor", () => {
 		}
 
 		const missingKeys = Float4.safeFrom({
-			// float4: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["float4"],
-				message: "Missing key in object: 'float4'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Float4.safeFrom({
-			float4: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "float4",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'float4', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 		//#endregion
@@ -183,8 +183,8 @@ describe("Float4", () => {
 		expect(float4.equals(2)).toEqual(false);
 		expect(float4.equals("1")).toBe(true);
 		expect(float4.equals("2")).toEqual(false);
-		expect(float4.equals({ float4: "1" })).toBe(true);
-		expect(float4.equals({ float4: "2" })).toEqual(false);
+		expect(float4.equals({ value: "1" })).toBe(true);
+		expect(float4.equals({ value: "2" })).toEqual(false);
 
 		const safeEquals1 = float4.safeEquals(Float4.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -216,12 +216,12 @@ describe("Float4", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = float4.safeEquals({ float4: "1" });
+		const safeEquals7 = float4.safeEquals({ value: "1" });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = float4.safeEquals({ float4: "2" });
+		const safeEquals8 = float4.safeEquals({ value: "2" });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -256,13 +256,13 @@ describe("Float4", () => {
 
 	test("toJSON()", () => {
 		const float4 = Float4.from(1);
-		expect(float4.toJSON()).toStrictEqual({ float4: "1" });
+		expect(float4.toJSON()).toStrictEqual({ value: "1" });
 	});
 
 	test("get float4()", () => {
 		expect(Float4.from(1).float4.toNumber()).toEqual(1);
 		expect(Float4.from("2").float4.toNumber()).toEqual(2);
-		expect(Float4.from({ float4: "3" }).float4.toNumber()).toEqual(3);
+		expect(Float4.from({ value: "3" }).float4.toNumber()).toEqual(3);
 	});
 
 	test("set float4(...)", () => {
@@ -271,6 +271,20 @@ describe("Float4", () => {
 		expect(float4.float4.toNumber()).toEqual(2);
 
 		expect(() => (float4.float4 = "10e400" as any)).toThrowError("Number must be less than or equal to 9.9999999999999999999999999999999999999e+37");
+	});
+
+	test("get value()", () => {
+		expect(Float4.from(1).value).toEqual("1");
+		expect(Float4.from("2").value).toEqual("2");
+		expect(Float4.from({ value: "3" }).value).toEqual("3");
+	});
+
+	test("set value(...)", () => {
+		const float4 = Float4.from(1);
+		float4.value = "2";
+		expect(float4.value).toEqual("2");
+
+		expect(() => (float4.value = "10e400")).toThrowError("Number must be less than or equal to 9.9999999999999999999999999999999999999e+37");
 	});
 });
 

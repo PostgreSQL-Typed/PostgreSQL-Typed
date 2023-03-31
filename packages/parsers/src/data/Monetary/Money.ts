@@ -20,11 +20,13 @@ import { INVALID, OK } from "../../util/validation.js";
 const bigNumber = getBigNumber("-92233720368547758.08", "92233720368547758.07");
 
 interface MoneyObject {
-	money: string;
+	value: string;
 }
 
 interface Money {
 	money: BigNumber;
+
+	value: string;
 
 	toString(): string;
 	toBigNumber(): BigNumber;
@@ -115,8 +117,8 @@ class MoneyConstructorClass extends PGTPConstructorBase<Money> implements MoneyC
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Money> {
 		if (this.isMoney(argument)) return OK(new MoneyClass(argument.money));
-		const parsedObject = hasKeys<MoneyObject>(argument, [["money", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.money);
+		const parsedObject = hasKeys<MoneyObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -183,7 +185,7 @@ class MoneyClass extends PGTPBase<Money> implements Money {
 
 	toJSON(): MoneyObject {
 		return {
-			money: this.toString(),
+			value: this.toString(),
 		};
 	}
 
@@ -194,6 +196,16 @@ class MoneyClass extends PGTPBase<Money> implements Money {
 	set money(money: BigNumber) {
 		const parsed = Money.safeFrom(money);
 		if (parsed.success) this._money = parsed.data.toBigNumber();
+		else throw parsed.error;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(money: string) {
+		const parsed = Money.safeFrom(money);
+		if (parsed.success) this._money = parsed.data.money;
 		else throw parsed.error;
 	}
 }

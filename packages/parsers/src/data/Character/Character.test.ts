@@ -10,7 +10,7 @@ describe("CharacterConstructor", () => {
 		expect(Character.safeFrom(Character.from("a")).success).toBe(true);
 		expect(
 			Character.safeFrom({
-				character: "a",
+				value: "a",
 			}).success
 		).toBe(true);
 
@@ -21,7 +21,7 @@ describe("CharacterConstructor", () => {
 		expect(Character2.safeFrom(Character2.from("a")).success).toBe(true);
 		expect(
 			Character2.safeFrom({
-				character: "abc",
+				value: "abc",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -81,7 +81,7 @@ describe("CharacterConstructor", () => {
 		}
 
 		const unrecognizedKeys = Character.safeFrom({
-			character: "a",
+			value: "a",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -95,30 +95,30 @@ describe("CharacterConstructor", () => {
 		}
 
 		const missingKeys = Character.safeFrom({
-			// character: "a",
+			// value: "a",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["character"],
-				message: "Missing key in object: 'character'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Character.safeFrom({
-			character: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "character",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'character', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 
@@ -145,7 +145,7 @@ describe("CharacterConstructor", () => {
 		expect(Character.isCharacter(1)).toEqual(false);
 		expect(Character.isCharacter("a")).toEqual(false);
 		expect(Character.isCharacter({})).toEqual(false);
-		expect(Character.isCharacter({ character: "a" })).toEqual(false);
+		expect(Character.isCharacter({ value: "a" })).toEqual(false);
 
 		//* it should return true in isCharacter when value is a Character of specified length
 		expect(Character.isCharacter(Character.from("a"), 1)).toBe(true);
@@ -194,8 +194,8 @@ describe("Character", () => {
 		expect(char.equals(Character.from("b"))).toEqual(false);
 		expect(char.equals("a")).toBe(true);
 		expect(char.equals("b")).toEqual(false);
-		expect(char.equals({ character: "a" })).toBe(true);
-		expect(char.equals({ character: "b" })).toEqual(false);
+		expect(char.equals({ value: "a" })).toBe(true);
+		expect(char.equals({ value: "b" })).toEqual(false);
 
 		const safeEquals1 = char.safeEquals(Character.from("a"));
 		expect(safeEquals1.success).toBe(true);
@@ -217,12 +217,12 @@ describe("Character", () => {
 		if (safeEquals4.success) expect(safeEquals4.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals5 = char.safeEquals({ character: "a" });
+		const safeEquals5 = char.safeEquals({ value: "a" });
 		expect(safeEquals5.success).toBe(true);
 		if (safeEquals5.success) expect(safeEquals5.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals6 = char.safeEquals({ character: "b" });
+		const safeEquals6 = char.safeEquals({ value: "b" });
 		expect(safeEquals6.success).toBe(true);
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
@@ -252,21 +252,21 @@ describe("Character", () => {
 
 	test("toJSON()", () => {
 		const char = Character.from("a");
-		expect(char.toJSON()).toStrictEqual({ character: "a" });
+		expect(char.toJSON()).toStrictEqual({ value: "a" });
 	});
 
-	test("get character()", () => {
-		expect(Character.setN(3).from("abc").character).toEqual("abc");
-		expect(Character.setN(3).from("abc").character).toEqual("abc");
-		expect(Character.setN(3).from({ character: "abc" }).character).toEqual("abc");
+	test("get value()", () => {
+		expect(Character.setN(3).from("abc").value).toEqual("abc");
+		expect(Character.setN(3).from("abc").value).toEqual("abc");
+		expect(Character.setN(3).from({ value: "abc" }).value).toEqual("abc");
 	});
 
-	test("set character(...)", () => {
+	test("set value(...)", () => {
 		const char = Character.from("a");
-		char.character = "b" as any;
-		expect(char.character).toEqual("b");
+		char.value = "b" as any;
+		expect(char.value).toEqual("b");
 
-		expect(() => (char.character = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (char.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
 	});
 });
 

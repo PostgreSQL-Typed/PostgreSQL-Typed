@@ -46,6 +46,8 @@ if (Path.isPath(path1)) {
 path1.points; // [ Point { x: 1, y: 2 }, Point { x: 3, y: 4 } ]
 path1.connection; // "closed"
 
+path1.value; // "((1,2),(3,4))"
+
 //* It has a `toString()` method that returns a string representation of the polygon:
 path1.toString(); // "((1,2),(3,4))"
 

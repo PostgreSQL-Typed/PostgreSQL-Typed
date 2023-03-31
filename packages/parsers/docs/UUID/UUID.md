@@ -17,7 +17,7 @@ import { UUID } from "@postgresql-typed/parsers";
 //* UUIDs can be created in the following ways:
 const uuid1 = UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
 const uuid2 = UUID.from({
-  uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+  value: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
 });
 const uuid3 = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"); //Will be converted to lowercase
 const uuid4 = UUID.generate(); //Generates a random UUID using `node:crypto`
@@ -36,13 +36,13 @@ if (UUID.isUUID(uuid1)) {
 }
 
 //* Afterwards, you can get/set the properties of the UUID:
-uuid1.uuid; // "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+uuid1.value; // "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
 
 //* It has a `toString()` method that returns a string representation of the UUID:
 uuid1.toString(); // "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
 
 //* It has a `toJSON()` method that returns a JSON representation of the UUID:
-uuid1.toJSON(); // { uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }
+uuid1.toJSON(); // { value: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }
 
 //* It has a `equals()` method that returns whether two UUIDs are equal:
 uuid1.equals(uuid2); // true

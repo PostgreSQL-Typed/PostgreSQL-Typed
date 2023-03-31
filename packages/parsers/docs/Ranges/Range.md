@@ -42,7 +42,7 @@ const range5 = TimestampTZRange.from("[2020-01-01 00:00:00+00,2020-01-02 00:00:0
 const range6 = DateRange.from({
   lower: LowerRange.include,
   upper: UpperRange.exclude,
-  value: [
+  values: [
     { year: 2022, month: 9, day: 2 }, // lowerValue
     { year: 2022, month: 10, day: 3 }, // upperValue
   ],
@@ -70,11 +70,13 @@ if (Int4Range.isRange(range2)) {
 //* Afterwards, you can get/set the properties of the date range:
 range1.lower; // LowerRange.include
 range1.upper; // UpperRange.exclude
-range1.value; // [Date { year: 2022, month: 9, day: 2 }, Date { year: 2022, month: 10, day: 3 }]
+range1.values; // [Date { year: 2022, month: 9, day: 2 }, Date { year: 2022, month: 10, day: 3 }]
+range1.value; // "[2022-09-02,2022-10-03)"
 
 range2.lower; // LowerRange.include
 range2.upper; // UpperRange.exclude
-range2.value; // [1, 5]
+range2.values; // [1, 5]
+range2.value; // "[1,5)"
 // etc.
 
 //* It has a `toString()` method that returns a string representation of the range:
@@ -105,9 +107,11 @@ emptyRange1.empty; // true
 const emptyRange2 = DateRange.from("empty");
 emptyRange2.empty; // true
 
-//! Note that if a DateRange is empty, it will have a `null` value.
-emptyRange1.value; // null
-emptyRange2.value; // null
+//! Note that if a DateRange is empty, it will have `null` in values.
+emptyRange1.values; // null
+emptyRange1.value; // "empty"
+emptyRange2.values; // null
+emptyRange2.value; // "empty"
 
 //* It has a `isWithinRange()` method that returns whether a value of the same data type is within the range:
 range1.isWithinRange(Date.from("2022-09-15")); // true

@@ -51,6 +51,8 @@ interval6.minutes; // 5
 interval6.seconds; // 6
 interval6.milliseconds; // 7
 
+interval6.value; // "1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds"
+
 //* It has a `toString()` method that returns a string representation of the interval:
 interval6.toString(); // "1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds"
 

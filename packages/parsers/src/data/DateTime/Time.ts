@@ -32,6 +32,8 @@ interface Time {
 	minute: number;
 	second: number;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): TimeObject;
 
@@ -473,6 +475,19 @@ class TimeClass extends PGTPBase<Time> implements Time {
 		}
 
 		this._second = second;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(time: string) {
+		const parsed = Time.safeFrom(time);
+		if (parsed.success) {
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+		} else throw parsed.error;
 	}
 }
 

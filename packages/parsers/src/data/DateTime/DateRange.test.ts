@@ -17,7 +17,7 @@ describe("DateRangeConstructor", () => {
 		const dateRangeFromObject = DateRange.from({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [Date.from("2022-09-02"), Date.from("2022-10-03")],
+			values: [Date.from("2022-09-02"), Date.from("2022-10-03")],
 		});
 		expect(dateRangeFromObject).not.toBeNull();
 
@@ -25,7 +25,7 @@ describe("DateRangeConstructor", () => {
 			DateRange.from({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [] as any,
+				values: [] as any,
 			});
 		}).toThrowError("Array must contain exactly 2 element(s)");
 
@@ -33,7 +33,7 @@ describe("DateRangeConstructor", () => {
 			DateRange.from({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [Date.from("2022-09-02"), Date.from("2022-10-03"), Date.from("2022-11-04")] as any,
+				values: [Date.from("2022-09-02"), Date.from("2022-10-03"), Date.from("2022-11-04")] as any,
 			});
 		}).toThrowError("Array must contain exactly 2 element(s)");
 
@@ -41,14 +41,14 @@ describe("DateRangeConstructor", () => {
 			DateRange.from({
 				lower: "heya",
 				upper: UpperRange.exclude,
-				value: [Date.from("2022-09-02"), Date.from("2022-10-03")],
+				values: [Date.from("2022-09-02"), Date.from("2022-10-03")],
 			} as any);
 		}).toThrowError("Expected '[' | '(', received 'heya'");
 
 		const dateRangeFromObject2 = DateRange.from({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [
+			values: [
 				{
 					year: 2022,
 					month: 9,
@@ -65,7 +65,7 @@ describe("DateRangeConstructor", () => {
 
 		expect(() => {
 			DateRange.from({} as any);
-		}).toThrowError("Missing keys in object: 'lower', 'upper', 'value'");
+		}).toThrowError("Missing keys in object: 'lower', 'upper', 'values'");
 
 		const dateRangeFromArgumentsArray = DateRange.from(
 			Date.from({
@@ -129,7 +129,7 @@ describe("DateRangeConstructor", () => {
 			DateRange.isRange({
 				lower: LowerRange.include,
 				upper: UpperRange.exclude,
-				value: [
+				values: [
 					Date.from({
 						year: 2022,
 						month: 9,
@@ -210,7 +210,7 @@ describe("DateRange", () => {
 		expect(dateRange1.toJSON()).toStrictEqual({
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
-			value: [
+			values: [
 				{ year: 2022, month: 9, day: 2 },
 				{ year: 2022, month: 10, day: 3 },
 			],
@@ -220,7 +220,7 @@ describe("DateRange", () => {
 		expect(dateRange2.toJSON()).toStrictEqual({
 			lower: LowerRange.include,
 			upper: UpperRange.include,
-			value: [
+			values: [
 				{ year: 2022, month: 9, day: 2 },
 				{ year: 2022, month: 10, day: 3 },
 			],
@@ -230,7 +230,7 @@ describe("DateRange", () => {
 		expect(dateRange3.toJSON()).toStrictEqual({
 			lower: LowerRange.exclude,
 			upper: UpperRange.exclude,
-			value: [
+			values: [
 				{ year: 2022, month: 9, day: 2 },
 				{ year: 2022, month: 10, day: 3 },
 			],
@@ -240,7 +240,7 @@ describe("DateRange", () => {
 		expect(dateRange4.toJSON()).toStrictEqual({
 			lower: LowerRange.exclude,
 			upper: UpperRange.include,
-			value: [
+			values: [
 				{ year: 2022, month: 9, day: 2 },
 				{ year: 2022, month: 10, day: 3 },
 			],
@@ -269,11 +269,11 @@ describe("DateRange", () => {
 		expect(dateRange.upper).toBe("]");
 	});
 
-	test("get value()", () => {
+	test("get values()", () => {
 		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
-		expect(dateRange.value).toHaveLength(2);
+		expect(dateRange.values).toHaveLength(2);
 		expect(
-			dateRange.value?.[0].equals(
+			dateRange.values?.[0].equals(
 				Date.from({
 					year: 2022,
 					month: 9,
@@ -282,7 +282,7 @@ describe("DateRange", () => {
 			)
 		).toBe(true);
 		expect(
-			dateRange.value?.[1].equals(
+			dateRange.values?.[1].equals(
 				Date.from({
 					year: 2022,
 					month: 10,
@@ -292,12 +292,12 @@ describe("DateRange", () => {
 		).toBe(true);
 	});
 
-	test("set value(...)", () => {
+	test("set values(...)", () => {
 		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
-		dateRange.value = [Date.from("2022-11-04"), Date.from("2022-12-05")];
-		expect(dateRange.value).toHaveLength(2);
+		dateRange.values = [Date.from("2022-11-04"), Date.from("2022-12-05")];
+		expect(dateRange.values).toHaveLength(2);
 		expect(
-			dateRange.value?.[0].equals(
+			dateRange.values?.[0].equals(
 				Date.from({
 					year: 2022,
 					month: 11,
@@ -306,7 +306,7 @@ describe("DateRange", () => {
 			)
 		).toBe(true);
 		expect(
-			dateRange.value?.[1].equals(
+			dateRange.values?.[1].equals(
 				Date.from({
 					year: 2022,
 					month: 12,
@@ -325,6 +325,17 @@ describe("DateRange", () => {
 		expect(dateRange3.empty).toBe(true);
 		const dateRange4 = DateRange.from("empty");
 		expect(dateRange4.empty).toBe(true);
+	});
+
+	test("get value()", () => {
+		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
+		expect(dateRange.value).toBe("[2022-09-02,2022-10-03)");
+	});
+
+	test("set value(...)", () => {
+		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
+		dateRange.value = "(2022-11-04,2022-12-05]";
+		expect(dateRange.value).toBe("(2022-11-04,2022-12-05]");
 	});
 });
 

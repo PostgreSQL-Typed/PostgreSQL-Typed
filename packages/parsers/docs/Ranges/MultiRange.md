@@ -53,7 +53,7 @@ const multirange7 = DateMultiRange.from({
     {
       lower: LowerRange.include,
       upper: UpperRange.exclude,
-      value: [
+      values: [
         { year: 1999, month: 1, day: 8 },
         { year: 2022, month: 1, day: 1 },
       ],
@@ -61,7 +61,7 @@ const multirange7 = DateMultiRange.from({
     {
       lower: "(",
       upper: "]",
-      value: [
+      values: [
         { year: 2023, month: 1, day: 8 },
         { year: 2024, month: 1, day: 1 },
       ],
@@ -99,8 +99,8 @@ multirange2.toString(); // "{[1,9),[11,19)}"
 // etc.
 
 //* It has a `toJSON()` method that returns a JSON representation of the multi range:
-multirange1.toJSON(); // { ranges: [{ lower: "[", upper: ")", value: [Date, Date] }, { lower: "[", upper: ")", value: [Date, Date] }] }
-multirange2.toJSON(); // { ranges: [{ lower: "[", upper: ")", value: [Int4, Int4] }, { lower: "[", upper: ")", value: [Int4, Int4] }] }
+multirange1.toJSON(); // { ranges: [{ lower: "[", upper: ")", values: [Date, Date] }, { lower: "[", upper: ")", values: [Date, Date] }] }
+multirange2.toJSON(); // { ranges: [{ lower: "[", upper: ")", values: [Int4, Int4] }, { lower: "[", upper: ")", values: [Int4, Int4] }] }
 // etc.
 
 //* It has a `equals()` method that returns whether two ranges are equal:

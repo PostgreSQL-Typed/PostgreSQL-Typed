@@ -17,7 +17,7 @@ import { Text } from "@postgresql-typed/parsers";
 //* Texts can be created in the following ways:
 const text1 = Text.from("abc");
 const text2 = Text.from({
-  text: "abc",
+  value: "abc",
 });
 
 
@@ -34,13 +34,13 @@ if (Text.isText(text1)) {
 }
 
 //* Afterwards, you can get/set the properties of the Text:
-text1.text; // "abc"
+text1.value; // "abc"
 
 //* It has a `toString()` method that returns a string representation of the Text:
 text1.toString(); // "abc"
 
 //* It has a `toJSON()` method that returns a JSON representation of the Text:
-text1.toJSON(); // { text: "abc" }
+text1.toJSON(); // { value: "abc" }
 
 //* It has a `equals()` method that returns whether two Texts are equal:
 text1.equals(text2); // true

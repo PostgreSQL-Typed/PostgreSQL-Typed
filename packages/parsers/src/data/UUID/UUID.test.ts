@@ -17,12 +17,12 @@ describe("UUIDConstructor", () => {
 		expect(UUID.safeFrom(UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")).success).toBe(true);
 		expect(
 			UUID.safeFrom({
-				uuid: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
+				value: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
 			}).success
 		).toBe(true);
 		expect(
 			UUID.safeFrom({
-				uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+				value: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -69,7 +69,7 @@ describe("UUIDConstructor", () => {
 		}
 
 		const unrecognizedKeys = UUID.safeFrom({
-			uuid: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
+			value: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -83,30 +83,30 @@ describe("UUIDConstructor", () => {
 		}
 
 		const missingKeys = UUID.safeFrom({
-			// uuid: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
+			// value: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["uuid"],
-				message: "Missing key in object: 'uuid'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = UUID.safeFrom({
-			uuid: 0,
+			value: 0,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "uuid",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'uuid', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 		//#endregion
@@ -114,7 +114,7 @@ describe("UUIDConstructor", () => {
 
 	test("generate(...)", () => {
 		const uuid = UUID.generate();
-		expect(uuid.uuid).toBeTypeOf("string");
+		expect(uuid.value).toBeTypeOf("string");
 	});
 
 	test("isUUID(...)", () => {
@@ -146,21 +146,21 @@ describe("UUID", () => {
 	test("toJSON()", () => {
 		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
 		expect(uuid.toJSON()).toEqual({
-			uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+			value: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
 		});
 	});
 
-	test("get uuid()", () => {
+	test("get value()", () => {
 		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
-		expect(uuid.uuid).toBe("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
+		expect(uuid.value).toBe("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
 	});
 
-	test("set uuid(...)", () => {
+	test("set value(...)", () => {
 		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
-		uuid.uuid = "A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11";
-		expect(uuid.uuid).toBe("a0eebc99-8c0b-4ef8-bb6d-6bb9bd380a11");
+		uuid.value = "A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11";
+		expect(uuid.value).toBe("a0eebc99-8c0b-4ef8-bb6d-6bb9bd380a11");
 		expect(() => {
-			uuid.uuid = "invalid";
+			uuid.value = "invalid";
 		}).toThrowError("Expected 'LIKE xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', received 'invalid'");
 	});
 });

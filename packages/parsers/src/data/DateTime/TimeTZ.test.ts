@@ -415,6 +415,20 @@ describe("TimeTZ", () => {
 			minute: 0,
 		});
 	});
+
+	test("get value()", () => {
+		const time = TimeTZ.from("22:10:09+02:00");
+		expect(time.value).toBe("22:10:09+02:00");
+	});
+
+	test("set value(...)", () => {
+		const time = TimeTZ.from("22:10:09+02:00");
+		time.value = "11:22:33+01:00";
+		expect(time.value).toBe("11:22:33+01:00");
+		expect(() => {
+			time.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

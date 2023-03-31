@@ -17,11 +17,11 @@ import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface BitVaryingObject {
-	bit: string;
+	value: string;
 }
 
 interface BitVarying<N extends number> {
-	bit: string;
+	value: string;
 
 	get n(): N;
 
@@ -205,11 +205,11 @@ class BitVaryingConstructorClass<N extends number> extends PGTPConstructorBase<B
 				return INVALID;
 			}
 
-			return OK(new BitVaryingClass(argument.bit, this._n));
+			return OK(new BitVaryingClass(argument.value, this._n));
 		}
 
-		const parsedObject = hasKeys<BitVaryingObject>(argument, [["bit", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.bit);
+		const parsedObject = hasKeys<BitVaryingObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -283,15 +283,15 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 
 	toJSON(): BitVaryingObject {
 		return {
-			bit: this._bit.toString(),
+			value: this._bit.toString(),
 		};
 	}
 
-	get bit(): string {
+	get value(): string {
 		return this._bit;
 	}
 
-	set bit(bit: string) {
+	set value(bit: string) {
 		const parsed = new BitVaryingConstructorClass(this._n).safeFrom(bit);
 		if (parsed.success) this._bit = parsed.data.toString();
 		else throw parsed.error;

@@ -63,6 +63,8 @@ timestampTZ1.offset.hours; // 1
 timestampTZ1.offset.minutes; // 0
 timestampTZ1.offset.direction; // "plus"
 
+timestampTZ1.value; // "2020-01-01 12:34:56.789 +01:00"
+
 //* It has a `toString()` method that returns a string representation of the timestampTZ:
 timestampTZ1.toString(); // "2020-01-01 12:34:56.789 +01:00"
 

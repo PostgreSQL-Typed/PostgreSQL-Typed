@@ -204,6 +204,20 @@ describe("LineSegment", () => {
 		lineSegment.b = Point.from("(5,6)");
 		expect(lineSegment.b.toString()).toBe("(5,6)");
 	});
+
+	test("get value()", () => {
+		const lineSegment = LineSegment.from("[(-2,-2),(0,0)]");
+		expect(lineSegment.value).toBe("[(-2,-2),(0,0)]");
+	});
+
+	test("set value(...)", () => {
+		const lineSegment = LineSegment.from("[(-2,-2),(0,0)]");
+		lineSegment.value = "[(2,2),(4,4)]";
+		expect(lineSegment.value).toBe("[(2,2),(4,4)]");
+		expect(() => {
+			lineSegment.value = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

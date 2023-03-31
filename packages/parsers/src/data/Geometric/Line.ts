@@ -27,6 +27,8 @@ interface Line {
 	b: number;
 	c: number;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): LineObject;
 
@@ -286,6 +288,19 @@ class LineClass extends PGTPBase<Line> implements Line {
 			});
 		}
 		this._c = c;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(line: string) {
+		const parsed = Line.safeFrom(line);
+		if (parsed.success) {
+			this._a = parsed.data.a;
+			this._b = parsed.data.b;
+			this._c = parsed.data.c;
+		} else throw parsed.error;
 	}
 }
 

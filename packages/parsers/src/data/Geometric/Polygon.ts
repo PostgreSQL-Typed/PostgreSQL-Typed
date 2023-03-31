@@ -28,6 +28,8 @@ interface RawPolygonObject {
 interface Polygon {
 	points: Point[];
 
+	value: string;
+
 	toString(): string;
 	toJSON(): RawPolygonObject;
 
@@ -333,6 +335,16 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 
 		//@ts-expect-error - They are all valid at this point
 		this._points = finalPoints.map(point => point.data);
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(polygon: string) {
+		const parsed = Polygon.safeFrom(polygon);
+		if (parsed.success) this._points = parsed.data.points;
+		else throw parsed.error;
 	}
 }
 

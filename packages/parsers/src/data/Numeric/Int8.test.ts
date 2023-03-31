@@ -17,17 +17,17 @@ describe("Int8Constructor", () => {
 		expect(Int8.safeFrom(BigInt("-9223372036854775808")).success).toBe(true);
 		expect(
 			Int8.safeFrom({
-				int8: BigInt("1"),
+				value: "1",
 			}).success
 		).toBe(true);
 		expect(
 			Int8.safeFrom({
-				int8: BigInt("9223372036854775807"),
+				value: "9223372036854775807",
 			}).success
 		).toBe(true);
 		expect(
 			Int8.safeFrom({
-				int8: BigInt("-9223372036854775808"),
+				value: "-9223372036854775808",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -146,7 +146,7 @@ describe("Int8Constructor", () => {
 		}
 
 		const unrecognizedKeys = Int8.safeFrom({
-			int8: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -160,30 +160,30 @@ describe("Int8Constructor", () => {
 		}
 
 		const missingKeys = Int8.safeFrom({
-			// int8: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["int8"],
-				message: "Missing key in object: 'int8'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Int8.safeFrom({
-			int8: "abc",
+			value: BigInt(1),
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "int8",
-				expected: "bigint",
-				received: "string",
-				message: "Expected 'bigint' for key 'int8', received 'string'",
+				objectKey: "value",
+				expected: "string",
+				received: "bigint",
+				message: "Expected 'string' for key 'value', received 'bigint'",
 			});
 		}
 		//#endregion
@@ -213,8 +213,8 @@ describe("Int8", () => {
 		expect(int8.equals("2")).toEqual(false);
 		expect(int8.equals(BigInt("1"))).toBe(true);
 		expect(int8.equals(BigInt("2"))).toEqual(false);
-		expect(int8.equals({ int8: BigInt("1") })).toBe(true);
-		expect(int8.equals({ int8: BigInt("2") })).toEqual(false);
+		expect(int8.equals({ value: "1" })).toBe(true);
+		expect(int8.equals({ value: "2" })).toEqual(false);
 
 		const safeEquals1 = int8.safeEquals(Int8.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -256,12 +256,12 @@ describe("Int8", () => {
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals9 = int8.safeEquals({ int8: BigInt("1") });
+		const safeEquals9 = int8.safeEquals({ value: "1" });
 		expect(safeEquals9.success).toBe(true);
 		if (safeEquals9.success) expect(safeEquals9.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals10 = int8.safeEquals({ int8: BigInt("2") });
+		const safeEquals10 = int8.safeEquals({ value: "2" });
 		expect(safeEquals10.success).toBe(true);
 		if (safeEquals10.success) expect(safeEquals10.equals).toEqual(false);
 		else expect.fail();
@@ -296,13 +296,13 @@ describe("Int8", () => {
 
 	test("toJSON()", () => {
 		const int8 = Int8.from(1);
-		expect(int8.toJSON()).toStrictEqual({ int8: BigInt(1) });
+		expect(int8.toJSON()).toStrictEqual({ value: "1" });
 	});
 
 	test("get int8()", () => {
 		expect(Int8.from(1).int8).toEqual(BigInt(1));
 		expect(Int8.from("2").int8).toEqual(BigInt(2));
-		expect(Int8.from({ int8: BigInt(3) }).int8).toEqual(BigInt(3));
+		expect(Int8.from({ value: "3" }).int8).toEqual(BigInt(3));
 	});
 
 	test("set int8(...)", () => {
@@ -311,6 +311,20 @@ describe("Int8", () => {
 		expect(int8.int8).toEqual(BigInt(2));
 
 		expect(() => (int8.int8 = BigInt("9223372036854775808"))).toThrowError("BigInt must be less than or equal to 9223372036854775807");
+	});
+
+	test("get value()", () => {
+		expect(Int8.from(1).value).toEqual("1");
+		expect(Int8.from("2").value).toEqual("2");
+		expect(Int8.from({ value: "3" }).value).toEqual("3");
+	});
+
+	test("set value(...)", () => {
+		const int8 = Int8.from(1);
+		int8.value = "2";
+		expect(int8.value).toEqual("2");
+
+		expect(() => (int8.value = "9223372036854775808")).toThrowError("BigInt must be less than or equal to 9223372036854775807");
 	});
 });
 

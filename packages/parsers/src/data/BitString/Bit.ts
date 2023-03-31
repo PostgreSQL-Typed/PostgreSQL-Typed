@@ -17,11 +17,11 @@ import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface BitObject {
-	bit: string;
+	value: string;
 }
 
 interface Bit<N extends number> {
-	bit: string;
+	value: string;
 
 	get n(): N;
 
@@ -210,11 +210,11 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 				return INVALID;
 			}
 
-			return OK(new BitClass(argument.bit, this._n));
+			return OK(new BitClass(argument.value, this._n));
 		}
 
-		const parsedObject = hasKeys<BitObject>(argument, [["bit", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.bit);
+		const parsedObject = hasKeys<BitObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -288,15 +288,15 @@ class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
 
 	toJSON(): BitObject {
 		return {
-			bit: this._bit.toString(),
+			value: this._bit.toString(),
 		};
 	}
 
-	get bit(): string {
+	get value(): string {
 		return this._bit;
 	}
 
-	set bit(bit: string) {
+	set value(bit: string) {
 		const parsed = new BitConstructorClass(this._n).safeFrom(bit);
 		if (parsed.success) this._bit = parsed.data.toString();
 		else throw parsed.error;

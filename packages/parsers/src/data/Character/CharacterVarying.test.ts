@@ -10,7 +10,7 @@ describe("CharacterVaryingConstructor", () => {
 		expect(CharacterVarying.safeFrom(CharacterVarying.from("a")).success).toBe(true);
 		expect(
 			CharacterVarying.safeFrom({
-				character: "a",
+				value: "a",
 			}).success
 		).toBe(true);
 
@@ -21,7 +21,7 @@ describe("CharacterVaryingConstructor", () => {
 		expect(CharacterVarying2.safeFrom(CharacterVarying2.from("abc")).success).toBe(true);
 		expect(
 			CharacterVarying2.safeFrom({
-				character: "abc",
+				value: "abc",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -68,7 +68,7 @@ describe("CharacterVaryingConstructor", () => {
 		}
 
 		const unrecognizedKeys = CharacterVarying.safeFrom({
-			character: "a",
+			value: "a",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -82,30 +82,30 @@ describe("CharacterVaryingConstructor", () => {
 		}
 
 		const missingKeys = CharacterVarying.safeFrom({
-			// character: "a",
+			// value: "a",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["character"],
-				message: "Missing key in object: 'character'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = CharacterVarying.safeFrom({
-			character: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "character",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'character', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 
@@ -130,7 +130,7 @@ describe("CharacterVaryingConstructor", () => {
 		//* it should return false in isCharacterVarying when value is not a CharacterVarying
 		expect(CharacterVarying.isCharacterVarying("a")).toEqual(false);
 		expect(CharacterVarying.isCharacterVarying({})).toEqual(false);
-		expect(CharacterVarying.isCharacterVarying({ character: "a" })).toEqual(false);
+		expect(CharacterVarying.isCharacterVarying({ value: "a" })).toEqual(false);
 
 		//* it should return true in isCharacterVarying when value is a CharacterVarying of specified length
 		expect(CharacterVarying.isCharacterVarying(CharacterVarying.from("a"), Number.POSITIVE_INFINITY)).toBe(true);
@@ -149,7 +149,7 @@ describe("CharacterVaryingConstructor", () => {
 		//* it should return false in isAnyCharacterVarying when value is not a CharacterVarying
 		expect(CharacterVarying.isAnyCharacterVarying("a")).toEqual(false);
 		expect(CharacterVarying.isAnyCharacterVarying({})).toEqual(false);
-		expect(CharacterVarying.isAnyCharacterVarying({ character: "a" })).toEqual(false);
+		expect(CharacterVarying.isAnyCharacterVarying({ value: "a" })).toEqual(false);
 	});
 
 	test("setN(...)", () => {
@@ -178,8 +178,8 @@ describe("CharacterVarying", () => {
 		expect(character.equals(CharacterVarying.from("b"))).toEqual(false);
 		expect(character.equals("a")).toBe(true);
 		expect(character.equals("b")).toEqual(false);
-		expect(character.equals({ character: "a" })).toBe(true);
-		expect(character.equals({ character: "b" })).toEqual(false);
+		expect(character.equals({ value: "a" })).toBe(true);
+		expect(character.equals({ value: "b" })).toEqual(false);
 
 		const safeEquals1 = character.safeEquals(CharacterVarying.from("a"));
 		expect(safeEquals1.success).toBe(true);
@@ -201,12 +201,12 @@ describe("CharacterVarying", () => {
 		if (safeEquals4.success) expect(safeEquals4.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals5 = character.safeEquals({ character: "a" });
+		const safeEquals5 = character.safeEquals({ value: "a" });
 		expect(safeEquals5.success).toBe(true);
 		if (safeEquals5.success) expect(safeEquals5.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals6 = character.safeEquals({ character: "b" });
+		const safeEquals6 = character.safeEquals({ value: "b" });
 		expect(safeEquals6.success).toBe(true);
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
@@ -236,20 +236,20 @@ describe("CharacterVarying", () => {
 
 	test("toJSON()", () => {
 		const varchar = CharacterVarying.from("a");
-		expect(varchar.toJSON()).toStrictEqual({ character: "a" });
+		expect(varchar.toJSON()).toStrictEqual({ value: "a" });
 	});
 
-	test("get character()", () => {
-		expect(CharacterVarying.setN(3).from("abc").character).toEqual("abc");
-		expect(CharacterVarying.setN(3).from({ character: "abc" }).character).toEqual("abc");
+	test("get value()", () => {
+		expect(CharacterVarying.setN(3).from("abc").value).toEqual("abc");
+		expect(CharacterVarying.setN(3).from({ value: "abc" }).value).toEqual("abc");
 	});
 
-	test("set character(...)", () => {
+	test("set value(...)", () => {
 		const character = CharacterVarying.setN(2).from("a");
-		character.character = "b";
-		expect(character.character).toEqual("b");
+		character.value = "b";
+		expect(character.value).toEqual("b");
 
-		expect(() => (character.character = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
+		expect(() => (character.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
 	});
 });
 

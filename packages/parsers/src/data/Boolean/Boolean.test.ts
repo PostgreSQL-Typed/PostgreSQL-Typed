@@ -16,12 +16,12 @@ describe("BooleanConstructor", () => {
 		expect(Boolean.safeFrom(Boolean.from(0)).success).toBe(true);
 		expect(
 			Boolean.safeFrom({
-				boolean: true,
+				value: true,
 			}).success
 		).toBe(true);
 		expect(
 			Boolean.safeFrom({
-				boolean: false,
+				value: false,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -92,7 +92,7 @@ describe("BooleanConstructor", () => {
 		}
 
 		const unrecognizedKeys = Boolean.safeFrom({
-			boolean: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -106,30 +106,30 @@ describe("BooleanConstructor", () => {
 		}
 
 		const missingKeys = Boolean.safeFrom({
-			// boolean: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["boolean"],
-				message: "Missing key in object: 'boolean'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Boolean.safeFrom({
-			boolean: "abc",
+			value: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "boolean",
+				objectKey: "value",
 				expected: "boolean",
 				received: "string",
-				message: "Expected 'boolean' for key 'boolean', received 'string'",
+				message: "Expected 'boolean' for key 'value', received 'string'",
 			});
 		}
 		//#endregion
@@ -143,7 +143,7 @@ describe("BooleanConstructor", () => {
 		expect(Boolean.isBoolean(1)).toEqual(false);
 		expect(Boolean.isBoolean("1")).toEqual(false);
 		expect(Boolean.isBoolean({})).toEqual(false);
-		expect(Boolean.isBoolean({ boolean: 1 })).toEqual(false);
+		expect(Boolean.isBoolean({ value: 1 })).toEqual(false);
 	});
 });
 
@@ -157,8 +157,8 @@ describe("Boolean", () => {
 		expect(bool.equals(0)).toEqual(false);
 		expect(bool.equals("1")).toBe(true);
 		expect(bool.equals("0")).toEqual(false);
-		expect(bool.equals({ boolean: true })).toBe(true);
-		expect(bool.equals({ boolean: false })).toEqual(false);
+		expect(bool.equals({ value: true })).toBe(true);
+		expect(bool.equals({ value: false })).toEqual(false);
 
 		const safeEquals1 = bool.safeEquals(Boolean.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -190,12 +190,12 @@ describe("Boolean", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = bool.safeEquals({ boolean: true });
+		const safeEquals7 = bool.safeEquals({ value: true });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = bool.safeEquals({ boolean: false });
+		const safeEquals8 = bool.safeEquals({ value: false });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -236,21 +236,21 @@ describe("Boolean", () => {
 
 	test("toJSON()", () => {
 		const boolean = Boolean.from(1);
-		expect(boolean.toJSON()).toStrictEqual({ boolean: true });
+		expect(boolean.toJSON()).toStrictEqual({ value: true });
 	});
 
-	test("get boolean()", () => {
-		expect(Boolean.from(1).boolean).toEqual(true);
-		expect(Boolean.from("0").boolean).toEqual(false);
-		expect(Boolean.from({ boolean: true }).boolean).toEqual(true);
+	test("get value()", () => {
+		expect(Boolean.from(1).value).toEqual(true);
+		expect(Boolean.from("0").value).toEqual(false);
+		expect(Boolean.from({ value: true }).value).toEqual(true);
 	});
 
-	test("set boolean(...)", () => {
+	test("set value(...)", () => {
 		const bool = Boolean.from(true);
-		bool.boolean = false;
-		expect(bool.boolean).toEqual(false);
+		bool.value = false;
+		expect(bool.value).toEqual(false);
 
-		expect(() => (bool.boolean = 2 as any)).toThrowError(
+		expect(() => (bool.value = 2 as any)).toThrowError(
 			"Expected 'true' | 't' | 'yes' | 'y' | '1' | 'on' | 'false' | 'f' | 'no' | 'n' | '0' | 'off' | 'of', received '2'"
 		);
 	});

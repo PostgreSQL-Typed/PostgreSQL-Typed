@@ -17,11 +17,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface OIDObject {
-	oid: number;
+	value: number;
 }
 
 interface OID {
-	oid: number;
+	value: number;
 
 	toString(): string;
 	toNumber(): number;
@@ -147,9 +147,9 @@ class OIDConstructorClass extends PGTPConstructorBase<OID> implements OIDConstru
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<OID> {
-		if (this.isOID(argument)) return OK(new OIDClass(argument.oid));
-		const parsedObject = hasKeys<OIDObject>(argument, [["oid", "number"]]);
-		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.oid);
+		if (this.isOID(argument)) return OK(new OIDClass(argument.value));
+		const parsedObject = hasKeys<OIDObject>(argument, [["value", "number"]]);
+		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -209,15 +209,15 @@ class OIDClass extends PGTPBase<OID> implements OID {
 
 	toJSON(): OIDObject {
 		return {
-			oid: this._oid,
+			value: this._oid,
 		};
 	}
 
-	get oid(): number {
+	get value(): number {
 		return this._oid;
 	}
 
-	set oid(oid: number) {
+	set value(oid: number) {
 		const parsed = OID.safeFrom(oid);
 		if (parsed.success) this._oid = parsed.data.toNumber();
 		else throw parsed.error;

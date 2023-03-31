@@ -11,7 +11,7 @@ describe("NameConstructor", () => {
 		expect(Name.safeFrom(Name.from("abc")).success).toBe(true);
 		expect(
 			Name.safeFrom({
-				name: "abc",
+				value: "abc",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -58,7 +58,7 @@ describe("NameConstructor", () => {
 		}
 
 		const unrecognizedKeys = Name.safeFrom({
-			name: "abc",
+			value: "abc",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -72,30 +72,30 @@ describe("NameConstructor", () => {
 		}
 
 		const missingKeys = Name.safeFrom({
-			// name: "abc",
+			// value: "abc",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["name"],
-				message: "Missing key in object: 'name'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Name.safeFrom({
-			name: 0,
+			value: 0,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "name",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'name', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 
@@ -117,7 +117,7 @@ describe("NameConstructor", () => {
 	test("isName(...)", () => {
 		const name = Name.from("abc");
 		expect(Name.isName(name)).toBe(true);
-		expect(Name.isName({ name: "abc" })).toBe(false);
+		expect(Name.isName({ value: "abc" })).toBe(false);
 	});
 });
 
@@ -143,21 +143,21 @@ describe("Name", () => {
 	test("toJSON()", () => {
 		const name = Name.from("abc");
 		expect(name.toJSON()).toEqual({
-			name: "abc",
+			value: "abc",
 		});
 	});
 
-	test("get name()", () => {
+	test("get value()", () => {
 		const name = Name.from("abc");
-		expect(name.name).toBe("abc");
+		expect(name.value).toBe("abc");
 	});
 
-	test("set name(...)", () => {
+	test("set value(...)", () => {
 		const name = Name.from("abc");
-		name.name = "def";
-		expect(name.name).toBe("def");
+		name.value = "def";
+		expect(name.value).toBe("def");
 		expect(() => {
-			name.name = true as any;
+			name.value = true as any;
 		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
 	});
 });

@@ -228,6 +228,20 @@ describe("Time", () => {
 		time.second = 5;
 		expect(time.second).toBe(5);
 	});
+
+	test("get value()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.value).toBe("22:10:09");
+	});
+
+	test("set value(...)", () => {
+		const time = Time.from("22:10:09");
+		time.value = "11:22:33";
+		expect(time.value).toBe("11:22:33");
+		expect(() => {
+			time.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

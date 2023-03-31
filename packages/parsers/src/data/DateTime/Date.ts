@@ -32,6 +32,8 @@ interface Date {
 	month: number;
 	day: number;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): DateObject;
 
@@ -402,6 +404,19 @@ class DateClass extends PGTPBase<Date> implements Date {
 		}
 
 		this._day = day;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(date: string) {
+		const parsed = Date.safeFrom(date);
+		if (parsed.success) {
+			this._year = parsed.data.year;
+			this._month = parsed.data.month;
+			this._day = parsed.data.day;
+		} else throw parsed.error;
 	}
 }
 

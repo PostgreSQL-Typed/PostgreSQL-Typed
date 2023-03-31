@@ -28,17 +28,17 @@ describe("Int4MultiRangeConstructor", () => {
 				{
 					lower: LowerRange.include,
 					upper: UpperRange.exclude,
-					value: [{ int4: 1 }, { int4: 3 }],
+					values: [{ value: 1 }, { value: 3 }],
 				},
 				{
 					lower: "(",
 					upper: "]",
-					value: [{ int4: 11 }, { int4: 13 }],
+					values: [{ value: 11 }, { value: 13 }],
 				},
 				{
 					lower: LowerRange.include,
 					upper: "]",
-					value: [{ int4: 21 }, { int4: 23 }],
+					values: [{ value: 21 }, { value: 23 }],
 				},
 			],
 		});
@@ -102,17 +102,17 @@ describe("Int4MultiRange", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int4: 1 }, { int4: 3 }],
+					values: [{ value: 1 }, { value: 3 }],
 				},
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int4: 11 }, { int4: 13 }],
+					values: [{ value: 11 }, { value: 13 }],
 				},
 				{
 					lower: "[",
 					upper: ")",
-					value: [{ int4: 21 }, { int4: 23 }],
+					values: [{ value: 21 }, { value: 23 }],
 				},
 			],
 		});
@@ -133,6 +133,20 @@ describe("Int4MultiRange", () => {
 		expect(int4MultiRange.ranges[0].equals(Int4Range.from("[1,3)"))).toBe(true);
 		expect(int4MultiRange.ranges[1].equals(Int4Range.from("[11,15)"))).toBe(true);
 		expect(int4MultiRange.ranges[2].equals(Int4Range.from("[21,23)"))).toBe(true);
+	});
+
+	test("get value()", () => {
+		const int4MultiRange = Int4MultiRange.from("{[1,3),[11,13)}");
+		expect(int4MultiRange.value).toBe("{[1,3),[11,13)}");
+	});
+
+	test("set value(...)", () => {
+		const int4MultiRange = Int4MultiRange.from("{[1,3),[11,13)}");
+		int4MultiRange.value = "{[3,5),[11,13)}";
+		expect(int4MultiRange.value).toBe("{[3,5),[11,13)}");
+		expect(() => {
+			int4MultiRange.value = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
 	});
 });
 

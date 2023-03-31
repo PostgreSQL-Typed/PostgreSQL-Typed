@@ -18,17 +18,17 @@ describe("OIDConstructor", () => {
 		expect(OID.safeFrom(OID.from(0)).success).toBe(true);
 		expect(
 			OID.safeFrom({
-				oid: 1,
+				value: 1,
 			}).success
 		).toBe(true);
 		expect(
 			OID.safeFrom({
-				oid: 4_294_967_295,
+				value: 4_294_967_295,
 			}).success
 		).toBe(true);
 		expect(
 			OID.safeFrom({
-				oid: 0,
+				value: 0,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -145,7 +145,7 @@ describe("OIDConstructor", () => {
 		}
 
 		const unrecognizedKeys = OID.safeFrom({
-			oid: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -159,30 +159,30 @@ describe("OIDConstructor", () => {
 		}
 
 		const missingKeys = OID.safeFrom({
-			// oid: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["oid"],
-				message: "Missing key in object: 'oid'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = OID.safeFrom({
-			oid: "abc",
+			value: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "oid",
+				objectKey: "value",
 				expected: "number",
 				received: "string",
-				message: "Expected 'number' for key 'oid', received 'string'",
+				message: "Expected 'number' for key 'value', received 'string'",
 			});
 		}
 		//#endregion
@@ -196,7 +196,7 @@ describe("OIDConstructor", () => {
 		expect(OID.isOID(1)).toEqual(false);
 		expect(OID.isOID("1")).toEqual(false);
 		expect(OID.isOID({})).toEqual(false);
-		expect(OID.isOID({ oid: 1 })).toEqual(false);
+		expect(OID.isOID({ value: 1 })).toEqual(false);
 	});
 });
 
@@ -210,8 +210,8 @@ describe("OID", () => {
 		expect(oid.equals(2)).toEqual(false);
 		expect(oid.equals("1")).toBe(true);
 		expect(oid.equals("2")).toEqual(false);
-		expect(oid.equals({ oid: 1 })).toBe(true);
-		expect(oid.equals({ oid: 2 })).toEqual(false);
+		expect(oid.equals({ value: 1 })).toBe(true);
+		expect(oid.equals({ value: 2 })).toEqual(false);
 
 		const safeEquals1 = oid.safeEquals(OID.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -243,12 +243,12 @@ describe("OID", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = oid.safeEquals({ oid: 1 });
+		const safeEquals7 = oid.safeEquals({ value: 1 });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = oid.safeEquals({ oid: 2 });
+		const safeEquals8 = oid.safeEquals({ value: 2 });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -283,21 +283,21 @@ describe("OID", () => {
 
 	test("toJSON()", () => {
 		const oid = OID.from(1);
-		expect(oid.toJSON()).toStrictEqual({ oid: 1 });
+		expect(oid.toJSON()).toStrictEqual({ value: 1 });
 	});
 
-	test("get oid()", () => {
-		expect(OID.from(1).oid).toEqual(1);
-		expect(OID.from("2").oid).toEqual(2);
-		expect(OID.from({ oid: 3 }).oid).toEqual(3);
+	test("get value()", () => {
+		expect(OID.from(1).value).toEqual(1);
+		expect(OID.from("2").value).toEqual(2);
+		expect(OID.from({ value: 3 }).value).toEqual(3);
 	});
 
-	test("set oid(...)", () => {
+	test("set value(...)", () => {
 		const oid = OID.from(1);
-		oid.oid = 2;
-		expect(oid.oid).toEqual(2);
+		oid.value = 2;
+		expect(oid.value).toEqual(2);
 
-		expect(() => (oid.oid = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
+		expect(() => (oid.value = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
 	});
 });
 

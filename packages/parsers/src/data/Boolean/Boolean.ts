@@ -17,11 +17,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface BooleanObject {
-	boolean: boolean;
+	value: boolean;
 }
 
 interface Boolean {
-	boolean: boolean;
+	value: boolean;
 
 	toString(): string;
 	toNumber(): number;
@@ -117,9 +117,9 @@ class BooleanConstructorClass extends PGTPConstructorBase<Boolean> implements Bo
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Boolean> {
-		if (this.isBoolean(argument)) return OK(new BooleanClass(argument.boolean));
-		const parsedObject = hasKeys<BooleanObject>(argument, [["boolean", "boolean"]]);
-		if (parsedObject.success) return OK(new BooleanClass(parsedObject.obj.boolean));
+		if (this.isBoolean(argument)) return OK(new BooleanClass(argument.value));
+		const parsedObject = hasKeys<BooleanObject>(argument, [["value", "boolean"]]);
+		if (parsedObject.success) return OK(new BooleanClass(parsedObject.obj.value));
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -183,15 +183,15 @@ class BooleanClass extends PGTPBase<Boolean> implements Boolean {
 
 	toJSON(): BooleanObject {
 		return {
-			boolean: this._boolean,
+			value: this._boolean,
 		};
 	}
 
-	get boolean(): boolean {
+	get value(): boolean {
 		return this._boolean;
 	}
 
-	set boolean(bool: boolean) {
+	set value(bool: boolean) {
 		const parsed = Boolean.safeFrom(bool);
 		if (parsed.success) this._boolean = parsed.data.toBoolean();
 		else throw parsed.error;

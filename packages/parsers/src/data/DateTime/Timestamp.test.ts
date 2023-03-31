@@ -444,6 +444,20 @@ describe("Timestamp", () => {
 		timestamp.second = 5;
 		expect(timestamp.second).toBe(5);
 	});
+
+	test("get value()", () => {
+		const timestamp = Timestamp.from("2023-01-01T22:10:09");
+		expect(timestamp.value).toBe("2023-01-01T22:10:09Z");
+	});
+
+	test("set value()", () => {
+		const timestamp = Timestamp.from("2023-01-01T22:10:09");
+		expect(() => {
+			timestamp.value = "a" as any;
+		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS', received 'a'");
+		timestamp.value = "2024-01-01T22:10:09";
+		expect(timestamp.value).toBe("2024-01-01T22:10:09Z");
+	});
 });
 
 describe("PostgreSQL", () => {

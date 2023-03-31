@@ -16,7 +16,7 @@ import { CharacterVarying } from "@postgresql-typed/parsers";
 
 //* CharacterVaryings can be created in the following ways:
 const character2 = CharacterVarying.from({
-  character: "a",
+  value: "a",
 });
 const character3 = CharacterVarying.from("a");
 
@@ -48,13 +48,13 @@ if (CharacterVarying.isAnyCharacterVarying(character1)) {
 }
 
 //* Afterwards, you can get/set the properties of the CharacterVarying:
-character1.character; // "a"
+character1.value; // "a"
 
 //* It has a `toString()` method that returns a string representation of the CharacterVarying:
 character1.toString(); // "a"
 
 //* It has a `toJSON()` method that returns a JSON representation of the CharacterVarying:
-character1.toJSON(); // { character: "a" }
+character1.toJSON(); // { value: "a" }
 
 //* It has a `equals()` method that returns whether two characters are equal:
 character1.equals(character2); // true

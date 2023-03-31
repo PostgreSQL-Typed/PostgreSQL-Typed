@@ -725,6 +725,20 @@ describe("TimestampTZ", () => {
 			minute: 0,
 		});
 	});
+
+	test("get value()", () => {
+		const timestamp = TimestampTZ.from("2023-01-01T22:10:09+02:00");
+		expect(timestamp.value).toBe("2023-01-01T22:10:09+02:00");
+	});
+
+	test("set value()", () => {
+		const timestamp = TimestampTZ.from("2023-01-01T22:10:09 +02:00");
+		expect(() => {
+			timestamp.value = "a" as any;
+		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS+HH:MM', received 'a'");
+		timestamp.value = "2024-01-01T22:10:09 +02:00";
+		expect(timestamp.value).toBe("2024-01-01T22:10:09+02:00");
+	});
 });
 
 describe("PostgreSQL", () => {

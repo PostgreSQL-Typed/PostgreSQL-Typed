@@ -43,6 +43,8 @@ time1.hours; // 12
 time1.minutes; // 34
 time1.seconds; // 56.789
 
+time1.value; // "12:34:56.789"
+
 //* It has a `toString()` method that returns a string representation of the time:
 time1.toString(); // "12:34:56.789"
 

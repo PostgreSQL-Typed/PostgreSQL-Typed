@@ -171,6 +171,20 @@ describe("Polygon", () => {
 		expect(polygon.points).toHaveLength(1);
 		expect(polygon.points[0].toString()).toBe("(5,6)");
 	});
+
+	test("get value()", () => {
+		const polygon = Polygon.from("((2.0,2.0),(0.0,0.0))");
+		expect(polygon.value).toBe("((2,2),(0,0))");
+	});
+
+	test("set value(...)", () => {
+		const polygon = Polygon.from("((2.0,2.0),(0.0,0.0))");
+		polygon.value = "((1.0,1.0),(3.0,3.0))";
+		expect(polygon.value).toBe("((1,1),(3,3))");
+		expect(() => {
+			polygon.value = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

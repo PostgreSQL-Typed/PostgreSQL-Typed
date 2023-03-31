@@ -11,7 +11,7 @@ describe("BitVaryingConstructor", () => {
 		expect(BitVarying.safeFrom(BitVarying.from(1)).success).toBe(true);
 		expect(
 			BitVarying.safeFrom({
-				bit: "1",
+				value: "1",
 			}).success
 		).toBe(true);
 
@@ -22,7 +22,7 @@ describe("BitVaryingConstructor", () => {
 		expect(BitVarying2.safeFrom(BitVarying2.from(5)).success).toBe(true);
 		expect(
 			BitVarying2.safeFrom({
-				bit: "101",
+				value: "101",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -104,7 +104,7 @@ describe("BitVaryingConstructor", () => {
 		}
 
 		const unrecognizedKeys = BitVarying.safeFrom({
-			bit: "1",
+			value: "1",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -118,30 +118,30 @@ describe("BitVaryingConstructor", () => {
 		}
 
 		const missingKeys = BitVarying.safeFrom({
-			// bit: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["bit"],
-				message: "Missing key in object: 'bit'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = BitVarying.safeFrom({
-			bit: 1,
+			value: 1,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "bit",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'bit', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 
@@ -167,7 +167,7 @@ describe("BitVaryingConstructor", () => {
 		expect(BitVarying.isBitVarying(1)).toEqual(false);
 		expect(BitVarying.isBitVarying("1")).toEqual(false);
 		expect(BitVarying.isBitVarying({})).toEqual(false);
-		expect(BitVarying.isBitVarying({ bit: "1" })).toEqual(false);
+		expect(BitVarying.isBitVarying({ value: "1" })).toEqual(false);
 
 		//* it should return true in isBitVarying when value is a BitVarying of specified length
 		expect(BitVarying.isBitVarying(BitVarying.from(1), Number.POSITIVE_INFINITY)).toBe(true);
@@ -187,7 +187,7 @@ describe("BitVaryingConstructor", () => {
 		expect(BitVarying.isAnyBitVarying(1)).toEqual(false);
 		expect(BitVarying.isAnyBitVarying("1")).toEqual(false);
 		expect(BitVarying.isAnyBitVarying({})).toEqual(false);
-		expect(BitVarying.isAnyBitVarying({ bit: "1" })).toEqual(false);
+		expect(BitVarying.isAnyBitVarying({ value: "1" })).toEqual(false);
 	});
 
 	test("setN(...)", () => {
@@ -217,8 +217,8 @@ describe("BitVarying", () => {
 		expect(bit.equals(0)).toEqual(false);
 		expect(bit.equals("1")).toBe(true);
 		expect(bit.equals("0")).toEqual(false);
-		expect(bit.equals({ bit: "1" })).toBe(true);
-		expect(bit.equals({ bit: "0" })).toEqual(false);
+		expect(bit.equals({ value: "1" })).toBe(true);
+		expect(bit.equals({ value: "0" })).toEqual(false);
 
 		const safeEquals1 = bit.safeEquals(BitVarying.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -250,12 +250,12 @@ describe("BitVarying", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = bit.safeEquals({ bit: "1" });
+		const safeEquals7 = bit.safeEquals({ value: "1" });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = bit.safeEquals({ bit: "0" });
+		const safeEquals8 = bit.safeEquals({ value: "0" });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -292,21 +292,21 @@ describe("BitVarying", () => {
 
 	test("toJSON()", () => {
 		const bit = BitVarying.from(1);
-		expect(bit.toJSON()).toStrictEqual({ bit: "1" });
+		expect(bit.toJSON()).toStrictEqual({ value: "1" });
 	});
 
-	test("get bit()", () => {
-		expect(BitVarying.setN(3).from(5).bit).toEqual("101");
-		expect(BitVarying.setN(3).from("100").bit).toEqual("100");
-		expect(BitVarying.setN(3).from({ bit: "100" }).bit).toEqual("100");
+	test("get value()", () => {
+		expect(BitVarying.setN(3).from(5).value).toEqual("101");
+		expect(BitVarying.setN(3).from("100").value).toEqual("100");
+		expect(BitVarying.setN(3).from({ value: "100" }).value).toEqual("100");
 	});
 
-	test("set bit(...)", () => {
+	test("set value(...)", () => {
 		const bit = BitVarying.setN(2).from(1);
-		bit.bit = "0" as any;
-		expect(bit.bit).toEqual("0");
+		bit.value = "0" as any;
+		expect(bit.value).toEqual("0");
 
-		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
+		expect(() => (bit.value = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
 	});
 });
 

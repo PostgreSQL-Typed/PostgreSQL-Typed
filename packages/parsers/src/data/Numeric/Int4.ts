@@ -16,11 +16,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface Int4Object {
-	int4: number;
+	value: number;
 }
 
 interface Int4 {
-	int4: number;
+	value: number;
 
 	toString(): string;
 	toNumber(): number;
@@ -144,9 +144,9 @@ class Int4ConstructorClass extends PGTPConstructorBase<Int4> implements Int4Cons
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Int4> {
-		if (this.isInt4(argument)) return OK(new Int4Class(argument.int4));
-		const parsedObject = hasKeys<Int4Object>(argument, [["int4", "number"]]);
-		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.int4);
+		if (this.isInt4(argument)) return OK(new Int4Class(argument.value));
+		const parsedObject = hasKeys<Int4Object>(argument, [["value", "number"]]);
+		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -206,15 +206,15 @@ class Int4Class extends PGTPBase<Int4> implements Int4 {
 
 	toJSON(): Int4Object {
 		return {
-			int4: this._int4,
+			value: this._int4,
 		};
 	}
 
-	get int4(): number {
+	get value(): number {
 		return this._int4;
 	}
 
-	set int4(int4: number) {
+	set value(int4: number) {
 		const parsed = Int4.safeFrom(int4);
 		if (parsed.success) this._int4 = parsed.data.toNumber();
 		else throw parsed.error;

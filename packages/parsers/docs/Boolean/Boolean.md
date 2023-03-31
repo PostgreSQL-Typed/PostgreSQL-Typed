@@ -17,7 +17,7 @@ import { Boolean } from "@postgresql-typed/parsers";
 //* Booleans can be created in the following ways:
 const boolean1 = Boolean.from(true);
 const boolean2 = Boolean.from({
-  boolean: true,
+  value: true,
 });
 const boolean3 = Boolean.from("true"); // It accepts a bunch of different values for true and false (see the source code)
 
@@ -35,7 +35,7 @@ if (Boolean.isBoolean(boolean1)) {
 }
 
 //* Afterwards, you can get/set the properties of the Boolean:
-boolean1.boolean; // true
+boolean1.value; // true
 
 //* It has a `toString()` method that returns a string representation of the Boolean:
 boolean1.toString(); // "true"
@@ -47,7 +47,7 @@ boolean1.toNumber(); // 1
 boolean1.toBoolean(); // true
 
 //* It has a `toJSON()` method that returns a JSON representation of the Boolean:
-boolean1.toJSON(); // { boolean: true }
+boolean1.toJSON(); // { value: true }
 
 //* It has a `equals()` method that returns whether two booleans are equal:
 boolean1.equals(boolean2); // true

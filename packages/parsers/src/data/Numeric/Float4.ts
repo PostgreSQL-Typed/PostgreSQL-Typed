@@ -23,11 +23,13 @@ const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999
 });
 
 interface Float4Object {
-	float4: string;
+	value: string;
 }
 
 interface Float4 {
 	float4: BigNumber;
+
+	value: string;
 
 	toString(): string;
 	toBigNumber(): BigNumber;
@@ -118,8 +120,8 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Float4> {
 		if (this.isFloat4(argument)) return OK(new Float4Class(argument.float4));
-		const parsedObject = hasKeys<Float4Object>(argument, [["float4", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.float4);
+		const parsedObject = hasKeys<Float4Object>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -179,7 +181,7 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 
 	toJSON(): Float4Object {
 		return {
-			float4: this._float4.toString(),
+			value: this._float4.toString(),
 		};
 	}
 
@@ -190,6 +192,16 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 	set float4(float4: BigNumber) {
 		const parsed = Float4.safeFrom(float4);
 		if (parsed.success) this._float4 = parsed.data.toBigNumber();
+		else throw parsed.error;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(float4: string) {
+		const parsed = Float4.safeFrom(float4);
+		if (parsed.success) this._float4 = parsed.data.float4;
 		else throw parsed.error;
 	}
 }

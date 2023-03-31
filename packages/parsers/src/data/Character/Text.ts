@@ -18,11 +18,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface TextObject {
-	text: string;
+	value: string;
 }
 
 interface Text {
-	text: string;
+	value: string;
 
 	toString(): string;
 	toJSON(): TextObject;
@@ -92,9 +92,9 @@ class TextConstructorClass extends PGTPConstructorBase<Text> implements TextCons
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Text> {
-		if (this.isText(argument)) return OK(new TextClass(argument.text));
-		const parsedObject = hasKeys<TextObject>(argument, [["text", "string"]]);
-		if (parsedObject.success) return OK(new TextClass(parsedObject.obj.text));
+		if (this.isText(argument)) return OK(new TextClass(argument.value));
+		const parsedObject = hasKeys<TextObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return OK(new TextClass(parsedObject.obj.value));
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -150,15 +150,15 @@ class TextClass extends PGTPBase<Text> implements Text {
 
 	toJSON(): TextObject {
 		return {
-			text: this._text,
+			value: this._text,
 		};
 	}
 
-	get text(): string {
+	get value(): string {
 		return this._text;
 	}
 
-	set text(text: string) {
+	set value(text: string) {
 		const parsed = Text.safeFrom(text);
 		if (parsed.success) this._text = parsed.data.toString();
 		else throw parsed.error;

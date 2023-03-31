@@ -48,6 +48,8 @@ if (LineSegment.isLineSegment(lineSegment1)) {
 lineSegment1.a; // Point { x: 1, y: 2 }
 lineSegment1.b; // Point { x: 3, y: 4 }
 
+lineSegment.value; // "[(1,2),(3,4)]"
+
 //* It has a `toString()` method that returns a string representation of the line segment:
 lineSegment1.toString(); // "[(1,2),(3,4)]"
 

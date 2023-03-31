@@ -16,11 +16,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface Int2Object {
-	int2: number;
+	value: number;
 }
 
 interface Int2 {
-	int2: number;
+	value: number;
 
 	toString(): string;
 	toNumber(): number;
@@ -144,9 +144,9 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Int2> {
-		if (this.isInt2(argument)) return OK(new Int2Class(argument.int2));
-		const parsedObject = hasKeys<Int2Object>(argument, [["int2", "number"]]);
-		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.int2);
+		if (this.isInt2(argument)) return OK(new Int2Class(argument.value));
+		const parsedObject = hasKeys<Int2Object>(argument, [["value", "number"]]);
+		if (parsedObject.success) return this._parseNumber(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -206,15 +206,15 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 
 	toJSON(): Int2Object {
 		return {
-			int2: this._int2,
+			value: this._int2,
 		};
 	}
 
-	get int2(): number {
+	get value(): number {
 		return this._int2;
 	}
 
-	set int2(int2: number) {
+	set value(int2: number) {
 		const parsed = Int2.safeFrom(int2);
 		if (parsed.success) this._int2 = parsed.data.toNumber();
 		else throw parsed.error;

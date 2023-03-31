@@ -23,6 +23,8 @@ interface RawMultiRangeObject<DataTypeObject> {
 interface MultiRange<DataType, DataTypeObject> {
 	ranges: Range<DataType, DataTypeObject>[];
 
+	value: string;
+
 	toString(): string;
 	toJSON(): RawMultiRangeObject<DataTypeObject>;
 
@@ -322,6 +324,16 @@ const getMultiRange = <
 
 			//@ts-expect-error - They are all valid at this point
 			this._ranges = values.map(v => v.data);
+		}
+
+		get value(): string {
+			return this.toString();
+		}
+
+		set value(range: string) {
+			const parsed = MultiRange.safeFrom(range);
+			if (parsed.success) this._ranges = parsed.data.ranges;
+			else throw parsed.error;
 		}
 	}
 

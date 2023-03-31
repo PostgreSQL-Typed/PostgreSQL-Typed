@@ -11,7 +11,7 @@ describe("TextConstructor", () => {
 		expect(Text.safeFrom(Text.from("abc")).success).toBe(true);
 		expect(
 			Text.safeFrom({
-				text: "abc",
+				value: "abc",
 			}).success
 		).toBe(true);
 		//#endregion
@@ -58,7 +58,7 @@ describe("TextConstructor", () => {
 		}
 
 		const unrecognizedKeys = Text.safeFrom({
-			text: "abc",
+			value: "abc",
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -72,30 +72,30 @@ describe("TextConstructor", () => {
 		}
 
 		const missingKeys = Text.safeFrom({
-			// text: "abc",
+			// value: "abc",
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["text"],
-				message: "Missing key in object: 'text'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Text.safeFrom({
-			text: 0,
+			value: 0,
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "text",
+				objectKey: "value",
 				expected: "string",
 				received: "number",
-				message: "Expected 'string' for key 'text', received 'number'",
+				message: "Expected 'string' for key 'value', received 'number'",
 			});
 		}
 		//#endregion
@@ -104,7 +104,7 @@ describe("TextConstructor", () => {
 	test("isText(...)", () => {
 		const text = Text.from("abc");
 		expect(Text.isText(text)).toBe(true);
-		expect(Text.isText({ text: "abc" })).toBe(false);
+		expect(Text.isText({ value: "abc" })).toBe(false);
 	});
 });
 
@@ -130,21 +130,21 @@ describe("Text", () => {
 	test("toJSON()", () => {
 		const text = Text.from("abc");
 		expect(text.toJSON()).toEqual({
-			text: "abc",
+			value: "abc",
 		});
 	});
 
-	test("get text()", () => {
+	test("get value()", () => {
 		const text = Text.from("abc");
-		expect(text.text).toBe("abc");
+		expect(text.value).toBe("abc");
 	});
 
-	test("set text(...)", () => {
+	test("set value(...)", () => {
 		const text = Text.from("abc");
-		text.text = "def";
-		expect(text.text).toBe("def");
+		text.value = "def";
+		expect(text.value).toBe("def");
 		expect(() => {
-			text.text = true as any;
+			text.value = true as any;
 		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
 	});
 });

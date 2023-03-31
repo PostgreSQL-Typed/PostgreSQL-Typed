@@ -35,6 +35,8 @@ if (Point.isPoint(point1)) {
 point1.x; // 1
 point1.y; // 2
 
+point1.value; // "(1,2)"
+
 //* It has a `toString()` method that returns a string representation of the point:
 point1.toString(); // "(1,2)"
 

@@ -35,20 +35,22 @@ const upperRange = ["]", ")"];
 interface RangeObject<DataType> {
 	lower: LowerRange | LowerRangeType;
 	upper: UpperRange | UpperRangeType;
-	value: [DataType, DataType] | null;
+	values: [DataType, DataType] | null;
 }
 
 interface RawRangeObject<DataTypeObject> {
 	lower: LowerRange | LowerRangeType;
 	upper: UpperRange | UpperRangeType;
-	value: [DataTypeObject, DataTypeObject] | null;
+	values: [DataTypeObject, DataTypeObject] | null;
 }
 
 interface Range<DataType, DataTypeObject> {
 	lower: LowerRange | LowerRangeType;
 	upper: UpperRange | UpperRangeType;
-	value: [DataType, DataType] | null;
+	values: [DataType, DataType] | null;
 	readonly empty: boolean;
+
+	value: string;
 
 	toString(): string;
 	toJSON(): RawRangeObject<DataTypeObject>;
@@ -157,7 +159,7 @@ const getRange = <
 					new RangeClass({
 						lower: LowerRange.include,
 						upper: UpperRange.include,
-						value: null,
+						values: null,
 					})
 				);
 			}
@@ -232,7 +234,7 @@ const getRange = <
 				new RangeClass({
 					lower: lower as LowerRange,
 					upper: upper as UpperRange,
-					value: [lowerValue.data, upperValue.data],
+					values: [lowerValue.data, upperValue.data],
 				})
 			);
 		}
@@ -292,7 +294,7 @@ const getRange = <
 				new RangeClass({
 					lower: options?.lower ?? LowerRange.include,
 					upper: options?.upper ?? UpperRange.exclude,
-					value: [lowerValue.data, upperValue.data],
+					values: [lowerValue.data, upperValue.data],
 				})
 			);
 		}
@@ -326,7 +328,7 @@ const getRange = <
 					new RangeClass({
 						lower: argument.lower,
 						upper: argument.upper,
-						value: argument.value,
+						values: argument.values,
 					})
 				);
 			}
@@ -362,7 +364,7 @@ const getRange = <
 					new RangeClass({
 						lower: LowerRange.include,
 						upper: UpperRange.exclude,
-						value: [argument, parsedObject.data],
+						values: [argument, parsedObject.data],
 					})
 				);
 			}
@@ -381,7 +383,7 @@ const getRange = <
 			const parsedObject = hasKeys<RawRangeObject<DataTypeObject> | RangeObject<DataType>>(argument, [
 				["lower", "string"],
 				["upper", "string"],
-				["value", ["array", "null"]],
+				["values", ["array", "null"]],
 			]);
 			if (!parsedObject.success) {
 				switch (true) {
@@ -407,7 +409,7 @@ const getRange = <
 				return INVALID;
 			}
 
-			const { lower, upper, value } = parsedObject.obj;
+			const { lower, upper, values: value } = parsedObject.obj;
 
 			if (!lowerRange.includes(lower)) {
 				this.setIssueForContext(context, {
@@ -432,7 +434,7 @@ const getRange = <
 					new RangeClass({
 						lower,
 						upper,
-						value,
+						values: value,
 					})
 				);
 			}
@@ -455,25 +457,25 @@ const getRange = <
 		private _identifier = identifier;
 		private _lower: LowerRange | LowerRangeType;
 		private _upper: UpperRange | UpperRangeType;
-		private _value: [DataType, DataType] | null;
+		private _values: [DataType, DataType] | null;
 		constructor(data: RangeObject<DataType>) {
 			super();
 
 			this._lower = data.lower;
 			this._upper = data.upper;
-			this._value = data.value === null ? null : (data.value as [DataType, DataType]);
+			this._values = data.values === null ? null : (data.values as [DataType, DataType]);
 
 			this._checkEmpty();
 		}
 
 		private _checkEmpty() {
 			if (
-				this._value &&
+				this._values &&
 				((this._lower === LowerRange.include && this._upper === UpperRange.exclude) ||
 					(this._lower === LowerRange.exclude && this._upper === UpperRange.include)) &&
-				this._value[0].equals(this._value[1])
+				this._values[0].equals(this._values[1])
 			)
-				this._value = null;
+				this._values = null;
 		}
 
 		_equals(input: ParseContext): ParseReturnType<{
@@ -499,7 +501,7 @@ const getRange = <
 			//@ts-expect-error - _equals receives the same context as _parse
 			const parsed = Object.safeFrom(...input.data);
 			if (parsed.success) {
-				if (this._value === null) {
+				if (this._values === null) {
 					return OK({
 						isWithinRange: false,
 					});
@@ -507,8 +509,8 @@ const getRange = <
 
 				return OK({
 					isWithinRange:
-						(this._lower === LowerRange.include ? greaterThanOrEqual(parsed.data, this._value[0]) : greaterThan(parsed.data, this._value[0])) &&
-						(this._upper === UpperRange.include ? lessThanOrEqual(parsed.data, this._value[1]) : lessThan(parsed.data, this._value[1])),
+						(this._lower === LowerRange.include ? greaterThanOrEqual(parsed.data, this._values[0]) : greaterThan(parsed.data, this._values[0])) &&
+						(this._upper === UpperRange.include ? lessThanOrEqual(parsed.data, this._values[1]) : lessThan(parsed.data, this._values[1])),
 					data: parsed.data,
 				});
 			}
@@ -517,15 +519,15 @@ const getRange = <
 		}
 
 		toString(): string {
-			if (this._value === null) return "empty";
-			return `${this._lower}${this._value[0].toString()},${this._value[1].toString()}${this._upper}`;
+			if (this._values === null) return "empty";
+			return `${this._lower}${this._values[0].toString()},${this._values[1].toString()}${this._upper}`;
 		}
 
 		toJSON(): RawRangeObject<DataTypeObject> {
 			return {
 				lower: this._lower,
 				upper: this._upper,
-				value: (this._value?.map(v => v.toJSON()) as [DataTypeObject, DataTypeObject]) ?? null,
+				values: (this._values?.map(v => v.toJSON()) as [DataTypeObject, DataTypeObject]) ?? null,
 			};
 		}
 
@@ -563,13 +565,13 @@ const getRange = <
 			this._checkEmpty();
 		}
 
-		get value(): [DataType, DataType] | null {
-			return this._value;
+		get values(): [DataType, DataType] | null {
+			return this._values;
 		}
 
-		set value(value: [DataType, DataType] | null) {
+		set values(value: [DataType, DataType] | null) {
 			if (value === null) {
-				this._value = null;
+				this._values = null;
 				return;
 			}
 
@@ -605,12 +607,25 @@ const getRange = <
 			if (!lower.success) throwPGTPError(lower.error.issue);
 			if (!upper.success) throwPGTPError(upper.error.issue);
 
-			this._value = [lower.data, upper.data];
+			this._values = [lower.data, upper.data];
 			this._checkEmpty();
 		}
 
 		get empty(): boolean {
-			return this._value === null;
+			return this._values === null;
+		}
+
+		get value(): string {
+			return this.toString();
+		}
+
+		set value(range: string) {
+			const parsed = Range.safeFrom(range);
+			if (parsed.success) {
+				this._values = parsed.data.values;
+				this._lower = parsed.data.lower;
+				this._upper = parsed.data.upper;
+			} else throw parsed.error;
 		}
 	}
 

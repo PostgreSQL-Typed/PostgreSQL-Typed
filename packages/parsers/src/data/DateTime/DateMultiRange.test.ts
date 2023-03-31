@@ -28,7 +28,7 @@ describe("DateMultiRangeConstructor", () => {
 				{
 					lower: LowerRange.include,
 					upper: UpperRange.exclude,
-					value: [
+					values: [
 						{
 							year: 2021,
 							month: 1,
@@ -44,7 +44,7 @@ describe("DateMultiRangeConstructor", () => {
 				{
 					lower: "(",
 					upper: "]",
-					value: [
+					values: [
 						{
 							year: 2023,
 							month: 1,
@@ -60,7 +60,7 @@ describe("DateMultiRangeConstructor", () => {
 				{
 					lower: LowerRange.include,
 					upper: "]",
-					value: [
+					values: [
 						{
 							year: 2025,
 							month: 1,
@@ -163,7 +163,7 @@ describe("DateMultiRange", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [
+					values: [
 						{
 							year: 2021,
 							month: 1,
@@ -179,7 +179,7 @@ describe("DateMultiRange", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [
+					values: [
 						{
 							year: 2023,
 							month: 1,
@@ -195,7 +195,7 @@ describe("DateMultiRange", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [
+					values: [
 						{
 							year: 2025,
 							month: 1,
@@ -231,6 +231,28 @@ describe("DateMultiRange", () => {
 			DateRange.from("[2025-01-01,2026-01-01)")
 		);
 		dateMultiRange.ranges = [DateRange.from("[2021-01-01,2022-01-01)"), DateRange.from("[2023-01-08,2024-12-12)"), DateRange.from("[2025-01-01,2026-01-01)")];
+		expect(dateMultiRange.ranges).toHaveLength(3);
+		expect(dateMultiRange.ranges[0].equals(DateRange.from("[2021-01-01,2022-01-01)"))).toBe(true);
+		expect(dateMultiRange.ranges[1].equals(DateRange.from("[2023-01-08,2024-12-12)"))).toBe(true);
+		expect(dateMultiRange.ranges[2].equals(DateRange.from("[2025-01-01,2026-01-01)"))).toBe(true);
+	});
+
+	test("get value()", () => {
+		const dateMultiRange = DateMultiRange.from(
+			DateRange.from("[2021-01-01,2022-01-01)"),
+			DateRange.from("[2023-01-01,2024-01-01)"),
+			DateRange.from("[2025-01-01,2026-01-01)")
+		);
+		expect(dateMultiRange.value).toBe("{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}");
+	});
+
+	test("set value(...)", () => {
+		const dateMultiRange = DateMultiRange.from(
+			DateRange.from("[2021-01-01,2022-01-01)"),
+			DateRange.from("[2023-01-01,2024-01-01)"),
+			DateRange.from("[2025-01-01,2026-01-01)")
+		);
+		dateMultiRange.value = "{[2021-01-01,2022-01-01),[2023-01-08,2024-12-12),[2025-01-01,2026-01-01)}";
 		expect(dateMultiRange.ranges).toHaveLength(3);
 		expect(dateMultiRange.ranges[0].equals(DateRange.from("[2021-01-01,2022-01-01)"))).toBe(true);
 		expect(dateMultiRange.ranges[1].equals(DateRange.from("[2023-01-08,2024-12-12)"))).toBe(true);

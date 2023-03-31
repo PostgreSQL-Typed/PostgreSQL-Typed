@@ -104,6 +104,10 @@ class TestClass extends PGTPBase<TestClass> {
 	toJSON(): TestObject {
 		return { test: this._data };
 	}
+
+	get value(): string {
+		return this._data;
+	}
 }
 
 const TestRange: RangeConstructor<Test, TestObject> = getRange<Test, TestObject>(testClass, testClass.isTest, "TestRange"),
@@ -225,7 +229,7 @@ describe("MultiRangeConstructor", () => {
 				{
 					lower: "[",
 					upper: ")",
-					value: [
+					values: [
 						{
 							test: "a",
 						},
@@ -362,11 +366,11 @@ describe("MultiRange", () => {
 		expect(test1.ranges).toHaveLength(1);
 		expect(test1.ranges[0].lower).toBe("(");
 		expect(test1.ranges[0].upper).toBe("]");
-		expect(test1.ranges[0].value).toHaveLength(2);
-		expect(test1.ranges[0].value?.[0].test).toBe("a");
-		expect(test1.ranges[0].value?.[1].test).toBe("c");
+		expect(test1.ranges[0].values).toHaveLength(2);
+		expect(test1.ranges[0].values?.[0].test).toBe("a");
+		expect(test1.ranges[0].values?.[1].test).toBe("c");
 		expect(TestMultiRange.from(TestRange.from("empty")).toJSON()).toEqual({
-			ranges: [{ lower: "[", upper: "]", value: null }],
+			ranges: [{ lower: "[", upper: "]", values: null }],
 		});
 
 		const test2 = TestMultiRange.from("{}").toJSON();
@@ -414,5 +418,37 @@ describe("MultiRange", () => {
 		expect(test1.ranges?.[0].toString()).toBe("(b,d]");
 		expect(test1.ranges?.[1].toString()).toBe("(e,f]");
 		expect(test1.toString()).toBe("{(b,d],(e,f]}");
+	});
+
+	test("get value()", () => {
+		expect(TestMultiRange.from("{(a,c]}").value).toBe("{(a,c]}");
+		expect(TestMultiRange.from("{[a,c)}").value).toBe("{[a,c)}");
+		expect(TestMultiRange.from("{[a,c]}").value).toBe("{[a,c]}");
+		expect(TestMultiRange.from("{(a,c)}").value).toBe("{(a,c)}");
+		expect(TestMultiRange.from("{}").value).toBe("{}");
+		expect(TestMultiRange.from("{[a,a)}").value).toBe("{empty}");
+		expect(TestMultiRange.from("{(a,a]}").value).toBe("{empty}");
+	});
+
+	test("set value(...)", () => {
+		const test1 = TestMultiRange.from("{(a,c]}");
+		expect(test1.value).toBe("{(a,c]}");
+		test1.value = "{(b,d]}";
+		expect(test1.value).toBe("{(b,d]}");
+
+		const test2 = TestMultiRange.from("{(a,c]}");
+		expect(test2.value).toBe("{(a,c]}");
+		test2.value = "{}";
+		expect(test2.value).toBe("{}");
+
+		const invalid1 = TestMultiRange.from("{(a,c]}");
+		expect(() => {
+			invalid1.value = "fail" as any;
+		}).toThrowError("Expected '{', received 'f'");
+		expect(() => {
+			invalid1.value = "{fail" as any;
+		}).toThrowError("Expected '}', received 'l'");
+		invalid1.value = "{(b,d]}";
+		expect(test1.value).toBe("{(b,d]}");
 	});
 });

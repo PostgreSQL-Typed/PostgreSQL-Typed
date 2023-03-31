@@ -18,7 +18,7 @@ import { BigNumber } from "bignumber.js";
 //* Moneys can be created in the following ways:
 const money1 = Money.from(1);
 const money2 = Money.from({
-  money: "1",
+  value: "1",
 });
 const money3 = Money.from("1");
 const money4 = Money.from(BigInt("1"));
@@ -40,6 +40,8 @@ if (Money.isMoney(money1)) {
 //* Afterwards, you can get/set the properties of the Money:
 money1.money; // BigNumber(1)
 
+money1.value; // "1.00"
+
 //* It has a `toString()` method that returns a string representation of the Money:
 money1.toString(); // "1.00" (It will always have two decimal places)
 
@@ -47,7 +49,7 @@ money1.toString(); // "1.00" (It will always have two decimal places)
 money1.toBigNumber(); // BigNumber(1)
 
 //* It has a `toJSON()` method that returns a JSON representation of the Money:
-money1.toJSON(); // { money: "1.00" }
+money1.toJSON(); // { value: "1.00" }
 
 //* It has a `equals()` method that returns whether two moneys are equal:
 money1.equals(money2); // true

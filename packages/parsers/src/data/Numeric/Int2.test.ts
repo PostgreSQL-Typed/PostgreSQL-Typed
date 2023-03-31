@@ -17,17 +17,17 @@ describe("Int2Constructor", () => {
 		expect(Int2.safeFrom(Int2.from(-32_768)).success).toBe(true);
 		expect(
 			Int2.safeFrom({
-				int2: 1,
+				value: 1,
 			}).success
 		).toBe(true);
 		expect(
 			Int2.safeFrom({
-				int2: 32_767,
+				value: 32_767,
 			}).success
 		).toBe(true);
 		expect(
 			Int2.safeFrom({
-				int2: -32_768,
+				value: -32_768,
 			}).success
 		).toBe(true);
 		//#endregion
@@ -144,7 +144,7 @@ describe("Int2Constructor", () => {
 		}
 
 		const unrecognizedKeys = Int2.safeFrom({
-			int2: 1,
+			value: 1,
 			unrecognized: true,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
@@ -158,30 +158,30 @@ describe("Int2Constructor", () => {
 		}
 
 		const missingKeys = Int2.safeFrom({
-			// int2: 1,
+			// value: 1,
 		} as any);
 		expect(missingKeys.success).toEqual(false);
 		if (missingKeys.success) expect.fail();
 		else {
 			expect(missingKeys.error.issue).toStrictEqual({
 				code: "missing_keys",
-				keys: ["int2"],
-				message: "Missing key in object: 'int2'",
+				keys: ["value"],
+				message: "Missing key in object: 'value'",
 			});
 		}
 
 		const invalidKeys = Int2.safeFrom({
-			int2: "abc",
+			value: "abc",
 		} as any);
 		expect(invalidKeys.success).toEqual(false);
 		if (invalidKeys.success) expect.fail();
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "int2",
+				objectKey: "value",
 				expected: "number",
 				received: "string",
-				message: "Expected 'number' for key 'int2', received 'string'",
+				message: "Expected 'number' for key 'value', received 'string'",
 			});
 		}
 		//#endregion
@@ -195,7 +195,7 @@ describe("Int2Constructor", () => {
 		expect(Int2.isInt2(1)).toEqual(false);
 		expect(Int2.isInt2("1")).toEqual(false);
 		expect(Int2.isInt2({})).toEqual(false);
-		expect(Int2.isInt2({ int2: 1 })).toEqual(false);
+		expect(Int2.isInt2({ value: 1 })).toEqual(false);
 	});
 });
 
@@ -209,8 +209,8 @@ describe("Int2", () => {
 		expect(int2.equals(2)).toEqual(false);
 		expect(int2.equals("1")).toBe(true);
 		expect(int2.equals("2")).toEqual(false);
-		expect(int2.equals({ int2: 1 })).toBe(true);
-		expect(int2.equals({ int2: 2 })).toEqual(false);
+		expect(int2.equals({ value: 1 })).toBe(true);
+		expect(int2.equals({ value: 2 })).toEqual(false);
 
 		const safeEquals1 = int2.safeEquals(Int2.from(1));
 		expect(safeEquals1.success).toBe(true);
@@ -242,12 +242,12 @@ describe("Int2", () => {
 		if (safeEquals6.success) expect(safeEquals6.equals).toEqual(false);
 		else expect.fail();
 
-		const safeEquals7 = int2.safeEquals({ int2: 1 });
+		const safeEquals7 = int2.safeEquals({ value: 1 });
 		expect(safeEquals7.success).toBe(true);
 		if (safeEquals7.success) expect(safeEquals7.equals).toBe(true);
 		else expect.fail();
 
-		const safeEquals8 = int2.safeEquals({ int2: 2 });
+		const safeEquals8 = int2.safeEquals({ value: 2 });
 		expect(safeEquals8.success).toBe(true);
 		if (safeEquals8.success) expect(safeEquals8.equals).toEqual(false);
 		else expect.fail();
@@ -282,21 +282,21 @@ describe("Int2", () => {
 
 	test("toJSON()", () => {
 		const int2 = Int2.from(1);
-		expect(int2.toJSON()).toStrictEqual({ int2: 1 });
+		expect(int2.toJSON()).toStrictEqual({ value: 1 });
 	});
 
-	test("get int2()", () => {
-		expect(Int2.from(1).int2).toEqual(1);
-		expect(Int2.from("2").int2).toEqual(2);
-		expect(Int2.from({ int2: 3 }).int2).toEqual(3);
+	test("get value()", () => {
+		expect(Int2.from(1).value).toEqual(1);
+		expect(Int2.from("2").value).toEqual(2);
+		expect(Int2.from({ value: 3 }).value).toEqual(3);
 	});
 
-	test("set int2(...)", () => {
+	test("set value(...)", () => {
 		const int2 = Int2.from(1);
-		int2.int2 = 2;
-		expect(int2.int2).toEqual(2);
+		int2.value = 2;
+		expect(int2.value).toEqual(2);
 
-		expect(() => (int2.int2 = 32_768)).toThrowError("Number must be less than or equal to 32767");
+		expect(() => (int2.value = 32_768)).toThrowError("Number must be less than or equal to 32767");
 	});
 });
 

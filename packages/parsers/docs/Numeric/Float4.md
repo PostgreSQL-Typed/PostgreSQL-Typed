@@ -18,7 +18,7 @@ import { BigNumber } from "bignumber.js";
 //* Float4s can be created in the following ways:
 const float41 = Float4.from(1);
 const float42 = Float4.from({
-  float4: "1",
+  value: "1",
 });
 const float43 = Float4.from("1");
 const float44 = Float4.from(BigInt("1"));
@@ -39,6 +39,8 @@ if (Float4.isFloat4(float41)) {
 //* Afterwards, you can get/set the properties of the Float4:
 float41.float4; // BigNumber(1)
 
+float41.value; // "1"
+
 //* It has a `toString()` method that returns a string representation of the Float4:
 float41.toString(); // "1"
 
@@ -46,7 +48,7 @@ float41.toString(); // "1"
 float41.toBigNumber(); // BigNumber(1)
 
 //* It has a `toJSON()` method that returns a JSON representation of the Float4:
-float41.toJSON(); // { float4: "1" }
+float41.toJSON(); // { value: "1" }
 
 //* It has a `equals()` method that returns whether two float4s are equal:
 float41.equals(float42); // true

@@ -17,7 +17,7 @@ import { Name } from "@postgresql-typed/parsers";
 //* Names can be created in the following ways:
 const name1 = Name.from("abc");
 const name2 = Name.from({
-  name: "abc",
+  value: "abc",
 });
 
 
@@ -35,13 +35,13 @@ if (Name.isName(name1)) {
 }
 
 //* Afterwards, you can get/set the properties of the Name:
-name1.name; // "abc"
+name1.value; // "abc"
 
 //* It has a `toString()` method that returns a string representation of the Name:
 name1.toString(); // "abc"
 
 //* It has a `toJSON()` method that returns a JSON representation of the Name:
-name1.toJSON(); // { name: "abc" }
+name1.toJSON(); // { value: "abc" }
 
 //* It has a `equals()` method that returns whether two Names are equal:
 name1.equals(name2); // true

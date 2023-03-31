@@ -17,7 +17,7 @@ import { BitVarying } from "@postgresql-typed/parsers";
 //* BitVaryings can be created in the following ways:
 const bit1 = BitVarying.from(1);
 const bit2 = BitVarying.from({
-  bit: "1",
+  value: "1",
 });
 const bit3 = BitVarying.from("1");
 
@@ -50,7 +50,7 @@ if (BitVarying.isAnyBitVarying(bit1)) {
 }
 
 //* Afterwards, you can get/set the properties of the BitVarying:
-bit1.bit; // "1"
+bit1.value; // "1"
 
 //* It has a `toString()` method that returns a string representation of the BitVarying:
 bit1.toString(); // "1"
@@ -59,7 +59,7 @@ bit1.toString(); // "1"
 bit1.toNumber(); // 1
 
 //* It has a `toJSON()` method that returns a JSON representation of the BitVarying:
-bit1.toJSON(); // { bit: "1" }
+bit1.toJSON(); // { value: "1" }
 
 //* It has a `equals()` method that returns whether two bits are equal:
 bit1.equals(bit2); // true

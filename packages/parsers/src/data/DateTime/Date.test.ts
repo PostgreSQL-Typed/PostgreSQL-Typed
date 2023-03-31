@@ -170,6 +170,20 @@ describe("Date", () => {
 		date.day = 5;
 		expect(date.day).toBe(5);
 	});
+
+	test("get value()", () => {
+		const date = Date.from("2022-09-02");
+		expect(date.value).toBe("2022-09-02");
+	});
+
+	test("set value(...)", () => {
+		const date = Date.from("2022-09-02");
+		date.value = "2023-09-02";
+		expect(date.value).toBe("2023-09-02");
+		expect(() => {
+			date.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

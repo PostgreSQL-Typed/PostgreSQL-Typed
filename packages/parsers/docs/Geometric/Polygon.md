@@ -43,6 +43,8 @@ if (Polygon.isPolygon(polygon1)) {
 //* Afterwards, you can get/set the properties of the polygon:
 polygon1.points; // [ Point { x: 1, y: 2 }, Point { x: 3, y: 4 } ]
 
+polygon1.value; // "((1,2),(3,4))"
+
 //* It has a `toString()` method that returns a string representation of the polygon:
 polygon1.toString(); // "((1,2),(3,4))"
 

@@ -103,6 +103,10 @@ class TestClass extends PGTPBase<TestClass> {
 	toJSON(): TestObject {
 		return { test: this._data };
 	}
+
+	get value(): string {
+		return this._data;
+	}
 }
 
 const TestRange: RangeConstructor<Test, TestObject> = getRange<Test, TestObject>(testClass, testClass.isTest, "TestRange");
@@ -152,11 +156,11 @@ describe("RangeConstructor", () => {
 		expect(emptyRange.data.toJSON()).toStrictEqual({
 			lower: "[",
 			upper: "]",
-			value: null,
+			values: null,
 		});
 		expect(emptyRange.data.lower).toBe("[");
 		expect(emptyRange.data.upper).toBe("]");
-		expect(emptyRange.data.value).toBe(null);
+		expect(emptyRange.data.values).toBe(null);
 		expect(emptyRange.data.equals("empty")).toBe(true);
 
 		const stringRange = TestRange.safeFrom("[a,c)");
@@ -164,10 +168,11 @@ describe("RangeConstructor", () => {
 		if (!stringRange.success) expect.fail();
 		expect(stringRange.data.empty).toBe(false);
 		expect(stringRange.data.toString()).toBe("[a,c)");
-		expect(stringRange.data.toJSON().value).toHaveLength(2);
+		expect(stringRange.data.toJSON().values).toHaveLength(2);
 		expect(stringRange.data.lower).toBe("[");
 		expect(stringRange.data.upper).toBe(")");
-		expect(stringRange.data.value).toHaveLength(2);
+		expect(stringRange.data.values).toHaveLength(2);
+		expect(stringRange.data.value).toBe("[a,c)");
 		expect(stringRange.data.equals("[a,c)")).toBe(true);
 
 		const invalidString1 = TestRange.safeFrom("a,c)");
@@ -225,10 +230,11 @@ describe("RangeConstructor", () => {
 		if (!validArray.success) expect.fail();
 		expect(validArray.data.empty).toBe(false);
 		expect(validArray.data.toString()).toBe("[a,c)");
-		expect(validArray.data.toJSON().value).toHaveLength(2);
+		expect(validArray.data.toJSON().values).toHaveLength(2);
 		expect(validArray.data.lower).toBe("[");
 		expect(validArray.data.upper).toBe(")");
-		expect(validArray.data.value).toHaveLength(2);
+		expect(validArray.data.values).toHaveLength(2);
+		expect(validArray.data.value).toBe("[a,c)");
 		expect(validArray.data.equals([testClass.from("a"), testClass.from("c")])).toBe(true);
 
 		const invalidArray1 = TestRange.safeFrom(["a"] as any);
@@ -266,7 +272,7 @@ describe("RangeConstructor", () => {
 		const validObject = TestRange.safeFrom({
 			lower: "[",
 			upper: ")",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(validObject.success).toBe(true);
 		if (!validObject.success) expect.fail();
@@ -322,7 +328,7 @@ describe("RangeConstructor", () => {
 		const invalidObject6 = TestRange.safeFrom({
 			lower: "[",
 			upper: ")",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 			g: "h",
 		} as any);
 		expect(invalidObject6.success).toBe(false);
@@ -332,7 +338,7 @@ describe("RangeConstructor", () => {
 
 		const invalidObject7 = TestRange.safeFrom({
 			upper: ")",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		} as any);
 		expect(invalidObject7.success).toBe(false);
 		if (invalidObject7.success) expect.fail();
@@ -342,7 +348,7 @@ describe("RangeConstructor", () => {
 		const invalidObject8 = TestRange.safeFrom({
 			lower: 0 as any,
 			upper: ")",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(invalidObject8.success).toBe(false);
 		if (invalidObject8.success) expect.fail();
@@ -352,7 +358,7 @@ describe("RangeConstructor", () => {
 		const invalidObject9 = TestRange.safeFrom({
 			lower: "a" as any,
 			upper: ")",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(invalidObject9.success).toBe(false);
 		if (invalidObject9.success) expect.fail();
@@ -362,7 +368,7 @@ describe("RangeConstructor", () => {
 		const invalidObject10 = TestRange.safeFrom({
 			lower: "[",
 			upper: "b" as any,
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(invalidObject10.success).toBe(false);
 		if (invalidObject10.success) expect.fail();
@@ -372,7 +378,7 @@ describe("RangeConstructor", () => {
 		const fromRangeObjectNullValue = TestRange.safeFrom({
 			lower: "[",
 			upper: ")",
-			value: null,
+			values: null,
 		});
 		expect(fromRangeObjectNullValue.success).toBe(true);
 		if (!fromRangeObjectNullValue.success) expect.fail();
@@ -382,7 +388,7 @@ describe("RangeConstructor", () => {
 		const fromRangeObject = TestRange.safeFrom({
 			lower: "(",
 			upper: "]",
-			value: [testClass.from("a"), testClass.from("c")],
+			values: [testClass.from("a"), testClass.from("c")],
 		});
 		expect(fromRangeObject.success).toBe(true);
 		if (!fromRangeObject.success) expect.fail();
@@ -398,7 +404,7 @@ describe("RangeConstructor", () => {
 		const invalidRangeBound2 = TestRange.safeFrom({
 			lower: "(",
 			upper: "]",
-			value: [testClass.from("c"), testClass.from("a")],
+			values: [testClass.from("c"), testClass.from("a")],
 		});
 		expect(invalidRangeBound2.success).toBe(false);
 		if (invalidRangeBound2.success) expect.fail();
@@ -464,13 +470,13 @@ describe("Range", () => {
 		const test1 = TestRange.from("(a,c]").toJSON();
 		expect(test1.lower).toBe("(");
 		expect(test1.upper).toBe("]");
-		expect(test1.value).toHaveLength(2);
-		expect(test1.value?.[0].test).toBe("a");
-		expect(test1.value?.[1].test).toBe("c");
+		expect(test1.values).toHaveLength(2);
+		expect(test1.values?.[0].test).toBe("a");
+		expect(test1.values?.[1].test).toBe("c");
 		expect(TestRange.from("empty").toJSON()).toEqual({
 			lower: "[",
 			upper: "]",
-			value: null,
+			values: null,
 		});
 	});
 
@@ -530,50 +536,77 @@ describe("Range", () => {
 		expect(willMakeItEmpty.empty).toBe(true);
 	});
 
+	test("get values()", () => {
+		expect(TestRange.from("(a,c]").values).toHaveLength(2);
+		expect(TestRange.from("(a,c]").values?.[0].test).toBe("a");
+		expect(TestRange.from("(a,c]").values?.[1].test).toBe("c");
+		expect(TestRange.from("empty").values).toBeNull();
+	});
+
+	test("set values(...)", () => {
+		const test1 = TestRange.from("(a,c]");
+		expect(test1.values).toHaveLength(2);
+		expect(test1.values?.[0].test).toBe("a");
+		expect(test1.values?.[1].test).toBe("c");
+		test1.values = [testClass.from("b"), testClass.from("d")];
+		expect(test1.values).toHaveLength(2);
+		expect(test1.values?.[0].test).toBe("b");
+		expect(test1.values?.[1].test).toBe("d");
+		expect(test1.toString()).toBe("(b,d]");
+
+		const test2 = TestRange.from("(a,c]");
+		expect(test2.values).toHaveLength(2);
+		expect(test2.values?.[0].test).toBe("a");
+		expect(test2.values?.[1].test).toBe("c");
+		test2.values = null;
+		expect(test2.values).toBeNull();
+
+		const invalid1 = TestRange.from("(a,c]");
+		expect(() => {
+			invalid1.values = ["fail"] as any;
+		}).toThrowError("Array must contain exactly 2 element(s)");
+		expect(() => {
+			invalid1.values = ["fail", "fail", "fail"] as any;
+		}).toThrowError("Array must contain exactly 2 element(s)");
+		expect(() => {
+			invalid1.values = ["fail", testClass.from("d")] as any;
+		}).toThrowError("Expected 'a-z', received 'fail'");
+		expect(() => {
+			invalid1.values = [testClass.from("a"), "fail"] as any;
+		}).toThrowError("Expected 'a-z', received 'fail'");
+		expect(() => {
+			invalid1.values = "fail" as any;
+		}).toThrowError("Expected 'array', received 'string'");
+		invalid1.values = [testClass.from("a"), testClass.from("d")];
+		expect(invalid1.values).toHaveLength(2);
+		expect(invalid1.values?.[0].test).toBe("a");
+		expect(invalid1.values?.[1].test).toBe("d");
+	});
+
 	test("get value()", () => {
-		expect(TestRange.from("(a,c]").value).toHaveLength(2);
-		expect(TestRange.from("(a,c]").value?.[0].test).toBe("a");
-		expect(TestRange.from("(a,c]").value?.[1].test).toBe("c");
-		expect(TestRange.from("empty").value).toBeNull();
+		expect(TestRange.from("(a,c]").value).toBe("(a,c]");
+		expect(TestRange.from("[a,c)").value).toBe("[a,c)");
+		expect(TestRange.from("[a,c]").value).toBe("[a,c]");
+		expect(TestRange.from("(a,c)").value).toBe("(a,c)");
+		expect(TestRange.from("empty").value).toBe("empty");
 	});
 
 	test("set value(...)", () => {
 		const test1 = TestRange.from("(a,c]");
-		expect(test1.value).toHaveLength(2);
-		expect(test1.value?.[0].test).toBe("a");
-		expect(test1.value?.[1].test).toBe("c");
-		test1.value = [testClass.from("b"), testClass.from("d")];
-		expect(test1.value).toHaveLength(2);
-		expect(test1.value?.[0].test).toBe("b");
-		expect(test1.value?.[1].test).toBe("d");
-		expect(test1.toString()).toBe("(b,d]");
+		expect(test1.value).toBe("(a,c]");
+		test1.value = "[a,c)";
+		expect(test1.value).toBe("[a,c)");
+		expect(test1.toString()).toBe("[a,c)");
 
 		const test2 = TestRange.from("(a,c]");
-		expect(test2.value).toHaveLength(2);
-		expect(test2.value?.[0].test).toBe("a");
-		expect(test2.value?.[1].test).toBe("c");
-		test2.value = null;
-		expect(test2.value).toBeNull();
+		expect(test2.value).toBe("(a,c]");
+		test2.value = "empty";
+		expect(test2.value).toBe("empty");
+		expect(test2.toString()).toBe("empty");
 
 		const invalid1 = TestRange.from("(a,c]");
 		expect(() => {
-			invalid1.value = ["fail"] as any;
-		}).toThrowError("Array must contain exactly 2 element(s)");
-		expect(() => {
-			invalid1.value = ["fail", "fail", "fail"] as any;
-		}).toThrowError("Array must contain exactly 2 element(s)");
-		expect(() => {
-			invalid1.value = ["fail", testClass.from("d")] as any;
-		}).toThrowError("Expected 'a-z', received 'fail'");
-		expect(() => {
-			invalid1.value = [testClass.from("a"), "fail"] as any;
-		}).toThrowError("Expected 'a-z', received 'fail'");
-		expect(() => {
 			invalid1.value = "fail" as any;
-		}).toThrowError("Expected 'array', received 'string'");
-		invalid1.value = [testClass.from("a"), testClass.from("d")];
-		expect(invalid1.value).toHaveLength(2);
-		expect(invalid1.value?.[0].test).toBe("a");
-		expect(invalid1.value?.[1].test).toBe("d");
+		}).toThrowError("Expected '[' | '(', received 'f'");
 	});
 });

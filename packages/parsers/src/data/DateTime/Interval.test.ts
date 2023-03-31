@@ -301,6 +301,20 @@ describe("Interval", () => {
 		interval.milliseconds = 5;
 		expect(interval.milliseconds).toBe(5);
 	});
+
+	test("get value()", () => {
+		const interval = Interval.from("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+		expect(interval.value).toBe("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+	});
+
+	test("set value(...)", () => {
+		const interval = Interval.from("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+		interval.value = "2 years 3 months 4 days 5 hours 6 minutes 7 seconds 8 milliseconds";
+		expect(interval.value).toBe("2 years 3 months 4 days 5 hours 6 minutes 7 seconds 8 milliseconds");
+		expect(() => {
+			interval.value = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

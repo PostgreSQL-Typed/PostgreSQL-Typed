@@ -44,15 +44,23 @@ describe("TimestampTZRange", () => {
 		//
 	});
 
+	test.todo("get values()", () => {
+		//
+	});
+
+	test.todo("set values(...)", () => {
+		//
+	});
+
+	test.todo("get empty()", () => {
+		//
+	});
+
 	test.todo("get value()", () => {
 		//
 	});
 
 	test.todo("set value(...)", () => {
-		//
-	});
-
-	test.todo("get empty()", () => {
 		//
 	});
 });

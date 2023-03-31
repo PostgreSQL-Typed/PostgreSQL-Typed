@@ -36,6 +36,8 @@ circle1.x; // 1
 circle1.y; // 2
 circle1.radius; // 3
 
+circle1.value; // "<(1,2),3>"
+
 //* It has a `toString()` method that returns a string representation of the circle:
 circle1.toString(); // "<(1,2),3>"
 

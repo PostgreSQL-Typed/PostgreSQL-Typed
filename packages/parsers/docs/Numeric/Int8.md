@@ -17,7 +17,7 @@ import { Int8 } from "@postgresql-typed/parsers";
 //* Int8s can be created in the following ways:
 const int81 = Int8.from(1);
 const int82 = Int8.from({
-  int8: 1,
+  value: "1",
 });
 const int83 = Int8.from("1");
 const int84 = Int8.from(BigInt("1"));
@@ -38,6 +38,8 @@ if (Int8.isInt8(int81)) {
 //* Afterwards, you can get/set the properties of the Int8:
 int81.int8; // BigInt(1)
 
+int81.value; // "1"
+
 //* It has a `toString()` method that returns a string representation of the Int8:
 int81.toString(); // "1"
 
@@ -45,7 +47,7 @@ int81.toString(); // "1"
 int81.toBigint(); // BigInt(1)
 
 //* It has a `toJSON()` method that returns a JSON representation of the Int8:
-int81.toJSON(); // { int8: BigInt(1) }
+int81.toJSON(); // { value: "1" }
 
 //* It has a `equals()` method that returns whether two int8s are equal:
 int81.equals(int82); // true

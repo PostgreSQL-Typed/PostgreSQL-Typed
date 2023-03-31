@@ -25,6 +25,8 @@ interface Point {
 	x: number;
 	y: number;
 
+	value: string;
+
 	toString(): string;
 	toJSON(): PointObject;
 
@@ -256,6 +258,18 @@ class PointClass extends PGTPBase<Point> implements Point {
 			});
 		}
 		this._y = y;
+	}
+
+	get value(): string {
+		return this.toString();
+	}
+
+	set value(point: string) {
+		const parsed = Point.safeFrom(point);
+		if (parsed.success) {
+			this._x = parsed.data.x;
+			this._y = parsed.data.y;
+		} else throw parsed.error;
 	}
 }
 

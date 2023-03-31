@@ -18,11 +18,11 @@ import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { INVALID, OK } from "../../util/validation.js";
 
 interface NameObject {
-	name: string;
+	value: string;
 }
 
 interface Name {
-	name: string;
+	value: string;
 
 	toString(): string;
 	toJSON(): NameObject;
@@ -109,9 +109,9 @@ class NameConstructorClass extends PGTPConstructorBase<Name> implements NameCons
 	}
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Name> {
-		if (this.isName(argument)) return OK(new NameClass(argument.name));
-		const parsedObject = hasKeys<NameObject>(argument, [["name", "string"]]);
-		if (parsedObject.success) return this._parseString(context, parsedObject.obj.name);
+		if (this.isName(argument)) return OK(new NameClass(argument.value));
+		const parsedObject = hasKeys<NameObject>(argument, [["value", "string"]]);
+		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
@@ -167,15 +167,15 @@ class NameClass extends PGTPBase<Name> implements Name {
 
 	toJSON(): NameObject {
 		return {
-			name: this._name,
+			value: this._name,
 		};
 	}
 
-	get name(): string {
+	get value(): string {
 		return this._name;
 	}
 
-	set name(name: string) {
+	set value(name: string) {
 		const parsed = Name.safeFrom(name);
 		if (parsed.success) this._name = parsed.data.toString();
 		else throw parsed.error;

@@ -223,6 +223,20 @@ describe("Path", () => {
 		expect(path.connection).toBe("open");
 		expect(path.toString()).toBe("[(1,2),(3,4)]");
 	});
+
+	test("get value()", () => {
+		const path = Path.from("[(-2.0,-2.0),(0.0,0.0)]");
+		expect(path.value).toBe("[(-2,-2),(0,0)]");
+	});
+
+	test("set value(...)", () => {
+		const path = Path.from("[(-2.0,-2.0),(0.0,0.0)]");
+		path.value = "[(1,1),(3,3)]";
+		expect(path.value).toBe("[(1,1),(3,3)]");
+		expect(() => {
+			path.value = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {

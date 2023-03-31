@@ -148,19 +148,33 @@ export class Printer {
 
 			if (directoryFilesToDelete.length > 0) {
 				this.LOGGER?.(`Deleting ${directoryFilesToDelete.length} files...`);
+				const folders: string[] = [];
 				await Promise.all(
 					directoryFilesToDelete.map(async fileName => {
-						const filePath = join(directory, fileName),
-							file = await promises.stat(filePath);
+						const filePath = join(directory, fileName);
+						this.LOGGER?.(`Deleting: ${filePath} (directory: ${directory}, fileName: ${fileName})`);
+						const file = await promises.stat(filePath);
 						if (file.isFile()) {
 							const source = await promises.readFile(filePath, "utf8");
 							if (source.includes(GENERATED_STATEMENT)) {
 								this.LOGGER?.(`Deleting: ${fileName}`);
 								await promises.unlink(filePath);
 							}
-						}
+						} else if (file.isDirectory()) folders.push(filePath);
 					})
 				);
+
+				//* Sort folders by length so that we delete the deepest ones first
+				folders.sort((a, b) => b.length - a.length);
+
+				//* Delete empty folders
+				for (const folder of folders) {
+					const files = await promises.readdir(folder);
+					if (files.length === 0) {
+						this.LOGGER?.(`Deleting Folder: ${folder}`);
+						await promises.rmdir(folder);
+					}
+				}
 			} else this.LOGGER?.("No files to delete.");
 
 			await Promise.all(
@@ -234,12 +248,13 @@ export class Printer {
 			files: string[] = [];
 
 		for (const fileName of directoryFiles) {
-			const filePath = join(directory, fileName),
-				file = await promises.stat(filePath);
+			const filePath = join(directory, fileName);
+			this.LOGGER?.(`getAllFiles: ${filePath} (directory: ${directory}, fileName: ${fileName})`);
+			const file = await promises.stat(filePath);
 
 			if (file.isDirectory()) {
 				const newFiles = await this.getAllFiles(filePath);
-				files.push(...newFiles);
+				files.push(...newFiles, filePath);
 			} else files.push(filePath);
 		}
 

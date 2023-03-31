@@ -64,8 +64,9 @@ import type { OID, OIDConstructor, OIDObject } from "../data/ObjectIdentifier/OI
 import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
 
 export type FromParameters<
-	T extends //* BitString
-	| BitConstructor<number>
+	//* BitString
+	T extends
+		| BitConstructor<number>
 		| BitVaryingConstructor<number>
 		//* Boolean
 		| BooleanConstructor

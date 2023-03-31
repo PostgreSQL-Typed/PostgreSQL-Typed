@@ -36,10 +36,12 @@ interface LineSegment {
 
 	equals(string: string): boolean;
 	equals(a: Point, b: Point): boolean;
+	equals(points: [Point, Point]): boolean;
 	equals(lineSegment: LineSegment): boolean;
 	equals(object: LineSegmentObject | RawLineSegmentObject): boolean;
 	safeEquals(string: string): SafeEquals<LineSegment>;
 	safeEquals(a: Point, b: Point): SafeEquals<LineSegment>;
+	safeEquals(points: [Point, Point]): SafeEquals<LineSegment>;
 	safeEquals(lineSegment: LineSegment): SafeEquals<LineSegment>;
 	safeEquals(object: LineSegmentObject | RawLineSegmentObject): SafeEquals<LineSegment>;
 }
@@ -47,10 +49,12 @@ interface LineSegment {
 interface LineSegmentConstructor {
 	from(string: string): LineSegment;
 	from(a: Point, b: Point): LineSegment;
+	from(points: [Point, Point]): LineSegment;
 	from(lineSegment: LineSegment): LineSegment;
 	from(object: LineSegmentObject | RawLineSegmentObject): LineSegment;
 	safeFrom(string: string): SafeFrom<LineSegment>;
 	safeFrom(a: Point, b: Point): SafeFrom<LineSegment>;
+	safeFrom(points: [Point, Point]): SafeFrom<LineSegment>;
 	safeFrom(lineSegment: LineSegment): SafeFrom<LineSegment>;
 	safeFrom(object: LineSegmentObject | RawLineSegmentObject): SafeFrom<LineSegment>;
 	/**
@@ -66,7 +70,7 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 
 	_parse(context: ParseContext): ParseReturnType<LineSegment> {
 		const [argument, ...otherArguments] = context.data,
-			allowedTypes = [ParsedType.string, ParsedType.object],
+			allowedTypes = [ParsedType.string, ParsedType.object, ParsedType.array],
 			parsedType = getParsedType(argument);
 
 		if (parsedType !== ParsedType.object && context.data.length !== 1) {
@@ -101,6 +105,8 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 		switch (parsedType) {
 			case "string":
 				return this._parseString(context, argument as string);
+			case "array":
+				return this._parseObject(context, (argument as object[])[0], argument as unknown[]);
 			default:
 				return this._parseObject(context, argument as object, otherArguments);
 		}

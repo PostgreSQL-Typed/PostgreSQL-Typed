@@ -21,6 +21,7 @@ describe("LineSegmentConstructor", () => {
 		).toBe(true);
 		expect(LineSegment.safeFrom({ a: Point.from("(1,2)"), b: Point.from("(3,4)") }).success).toBe(true);
 		expect(LineSegment.safeFrom(Point.from("(1,2)"), Point.from("(3,4)")).success).toBe(true);
+		expect(LineSegment.safeFrom([Point.from("(1,2)"), Point.from("(3,4)")]).success).toBe(true);
 		expect(LineSegment.safeFrom(LineSegment.from("[(1,2),(3,4)]")).success).toBe(true);
 
 		//@ts-expect-error - this is a test
@@ -32,7 +33,7 @@ describe("LineSegmentConstructor", () => {
 		//@ts-expect-error - this is a test
 		expect(() => LineSegment.from({ a: Point.from("(1,2)"), b: Point.from("(3,4)") }, "b")).toThrowError("Function must have exactly 1 argument(s)");
 		//@ts-expect-error - this is a test
-		expect(() => LineSegment.from(BigInt("1"))).toThrowError("Expected 'string' | 'object', received 'bigint'");
+		expect(() => LineSegment.from(BigInt("1"))).toThrowError("Expected 'string' | 'object' | 'array', received 'bigint'");
 		expect(() => LineSegment.from("()")).toThrowError("Expected 'LIKE [(x1,y1),(x2,y2)]', received '()'");
 		expect(() => LineSegment.from({} as any)).toThrowError("Missing keys in object: 'a', 'b'");
 		expect(() =>
@@ -136,7 +137,7 @@ describe("LineSegment", () => {
 			)
 		).toBe(false);
 		//@ts-expect-error - this is a test
-		expect(() => lineSegment.equals(BigInt(1))).toThrowError("Expected 'string' | 'object', received 'bigint'");
+		expect(() => lineSegment.equals(BigInt(1))).toThrowError("Expected 'string' | 'object' | 'array', received 'bigint'");
 	});
 
 	test("toString()", () => {

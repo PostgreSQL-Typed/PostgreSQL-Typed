@@ -28,11 +28,13 @@ describe("Client", () => {
 
 	test("Client<..., true>.testConnection()", async () => {
 		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData, {
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
+			options: {
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+			},
 		});
 
 		client = await client.testConnection();
@@ -60,11 +62,13 @@ describe("Client", () => {
 		expectTypeOf(client).toEqualTypeOf<Client<TestData, false>>();
 
 		client = await client.testConnection({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
+			options: {
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+			},
 		});
 
 		expect(client.ready).toBe(true);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import type { BigNumber } from "bignumber.js";
 import type { DateTime } from "luxon";
 
@@ -5,7 +6,7 @@ import type { DateTime } from "luxon";
 import type { Bit, BitConstructor, BitObject } from "../data/BitString/Bit.js";
 import type { BitVarying, BitVaryingConstructor, BitVaryingObject } from "../data/BitString/BitVarying.js";
 //* Boolean
-import type { BooleanConstructor, BooleanObject } from "../data/Boolean/Boolean.js";
+import type { Boolean, BooleanConstructor, BooleanObject } from "../data/Boolean/Boolean.js";
 //* Character
 import type { Character, CharacterConstructor, CharacterObject } from "../data/Character/Character.js";
 import type { CharacterVarying, CharacterVaryingConstructor, CharacterVaryingObject } from "../data/Character/CharacterVarying.js";
@@ -62,61 +63,9 @@ import type { Int8Range, Int8RangeConstructor, Int8RangeObject, RawInt8RangeObje
 import type { OID, OIDConstructor, OIDObject } from "../data/ObjectIdentifier/OID.js";
 //* UUID
 import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
+import type { Constructors } from "./Constructors.js";
 
-export type FromParameters<
-	//* BitString
-	T extends
-		| BitConstructor<number>
-		| BitVaryingConstructor<number>
-		//* Boolean
-		| BooleanConstructor
-		//* Character
-		| CharacterConstructor<number>
-		| CharacterVaryingConstructor<number>
-		| NameConstructor
-		| TextConstructor
-		//* DateTime
-		| DateConstructor
-		| DateMultiRangeConstructor
-		| DateRangeConstructor
-		| IntervalConstructor
-		| TimeConstructor
-		| TimestampConstructor
-		| TimestampMultiRangeConstructor
-		| TimestampRangeConstructor
-		| TimestampTZConstructor
-		| TimestampTZMultiRangeConstructor
-		| TimestampTZRangeConstructor
-		| TimeTZConstructor
-		//* Geometric
-		| BoxConstructor
-		| CircleConstructor
-		| LineConstructor
-		| LineSegmentConstructor
-		| PathConstructor
-		| PointConstructor
-		| PolygonConstructor
-		//* Monetary
-		| MoneyConstructor
-		//* NetworkAddress
-		// | IPAddressConstructor
-		// | MACAddressConstructor
-		// | MACAddress8Constructor
-		//* Numeric
-		| Float4Constructor
-		| Float8Constructor
-		| Int2Constructor
-		| Int4Constructor
-		| Int4MultiRangeConstructor
-		| Int4RangeConstructor
-		| Int8Constructor
-		| Int8MultiRangeConstructor
-		| Int8RangeConstructor
-		//* ObjectIdentifier
-		| OIDConstructor
-		//* UUID
-		| UUIDConstructor
-> =
+export type FromParameters<T extends Constructors> =
 	//* BitString
 	T extends BitConstructor<infer N>
 		? string | number | Bit<N> | BitObject
@@ -124,7 +73,7 @@ export type FromParameters<
 		? string | number | BitVarying<N> | BitVaryingObject
 		: //* Boolean
 		T extends BooleanConstructor
-		? string | number | boolean | boolean | BooleanObject
+		? string | number | boolean | Boolean | BooleanObject
 		: //* Character
 		T extends CharacterConstructor<infer N>
 		? string | Character<N> | CharacterObject

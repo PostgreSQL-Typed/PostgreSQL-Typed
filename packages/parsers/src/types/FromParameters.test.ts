@@ -7,7 +7,7 @@ import { describe, expectTypeOf, test } from "vitest";
 import type { Bit, BitConstructor, BitObject } from "../data/BitString/Bit.js";
 import type { BitVarying, BitVaryingConstructor, BitVaryingObject } from "../data/BitString/BitVarying.js";
 //* Boolean
-import type { BooleanConstructor, BooleanObject } from "../data/Boolean/Boolean.js";
+import type { Boolean, BooleanConstructor, BooleanObject } from "../data/Boolean/Boolean.js";
 //* Character
 import type { Character, CharacterConstructor, CharacterObject } from "../data/Character/Character.js";
 import type { CharacterVarying, CharacterVaryingConstructor, CharacterVaryingObject } from "../data/Character/CharacterVarying.js";
@@ -68,7 +68,7 @@ import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
 import type { FromParameters } from "./FromParameters.js";
 
 describe("FromParameters", () => {
-	test("FromParameters<Bit<...>>", () => {
+	test("FromParameters<BitConstructor<...>>", () => {
 		let a: FromParameters<BitConstructor<1>> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | BitObject | Bit<1> | undefined>();
 
@@ -79,7 +79,7 @@ describe("FromParameters", () => {
 		expectTypeOf(c).toEqualTypeOf<string | number | BitObject | Bit<number> | undefined>();
 	});
 
-	test("FromParameters<BitVarying<...>>", () => {
+	test("FromParameters<BitVaryingConstructor<...>>", () => {
 		let a: FromParameters<BitVaryingConstructor<1>> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | BitVaryingObject | BitVarying<1> | undefined>();
 
@@ -90,12 +90,13 @@ describe("FromParameters", () => {
 		expectTypeOf(c).toEqualTypeOf<string | number | BitVaryingObject | BitVarying<number> | undefined>();
 	});
 
-	test("FromParameters<Boolean>", () => {
+	test("FromParameters<BooleanConstructor>", () => {
 		let a: FromParameters<BooleanConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | number | boolean | BooleanObject | undefined>();
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		expectTypeOf(a).toEqualTypeOf<string | number | boolean | Boolean | BooleanObject | undefined>();
 	});
 
-	test("FromParameters<Character<...>>", () => {
+	test("FromParameters<CharacterConstructor<...>>", () => {
 		let a: FromParameters<CharacterConstructor<1>> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | CharacterObject | Character<1> | undefined>();
 
@@ -106,7 +107,7 @@ describe("FromParameters", () => {
 		expectTypeOf(c).toEqualTypeOf<string | CharacterObject | Character<number> | undefined>();
 	});
 
-	test("FromParameters<CharacterVarying<...>>", () => {
+	test("FromParameters<CharacterVaryingConstructor<...>>", () => {
 		let a: FromParameters<CharacterVaryingConstructor<1>> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | CharacterVaryingObject | CharacterVarying<1> | undefined>();
 
@@ -117,69 +118,69 @@ describe("FromParameters", () => {
 		expectTypeOf(c).toEqualTypeOf<string | CharacterVaryingObject | CharacterVarying<number> | undefined>();
 	});
 
-	test("FromParameters<Name>", () => {
+	test("FromParameters<NameConstructor>", () => {
 		let a: FromParameters<NameConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Name | NameObject | undefined>();
 	});
 
-	test("FromParameters<Text>", () => {
+	test("FromParameters<TextConstructor>", () => {
 		let a: FromParameters<TextConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Text | TextObject | undefined>();
 	});
 
-	test("FromParameters<Date>", () => {
+	test("FromParameters<DateConstructor>", () => {
 		let a: FromParameters<DateConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Date | globalThis.Date | DateTime | DateObject | undefined>();
 	});
 
-	test("FromParameters<DateMultiRange>", () => {
+	test("FromParameters<DateMultiRangeConstructor>", () => {
 		let a: FromParameters<DateMultiRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | DateMultiRange | DateMultiRangeObject | RawDateMultiRangeObject | DateRange[] | undefined>();
 	});
 
-	test("FromParameters<DateRange>", () => {
+	test("FromParameters<DateRangeConstructor>", () => {
 		let a: FromParameters<DateRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | DateRange | DateRangeObject | RawDateRangeObject | [Date, Date] | undefined>();
 	});
 
-	test("FromParameters<Interval>", () => {
+	test("FromParameters<IntervalConstructor>", () => {
 		let a: FromParameters<IntervalConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Interval | IntervalObject | undefined>();
 	});
 
-	test("FromParameters<Time>", () => {
+	test("FromParameters<TimeConstructor>", () => {
 		let a: FromParameters<TimeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Time | globalThis.Date | DateTime | TimeObject | undefined>();
 	});
 
-	test("FromParameters<Timestamp>", () => {
+	test("FromParameters<TimestampConstructor>", () => {
 		let a: FromParameters<TimestampConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Timestamp | globalThis.Date | DateTime | TimestampObject | undefined>();
 	});
 
-	test("FromParameters<TimestampMultiRange>", () => {
+	test("FromParameters<TimestampMultiRangeConstructor>", () => {
 		let a: FromParameters<TimestampMultiRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | TimestampMultiRange | TimestampMultiRangeObject | RawTimestampMultiRangeObject | TimestampRange[] | undefined>();
 	});
 
-	test("FromParameters<TimestampRange>", () => {
+	test("FromParameters<TimestampRangeConstructor>", () => {
 		let a: FromParameters<TimestampRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | TimestampRange | TimestampRangeObject | RawTimestampRangeObject | [Timestamp, Timestamp] | undefined>();
 	});
 
-	test("FromParameters<TimestampTZ>", () => {
+	test("FromParameters<TimestampTZConstructor>", () => {
 		let a: FromParameters<TimestampTZConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | TimestampTZ | globalThis.Date | DateTime | TimestampTZObject | undefined>();
 	});
 
-	test("FromParameters<TimestampTZMultiRange>", () => {
+	test("FromParameters<TimestampTZMultiRangeConstructor>", () => {
 		let a: FromParameters<TimestampTZMultiRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<
 			string | TimestampTZMultiRange | TimestampTZMultiRangeObject | RawTimestampTZMultiRangeObject | TimestampTZRange[] | undefined
 		>();
 	});
 
-	test("FromParameters<TimestampTZRange>", () => {
+	test("FromParameters<TimestampTZRangeConstructor>", () => {
 		let a: FromParameters<TimestampTZRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | TimestampTZRange | TimestampTZRangeObject | RawTimestampTZRangeObject | [TimestampTZ, TimestampTZ] | undefined>();
 	});
@@ -189,97 +190,97 @@ describe("FromParameters", () => {
 		expectTypeOf(a).toEqualTypeOf<string | TimeTZ | globalThis.Date | DateTime | TimeTZObject | undefined>();
 	});
 
-	test("FromParameters<Box>", () => {
+	test("FromParameters<BoxConstructor>", () => {
 		let a: FromParameters<BoxConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Box | BoxObject | undefined>();
 	});
 
-	test("FromParameters<Circle>", () => {
+	test("FromParameters<CircleConstructor>", () => {
 		let a: FromParameters<CircleConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Circle | CircleObject | undefined>();
 	});
 
-	test("FromParameters<Line>", () => {
+	test("FromParameters<LineConstructor>", () => {
 		let a: FromParameters<LineConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Line | LineObject | undefined>();
 	});
 
-	test("FromParameters<LineSegment>", () => {
+	test("FromParameters<LineSegmentConstructor>", () => {
 		let a: FromParameters<LineSegmentConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | LineSegment | LineSegmentObject | RawLineSegmentObject | [Point, Point] | undefined>();
 	});
 
-	test("FromParameters<Path>", () => {
+	test("FromParameters<PathConstructor>", () => {
 		let a: FromParameters<PathConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Point[] | Path | PathObject | RawPathObject | undefined>();
 	});
 
-	test("FromParameters<Point>", () => {
+	test("FromParameters<PointConstructor>", () => {
 		let a: FromParameters<PointConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Point | PointObject | undefined>();
 	});
 
-	test("FromParameters<Polygon>", () => {
+	test("FromParameters<PolygonConstructor>", () => {
 		let a: FromParameters<PolygonConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Point[] | Polygon | PolygonObject | RawPolygonObject | undefined>();
 	});
 
-	test("FromParameters<Money>", () => {
+	test("FromParameters<MoneyConstructor>", () => {
 		let a: FromParameters<MoneyConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | bigint | BigNumber | Money | MoneyObject | undefined>();
 	});
 
-	test("FromParameters<Float4>", () => {
+	test("FromParameters<Float4Constructor>", () => {
 		let a: FromParameters<Float4Constructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | bigint | BigNumber | Float4 | Float4Object | undefined>();
 	});
 
-	test("FromParameters<Float8>", () => {
+	test("FromParameters<Float8Constructor>", () => {
 		let a: FromParameters<Float8Constructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | bigint | BigNumber | Float8 | Float8Object | undefined>();
 	});
 
-	test("FromParameters<Int2>", () => {
+	test("FromParameters<Int2Constructor>", () => {
 		let a: FromParameters<Int2Constructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | Int2 | Int2Object | undefined>();
 	});
 
-	test("FromParameters<Int4>", () => {
+	test("FromParameters<Int4Constructor>", () => {
 		let a: FromParameters<Int4Constructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | Int4 | Int4Object | undefined>();
 	});
 
-	test("FromParameters<Int4MultiRange>", () => {
+	test("FromParameters<Int4MultiRangeConstructor>", () => {
 		let a: FromParameters<Int4MultiRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Int4MultiRange | Int4MultiRangeObject | RawInt4MultiRangeObject | Int4Range[] | undefined>();
 	});
 
-	test("FromParameters<Int4Range>", () => {
+	test("FromParameters<Int4RangeConstructor>", () => {
 		let a: FromParameters<Int4RangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Int4Range | Int4RangeObject | RawInt4RangeObject | [Int4, Int4] | undefined>();
 	});
 
-	test("FromParameters<Int8>", () => {
+	test("FromParameters<Int8Constructor>", () => {
 		let a: FromParameters<Int8Constructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | bigint | Int8 | Int8Object | undefined>();
 	});
 
-	test("FromParameters<Int8MultiRange>", () => {
+	test("FromParameters<Int8MultiRangeConstructor>", () => {
 		let a: FromParameters<Int8MultiRangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Int8MultiRange | Int8MultiRangeObject | RawInt8MultiRangeObject | Int8Range[] | undefined>();
 	});
 
-	test("FromParameters<Int8Range>", () => {
+	test("FromParameters<Int8RangeConstructor>", () => {
 		let a: FromParameters<Int8RangeConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Int8Range | Int8RangeObject | RawInt8RangeObject | [Int8, Int8] | undefined>();
 	});
 
-	test("FromParameters<OID>", () => {
+	test("FromParameters<OIDConstructor>", () => {
 		let a: FromParameters<OIDConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | OID | OIDObject | undefined>();
 	});
 
-	test("FromParameters<UUID>", () => {
+	test("FromParameters<UUIDConstructor>", () => {
 		let a: FromParameters<UUIDConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | UUID | UUIDObject | undefined>();
 	});

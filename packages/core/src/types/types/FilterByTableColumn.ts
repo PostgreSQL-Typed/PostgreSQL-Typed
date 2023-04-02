@@ -1,3 +1,5 @@
+import { ConstructorFromParser, Constructors, FromParameters, Parsers } from "@postgresql-typed/parsers";
+
 import type { Table } from "../../classes/Table.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
 import type { FilterOperators } from "../interfaces/FilterOperators.js";
@@ -17,5 +19,10 @@ export type FilterByTableColumn<
 			? InnerColumnName
 			: never
 		: never,
-	ColumnData extends InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName] = InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName]
-> = FilterOperators<NonNullable<ColumnData>>;
+	ColumnData extends InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName] = InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"][ColumnName],
+	ActualType extends FromParameters<Constructors> = ColumnData extends Parsers
+		? ConstructorFromParser<ColumnData> extends Constructors
+			? FromParameters<ConstructorFromParser<ColumnData>>
+			: never
+		: never
+> = FilterOperators<NonNullable<ActualType>>;

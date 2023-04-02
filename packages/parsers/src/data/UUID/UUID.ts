@@ -23,6 +23,8 @@ interface UUIDObject {
 }
 
 interface UUID {
+	uuid: string;
+
 	value: string;
 
 	toString(): string;
@@ -176,6 +178,16 @@ class UUIDClass extends PGTPBase<UUID> implements UUID {
 		return {
 			value: this._uuid,
 		};
+	}
+
+	get uuid(): string {
+		return this._uuid;
+	}
+
+	set uuid(uuid: string) {
+		const parsed = UUID.safeFrom(uuid);
+		if (parsed.success) this._uuid = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

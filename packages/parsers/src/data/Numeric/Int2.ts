@@ -20,6 +20,8 @@ interface Int2Object {
 }
 
 interface Int2 {
+	int2: number;
+
 	value: number;
 
 	toString(): string;
@@ -208,6 +210,16 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 		return {
 			value: this._int2,
 		};
+	}
+
+	get int2(): number {
+		return this._int2;
+	}
+
+	set int2(int2: number) {
+		const parsed = Int2.safeFrom(int2);
+		if (parsed.success) this._int2 = parsed.data.toNumber();
+		else throw parsed.error;
 	}
 
 	get value(): number {

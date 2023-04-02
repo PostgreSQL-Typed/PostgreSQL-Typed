@@ -255,6 +255,20 @@ describe("Character", () => {
 		expect(char.toJSON()).toStrictEqual({ value: "a" });
 	});
 
+	test("get character()", () => {
+		expect(Character.setN(3).from("abc").character).toEqual("abc");
+		expect(Character.setN(3).from("abc").character).toEqual("abc");
+		expect(Character.setN(3).from({ value: "abc" }).character).toEqual("abc");
+	});
+
+	test("set character(...)", () => {
+		const char = Character.from("a");
+		char.character = "b" as any;
+		expect(char.character).toEqual("b");
+
+		expect(() => (char.character = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+	});
+
 	test("get value()", () => {
 		expect(Character.setN(3).from("abc").value).toEqual("abc");
 		expect(Character.setN(3).from("abc").value).toEqual("abc");

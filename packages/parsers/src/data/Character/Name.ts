@@ -22,6 +22,8 @@ interface NameObject {
 }
 
 interface Name {
+	name: string;
+
 	value: string;
 
 	toString(): string;
@@ -169,6 +171,16 @@ class NameClass extends PGTPBase<Name> implements Name {
 		return {
 			value: this._name,
 		};
+	}
+
+	get name(): string {
+		return this._name;
+	}
+
+	set name(name: string) {
+		const parsed = Name.safeFrom(name);
+		if (parsed.success) this._name = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

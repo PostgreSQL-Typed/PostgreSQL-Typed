@@ -309,6 +309,20 @@ describe("Bit", () => {
 		expect(bit.toJSON()).toStrictEqual({ value: "1" });
 	});
 
+	test("get bit()", () => {
+		expect(Bit.setN(3).from(5).bit).toEqual("101");
+		expect(Bit.setN(3).from("100").bit).toEqual("100");
+		expect(Bit.setN(3).from({ value: "100" }).bit).toEqual("100");
+	});
+
+	test("set bit(...)", () => {
+		const bit = Bit.from(1);
+		bit.bit = "0" as any;
+		expect(bit.bit).toEqual("0");
+
+		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+	});
+
 	test("get value()", () => {
 		expect(Bit.setN(3).from(5).value).toEqual("101");
 		expect(Bit.setN(3).from("100").value).toEqual("100");

@@ -20,6 +20,8 @@ interface Int4Object {
 }
 
 interface Int4 {
+	int4: number;
+
 	value: number;
 
 	toString(): string;
@@ -208,6 +210,16 @@ class Int4Class extends PGTPBase<Int4> implements Int4 {
 		return {
 			value: this._int4,
 		};
+	}
+
+	get int4(): number {
+		return this._int4;
+	}
+
+	set int4(int4: number) {
+		const parsed = Int4.safeFrom(int4);
+		if (parsed.success) this._int4 = parsed.data.toNumber();
+		else throw parsed.error;
 	}
 
 	get value(): number {

@@ -21,6 +21,8 @@ interface OIDObject {
 }
 
 interface OID {
+	oid: number;
+
 	value: number;
 
 	toString(): string;
@@ -211,6 +213,16 @@ class OIDClass extends PGTPBase<OID> implements OID {
 		return {
 			value: this._oid,
 		};
+	}
+
+	get oid(): number {
+		return this._oid;
+	}
+
+	set oid(oid: number) {
+		const parsed = OID.safeFrom(oid);
+		if (parsed.success) this._oid = parsed.data.toNumber();
+		else throw parsed.error;
 	}
 
 	get value(): number {

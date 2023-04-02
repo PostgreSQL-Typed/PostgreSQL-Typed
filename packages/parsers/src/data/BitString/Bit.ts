@@ -21,6 +21,8 @@ interface BitObject {
 }
 
 interface Bit<N extends number> {
+	bit: string;
+
 	value: string;
 
 	get n(): N;
@@ -290,6 +292,16 @@ class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
 		return {
 			value: this._bit.toString(),
 		};
+	}
+
+	get bit(): string {
+		return this._bit;
+	}
+
+	set bit(bit: string) {
+		const parsed = new BitConstructorClass(this._n).safeFrom(bit);
+		if (parsed.success) this._bit = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

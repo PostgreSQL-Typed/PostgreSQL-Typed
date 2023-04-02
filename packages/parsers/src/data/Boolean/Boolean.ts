@@ -21,6 +21,8 @@ interface BooleanObject {
 }
 
 interface Boolean {
+	boolean: boolean;
+
 	value: boolean;
 
 	toString(): string;
@@ -185,6 +187,16 @@ class BooleanClass extends PGTPBase<Boolean> implements Boolean {
 		return {
 			value: this._boolean,
 		};
+	}
+
+	get boolean(): boolean {
+		return this._boolean;
+	}
+
+	set boolean(bool: boolean) {
+		const parsed = Boolean.safeFrom(bool);
+		if (parsed.success) this._boolean = parsed.data.toBoolean();
+		else throw parsed.error;
 	}
 
 	get value(): boolean {

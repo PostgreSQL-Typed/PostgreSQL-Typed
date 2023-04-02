@@ -295,6 +295,20 @@ describe("BitVarying", () => {
 		expect(bit.toJSON()).toStrictEqual({ value: "1" });
 	});
 
+	test("get bitVarying()", () => {
+		expect(BitVarying.setN(3).from(5).bitVarying).toEqual("101");
+		expect(BitVarying.setN(3).from("100").bitVarying).toEqual("100");
+		expect(BitVarying.setN(3).from({ value: "100" }).bitVarying).toEqual("100");
+	});
+
+	test("set bitVarying(...)", () => {
+		const bit = BitVarying.setN(2).from(1);
+		bit.bitVarying = "0" as any;
+		expect(bit.bitVarying).toEqual("0");
+
+		expect(() => (bit.bitVarying = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
+	});
+
 	test("get value()", () => {
 		expect(BitVarying.setN(3).from(5).value).toEqual("101");
 		expect(BitVarying.setN(3).from("100").value).toEqual("100");

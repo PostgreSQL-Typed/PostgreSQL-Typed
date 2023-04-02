@@ -22,6 +22,8 @@ interface TextObject {
 }
 
 interface Text {
+	text: string;
+
 	value: string;
 
 	toString(): string;
@@ -152,6 +154,16 @@ class TextClass extends PGTPBase<Text> implements Text {
 		return {
 			value: this._text,
 		};
+	}
+
+	get text(): string {
+		return this._text;
+	}
+
+	set text(text: string) {
+		const parsed = Text.safeFrom(text);
+		if (parsed.success) this._text = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

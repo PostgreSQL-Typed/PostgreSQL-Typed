@@ -239,6 +239,22 @@ describe("Boolean", () => {
 		expect(boolean.toJSON()).toStrictEqual({ value: true });
 	});
 
+	test("get boolean()", () => {
+		expect(Boolean.from(1).boolean).toEqual(true);
+		expect(Boolean.from("0").boolean).toEqual(false);
+		expect(Boolean.from({ value: true }).boolean).toEqual(true);
+	});
+
+	test("set boolean(...)", () => {
+		const bool = Boolean.from(true);
+		bool.boolean = false;
+		expect(bool.boolean).toEqual(false);
+
+		expect(() => (bool.boolean = 2 as any)).toThrowError(
+			"Expected 'true' | 't' | 'yes' | 'y' | '1' | 'on' | 'false' | 'f' | 'no' | 'n' | '0' | 'off' | 'of', received '2'"
+		);
+	});
+
 	test("get value()", () => {
 		expect(Boolean.from(1).value).toEqual(true);
 		expect(Boolean.from("0").value).toEqual(false);

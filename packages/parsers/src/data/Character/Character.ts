@@ -21,6 +21,8 @@ interface CharacterObject {
 }
 
 interface Character<N extends number> {
+	character: string;
+
 	value: string;
 
 	get n(): N;
@@ -253,6 +255,16 @@ class CharacterClass<N extends number> extends PGTPBase<Character<N>> implements
 		return {
 			value: this._character,
 		};
+	}
+
+	get character(): string {
+		return this._character;
+	}
+
+	set character(character: string) {
+		const parsed = new CharacterConstructorClass(this._n).safeFrom(character);
+		if (parsed.success) this._character = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

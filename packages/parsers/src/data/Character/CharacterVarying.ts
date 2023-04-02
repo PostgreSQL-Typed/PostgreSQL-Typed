@@ -21,6 +21,8 @@ interface CharacterVaryingObject {
 }
 
 interface CharacterVarying<N extends number> {
+	characterVarying: string;
+
 	value: string;
 
 	get n(): N;
@@ -248,6 +250,16 @@ class CharacterVaryingClass<N extends number> extends PGTPBase<CharacterVarying<
 		return {
 			value: this._character,
 		};
+	}
+
+	get characterVarying(): string {
+		return this._character;
+	}
+
+	set characterVarying(character: string) {
+		const parsed = new CharacterVaryingConstructorClass(this._n).safeFrom(character);
+		if (parsed.success) this._character = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

@@ -134,6 +134,20 @@ describe("Text", () => {
 		});
 	});
 
+	test("get text()", () => {
+		const text = Text.from("abc");
+		expect(text.text).toBe("abc");
+	});
+
+	test("set text(...)", () => {
+		const text = Text.from("abc");
+		text.text = "def";
+		expect(text.text).toBe("def");
+		expect(() => {
+			text.text = true as any;
+		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
+	});
+
 	test("get value()", () => {
 		const text = Text.from("abc");
 		expect(text.value).toBe("abc");

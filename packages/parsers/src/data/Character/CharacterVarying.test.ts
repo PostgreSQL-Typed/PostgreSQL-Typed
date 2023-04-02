@@ -239,6 +239,19 @@ describe("CharacterVarying", () => {
 		expect(varchar.toJSON()).toStrictEqual({ value: "a" });
 	});
 
+	test("get characterVarying()", () => {
+		expect(CharacterVarying.setN(3).from("abc").characterVarying).toEqual("abc");
+		expect(CharacterVarying.setN(3).from({ value: "abc" }).characterVarying).toEqual("abc");
+	});
+
+	test("set characterVarying(...)", () => {
+		const character = CharacterVarying.setN(2).from("a");
+		character.characterVarying = "b";
+		expect(character.characterVarying).toEqual("b");
+
+		expect(() => (character.characterVarying = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
+	});
+
 	test("get value()", () => {
 		expect(CharacterVarying.setN(3).from("abc").value).toEqual("abc");
 		expect(CharacterVarying.setN(3).from({ value: "abc" }).value).toEqual("abc");

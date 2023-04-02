@@ -21,6 +21,8 @@ interface BitVaryingObject {
 }
 
 interface BitVarying<N extends number> {
+	bitVarying: string;
+
 	value: string;
 
 	get n(): N;
@@ -285,6 +287,16 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 		return {
 			value: this._bit.toString(),
 		};
+	}
+
+	get bitVarying(): string {
+		return this._bit;
+	}
+
+	set bitVarying(bit: string) {
+		const parsed = new BitVaryingConstructorClass(this._n).safeFrom(bit);
+		if (parsed.success) this._bit = parsed.data.toString();
+		else throw parsed.error;
 	}
 
 	get value(): string {

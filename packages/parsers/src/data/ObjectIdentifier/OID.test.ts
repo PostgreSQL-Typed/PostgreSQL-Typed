@@ -286,6 +286,20 @@ describe("OID", () => {
 		expect(oid.toJSON()).toStrictEqual({ value: 1 });
 	});
 
+	test("get oid()", () => {
+		expect(OID.from(1).oid).toEqual(1);
+		expect(OID.from("2").oid).toEqual(2);
+		expect(OID.from({ value: 3 }).oid).toEqual(3);
+	});
+
+	test("set oid(...)", () => {
+		const oid = OID.from(1);
+		oid.oid = 2;
+		expect(oid.oid).toEqual(2);
+
+		expect(() => (oid.oid = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
+	});
+
 	test("get value()", () => {
 		expect(OID.from(1).value).toEqual(1);
 		expect(OID.from("2").value).toEqual(2);

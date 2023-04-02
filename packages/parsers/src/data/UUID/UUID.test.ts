@@ -150,6 +150,20 @@ describe("UUID", () => {
 		});
 	});
 
+	test("get uuid()", () => {
+		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+		expect(uuid.uuid).toBe("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
+	});
+
+	test("set uuid(...)", () => {
+		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
+		uuid.uuid = "A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11";
+		expect(uuid.uuid).toBe("a0eebc99-8c0b-4ef8-bb6d-6bb9bd380a11");
+		expect(() => {
+			uuid.uuid = "invalid";
+		}).toThrowError("Expected 'LIKE xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', received 'invalid'");
+	});
+
 	test("get value()", () => {
 		const uuid = UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11");
 		expect(uuid.value).toBe("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");

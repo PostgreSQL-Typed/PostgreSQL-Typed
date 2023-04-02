@@ -273,6 +273,20 @@ describe("Int4", () => {
 		expect(int4.toJSON()).toStrictEqual({ value: 1 });
 	});
 
+	test("get int4()", () => {
+		expect(Int4.from(1).int4).toEqual(1);
+		expect(Int4.from("2").int4).toEqual(2);
+		expect(Int4.from({ value: 3 }).int4).toEqual(3);
+	});
+
+	test("set int4(...)", () => {
+		const int4 = Int4.from(1);
+		int4.int4 = 2;
+		expect(int4.int4).toEqual(2);
+
+		expect(() => (int4.int4 = 2_147_483_648)).toThrowError("Number must be less than or equal to 2147483647");
+	});
+
 	test("get value()", () => {
 		expect(Int4.from(1).value).toEqual(1);
 		expect(Int4.from("2").value).toEqual(2);

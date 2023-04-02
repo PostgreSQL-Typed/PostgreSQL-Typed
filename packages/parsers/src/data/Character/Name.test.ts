@@ -147,6 +147,20 @@ describe("Name", () => {
 		});
 	});
 
+	test("get name()", () => {
+		const name = Name.from("abc");
+		expect(name.name).toBe("abc");
+	});
+
+	test("set name(...)", () => {
+		const name = Name.from("abc");
+		name.name = "def";
+		expect(name.name).toBe("def");
+		expect(() => {
+			name.name = true as any;
+		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
+	});
+
 	test("get value()", () => {
 		const name = Name.from("abc");
 		expect(name.value).toBe("abc");

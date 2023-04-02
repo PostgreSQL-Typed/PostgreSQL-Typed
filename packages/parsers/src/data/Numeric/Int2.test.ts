@@ -285,6 +285,20 @@ describe("Int2", () => {
 		expect(int2.toJSON()).toStrictEqual({ value: 1 });
 	});
 
+	test("get int2()", () => {
+		expect(Int2.from(1).int2).toEqual(1);
+		expect(Int2.from("2").int2).toEqual(2);
+		expect(Int2.from({ value: 3 }).int2).toEqual(3);
+	});
+
+	test("set int2(...)", () => {
+		const int2 = Int2.from(1);
+		int2.int2 = 2;
+		expect(int2.int2).toEqual(2);
+
+		expect(() => (int2.int2 = 32_768)).toThrowError("Number must be less than or equal to 32767");
+	});
+
 	test("get value()", () => {
 		expect(Int2.from(1).value).toEqual(1);
 		expect(Int2.from("2").value).toEqual(2);

@@ -284,4 +284,9 @@ describe("FromParameters", () => {
 		let a: FromParameters<UUIDConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | UUID | UUIDObject | undefined>();
 	});
+
+	test("FromParameters<null>", () => {
+		let a: FromParameters<null> | undefined;
+		expectTypeOf(a).toEqualTypeOf<null | undefined>();
+	});
 });

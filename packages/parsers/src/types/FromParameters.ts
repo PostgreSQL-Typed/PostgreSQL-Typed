@@ -65,7 +65,7 @@ import type { OID, OIDConstructor, OIDObject } from "../data/ObjectIdentifier/OI
 import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
 import type { Constructors } from "./Constructors.js";
 
-export type FromParameters<T extends Constructors> =
+export type FromParameters<T extends Constructors | null> =
 	//* BitString
 	T extends BitConstructor<infer N>
 		? string | number | Bit<N> | BitObject
@@ -155,4 +155,6 @@ export type FromParameters<T extends Constructors> =
 		: //* UUID
 		T extends UUIDConstructor
 		? string | UUID | UUIDObject
+		: T extends null
+		? null
 		: never;

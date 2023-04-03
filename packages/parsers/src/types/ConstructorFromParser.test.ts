@@ -270,4 +270,9 @@ describe("ConstructorFromParser", () => {
 		let a: ConstructorFromParser<UUID> | undefined;
 		expectTypeOf(a).toEqualTypeOf<UUIDConstructor | undefined>();
 	});
+
+	test("ConstructorFromParser<null>", () => {
+		let a: ConstructorFromParser<null> | undefined;
+		expectTypeOf(a).toEqualTypeOf<null | undefined>();
+	});
 });

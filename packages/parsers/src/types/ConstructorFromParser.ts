@@ -48,7 +48,7 @@ import type { OID, OIDConstructor } from "../data/ObjectIdentifier/OID.js";
 import type { UUID, UUIDConstructor } from "../data/UUID/UUID.js";
 import type { Parsers } from "./Parsers.js";
 
-export type ConstructorFromParser<T extends Parsers> =
+export type ConstructorFromParser<T extends Parsers | null> =
 	//* BitString
 	T extends Bit<infer N>
 		? BitConstructor<N>
@@ -134,4 +134,6 @@ export type ConstructorFromParser<T extends Parsers> =
 		: //* UUID
 		T extends UUID
 		? UUIDConstructor
+		: T extends null
+		? null
 		: never;

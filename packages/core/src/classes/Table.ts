@@ -1,6 +1,8 @@
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
+import type { ParserOfColumn } from "../types/types/ParserOfColumn.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import type { Client } from "./Client.js";
@@ -45,29 +47,17 @@ export class Table<
 		return new SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, this>(this.client, this.databaseData, this);
 	}
 
-	/* async select<
-		ColumNames extends ColumnNamesOfTable<InnerDatabaseData, TableLocation>,
-		Columns extends ColumnsOfTable<InnerDatabaseData, TableLocation>,
-		IncludePrimaryKey extends boolean = false
-	>(
-		columns: ColumNames | "*",
-		options?: SelectOptions<Columns>,
-		includePrimaryKey?: IncludePrimaryKey
-	): Promise<
-		Ready extends false
-			? never
-			: ColumNames extends "*"
-			? QueryResult<Columns>
-			: QueryResult<{
-					[Column in Include<
-						keyof Columns,
-						IncludePrimaryKey extends true ? (ColumNames | [PrimaryKeyOfTable<InnerDatabaseData, TableLocation>])[number] : ColumNames[number]
-					>]: Columns[Column];
-			  }>
-	> {
-		if (!this.client.ready || !this.client.client) throw new Error("Database is not ready");
+	get columns(): ColumnsOfTable<InnerPostgresData, TableLocation>[] {
+		return Object.keys(
+			this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns ?? {}
+		) as ColumnsOfTable<InnerPostgresData, TableLocation>[];
+	}
 
-		const queryBuilder = new QueryBuilder(this);
-		return this.client.query(queryBuilder.getSelectQuery(columns, options, includePrimaryKey)) as any;
-	} */
+	getParserOfTable<Column extends ColumnsOfTable<InnerPostgresData, TableLocation>>(column: Column): ParserOfColumn<InnerPostgresData, TableLocation, Column> {
+		const columnObject = this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns[column];
+
+		if (!columnObject) throw new Error(`Column ${column} does not exist in table ${this.name}`);
+
+		return columnObject as any;
+	}
 }

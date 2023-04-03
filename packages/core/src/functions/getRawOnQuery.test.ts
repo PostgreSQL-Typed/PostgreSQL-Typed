@@ -12,9 +12,13 @@ describe("getRawOnQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(
-			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({
-				"schema1.table2.id": "schema1.table1.id",
-			})
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": "schema1.table1.id",
+				},
+				table2,
+				[table1]
+			)
 		).toEqual({
 			query: "schema1.table2.id = schema1.table1.id",
 			variables: [],
@@ -28,14 +32,28 @@ describe("getRawOnQuery", () => {
 			uuid = UUID.generate();
 
 		expect(
-			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({
-				"schema1.table2.id": {
-					$EQUAL: uuid,
-				},
-			})
+			(() => {
+				const result = getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+					{
+						"schema1.table2.id": {
+							$EQUAL: uuid,
+						},
+					},
+					table2,
+					[table1]
+				);
+
+				return {
+					query: result.query,
+					variables: result.variables.map(variable => {
+						if (typeof variable === "string") return variable;
+						return variable.value;
+					}),
+				};
+			})()
 		).toEqual({
 			query: "schema1.table2.id = %?%",
-			variables: [uuid],
+			variables: [uuid.value],
 		});
 	});
 
@@ -46,21 +64,35 @@ describe("getRawOnQuery", () => {
 			uuid = UUID.generate();
 
 		expect(
-			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({
-				$AND: [
+			(() => {
+				const result = getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
 					{
-						"schema1.table2.id": {
-							$EQUAL: uuid,
-						},
+						$AND: [
+							{
+								"schema1.table2.id": {
+									$EQUAL: uuid,
+								},
+							},
+							{
+								"schema1.table2.id": "schema1.table1.id",
+							},
+						],
 					},
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-				],
-			})
+					table2,
+					[table1]
+				);
+
+				return {
+					query: result.query,
+					variables: result.variables.map(variable => {
+						if (typeof variable === "string") return variable;
+						return variable.value;
+					}),
+				};
+			})()
 		).toEqual({
 			query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
-			variables: [uuid],
+			variables: [uuid.value],
 		});
 	});
 
@@ -93,6 +125,8 @@ describe("getRawOnQuery", () => {
 						},
 					],
 				},
+				table2,
+				[table1],
 				9
 			)
 		).toThrowError();
@@ -104,23 +138,31 @@ describe("getRawOnQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(() =>
-			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({
-				"schema1.table2.id": "schema1.table1.id",
-				$AND: [
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-				],
-			})
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": "schema1.table1.id",
+					$AND: [
+						{
+							"schema1.table2.id": "schema1.table1.id",
+						},
+						{
+							"schema1.table2.id": "schema1.table1.id",
+						},
+					],
+				},
+				table2,
+				[table1]
+			)
 		).toThrowError();
 
 		expect(() =>
-			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({
-				$AND: undefined,
-			})
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					$AND: undefined,
+				},
+				table2,
+				[table1]
+			)
 		).toThrowError();
 	});
 });

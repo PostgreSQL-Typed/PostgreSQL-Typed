@@ -15,7 +15,8 @@ describe("getRawJoinQuery", () => {
 				{
 					$TYPE: "CROSS",
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "CROSS JOIN schema1.table2",
@@ -34,7 +35,8 @@ describe("getRawJoinQuery", () => {
 				{
 					$TYPE: "NATURAL",
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "NATURAL JOIN schema1.table2",
@@ -53,7 +55,8 @@ describe("getRawJoinQuery", () => {
 				{
 					$TYPE: "NATURAL INNER",
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "NATURAL INNER JOIN schema1.table2",
@@ -72,7 +75,8 @@ describe("getRawJoinQuery", () => {
 				{
 					$TYPE: "NATURAL LEFT",
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "NATURAL LEFT JOIN schema1.table2",
@@ -91,7 +95,8 @@ describe("getRawJoinQuery", () => {
 				{
 					$TYPE: "NATURAL RIGHT",
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "NATURAL RIGHT JOIN schema1.table2",
@@ -113,7 +118,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -128,7 +134,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -150,7 +157,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "LEFT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -172,7 +180,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "RIGHT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -194,7 +203,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "FULL JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -216,7 +226,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				},
-				table2
+				table2,
+				[table1]
 			)
 		).toEqual({
 			query: "FULL OUTER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
@@ -238,7 +249,8 @@ describe("getRawJoinQuery", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				} as any,
-				table2
+				table2,
+				[table1]
 			)
 		).toThrowError();
 	});

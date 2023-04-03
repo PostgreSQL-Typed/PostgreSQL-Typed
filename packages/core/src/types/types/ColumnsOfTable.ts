@@ -1,7 +1,9 @@
-import type { DatabaseData } from "../interfaces/DatabaseData.js";
-import type { TableLocationsByDatabase } from "./TableLocationsByDatabase.js";
+import type { PostgresData } from "../interfaces/PostgresData.js";
+import type { TableLocations } from "./TableLocations.js";
 
 export type ColumnsOfTable<
-	InnerDatabaseData extends DatabaseData,
-	Location extends TableLocationsByDatabase<InnerDatabaseData>
-> = Location extends `${infer SchemaName}.${infer TableName}` ? InnerDatabaseData["schemas"][SchemaName]["tables"][TableName]["columns"] : never;
+	InnerPostgresData extends PostgresData,
+	Location extends TableLocations<InnerPostgresData>
+> = Location extends `${infer DatabaseName}.${infer SchemaName}.${infer TableName}`
+	? keyof InnerPostgresData[DatabaseName]["schemas"][SchemaName]["tables"][TableName]["columns"]
+	: never;

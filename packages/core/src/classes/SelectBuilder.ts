@@ -1,3 +1,4 @@
+import type { Parsers } from "@postgresql-typed/parsers";
 import type { PendingQuery } from "postgres";
 
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
@@ -26,12 +27,15 @@ export class SelectBuilder<
 
 	private _joins: {
 		query: string;
-		variables: unknown[];
+		variables: (Parsers | string)[];
 		tableLocation: string;
 	}[] = [];
-	private _where = {
+	private _where: {
+		query: string;
+		variables: (Parsers | string)[];
+	} = {
 		query: "",
-		variables: [] as unknown[],
+		variables: [],
 	};
 	private _groupBy = "";
 	private _limit = "";
@@ -67,15 +71,18 @@ export class SelectBuilder<
 			throw new Error("Cannot join the same table twice");
 		}
 
+		this._joins.push(getRawJoinQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, JoinedTable>(filter, table, this.tables));
 		this.tables.push(table);
-		this._joins.push(getRawJoinQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, JoinedTable>(filter, table));
 		return this as any;
 	}
 
 	where(where: WhereQuery<JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>) {
 		//TODO make sure input is valid
 
-		const rawQuery = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>(where);
+		const rawQuery = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>(
+			where,
+			this.tables
+		);
 		this._where = {
 			query: `WHERE ${rawQuery.query}`,
 			variables: rawQuery.variables,
@@ -157,6 +164,19 @@ export class SelectBuilder<
 		const count = query.match(/%\?%/g)?.length ?? 0;
 		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
-		return rawQuery ? query : this.client.client.unsafe(query, [...this._where.variables, ...this._joins.flatMap(join => join.variables)] as any[]);
+		return rawQuery
+			? query
+			: this.client.client.unsafe(query, [
+					...this._where.variables.map(variable => {
+						if (typeof variable !== "string") return variable.value;
+						return variable;
+					}),
+					...this._joins.flatMap(join =>
+						join.variables.map(variable => {
+							if (typeof variable !== "string") return variable.value;
+							return variable;
+						})
+					),
+			  ] as any[]);
 	}
 }

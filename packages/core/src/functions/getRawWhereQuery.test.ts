@@ -13,9 +13,12 @@ describe("getRawWhereQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(
-			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
-				"schema1.table2.id": "schema1.table1.id",
-			})
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": "schema1.table1.id",
+				},
+				[table1, table2]
+			)
 		).toEqual({
 			query: "schema1.table2.id = schema1.table1.id",
 			variables: [],
@@ -29,14 +32,33 @@ describe("getRawWhereQuery", () => {
 			uuid = UUID.generate();
 
 		expect(
-			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
-				"schema1.table2.id": {
-					$EQUAL: uuid,
-				},
-			})
+			(() => {
+				const result = getRawWhereQuery<
+					TestData,
+					TestData["db1"],
+					false,
+					typeof table1 | typeof table2,
+					TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>
+				>(
+					{
+						"schema1.table2.id": {
+							$EQUAL: uuid,
+						},
+					},
+					[table1, table2]
+				);
+
+				return {
+					query: result.query,
+					variables: result.variables.map(variable => {
+						if (typeof variable === "string") return variable;
+						return variable.value;
+					}),
+				};
+			})()
 		).toEqual({
 			query: "schema1.table2.id = %?%",
-			variables: [uuid],
+			variables: [uuid.value],
 		});
 	});
 
@@ -47,21 +69,40 @@ describe("getRawWhereQuery", () => {
 			uuid = UUID.generate();
 
 		expect(
-			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
-				$AND: [
+			(() => {
+				const result = getRawWhereQuery<
+					TestData,
+					TestData["db1"],
+					false,
+					typeof table1 | typeof table2,
+					TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>
+				>(
 					{
-						"schema1.table2.id": {
-							$EQUAL: uuid,
-						},
+						$AND: [
+							{
+								"schema1.table2.id": {
+									$EQUAL: uuid,
+								},
+							},
+							{
+								"schema1.table2.id": "schema1.table1.id",
+							},
+						],
 					},
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-				],
-			})
+					[table1, table2]
+				);
+
+				return {
+					query: result.query,
+					variables: result.variables.map(variable => {
+						if (typeof variable === "string") return variable;
+						return variable.value;
+					}),
+				};
+			})()
 		).toEqual({
 			query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
-			variables: [uuid],
+			variables: [uuid.value],
 		});
 	});
 
@@ -94,6 +135,7 @@ describe("getRawWhereQuery", () => {
 						},
 					],
 				},
+				[table1, table2],
 				9
 			)
 		).toThrowError();
@@ -105,23 +147,29 @@ describe("getRawWhereQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(() =>
-			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
-				"schema1.table2.id": "schema1.table1.id",
-				$AND: [
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-					{
-						"schema1.table2.id": "schema1.table1.id",
-					},
-				],
-			})
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": "schema1.table1.id",
+					$AND: [
+						{
+							"schema1.table2.id": "schema1.table1.id",
+						},
+						{
+							"schema1.table2.id": "schema1.table1.id",
+						},
+					],
+				},
+				[table1, table2]
+			)
 		).toThrowError();
 
 		expect(() =>
-			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
-				$AND: undefined,
-			})
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					$AND: undefined,
+				},
+				[table1, table2]
+			)
 		).toThrowError();
 	});
 });

@@ -23,11 +23,13 @@ export const hasKeys = <T>(
 		missingKeys = keys.filter(([k, v]) => !objectKeys.includes(k) && !v.includes("undefined")).map(([k]) => k),
 		invalidKeys = keys
 			.map(
-				([k, t]): {
-					objectKey: string;
-					expected: ParsedType | ParsedType[];
-					received: ParsedType;
-				} | null => {
+				([k, t]):
+					| {
+							objectKey: string;
+							expected: ParsedType | ParsedType[];
+							received: ParsedType;
+					  }
+					| undefined => {
 					if (!(k in object) && !t.includes("undefined")) {
 						return {
 							objectKey: k,
@@ -36,8 +38,8 @@ export const hasKeys = <T>(
 						};
 					}
 					const objectType = getParsedType((object as Record<string, unknown>)[k]);
-					if (Array.isArray(t) && t.includes(objectType)) return null;
-					else if (objectType === t) return null;
+					if (Array.isArray(t) && t.includes(objectType)) return undefined;
+					else if (objectType === t) return undefined;
 					return {
 						objectKey: k,
 						expected: t,
@@ -45,7 +47,7 @@ export const hasKeys = <T>(
 					};
 				}
 			)
-			.filter((v): v is Exclude<typeof v, null> => v !== null);
+			.filter((v): v is Exclude<typeof v, undefined> => v !== undefined);
 
 	if (otherKeys.length > 0 || missingKeys.length > 0 || invalidKeys.length > 0) {
 		return {
@@ -64,6 +66,7 @@ export const hasKeys = <T>(
 			invalidKeys,
 		};
 	}
+
 	return {
 		success: true,
 		obj: object as T,

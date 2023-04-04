@@ -1,25 +1,16 @@
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import { DateTime, Zone } from "luxon";
-import pg from "pg";
-const { types } = pg;
 
 import { OffsetDirection } from "../../types/OffsetDirection.js";
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
-import { INVALID, OK } from "../../util/validation.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { TimestampStyle, TimestampStyleType, TimestampTZ } from "./TimestampTZ.js";
@@ -736,8 +727,5 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		} else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.timestamp as any, parser(Timestamp));
-types.setTypeParser(OID._timestamp as any, arrayParser(Timestamp));
 
 export { Timestamp, TimestampConstructor, TimestampObject };

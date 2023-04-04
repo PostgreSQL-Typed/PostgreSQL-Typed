@@ -1,0 +1,52 @@
+{
+	"private": true,
+	"name": "@postgresql-typed/util",
+	"version": "1.0.0",
+	"description": "Utility functions for PostgreSQL-Typed",
+	"type": "module",
+	"exports": "./lib/index.js",
+	"types": "./lib/index.d.ts",
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Bas950",
+		"email": "me@bas950.com",
+		"url": "https://bas950.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
+		"directory": "packages/util"
+	},
+	"bugs": {
+		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
+	},
+	"files": [
+		"lib"
+	],
+	"keywords": [
+		"postgresql",
+		"pg",
+		"typed",
+		"types",
+		"typescript"
+	],
+	"scripts": {
+		"dev": "tsc -w",
+		"build": "tsc",
+		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
+		"lint:ci": "eslint --ext .ts ./ && prettier --check .",
+		"test": "vitest --run",
+		"test:watch": "vitest --ui --coverage",
+		"test:ci": "vitest --run --coverage"
+	},
+	"dependencies": {
+		"bignumber.js": "^9.1.1",
+		"luxon": "^3.0.3"
+	},
+	"devDependencies": {
+		"@types/luxon": "^3.0.1",
+		"@types/node": "^18.6.2",
+		"source-map-support": "^0.5.21",
+		"typescript": "^4.9.5"
+	}
+}

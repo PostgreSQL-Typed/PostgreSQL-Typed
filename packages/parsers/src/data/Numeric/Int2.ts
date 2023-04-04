@@ -1,19 +1,10 @@
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 interface Int2Object {
 	value: number;
@@ -232,8 +223,5 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 		else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.int2 as any, parser<Int2>(Int2));
-types.setTypeParser(OID._int2 as any, arrayParser<Int2>(Int2, ","));
 
 export { Int2, Int2Constructor, Int2Object };

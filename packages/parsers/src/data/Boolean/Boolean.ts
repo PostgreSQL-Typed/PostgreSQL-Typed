@@ -1,20 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 interface BooleanObject {
 	value: boolean;
@@ -209,8 +200,5 @@ class BooleanClass extends PGTPBase<Boolean> implements Boolean {
 		else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.bool as any, parser<Boolean>(Boolean));
-types.setTypeParser(OID._bool as any, arrayParser<Boolean>(Boolean, ","));
 
 export { Boolean, BooleanConstructor, BooleanObject };

@@ -60,7 +60,11 @@ export * from "./types/IpType.js";
 export * from "./types/Offset.js";
 export * from "./types/OffsetDirection.js";
 export * from "./types/Parsers.js";
+export * from "./types/ValueFromConstructor.js";
 
 //* Util
+export * from "./util/arrayParser.js";
+export * from "./util/errorMap.js";
+export * from "./util/parser.js";
 export * from "./util/PGTPParser.js";
 export { LowerRange, LowerRangeType, UpperRange, UpperRangeType } from "./util/Range.js";

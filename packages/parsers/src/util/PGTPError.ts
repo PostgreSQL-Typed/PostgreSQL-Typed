@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/filename-case */
-import { arrayToEnum } from "./arrayToEnum.js";
-import { ParsedType } from "./getParsedType.js";
+
+import { arrayToEnum, type ParsedType } from "@postgresql-typed/util";
 
 export const IssueCode = arrayToEnum([
 	"invalid_n_length",

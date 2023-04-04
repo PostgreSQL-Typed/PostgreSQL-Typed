@@ -10,6 +10,8 @@ export type ParserOfColumn<
 	Column extends ColumnsOfTable<InnerPostgresData, Location>
 > = Location extends `${infer DatabaseName}.${infer SchemaName}.${infer TableName}`
 	? NonNullable<InnerPostgresData[DatabaseName]["schemas"][SchemaName]["tables"][TableName]["columns"][Column]> extends Parsers
-		? PGTPParserClass<ConstructorFromParser<NonNullable<InnerPostgresData[DatabaseName]["schemas"][SchemaName]["tables"][TableName]["columns"][Column]>>>
+		? PGTPParserClass<
+				NonNullable<ConstructorFromParser<NonNullable<InnerPostgresData[DatabaseName]["schemas"][SchemaName]["tables"][TableName]["columns"][Column]>>>
+		  >
 		: never
 	: never;

@@ -1,21 +1,12 @@
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import type { BigNumber } from "bignumber.js";
-import pg from "pg";
-const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 const bigNumber = getBigNumber("-92233720368547758.08", "92233720368547758.07");
 
@@ -209,8 +200,5 @@ class MoneyClass extends PGTPBase<Money> implements Money {
 		else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.money as any, parser<Money>(Money));
-types.setTypeParser(OID._money as any, arrayParser<Money>(Money, ","));
 
 export { Money, MoneyConstructor, MoneyObject };

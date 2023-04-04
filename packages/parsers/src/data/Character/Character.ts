@@ -1,20 +1,11 @@
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 interface CharacterObject {
 	value: string;
@@ -281,10 +272,5 @@ class CharacterClass<N extends number> extends PGTPBase<Character<N>> implements
 		return this._n;
 	}
 }
-
-types.setTypeParser(OID.char as any, parser<Character<1>>(Character));
-types.setTypeParser(OID.bpchar as any, parser<Character<1>>(Character));
-types.setTypeParser(OID._char as any, arrayParser<Character<1>>(Character, ","));
-types.setTypeParser(OID._bpchar as any, arrayParser<Character<1>>(Character, ","));
 
 export { Character, CharacterConstructor, CharacterObject };

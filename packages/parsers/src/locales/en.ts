@@ -1,5 +1,5 @@
-import { ParsedType } from "../util/getParsedType.js";
-import { joinValues } from "../util/joinValues.js";
+import { joinValues, ParsedType } from "@postgresql-typed/util";
+
 import { ErrorMap, IssueCode } from "../util/PGTPError.js";
 
 const errorMap: ErrorMap = issue => {

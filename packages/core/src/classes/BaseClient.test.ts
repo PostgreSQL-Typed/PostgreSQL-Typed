@@ -2,17 +2,17 @@ import postgres from "postgres";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { isReady } from "../functions/isReady";
-import { Client } from "./Client";
+import { BaseClient } from "./BaseClient";
 import type { Database } from "./Database";
 import type { Schema } from "./Schema";
 import type { Table } from "./Table";
 import { type TestData, testData } from "./testData";
 
-describe("Client", () => {
-	test("Client<..., false>.testConnection()", async () => {
-		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData);
+describe("BaseClient", () => {
+	test("BaseClient<..., false>.testConnection()", async () => {
+		let client: BaseClient<TestData, false> | BaseClient<TestData, true> = new BaseClient<TestData>(testData);
 
-		expect(client).toBeInstanceOf(Client);
+		expect(client).toBeInstanceOf(BaseClient);
 		expect(client.ready).toBe(false);
 
 		client = await client.testConnection();
@@ -23,11 +23,11 @@ describe("Client", () => {
 		expect(isReady(client)).toBe(false);
 		if (isReady(client)) expect.fail("Client should not be ready");
 
-		expectTypeOf(client).toEqualTypeOf<Client<TestData, false>>();
+		expectTypeOf(client).toEqualTypeOf<BaseClient<TestData, false>>();
 	});
 
-	test("Client<..., true>.testConnection()", async () => {
-		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData, {
+	test("BaseClient<..., true>.testConnection()", async () => {
+		let client: BaseClient<TestData, false> | BaseClient<TestData, true> = new BaseClient<TestData>(testData, {
 			options: {
 				password: "password",
 				host: "localhost",
@@ -45,11 +45,11 @@ describe("Client", () => {
 		expect(isReady(client)).toBe(true);
 		if (!isReady(client)) expect.fail("Client should be ready");
 
-		expectTypeOf(client).toEqualTypeOf<Client<TestData, true>>();
+		expectTypeOf(client).toEqualTypeOf<BaseClient<TestData, true>>();
 	});
 
-	test("Client<..., boolean>.testConnection(...)", async () => {
-		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData);
+	test("BaseClient<..., boolean>.testConnection(...)", async () => {
+		let client: BaseClient<TestData, false> | BaseClient<TestData, true> = new BaseClient<TestData>(testData);
 
 		client = await client.testConnection();
 
@@ -59,7 +59,7 @@ describe("Client", () => {
 		expect(isReady(client)).toBe(false);
 		if (isReady(client)) expect.fail("Client should not be ready");
 
-		expectTypeOf(client).toEqualTypeOf<Client<TestData, false>>();
+		expectTypeOf(client).toEqualTypeOf<BaseClient<TestData, false>>();
 
 		client = await client.testConnection({
 			options: {
@@ -77,18 +77,18 @@ describe("Client", () => {
 		expect(isReady(client)).toBe(true);
 		if (!isReady(client)) expect.fail("Client should be ready");
 
-		expectTypeOf(client).toEqualTypeOf<Client<TestData, true>>();
+		expectTypeOf(client).toEqualTypeOf<BaseClient<TestData, true>>();
 	});
 
 	test("get databaseNames()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expect(client.databaseNames).toEqual(["db1", "db2"]);
 		expectTypeOf(client.databaseNames).toEqualTypeOf<("db1" | "db2")[]>();
 	});
 
 	test("database(...)", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.database).toBeFunction();
 		expectTypeOf(client.database).parameter(0).toEqualTypeOf<"db1" | "db2">();
@@ -101,7 +101,7 @@ describe("Client", () => {
 	});
 
 	test("get databases()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.databases).toEqualTypeOf<{
 			db1: Database<TestData, TestData["db1"], false>;
@@ -115,14 +115,14 @@ describe("Client", () => {
 	});
 
 	test("get schemaLocations()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expect(client.schemaLocations).toEqual(["db1.schema1", "db1.schema2", "db2.schema3"]);
 		expectTypeOf(client.schemaLocations).toEqualTypeOf<("db1.schema1" | "db1.schema2" | "db2.schema3")[]>();
 	});
 
 	test("schema(...)", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.schema).toBeFunction();
 		expectTypeOf(client.schema).parameter(0).toEqualTypeOf<"db1.schema1" | "db1.schema2" | "db2.schema3">();
@@ -136,7 +136,7 @@ describe("Client", () => {
 	});
 
 	test("get schemas()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.schemas).toEqualTypeOf<{
 			db1: {
@@ -160,7 +160,7 @@ describe("Client", () => {
 	});
 
 	test("get tableLocations()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expect(client.tableLocations).toEqual(["db1.schema1.table1", "db1.schema1.table2", "db1.schema2.table3", "db2.schema3.table4", "db2.schema3.table5"]);
 		// eslint-disable-next-line func-call-spacing
@@ -170,7 +170,7 @@ describe("Client", () => {
 	});
 
 	test("table(...)", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.table).toBeFunction();
 		expectTypeOf(client.table)
@@ -188,7 +188,7 @@ describe("Client", () => {
 	});
 
 	test("get tables()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.tables).toEqualTypeOf<{
 			db1: {
@@ -228,7 +228,7 @@ describe("Client", () => {
 	});
 
 	test("get client()", () => {
-		const client = new Client<TestData>(testData);
+		const client = new BaseClient<TestData>(testData);
 
 		expectTypeOf(client.client).toEqualTypeOf<postgres.Sql>();
 

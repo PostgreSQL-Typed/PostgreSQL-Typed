@@ -6,12 +6,12 @@ import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import type { TableLocationsByDatabase } from "../types/types/TableLocationsByDatabase.js";
-import type { Client } from "./Client.js";
+import type { BaseClient } from "./BaseClient.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";
 
 export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData extends DatabaseData, Ready extends boolean> {
-	constructor(public readonly client: Client<InnerPostgresData, Ready>, private readonly databaseData: RawDatabaseData<InnerDatabaseData>) {}
+	constructor(public readonly client: BaseClient<InnerPostgresData, Ready>, private readonly databaseData: RawDatabaseData<InnerDatabaseData>) {}
 
 	get name(): InnerDatabaseData["name"] {
 		return this.databaseData.name;

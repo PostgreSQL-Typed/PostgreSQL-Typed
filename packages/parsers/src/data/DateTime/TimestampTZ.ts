@@ -1,30 +1,21 @@
 /* eslint-disable unicorn/filename-case */
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import { DateTime, Zone } from "luxon";
-import pg from "pg";
-const { types } = pg;
 
 import type { Offset } from "../../types/Offset.js";
 import { OffsetDirection, type OffsetDirectionType } from "../../types/OffsetDirection.js";
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
 import { formatOffset } from "../../util/formatOffset.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { REGEXES } from "../../util/regexes.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { validateTimeZone } from "../../util/validateTimeZone.js";
-import { INVALID, OK } from "../../util/validation.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { Timestamp } from "./Timestamp.js";
@@ -1440,8 +1431,5 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 		} else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.timestamptz as any, parser(TimestampTZ));
-types.setTypeParser(OID._timestamptz as any, arrayParser(TimestampTZ));
 
 export { TimestampStyle, TimestampStyleType, TimestampTZ, TimestampTZConstructor, TimestampTZObject };

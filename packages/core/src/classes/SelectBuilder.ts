@@ -1,10 +1,10 @@
 import type { Parsers } from "@postgresql-typed/parsers";
-import type { PendingQuery } from "postgres";
 
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
 import { getTableIdentifier } from "../functions/getTableIdentifier.js";
+import { Query, SafeQuery } from "../index.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
@@ -14,7 +14,7 @@ import type { OrderBy } from "../types/types/OrderBy.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import type { Client } from "./Client.js";
+import type { BaseClient } from "./BaseClient.js";
 import type { Table } from "./Table.js";
 
 export class SelectBuilder<
@@ -42,7 +42,7 @@ export class SelectBuilder<
 	private _fetch = "";
 
 	constructor(
-		private readonly client: Client<InnerPostgresData, Ready>,
+		private readonly client: BaseClient<InnerPostgresData, Ready>,
 		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
 		readonly table: JoinedTables
 	) {
@@ -133,9 +133,9 @@ export class SelectBuilder<
 		return this;
 	}
 
-	execute(select?: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>): PendingQuery<any[]>;
+	execute(select?: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>): Promise<SafeQuery<Query<any>>>;
 	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: true): string;
-	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: false): PendingQuery<any[]>;
+	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: false): Promise<SafeQuery<Query<any>>>;
 	execute<Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>>(
 		select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = "*",
 		rawQuery = false
@@ -166,7 +166,7 @@ export class SelectBuilder<
 
 		return rawQuery
 			? query
-			: this.client.client.unsafe(query, [
+			: this.client.safeQuery(query, [
 					...this._where.variables.map(variable => {
 						if (typeof variable !== "string") return variable.value;
 						return variable;
@@ -177,6 +177,6 @@ export class SelectBuilder<
 							return variable;
 						})
 					),
-			  ] as any[]);
+			  ]);
 	}
 }

@@ -40,6 +40,7 @@
 		"test:ci": "vitest --run --coverage"
 	},
 	"dependencies": {
+		"@postgresql-typed/util": "workspace:*",
 		"postgres": "^3.3.3"
 	},
 	"devDependencies": {

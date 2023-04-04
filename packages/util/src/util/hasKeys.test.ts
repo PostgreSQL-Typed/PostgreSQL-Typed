@@ -51,6 +51,19 @@ describe("hasKeys", () => {
 		});
 		if (test1.success) expect.fail();
 		else expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
+
+		const test2 = hasKeys<{ a: 1; b: 2 }>({}, [
+			["a", [ParsedType.number, ParsedType.undefined]],
+			["b", [ParsedType.number, ParsedType.undefined]],
+		]);
+		expect(test2).toStrictEqual({
+			success: false,
+			otherKeys: [],
+			missingKeys: ["a", "b"],
+			invalidKeys: [],
+		});
+		if (test1.success) expect.fail();
+		else expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
 	});
 
 	it("should return false if types of the keys are incorrect", () => {

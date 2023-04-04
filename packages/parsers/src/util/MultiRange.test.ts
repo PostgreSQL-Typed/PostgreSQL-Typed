@@ -1,15 +1,13 @@
+import { getParsedType, INVALID, OK, type ParseReturnType } from "@postgresql-typed/util";
 import { describe, expect, test } from "vitest";
 
 import type { ParseContext } from "../types/ParseContext.js";
-import type { ParseReturnType } from "../types/ParseReturnType.js";
 import { SafeEquals } from "../types/SafeEquals.js";
 import { SafeFrom } from "../types/SafeFrom.js";
-import { getParsedType } from "./getParsedType.js";
 import { getMultiRange, MultiRangeConstructor } from "./MultiRange.js";
 import { PGTPBase } from "./PGTPBase.js";
 import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
 import { getRange, RangeConstructor } from "./Range.js";
-import { INVALID, OK } from "./validation.js";
 
 interface TestObject {
 	test: string;

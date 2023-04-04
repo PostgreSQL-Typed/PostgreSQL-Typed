@@ -43,6 +43,7 @@ describe("getParsedType", () => {
 	});
 
 	it("should return null", () => {
+		// eslint-disable-next-line unicorn/no-null
 		expect(getParsedType(null)).toBe("null");
 	});
 

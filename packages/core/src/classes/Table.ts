@@ -5,7 +5,7 @@ import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
 import type { ParserOfColumn } from "../types/types/ParserOfColumn.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
-import type { Client } from "./Client.js";
+import type { BaseClient } from "./BaseClient.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { SelectBuilder } from "./SelectBuilder.js";
@@ -18,7 +18,7 @@ export class Table<
 	TableLocation extends TableLocations<InnerPostgresData>
 > {
 	constructor(
-		public readonly client: Client<InnerPostgresData, Ready>,
+		public readonly client: BaseClient<InnerPostgresData, Ready>,
 		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
 		public readonly location: TableLocation
 	) {}

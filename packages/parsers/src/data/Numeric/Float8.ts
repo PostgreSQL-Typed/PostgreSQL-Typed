@@ -1,21 +1,12 @@
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import type { BigNumber } from "bignumber.js";
-import pg from "pg";
-const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 const bigNumber = getBigNumber("-10e307", "10e307", {
 	allowInfinity: true,
@@ -205,8 +196,5 @@ class Float8Class extends PGTPBase<Float8> implements Float8 {
 		else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.float8 as any, parser<Float8>(Float8));
-types.setTypeParser(OID._float8 as any, arrayParser<Float8>(Float8, ","));
 
 export { Float8, Float8Constructor, Float8Object };

@@ -1,12 +1,10 @@
 /* eslint-disable unicorn/filename-case */
+import { getParsedType, INVALID, OK, type ParseReturnType } from "@postgresql-typed/util";
 import { describe, expect, it } from "vitest";
 
 import type { ParseContext } from "../types/ParseContext.js";
-import type { ParseReturnType } from "../types/ParseReturnType.js";
-import { getParsedType } from "./getParsedType.js";
 import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
 import { PGTPRangeBase } from "./PGTPRangeBase.js";
-import { INVALID, OK } from "./validation.js";
 
 class TestConstructorClass extends PGTPConstructorBase<TestClass> {
 	constructor() {
@@ -37,6 +35,8 @@ class TestClass extends PGTPRangeBase<TestClass, TestClass> {
 	constructor(private _data: string) {
 		super();
 	}
+
+	value: string | number | boolean;
 
 	toString(): string {
 		return this._data;

@@ -1,9 +1,3 @@
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
-
-import { arrayParser } from "../../util/arrayParser.js";
-import { parser } from "../../util/parser.js";
 import { getRange, Range, RangeConstructor, RangeObject, RawRangeObject } from "../../util/Range.js";
 import { Int8, Int8Object } from "./Int8.js";
 
@@ -16,8 +10,5 @@ type Int8Range = Range<Int8, Int8Object>;
 type Int8RangeConstructor = RangeConstructor<Int8, Int8Object>;
 
 const Int8Range: Int8RangeConstructor = getRange<Int8, Int8Object>(Int8, Int8.isInt8, "Int8Range");
-
-types.setTypeParser(OID.int8range as any, parser(Int8Range));
-types.setTypeParser(OID._int8range as any, arrayParser(Int8Range));
 
 export { Int8Range, Int8RangeConstructor, Int8RangeObject, RawInt8RangeObject };

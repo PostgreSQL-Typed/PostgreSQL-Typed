@@ -41,6 +41,7 @@
 	},
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",
+		"@postgresql-typed/util": "workspace:*",
 		"bignumber.js": "^9.1.1",
 		"ip-address": "^8.1.0",
 		"jsprim": "^1.4.2",

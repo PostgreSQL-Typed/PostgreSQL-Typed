@@ -1,79 +1,56 @@
-import postgres from "postgres";
+import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { Context } from "../types/types/Context.js";
+import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
+import type { SafeQuery } from "../types/types/SafeQuery.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
+import { getErrorMap } from "../util/errorMap.js";
+import { PGTError } from "../util/PGTError.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";
 
-export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> {
-	private _client: postgres.Sql;
-	private _ready = false;
-	private _connectionError: unknown = undefined;
+export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready extends boolean = false> {
+	constructor(private readonly postgresData: RawPostgresData<InnerPostgresData>) {}
 
-	constructor(
-		private readonly postgresData: RawPostgresData<InnerPostgresData>,
-		connectionOptions?:
-			| string
-			| {
-					url?: string;
-					// eslint-disable-next-line @typescript-eslint/ban-types
-					options?: postgres.Options<{}>;
-			  }
-	) {
-		this._client =
-			typeof connectionOptions === "string"
-				? postgres(connectionOptions)
-				: connectionOptions !== undefined && "url" in connectionOptions && typeof connectionOptions.url === "string"
-				? postgres(connectionOptions.url, connectionOptions.options)
-				: postgres(connectionOptions?.options);
+	abstract testConnection(): Promise<BaseClient<InnerPostgresData, true> | BaseClient<InnerPostgresData, false>>;
+
+	/**
+	 * Internal query function that should be implemented by the client. This function should not be called directly.
+	 */
+	abstract _query<Data>(context: Context): Promise<ParseReturnType<Query<Data>>>;
+
+	abstract get ready(): Ready;
+	abstract get connectionError(): PGTError | undefined;
+
+	async query<Data>(...data: unknown[]): Promise<Query<Data>> {
+		const result = await this.safeQuery<Data>(...data);
+		if (result.success) return result.data;
+		throw result.error;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	async testConnection(
-		connectionOptions?:
-			| string
-			| {
-					url?: string;
-					// eslint-disable-next-line @typescript-eslint/ban-types
-					options?: postgres.Options<{}>;
-			  }
-	): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
-		this._ready = false;
-		this._connectionError = undefined;
-		if (connectionOptions !== undefined) {
-			this._client =
-				typeof connectionOptions === "string"
-					? postgres(connectionOptions)
-					: "url" in connectionOptions && typeof connectionOptions.url === "string"
-					? postgres(connectionOptions.url, connectionOptions.options)
-					: postgres(connectionOptions.options);
-		}
-		try {
-			await this._client`SELECT 1`;
-			this._ready = true;
-			return this as Client<InnerPostgresData, true>;
-		} catch (error) {
-			this._connectionError = error;
-			return this as Client<InnerPostgresData, false>;
-		}
+	async safeQuery<Data>(...data: unknown[]): Promise<SafeQuery<Query<Data>>> {
+		const context: Context = {
+				issue: undefined,
+				errorMap: getErrorMap(),
+				data,
+			},
+			result = await this._query<Data>(context);
+
+		return this._handleResult<Data>(context, result);
 	}
 
-	get client(): postgres.Sql {
-		return this._client;
-	}
-
-	get ready(): Ready {
-		return this._ready as Ready;
-	}
-
-	get connectionError(): unknown {
-		return this._connectionError;
+	private _handleResult<Data>(context: Context, result: ParseReturnType<Query<Data>>): SafeQuery<Query<Data>> {
+		if (isValid(result)) return { success: true, data: result.value };
+		if (!context.issue) throw new Error("Validation failed but no issue detected.");
+		const error = new PGTError(context.issue);
+		return { success: false, error };
 	}
 
 	get databaseNames(): (keyof InnerPostgresData)[] {

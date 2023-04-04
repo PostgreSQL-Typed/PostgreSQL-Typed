@@ -4,7 +4,7 @@ import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
-import type { Client } from "./Client.js";
+import type { BaseClient } from "./BaseClient.js";
 import { Database } from "./Database.js";
 import { Table } from "./Table.js";
 
@@ -17,7 +17,7 @@ export class Schema<
 	SchemaName extends keyof InnerPostgresData[DatabaseName]["schemas"] = SchemaLocation extends `${string}.${infer Schema}` ? Schema : never
 > {
 	constructor(
-		public readonly client: Client<InnerPostgresData, Ready>,
+		public readonly client: BaseClient<InnerPostgresData, Ready>,
 		private readonly databaseData: RawDatabaseData<InnerDatabaseData>,
 		public readonly location: SchemaLocation
 	) {}

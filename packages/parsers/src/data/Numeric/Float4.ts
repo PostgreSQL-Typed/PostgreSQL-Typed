@@ -1,21 +1,12 @@
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import type { BigNumber } from "bignumber.js";
-import pg from "pg";
-const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999999999999999999999999999999999999", {
 	allowInfinity: true,
@@ -205,8 +196,5 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 		else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.float4 as any, parser<Float4>(Float4));
-types.setTypeParser(OID._float4 as any, arrayParser<Float4>(Float4, ","));
 
 export { Float4, Float4Constructor, Float4Object };

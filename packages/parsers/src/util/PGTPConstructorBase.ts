@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/filename-case */
+import { isValid, type ParseReturnType } from "@postgresql-typed/util";
+
 import type { ParseContext } from "../types/ParseContext.js";
-import type { ParseReturnType } from "../types/ParseReturnType.js";
 import type { SafeFrom } from "../types/SafeFrom.js";
 import { getErrorMap } from "./errorMap.js";
 import { IssueWithoutMessage, PGTPError } from "./PGTPError.js";
-import { isValid } from "./validation.js";
 
 export abstract class PGTPConstructorBase<DataType> {
 	constructor() {

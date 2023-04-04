@@ -1,28 +1,19 @@
 /* eslint-disable unicorn/filename-case */
-import { OID } from "@postgresql-typed/oids";
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import { DateTime, Zone } from "luxon";
-import pg from "pg";
-const { types } = pg;
 
 import { Offset } from "../../types/Offset.js";
 import { OffsetDirection, OffsetDirectionType } from "../../types/OffsetDirection.js";
 import { ParseContext } from "../../types/ParseContext.js";
-import { ParseReturnType } from "../../types/ParseReturnType.js";
 import { SafeEquals } from "../../types/SafeEquals.js";
 import { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
 import { formatOffset } from "../../util/formatOffset.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
-import { INVALID, OK } from "../../util/validation.js";
 import { Time } from "./Time.js";
 import { TimestampTZ } from "./TimestampTZ.js";
 
@@ -736,8 +727,5 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 		} else throw parsed.error;
 	}
 }
-
-types.setTypeParser(OID.timetz as any, parser(TimeTZ));
-types.setTypeParser(OID._timetz as any, arrayParser(TimeTZ, ","));
 
 export { TimeTZ, TimeTZConstructor, TimeTZObject };

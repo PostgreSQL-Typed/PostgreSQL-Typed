@@ -1,12 +1,7 @@
 /* eslint-disable unicorn/filename-case */
-import { OID } from "@postgresql-typed/oids";
 import { Address4, Address6 } from "ip-address";
-import pg from "pg";
-const { types } = pg;
 
 import { IPVersion, IPVersionType } from "../../types/IpType.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { parser } from "../../util/parser.js";
 
 interface IPAddressObject {
 	IPAddress: string;
@@ -162,10 +157,5 @@ class IPAddressClass implements IPAddress {
 		return this._IPAddress.v4 ? null : (this._IPAddress as Address6);
 	}
 }
-
-types.setTypeParser(OID.inet as any, parser(IPAddress));
-types.setTypeParser(OID._inet as any, arrayParser(IPAddress, ","));
-types.setTypeParser(OID.cidr as any, parser(IPAddress));
-types.setTypeParser(OID._cidr as any, arrayParser(IPAddress, ","));
 
 export { IPAddress, IPAddressConstructor, IPAddressObject };

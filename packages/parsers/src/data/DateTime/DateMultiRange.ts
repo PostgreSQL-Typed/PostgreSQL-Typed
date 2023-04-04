@@ -1,10 +1,4 @@
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
-
-import { arrayParser } from "../../util/arrayParser.js";
 import { getMultiRange, MultiRange, MultiRangeConstructor, MultiRangeObject, RawMultiRangeObject } from "../../util/MultiRange.js";
-import { parser } from "../../util/parser.js";
 import { Date, DateObject } from "./Date.js";
 import { DateRange } from "./DateRange.js";
 
@@ -17,8 +11,5 @@ type DateMultiRange = MultiRange<Date, DateObject>;
 type DateMultiRangeConstructor = MultiRangeConstructor<Date, DateObject>;
 
 const DateMultiRange: DateMultiRangeConstructor = getMultiRange<Date, DateObject>(DateRange, DateRange.isRange, "DateMultiRange");
-
-types.setTypeParser(OID.datemultirange as any, parser(DateMultiRange));
-types.setTypeParser(OID._datemultirange as any, arrayParser(DateMultiRange));
 
 export { DateMultiRange, DateMultiRangeConstructor, DateMultiRangeObject, RawDateMultiRangeObject };

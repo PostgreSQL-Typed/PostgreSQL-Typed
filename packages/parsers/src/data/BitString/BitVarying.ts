@@ -1,20 +1,11 @@
-import { OID } from "@postgresql-typed/oids";
-import pg from "pg";
-const { types } = pg;
+import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { ParseContext } from "../../types/ParseContext.js";
-import type { ParseReturnType } from "../../types/ParseReturnType.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { getParsedType, ParsedType } from "../../util/getParsedType.js";
-import { hasKeys } from "../../util/hasKeys.js";
-import { isOneOf } from "../../util/isOneOf.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
-import { INVALID, OK } from "../../util/validation.js";
 
 interface BitVaryingObject {
 	value: string;
@@ -313,8 +304,5 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 		return this._n;
 	}
 }
-
-types.setTypeParser(OID.varbit as any, parser<BitVarying<number>>(BitVarying));
-types.setTypeParser(OID._varbit as any, arrayParser<BitVarying<number>>(BitVarying, ","));
 
 export { BitVarying, BitVaryingConstructor, BitVaryingObject };

@@ -1,11 +1,11 @@
 /* eslint-disable unicorn/filename-case */
+import { isValid, type ParseReturnType } from "@postgresql-typed/util";
+
 import type { ParseContext } from "../types/ParseContext.js";
-import type { ParseReturnType } from "../types/ParseReturnType.js";
 import type { SafeIsWithinRange } from "../types/SafeIsWithinRange.js";
 import { getErrorMap } from "./errorMap.js";
 import { PGTPBase } from "./PGTPBase.js";
 import { PGTPError } from "./PGTPError.js";
-import { isValid } from "./validation.js";
 
 export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<RangeDataType> {
 	constructor() {

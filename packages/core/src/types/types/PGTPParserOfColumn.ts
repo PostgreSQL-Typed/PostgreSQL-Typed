@@ -1,10 +1,11 @@
+/* eslint-disable unicorn/filename-case */
 import type { ConstructorFromParser, Parsers, PGTPParserClass } from "@postgresql-typed/parsers";
 
 import type { PostgresData } from "../interfaces/PostgresData.js";
 import type { ColumnsOfTable } from "./ColumnsOfTable.js";
 import type { TableLocations } from "./TableLocations.js";
 
-export type ParserOfColumn<
+export type PGTPParserOfColumn<
 	InnerPostgresData extends PostgresData,
 	Location extends TableLocations<InnerPostgresData>,
 	Column extends ColumnsOfTable<InnerPostgresData, Location>

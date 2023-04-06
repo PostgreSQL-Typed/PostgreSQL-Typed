@@ -65,7 +65,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 	constructor(private _n: N = 1 as N) {
 		super();
 
-		const allowedTypes = [ParsedType.number],
+		const allowedTypes = [ParsedType.number, ParsedType.infinity],
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
@@ -86,7 +86,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 		}
 
 		//If limit is not a whole number
-		if (_n % 1 !== 0) {
+		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
 			throwPGTPError({
 				code: "not_whole",
 			});
@@ -160,7 +160,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 		}
 
 		// Truncate or zero-pad on the right to be exactly n bits
-		if (argument.length < this._n) argument = argument.padEnd(this._n, "0");
+		if (argument.length < this._n && this._n !== Number.POSITIVE_INFINITY) argument = argument.padEnd(this._n, "0");
 
 		return OK(new BitClass(argument, this._n));
 	}

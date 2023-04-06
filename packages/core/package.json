@@ -41,13 +41,13 @@
 	},
 	"dependencies": {
 		"@postgresql-typed/util": "workspace:*",
-		"postgres": "^3.3.3"
+		"postgres": "^3.3.3",
+		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
 		"@postgresql-typed/cli": "workspace:*",
 		"@postgresql-typed/parsers": "workspace:*",
 		"@types/node": "^18.6.2",
-		"source-map-support": "^0.5.21",
 		"typescript": "^4.9.5"
 	}
 }

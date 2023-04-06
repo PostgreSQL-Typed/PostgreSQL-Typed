@@ -1,10 +1,9 @@
+import { Constructors } from "../index.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const arrayParser =
-	<DataType>(object: any, delimiter = '","') =>
+	<DataType>(constructor: Constructors | ObjectFunction<DataType>, delimiter = '","') =>
 	(value: string | null) => {
-		const Object = object as ObjectFunction<DataType>;
-
 		if (value === null) return null;
 		//* If the value doesn't start with { and end with }, it's not an ARRAY.
 		if (!value.startsWith("{") || !value.endsWith("}")) return null;
@@ -19,7 +18,8 @@ export const arrayParser =
 		if (delimiter.includes('"')) values = values.map(v => v.slice(1, -1));
 		//* Returns the values as Object objects
 		try {
-			return values.map(v => Object.from(v));
+			if ("setN" in constructor) constructor = constructor.setN(Number.POSITIVE_INFINITY);
+			return values.map(v => constructor.from(v));
 		} catch {
 			return null;
 		}

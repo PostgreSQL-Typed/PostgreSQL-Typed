@@ -145,11 +145,11 @@ importers:
     dependencies:
       '@postgresql-typed/util': link:../util
       postgres: 3.3.3
+      source-map-support: 0.5.21
     devDependencies:
       '@postgresql-typed/cli': link:../cli
       '@postgresql-typed/parsers': link:../parsers
       '@types/node': 18.15.3
-      source-map-support: 0.5.21
       typescript: 4.9.5
 
   packages/oids:
@@ -204,25 +204,31 @@ importers:
       '@postgresql-typed/parsers': link:../parsers
       '@postgresql-typed/util': link:../util
       pg: 8.10.0
+      source-map-support: 0.5.21
     devDependencies:
       '@types/node': 18.15.3
       '@types/pg': 8.6.6
-      source-map-support: 0.5.21
       typescript: 4.9.5
 
   packages/postgres:
     specifiers:
       '@postgresql-typed/core': workspace:*
+      '@postgresql-typed/oids': workspace:*
+      '@postgresql-typed/parsers': workspace:*
+      '@postgresql-typed/util': workspace:*
       '@types/node': ^18.6.2
-      postgres: ^3.3.3
+      postgres: github:Bas950/postgres
       source-map-support: ^0.5.21
       typescript: ^4.9.5
     dependencies:
       '@postgresql-typed/core': link:../core
-      postgres: 3.3.3
+      '@postgresql-typed/oids': link:../oids
+      '@postgresql-typed/parsers': link:../parsers
+      '@postgresql-typed/util': link:../util
+      postgres: github.com/Bas950/postgres/7a02288c405afbfc3e014795c752dccfc7eb52e9
+      source-map-support: 0.5.21
     devDependencies:
       '@types/node': 18.15.3
-      source-map-support: 0.5.21
       typescript: 4.9.5
 
   packages/ui:
@@ -11897,3 +11903,11 @@ packages:
 
   /zod/3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+
+  github.com/Bas950/postgres/7a02288c405afbfc3e014795c752dccfc7eb52e9:
+    resolution: {tarball: https://codeload.github.com/Bas950/postgres/tar.gz/7a02288c405afbfc3e014795c752dccfc7eb52e9}
+    name: postgres
+    version: 3.3.4
+    prepare: true
+    requiresBuild: true
+    dev: false

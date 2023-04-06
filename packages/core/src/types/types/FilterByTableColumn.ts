@@ -1,4 +1,4 @@
-import { ConstructorFromParser, Constructors, FromParameters, Parsers } from "@postgresql-typed/parsers";
+import type { ConstructorFromParser, Constructors, FromParameters, Parsers } from "@postgresql-typed/parsers";
 
 import type { Table } from "../../classes/Table.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";

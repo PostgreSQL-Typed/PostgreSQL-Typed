@@ -60,7 +60,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 	constructor(private _n: N = 1 as N) {
 		super();
 
-		const allowedTypes = [ParsedType.number],
+		const allowedTypes = [ParsedType.number, ParsedType.infinity],
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
@@ -80,7 +80,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 			});
 		}
 
-		if (_n > 10_485_760) {
+		if (_n > 10_485_760 && _n !== Number.POSITIVE_INFINITY) {
 			throwPGTPError({
 				code: "too_big",
 				type: "number",
@@ -89,7 +89,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 			});
 		}
 
-		if (_n % 1 !== 0) {
+		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
 			//If limit is not a whole number
 			throwPGTPError({
 				code: "not_whole",
@@ -152,7 +152,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 		}
 
 		// Truncate or space-pad on the right to be exactly n characters
-		if (argument.length < this._n) argument = argument.padEnd(this._n, " ");
+		if (argument.length < this._n && this._n !== Number.POSITIVE_INFINITY) argument = argument.padEnd(this._n, " ");
 
 		return OK(new CharacterClass(argument, this._n));
 	}

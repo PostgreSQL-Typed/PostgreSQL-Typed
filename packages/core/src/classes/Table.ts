@@ -2,7 +2,7 @@ import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
-import type { ParserOfColumn } from "../types/types/ParserOfColumn.js";
+import type { PGTPParserOfColumn } from "../types/types/PGTPParserOfColumn.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import type { BaseClient } from "./BaseClient.js";
@@ -53,7 +53,9 @@ export class Table<
 		) as ColumnsOfTable<InnerPostgresData, TableLocation>[];
 	}
 
-	getParserOfTable<Column extends ColumnsOfTable<InnerPostgresData, TableLocation>>(column: Column): ParserOfColumn<InnerPostgresData, TableLocation, Column> {
+	getParserOfTable<Column extends ColumnsOfTable<InnerPostgresData, TableLocation>>(
+		column: Column
+	): PGTPParserOfColumn<InnerPostgresData, TableLocation, Column> {
 		const columnObject = this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns[column];
 
 		if (!columnObject) throw new Error(`Column ${column} does not exist in table ${this.name}`);

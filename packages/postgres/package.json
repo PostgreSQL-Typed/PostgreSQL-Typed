@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"name": "@postgresql-typed/pg",
+	"name": "@postgresql-typed/postgres",
 	"version": "1.0.0",
 	"description": "A type-safe PostgreSQL client for Node.js (Using the postgres module)",
 	"type": "module",
@@ -41,11 +41,14 @@
 	},
 	"dependencies": {
 		"@postgresql-typed/core": "workspace:*",
-		"postgres": "^3.3.3"
+		"@postgresql-typed/oids": "workspace:*",
+		"@postgresql-typed/parsers": "workspace:*",
+		"@postgresql-typed/util": "workspace:*",
+		"postgres": "github:Bas950/postgres",
+		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
 		"@types/node": "^18.6.2",
-		"source-map-support": "^0.5.21",
 		"typescript": "^4.9.5"
 	}
 }

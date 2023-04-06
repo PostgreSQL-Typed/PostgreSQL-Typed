@@ -1,7 +1,7 @@
 import type { PostgresData } from "../interfaces/PostgresData.js";
 import type { Join } from "./Join.js";
 import type { NestedPaths } from "./NestedPaths.js";
-import { TableLocations } from "./TableLocations.js";
+import type { TableLocations } from "./TableLocations.js";
 
 type TableLocationByPathInner<
 	InnerPostgresData extends PostgresData,

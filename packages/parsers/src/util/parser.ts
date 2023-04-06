@@ -1,13 +1,13 @@
+import { Constructors } from "../index.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const parser =
-	<DataType>(object: any) =>
+	<DataType>(constructor: Constructors | ObjectFunction<DataType>) =>
 	(value: string | null) => {
-		const Object = object as ObjectFunction<DataType>;
-
 		if (value === null) return null;
 		try {
-			return Object.from(value);
+			if ("setN" in constructor) constructor = constructor.setN(Number.POSITIVE_INFINITY);
+			return constructor.from(value);
 		} catch {
 			return null;
 		}

@@ -4,14 +4,17 @@ import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
 import { getTableIdentifier } from "../functions/getTableIdentifier.js";
-import { Query, SafeQuery } from "../index.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
+import type { Query } from "../types/types/Query.js";
+import type { SafeQuery } from "../types/types/SafeQuery.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
+import { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
+import { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
 import type { BaseClient } from "./BaseClient.js";
@@ -133,12 +136,34 @@ export class SelectBuilder<
 		return this;
 	}
 
-	execute(select?: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>): Promise<SafeQuery<Query<any>>>;
-	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: true): string;
-	execute(select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>, rawQuery: false): Promise<SafeQuery<Query<any>>>;
 	execute<Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>>(
-		select: SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = "*",
-		rawQuery = false
+		select?: Select
+	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>>>;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions = SelectQueryOptions
+	>(select: Select, options?: Options & { raw: true }): string;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions = SelectQueryOptions
+	>(
+		select: Select,
+		options?: Options & { raw?: false; valuesOnly: true }
+	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>>>;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions = SelectQueryOptions
+	>(
+		select: Select,
+		options?: Options & { raw?: false; valuesOnly?: false }
+	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>>>;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions = SelectQueryOptions
+	>(
+		//@ts-expect-error It can be initialized as "*"
+		select: Select = "*",
+		options?: Options
 	) {
 		const tableLocation = this.table.location.split(".").slice(1).join("."),
 			usedTableLocations: string[] = [];
@@ -164,7 +189,7 @@ export class SelectBuilder<
 		const count = query.match(/%\?%/g)?.length ?? 0;
 		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
-		return rawQuery
+		return options?.raw
 			? query
 			: this.client.safeQuery(query, [
 					...this._where.variables.map(variable => {

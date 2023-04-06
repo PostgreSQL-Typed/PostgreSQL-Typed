@@ -23,10 +23,14 @@ describe("PGTPError", () => {
 	it("should return the full error object", () => {
 		expect(error.error).toStrictEqual({
 			code: "invalid_type",
+			expected: "string",
+			received: "number",
 			message: "Invalid type",
 		});
 		expect(error.issue).toStrictEqual({
 			code: "invalid_type",
+			expected: "string",
+			received: "number",
 			message: "Invalid type",
 		});
 	});

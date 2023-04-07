@@ -11,13 +11,15 @@ export const IssueCode = arrayToEnum([
 	"too_small",
 	"too_big",
 	"query_error",
+	"invalid_string",
+	"invalid_join_type",
 ]);
 
 export type IssueCode = keyof typeof IssueCode;
 
 export interface InvalidTypeIssue {
 	code: typeof IssueCode.invalid_type;
-	expected: ParsedType | ParsedType[];
+	expected: (ParsedType | "not null" | "not undefined") | (ParsedType | "not null" | "not undefined")[];
 	received: ParsedType;
 }
 
@@ -45,7 +47,7 @@ export interface TooSmallIssue {
 	minimum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "arguments";
+	type: "array" | "number" | "arguments" | "keys";
 }
 
 export interface TooBigIssue {
@@ -53,13 +55,23 @@ export interface TooBigIssue {
 	maximum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "arguments";
+	type: "array" | "number" | "arguments" | "keys" | "depth";
 }
 
 export type QueryErrorIssue = {
 	code: typeof IssueCode.query_error;
 	errorMessage: string;
 };
+
+export interface InvalidStringIssue {
+	code: typeof IssueCode.invalid_string;
+	expected: string | string[];
+	received: string;
+}
+
+export interface InvalidJoinTypeIssue extends Omit<InvalidStringIssue, "code"> {
+	code: typeof IssueCode.invalid_join_type;
+}
 
 export type IssueWithoutMessage =
 	| InvalidKeyTypeIssue
@@ -69,7 +81,9 @@ export type IssueWithoutMessage =
 	| NotReadyIssue
 	| TooSmallIssue
 	| TooBigIssue
-	| QueryErrorIssue;
+	| QueryErrorIssue
+	| InvalidStringIssue
+	| InvalidJoinTypeIssue;
 
 export type Issue = IssueWithoutMessage & {
 	message: string;

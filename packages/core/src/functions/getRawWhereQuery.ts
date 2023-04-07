@@ -1,10 +1,14 @@
-import type { Parsers } from "@postgresql-typed/parsers";
+import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
+import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
+import { FilterOperators } from "../types/interfaces/FilterOperators.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import type { RootFilterOperators } from "../types/interfaces/RootFilterOperators.js";
+import type { Safe } from "../types/types/Safe.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
+import type { PGTError } from "../util/PGTError.js";
+import { getPGTError } from "./getPGTError.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
 import { isRootFilterOperator } from "./isRootFilterOperator.js";
 
@@ -15,65 +19,154 @@ export function getRawWhereQuery<
 	JoinedTables extends Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>,
 	Columns extends string,
 	Where extends WhereQuery<JoinedTables, Columns> = WhereQuery<JoinedTables, Columns>
->(where: Where, joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[], depth = 0): { query: string; variables: (Parsers | string)[] } {
+>(
+	where: Where,
+	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[],
+	depth = 0
+): Safe<{ query: string; variables: (Parsers | string)[] }, PGTError | PGTPError> {
 	//* Make sure the depth is less than 10
 	//TODO make the depth limit a config option
 	if (depth > 10) {
-		//TODO make this a custom error
-		throw new Error("On filter is too deep");
+		return {
+			success: false,
+			error: getPGTError({
+				code: "too_big",
+				type: "depth",
+				maximum: 10,
+				inclusive: true,
+			}),
+		};
 	}
 
 	const keys = Object.keys(where) as (keyof Where)[];
 	//* Make sure there is only one key
 	if (keys.length !== 1) {
-		//TODO make this a custom error
-		throw new Error("Where filter must have only one key");
+		return {
+			success: false,
+			error: getPGTError(
+				keys.length > 1
+					? {
+							code: "too_big",
+							type: "keys",
+							maximum: 1,
+							exact: true,
+					  }
+					: {
+							code: "too_small",
+							type: "keys",
+							minimum: 1,
+							exact: true,
+					  }
+			),
+		};
 	}
 
 	const key = keys[0],
 		spaces = " ".repeat(depth * 2 + 2);
 
 	if (isRootFilterOperator(key as string)) {
-		const queries = where[key as keyof RootFilterOperators<any>]?.map(andValue => getRawWhereQuery(andValue as any, joinedTables, depth + 1));
-		if (!queries) throw new Error("No queries found");
-		return {
-			query: `\n${spaces}(\n${spaces}  ${queries.map(query => query.query.trim()).join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
-			variables: queries.flatMap(query => query.variables),
-		};
-	} else {
-		const whereKey = where[key],
-			joinedColumns = new Set(
-				joinedTables.flatMap(joinedTable => joinedTable.columns.map(column => `${joinedTable.schema.name}.${joinedTable.name}.${column.toString()}`))
-			);
-
-		//* Make sure the key is a valid column
-		if (!joinedColumns.has(key.toString())) {
-			//TODO make this a custom error
-			throw new Error("Invalid column");
+		const parsedType = getParsedType(where[key]);
+		if (parsedType !== ParsedType.array) {
+			return {
+				success: false,
+				error: getPGTError({
+					code: "invalid_type",
+					expected: ParsedType.array,
+					received: parsedType,
+				}),
+			};
 		}
 
+		const queries = (where[key] as Where[]).map(andValue => getRawWhereQuery(andValue as any, joinedTables, depth + 1)),
+			succeededQueries: { query: string; variables: (Parsers | string)[] }[] = [];
+
+		for (const query of queries) {
+			if (!query.success) return query;
+			succeededQueries.push(query.data);
+		}
+
+		return {
+			success: true,
+			data: {
+				query: `\n${spaces}(\n${spaces}  ${succeededQueries
+					.map(query => query.query.trim())
+					.join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
+				variables: succeededQueries.flatMap(query => query.variables),
+			},
+		};
+	} else {
+		const joinedColumns = new Set(
+				joinedTables.flatMap(joinedTable => joinedTable.columns.map(column => `${joinedTable.schema.name}.${joinedTable.name}.${column.toString()}`))
+			),
+			parsedObject = hasKeys<Where>(
+				where,
+				[...joinedColumns].map(column => [column, [ParsedType.object, ParsedType.string, ParsedType.undefined]])
+			);
+		if (!parsedObject.success) {
+			let error: PGTError;
+			switch (true) {
+				case parsedObject.otherKeys.length > 0:
+					error = getPGTError({
+						code: "unrecognized_keys",
+						keys: parsedObject.otherKeys,
+					});
+					break;
+				case parsedObject.missingKeys.length > 0:
+					error = getPGTError({
+						code: "missing_keys",
+						keys: parsedObject.missingKeys,
+					});
+					break;
+				case parsedObject.invalidKeys.length > 0:
+					error = getPGTError({
+						code: "invalid_key_type",
+						...parsedObject.invalidKeys[0],
+					});
+					break;
+				default:
+					error = getPGTError({
+						code: "unrecognized_keys",
+						keys: [],
+					});
+			}
+			return { success: false, error };
+		}
+
+		const parsedType = getParsedType(where[key]);
+		if (parsedType === ParsedType.undefined) {
+			return {
+				success: false,
+				error: getPGTError({
+					code: "invalid_type",
+					expected: [ParsedType.object, ParsedType.string],
+					received: parsedType,
+				}),
+			};
+		}
+
+		const whereKey = where[key] as string | FilterOperators<any>;
+
 		//* table.column = otherTable.otherColumn
-		if (typeof whereKey !== "object") {
-			if (typeof whereKey !== "string") {
-				//TODO make this a custom error
-				throw new TypeError("Invalid where filter value");
-			}
+		if (typeof whereKey === "string") {
+			const columnsWithoutSelf = [...joinedColumns].filter(column => column !== key.toString());
 
-			//* Make sure they don't equal each other
-			if (key.toString() === whereKey.toString()) {
-				//TODO make this a custom error
-				throw new Error("Cannot compare a column to itself");
-			}
-
-			//* Make sure the other key is a valid column
-			if (!joinedColumns.has(whereKey.toString())) {
-				//TODO make this a custom error
-				throw new Error("Invalid column");
+			if (!columnsWithoutSelf.includes(whereKey)) {
+				return {
+					success: false,
+					error: getPGTError({
+						code: "invalid_string",
+						expected: columnsWithoutSelf,
+						received: whereKey,
+					}),
+				};
 			}
 
 			return {
-				query: `${key.toString()} = ${whereKey}`,
-				variables: [],
+				success: true,
+				data: {
+					query: `${key.toString()} = ${whereKey}`,
+					variables: [],
+				},
 			};
 		}
 
@@ -81,16 +174,19 @@ export function getRawWhereQuery<
 			table = joinedTables.find(table => table.schema.name === schemaName && table.name === tableName);
 
 		//* Make sure the table exists
-		if (!table) {
-			//TODO make this a custom error
-			throw new Error("Invalid column");
-		}
+		if (!table) throw new Error("Internal error: table does not exist");
 
-		const [rawFilterOperator, ...variables] = getRawFilterOperator(whereKey as any, table.getParserOfTable(columnName as any));
+		const result = getRawFilterOperator(whereKey, table.getParserOfTable(columnName as any));
+
+		if (!result.success) return result;
+		const [rawFilterOperator, ...variables] = result.data;
 
 		return {
-			query: `${key.toString()} ${rawFilterOperator}`,
-			variables,
+			success: true,
+			data: {
+				query: `${key.toString()} ${rawFilterOperator}`,
+				variables,
+			},
 		};
 	}
 }

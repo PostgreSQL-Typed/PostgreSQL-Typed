@@ -7,7 +7,6 @@ export * from "./types/interfaces/PostgresData.js";
 export * from "./types/types/Context.js";
 export * from "./types/types/Query.js";
 export * from "./types/types/RawPostgresData.js";
-export * from "./types/types/SafeQuery.js";
-export * from "./types/types/SafeQuery.js";
+export * from "./types/types/Safe.js";
 export * from "./util/errorMap.js";
 export * from "./util/PGTError.js";

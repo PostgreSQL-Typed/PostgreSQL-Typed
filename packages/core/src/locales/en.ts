@@ -40,6 +40,9 @@ const errorMap: ErrorMap = issue => {
 				case "arguments":
 					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} argument(s)`;
 					break;
+				case "keys":
+					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} key(s)`;
+					break;
 				default:
 					message = "Invalid input";
 					throw new Error(message);
@@ -56,6 +59,12 @@ const errorMap: ErrorMap = issue => {
 				case "arguments":
 					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} argument(s)`;
 					break;
+				case "keys":
+					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} key(s)`;
+					break;
+				case "depth":
+					message = `Object must have a depth of ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum}`;
+					break;
 				default:
 					message = "Invalid input";
 					throw new Error(message);
@@ -63,6 +72,15 @@ const errorMap: ErrorMap = issue => {
 			break;
 		case IssueCode.query_error:
 			message = `An error occurred while executing the query: ${issue.errorMessage}`;
+			break;
+		case IssueCode.invalid_string:
+		case IssueCode.invalid_join_type:
+			message =
+				issue.received === ParsedType.undefined
+					? "Required"
+					: `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`}${
+							IssueCode.invalid_join_type ? " as a join type" : ""
+					  }, received '${issue.received}'`;
 			break;
 		default:
 			message = "Invalid IssueCode";

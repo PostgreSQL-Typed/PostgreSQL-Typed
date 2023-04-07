@@ -1,4 +1,4 @@
-import type { Parsers } from "@postgresql-typed/parsers";
+import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
 
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
@@ -11,12 +11,13 @@ import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
 import type { Query } from "../types/types/Query.js";
-import type { SafeQuery } from "../types/types/SafeQuery.js";
+import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
-import { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
-import { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
+import type { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
+import type { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
+import type { PGTError } from "../util/PGTError.js";
 import type { BaseClient } from "./BaseClient.js";
 import type { Table } from "./Table.js";
 
@@ -28,21 +29,26 @@ export class SelectBuilder<
 > {
 	tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[] = [];
 
-	private _joins: {
-		query: string;
-		variables: (Parsers | string)[];
-		tableLocation: string;
-	}[] = [];
-	private _where: {
-		query: string;
-		variables: (Parsers | string)[];
-	} = {
-		query: "",
-		variables: [],
-	};
-	private _groupBy = "";
-	private _limit = "";
-	private _fetch = "";
+	private _joins: Safe<
+		{
+			query: string;
+			variables: (Parsers | string)[];
+			tableLocation: string;
+		},
+		PGTError | PGTPError
+	>[] = [];
+	private _where:
+		| Safe<
+				{
+					query: string;
+					variables: (Parsers | string)[];
+				},
+				PGTError | PGTPError
+		  >
+		| undefined;
+	private _groupBy: Safe<string> | undefined;
+	private _limit: Safe<string> | undefined;
+	private _fetch: Safe<string> | undefined;
 
 	constructor(
 		private readonly client: BaseClient<InnerPostgresData, Ready>,
@@ -86,10 +92,15 @@ export class SelectBuilder<
 			where,
 			this.tables
 		);
-		this._where = {
-			query: `WHERE ${rawQuery.query}`,
-			variables: rawQuery.variables,
-		};
+		this._where = rawQuery.success
+			? {
+					success: true,
+					data: {
+						query: `WHERE ${rawQuery.data.query}`,
+						variables: rawQuery.data.variables,
+					},
+			  }
+			: rawQuery;
 
 		return this;
 	}
@@ -97,7 +108,7 @@ export class SelectBuilder<
 	groupBy(groupBy: GroupBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>) {
 		//TODO make sure input is valid
 
-		this._groupBy = `GROUP BY ${Array.isArray(groupBy) ? [...new Set(groupBy)].join(", ") : groupBy}`;
+		this._groupBy = { success: true, data: `GROUP BY ${Array.isArray(groupBy) ? [...new Set(groupBy)].join(", ") : groupBy}` };
 
 		return this;
 	}
@@ -111,7 +122,7 @@ export class SelectBuilder<
 		const { columns, nulls } = orderBy,
 			orderByColumns = columns ? Object.entries(columns).map(([column, direction]) => `${column} ${direction}`) : undefined;
 
-		this._groupBy = `ORDER BY${orderByColumns ? ` ${orderByColumns.join(", ")}` : ""}${nulls ? ` ${nulls}` : ""}`;
+		this._groupBy = { success: true, data: `ORDER BY${orderByColumns ? ` ${orderByColumns.join(", ")}` : ""}${nulls ? ` ${nulls}` : ""}` };
 
 		return this;
 	}
@@ -119,7 +130,7 @@ export class SelectBuilder<
 	limit(limit: number, offset?: number) {
 		//TODO make sure input is valid
 
-		this._limit = offset ? `LIMIT ${limit}\nOFFSET ${offset}` : `LIMIT ${limit}`;
+		this._limit = { success: true, data: offset ? `LIMIT ${limit}\nOFFSET ${offset}` : `LIMIT ${limit}` };
 
 		return this;
 	}
@@ -131,14 +142,16 @@ export class SelectBuilder<
 		const { fetch: fetchAmount, type, offset } = fetch,
 			fetchString = `FETCH ${type} ${fetchAmount} ${fetchAmount > 1 ? "ROWS" : "ROW"} ONLY`;
 
-		this._fetch = offset ? `OFFSET ${offset} ${offset > 1 ? "ROWS" : "ROW"}\n${fetchString}` : fetchString;
+		this._fetch = { success: true, data: offset ? `OFFSET ${offset} ${offset > 1 ? "ROWS" : "ROW"}\n${fetchString}` : fetchString };
 
 		return this;
 	}
 
 	execute<Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>>(
 		select?: Select
-	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>>>;
+	): // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	//@ts-ignore - Not sure where it is circular //TODO find out where it is circular
+	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
@@ -149,14 +162,14 @@ export class SelectBuilder<
 	>(
 		select: Select,
 		options?: Options & { raw?: false; valuesOnly: true }
-	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
 	>(
 		select: Select,
 		options?: Options & { raw?: false; valuesOnly?: false }
-	): Promise<SafeQuery<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
@@ -168,10 +181,39 @@ export class SelectBuilder<
 		const tableLocation = this.table.location.split(".").slice(1).join("."),
 			usedTableLocations: string[] = [];
 
+		let joins = this._joins as
+			| {
+					success: false;
+					error: PGTError;
+			  }[]
+			| {
+					success: true;
+					data: {
+						query: string;
+						variables: (Parsers | string)[];
+						tableLocation: string;
+					};
+			  }[];
+
+		//* If any previous step failed, return the error
+		for (const join of joins) if (!join.success) return join;
+		joins = joins as {
+			success: true;
+			data: {
+				query: string;
+				variables: (Parsers | string)[];
+				tableLocation: string;
+			};
+		}[];
+		if (this._where && !this._where.success) return this._where;
+		if (this._groupBy && !this._groupBy.success) return this._groupBy;
+		if (this._limit && !this._limit.success) return this._limit;
+		if (this._fetch && !this._fetch.success) return this._fetch;
+
 		let query = `SELECT ${getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select)}\nFROM ${tableLocation} %${tableLocation}%${
-			this._joins.length > 0 ? `\n${this._joins.map(join => join.query).join("\n")}` : ""
-		}${this._where.query ? `\n${this._where.query}` : ""}${this._groupBy ? `\n${this._groupBy}` : ""}${this._limit ? `\n${this._limit}` : ""}${
-			this._fetch ? `\n${this._fetch}` : ""
+			joins.length > 0 ? `\n${joins.map(join => join.data.query).join("\n")}` : ""
+		}${this._where ? `\n${this._where.data}` : ""}${this._groupBy ? `\n${this._groupBy.data}` : ""}${this._limit ? `\n${this._limit.data}` : ""}${
+			this._fetch ? `\n${this._fetch.data}` : ""
 		}`;
 
 		//* Replace the table locations with the short names
@@ -179,9 +221,9 @@ export class SelectBuilder<
 		query = query.replaceAll(`%${tableLocation}%`, mainTableShort).replaceAll(`${tableLocation}.`, `${mainTableShort}.`);
 		usedTableLocations.push(mainTableShort);
 
-		for (const join of this._joins) {
-			const joinTableShort = getTableIdentifier(join.tableLocation, usedTableLocations);
-			query = query.replaceAll(`%${join.tableLocation}%`, joinTableShort).replaceAll(`${join.tableLocation}.`, `${joinTableShort}.`);
+		for (const join of joins) {
+			const joinTableShort = getTableIdentifier(join.data.tableLocation, usedTableLocations);
+			query = query.replaceAll(`%${join.data.tableLocation}%`, joinTableShort).replaceAll(`${join.data.tableLocation}.`, `${joinTableShort}.`);
 			usedTableLocations.push(joinTableShort);
 		}
 
@@ -189,19 +231,40 @@ export class SelectBuilder<
 		const count = query.match(/%\?%/g)?.length ?? 0;
 		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
-		return options?.raw
-			? query
-			: this.client.safeQuery(query, [
-					...this._where.variables.map(variable => {
-						if (typeof variable !== "string") return variable.value;
-						return variable;
-					}),
-					...this._joins.flatMap(join =>
-						join.variables.map(variable => {
-							if (typeof variable !== "string") return variable.value;
-							return variable;
-						})
-					),
-			  ]);
+		//* If the query is raw, return it
+		if (options?.raw) return query;
+
+		const runningQuery = this.client.safeQuery<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>(query, [
+			...(this._where?.data.variables.map(variable => {
+				if (typeof variable !== "string") return variable.value;
+				return variable;
+			}) ?? []),
+			...joins.flatMap(join =>
+				join.data.variables.map(variable => {
+					if (typeof variable !== "string") return variable.value;
+					return variable;
+				})
+			),
+		]);
+
+		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PGTError | PGTPError>>(
+			(resolve, reject) => {
+				runningQuery
+					.then(result => {
+						if (!result.success) return resolve(result);
+						if (options?.valuesOnly) {
+							result.data.rows = result.data.rows.map(row => {
+								//* Map all the values of the object to the .value property of them.
+								return Object.fromEntries(
+									// eslint-disable-next-line unicorn/no-null
+									Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => [key, value === null ? null : value.value])
+								);
+							}) as SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>[];
+						}
+						resolve(result);
+					})
+					.catch(reject);
+			}
+		);
 	}
 }

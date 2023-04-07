@@ -66,5 +66,6 @@ export * from "./types/ValueFromConstructor.js";
 export * from "./util/arrayParser.js";
 export * from "./util/errorMap.js";
 export * from "./util/parser.js";
+export * from "./util/PGTPError.js";
 export * from "./util/PGTPParser.js";
 export { LowerRange, LowerRangeType, UpperRange, UpperRangeType } from "./util/Range.js";

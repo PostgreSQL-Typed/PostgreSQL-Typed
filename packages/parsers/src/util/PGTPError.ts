@@ -23,7 +23,7 @@ export type IssueCode = keyof typeof IssueCode;
 
 export interface InvalidTypeIssue {
 	code: typeof IssueCode.invalid_type;
-	expected: ParsedType | ParsedType[];
+	expected: (ParsedType | "not undefined" | "not null") | (ParsedType | "not undefined" | "not null")[];
 	received: ParsedType;
 }
 

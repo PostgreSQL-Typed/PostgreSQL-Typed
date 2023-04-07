@@ -5,7 +5,7 @@ import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { Context } from "../types/types/Context.js";
 import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
-import type { SafeQuery } from "../types/types/SafeQuery.js";
+import type { Safe } from "../types/types/Safe.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
@@ -35,7 +35,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		throw result.error;
 	}
 
-	async safeQuery<Data>(...data: unknown[]): Promise<SafeQuery<Query<Data>>> {
+	async safeQuery<Data>(...data: unknown[]): Promise<Safe<Query<Data>>> {
 		const context: Context = {
 				issue: undefined,
 				errorMap: getErrorMap(),
@@ -46,7 +46,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		return this._handleResult<Data>(context, result);
 	}
 
-	private _handleResult<Data>(context: Context, result: ParseReturnType<Query<Data>>): SafeQuery<Query<Data>> {
+	private _handleResult<Data>(context: Context, result: ParseReturnType<Query<Data>>): Safe<Query<Data>> {
 		if (isValid(result)) return { success: true, data: result.value };
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
 		const error = new PGTError(context.issue);

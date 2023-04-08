@@ -1,4 +1,5 @@
 import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
+import { isBox } from "@postgresql-typed/parsers";
 import { getParsedType, isOneOf } from "@postgresql-typed/util";
 
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
@@ -11,7 +12,8 @@ export function getRawFilterOperator(
 	filter: FilterOperators<unknown>,
 	parser: PGTPParserClass<ConstructorFromParser<Parsers>>
 ): Safe<[string, ...(Parsers | string)[]], PGTError | PGTPError> {
-	const keys = Object.keys(filter);
+	const keys = Object.keys(filter),
+		delimiter = isBox(parser.parser) ? ";" : ",";
 
 	//* Make sure there is only one key
 	if (keys.length !== 1) {
@@ -70,7 +72,7 @@ export function getRawFilterOperator(
 				};
 			}
 
-			const value: Parsers | string = Array.isArray(result.data) ? `{${result.data.map(v => v?.value).join(",")}}` : (result.data as Parsers),
+			const value: Parsers | string = Array.isArray(result.data) ? `{${result.data.map(v => v?.value).join(delimiter)}}` : (result.data as Parsers),
 				operator =
 					key === "$EQUAL"
 						? "="
@@ -139,7 +141,7 @@ export function getRawFilterOperator(
 			}
 
 			//* Make sure all the values are valid
-			const succeeded: Parsers[] = [];
+			const succeeded: (Parsers | Parsers[])[] = [];
 			for (const value of filterKey) {
 				const result = parser.isValid(value);
 				if (!result.success) return result;
@@ -154,14 +156,15 @@ export function getRawFilterOperator(
 						}),
 					};
 				}
-				succeeded.push(result.data as Parsers);
+				succeeded.push(result.data as Parsers | Parsers[]);
 			}
 
-			const questionMarks = filterKey.map(() => "%?%").join(", "),
+			const finalValues: (Parsers | string)[] = succeeded.map(v => (Array.isArray(v) ? `{${v.map(v => v?.value).join(delimiter)}}` : v)),
+				questionMarks = filterKey.map(() => "%?%").join(", "),
 				operator = key.slice(1).replace("_", " ");
 			return {
 				success: true,
-				data: [`${operator} (${questionMarks})`, ...succeeded],
+				data: [`${operator} (${questionMarks})`, ...finalValues],
 			};
 		}
 		case "$BETWEEN":
@@ -236,7 +239,11 @@ export function getRawFilterOperator(
 			const operator = key.slice(1).replace("_", " ");
 			return {
 				success: true,
-				data: [`${operator} %?% AND %?%`, valueA.data as Parsers, valueB.data as Parsers],
+				data: [
+					`${operator} %?% AND %?%`,
+					Array.isArray(valueA.data) ? `{${valueA.data.map(v => v?.value).join(delimiter)}}` : (valueA.data as Parsers),
+					Array.isArray(valueB.data) ? `{${valueB.data.map(v => v?.value).join(delimiter)}}` : (valueB.data as Parsers),
+				],
 			};
 		}
 		case "$IS_NULL":

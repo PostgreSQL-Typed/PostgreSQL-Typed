@@ -1,4 +1,4 @@
-import { Int2, PGTPParser } from "@postgresql-typed/parsers";
+import { Box, Int2, PGTPParser, Text } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
 import { getRawFilterOperator } from "./getRawFilterOperator";
@@ -53,6 +53,21 @@ describe("getRawFilterOperator", () => {
 		const undefinedValue = getRawFilterOperator({ $EQUAL: undefined }, parser.optional());
 		expect(undefinedValue.success).toBe(false);
 		if (undefinedValue.success) expect.fail();
+
+		const arrayValue = getRawFilterOperator({ $EQUAL: [1, 2, 3] }, PGTPParser(Int2, true));
+		expect(arrayValue.success).toBe(true);
+		if (!arrayValue.success) expect.fail();
+		expect(arrayValue.data.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual(["= %?%", "{1,2,3}"]);
+
+		const stringArrayValue = getRawFilterOperator({ $EQUAL: ["a", "b", "c"] }, PGTPParser(Text, true));
+		expect(stringArrayValue.success).toBe(true);
+		if (!stringArrayValue.success) expect.fail();
+		expect(stringArrayValue.data.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual(["= %?%", "{a,b,c}"]);
+
+		const boxArrayValue = getRawFilterOperator({ $EQUAL: ["(1,2),(3,4)", "(5,6),(7,8)"] }, PGTPParser(Box, true));
+		expect(boxArrayValue.success).toBe(true);
+		if (!boxArrayValue.success) expect.fail();
+		expect(boxArrayValue.data.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual(["= %?%", "{(1,2),(3,4);(5,6),(7,8)}"]);
 	});
 
 	test("$NOT_EQUAL", () => {
@@ -170,6 +185,23 @@ describe("getRawFilterOperator", () => {
 		const notEnoughItemsResult = getRawFilterOperator({ $NOT_IN: [1] }, parser);
 		expect(notEnoughItemsResult.success).toBe(false);
 		if (notEnoughItemsResult.success) expect.fail();
+
+		const arrayInArrayResult = getRawFilterOperator(
+			{
+				$NOT_IN: [
+					[1, 2],
+					[3, 4],
+				],
+			},
+			PGTPParser(Int2, true)
+		);
+		expect(arrayInArrayResult.success).toBe(true);
+		if (!arrayInArrayResult.success) expect.fail();
+		expect(arrayInArrayResult.data.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual([
+			"NOT IN (%?%, %?%)",
+			"{1,2}",
+			"{3,4}",
+		]);
 	});
 
 	test("$BETWEEN", () => {
@@ -190,9 +222,13 @@ describe("getRawFilterOperator", () => {
 		expect(tooManyItemsResult.success).toBe(false);
 		if (tooManyItemsResult.success) expect.fail();
 
-		const invalidType = getRawFilterOperator({ $BETWEEN: [1, {} as any] }, parser);
-		expect(invalidType.success).toBe(false);
-		if (invalidType.success) expect.fail();
+		const invalidTypeA = getRawFilterOperator({ $BETWEEN: [{} as any, 1] }, parser);
+		expect(invalidTypeA.success).toBe(false);
+		if (invalidTypeA.success) expect.fail();
+
+		const invalidTypeB = getRawFilterOperator({ $BETWEEN: [1, {} as any] }, parser);
+		expect(invalidTypeB.success).toBe(false);
+		if (invalidTypeB.success) expect.fail();
 
 		// eslint-disable-next-line unicorn/no-null
 		const nullValueA = getRawFilterOperator({ $BETWEEN: [null, 1] }, parser.nullable());
@@ -211,6 +247,23 @@ describe("getRawFilterOperator", () => {
 		const undefinedValueB = getRawFilterOperator({ $BETWEEN: [1, undefined] }, parser.optional());
 		expect(undefinedValueB.success).toBe(false);
 		if (undefinedValueB.success) expect.fail();
+
+		const arrayInArrayResult = getRawFilterOperator(
+			{
+				$BETWEEN: [
+					[1, 2],
+					[3, 4],
+				],
+			},
+			PGTPParser(Int2, true)
+		);
+		expect(arrayInArrayResult.success).toBe(true);
+		if (!arrayInArrayResult.success) expect.fail();
+		expect(arrayInArrayResult.data.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual([
+			"BETWEEN %?% AND %?%",
+			"{1,2}",
+			"{3,4}",
+		]);
 	});
 
 	test("$NOT_BETWEEN", () => {

@@ -304,4 +304,8 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	}
 }
 
-export { Box, BoxConstructor, BoxObject };
+function isBox(object: any): object is Box | BoxConstructor {
+	return object instanceof BoxClass || object instanceof BoxConstructorClass;
+}
+
+export { Box, BoxConstructor, BoxObject, isBox };

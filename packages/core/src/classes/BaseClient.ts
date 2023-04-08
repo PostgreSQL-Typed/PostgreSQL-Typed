@@ -64,6 +64,10 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		return new Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready>(this, this.postgresData[database]);
 	}
 
+	db<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
+		return this.database<DatabaseName>(database);
+	}
+
 	get databases(): {
 		[DatabaseName in keyof InnerPostgresData]: Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready>;
 	} {
@@ -84,6 +88,10 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 
 		const [database] = (schema as string).split(".");
 		return new Schema<InnerPostgresData, InnerPostgresData[typeof database], Ready, SchemaLocation>(this, this.postgresData[database], schema) as any;
+	}
+
+	sch<SchemaLocation extends SchemaLocations<InnerPostgresData>>(schema: SchemaLocation) {
+		return this.schema<SchemaLocation>(schema);
 	}
 
 	get schemas(): {
@@ -144,6 +152,17 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 			this.postgresData[database as keyof InnerPostgresData],
 			table
 		) as any;
+	}
+
+	tbl<
+		TableLocation extends TableLocations<InnerPostgresData>,
+		DatabaseName extends keyof InnerPostgresData = TableLocation extends `${infer Database}.${string}` ? Database : never,
+		TemporarySchemaLocation = TableLocation extends `${infer Database}.${infer Schema}.${string}` ? `${Database}.${Schema}` : never,
+		SchemaLocation extends SchemaLocations<InnerPostgresData> = TemporarySchemaLocation extends SchemaLocations<InnerPostgresData>
+			? TemporarySchemaLocation
+			: never
+	>(table: TableLocation) {
+		return this.table<TableLocation, DatabaseName, TemporarySchemaLocation, SchemaLocation>(table);
 	}
 
 	get tables(): {

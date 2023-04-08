@@ -32,8 +32,16 @@ export class Table<
 		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(this.client, this.databaseData, `${databaseName}.${schemaName}` as any);
 	}
 
+	get sch(): Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation> {
+		return this.schema;
+	}
+
 	get database(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
 		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
+	}
+
+	get db(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
+		return this.database;
 	}
 
 	get primaryKey(): TableLocation extends `${string}.${infer SchemaName}.${infer TableName}`

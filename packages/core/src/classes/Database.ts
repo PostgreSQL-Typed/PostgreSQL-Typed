@@ -36,6 +36,14 @@ export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData 
 		);
 	}
 
+	sch<
+		SchemaName extends keyof InnerDatabaseData["schemas"],
+		DatabaseName extends InnerDatabaseData["name"] = InnerDatabaseData["name"],
+		SchemaLocation extends SchemaLocations<InnerPostgresData> = SchemaLocationByPath<InnerPostgresData, DatabaseName, SchemaName>
+	>(schemaName: SchemaName) {
+		return this.schema<SchemaName, DatabaseName, SchemaLocation>(schemaName);
+	}
+
 	get schemas(): {
 		[SchemaName in keyof InnerDatabaseData["schemas"]]: Schema<
 			InnerPostgresData,
@@ -74,6 +82,17 @@ export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData 
 			this.databaseData,
 			`${this.name}.${tableNameWithSchema}` as TableLocation
 		);
+	}
+
+	tbl<
+		TableNameWithSchema extends TableLocationsByDatabase<InnerDatabaseData>,
+		DatabaseName extends InnerDatabaseData["name"] = InnerDatabaseData["name"],
+		SchemaName extends keyof InnerDatabaseData["schemas"] = TableNameWithSchema extends `${infer Schema}.${string}` ? Schema : never,
+		TableName extends keyof InnerDatabaseData["schemas"][SchemaName]["tables"] = TableNameWithSchema extends `${string}.${infer Table}` ? Table : never,
+		SchemaLocation extends SchemaLocations<InnerPostgresData> = SchemaLocationByPath<InnerPostgresData, DatabaseName, SchemaName>,
+		TableLocation extends TableLocations<InnerPostgresData> = TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
+	>(tableNameWithSchema: TableNameWithSchema): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation> {
+		return this.table<TableNameWithSchema, DatabaseName, SchemaName, TableName, SchemaLocation, TableLocation>(tableNameWithSchema);
 	}
 
 	get tables(): {

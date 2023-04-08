@@ -30,6 +30,10 @@ export class Schema<
 		return new Database<InnerPostgresData, InnerDatabaseData, Ready>(this.client, this.databaseData);
 	}
 
+	get db(): Database<InnerPostgresData, InnerDatabaseData, Ready> {
+		return this.database;
+	}
+
 	get tableNames(): (keyof InnerDatabaseData["schemas"][SchemaName]["tables"])[] {
 		/* c8 ignore next 2 */
 		// The ?? [] is an assert never. It should never be reached, but if it is, it will return an empty array.
@@ -48,6 +52,13 @@ export class Schema<
 			this.databaseData,
 			`${this.location}.${tableName.toString()}` as TableLocation
 		);
+	}
+
+	tbl<
+		TableName extends keyof InnerDatabaseData["schemas"][SchemaName]["tables"],
+		TableLocation extends TableLocations<InnerPostgresData> = TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
+	>(tableName: TableName): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation> {
+		return this.table<TableName, TableLocation>(tableName);
 	}
 
 	get tables(): {

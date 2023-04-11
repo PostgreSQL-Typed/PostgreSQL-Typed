@@ -1,4 +1,4 @@
-import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
+import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
@@ -176,7 +176,7 @@ export function getRawWhereQuery<
 		//* Make sure the table exists
 		if (!table) throw new Error("Internal error: table does not exist");
 
-		const result = getRawFilterOperator(whereKey, table.getParserOfTable(columnName as any));
+		const result = getRawFilterOperator(whereKey, table.getParserOfTable(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
 
 		if (!result.success) return result;
 		const [rawFilterOperator, ...variables] = result.data;

@@ -14,6 +14,7 @@ interface Text {
 	text: string;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): TextObject;
@@ -160,6 +161,16 @@ class TextClass extends PGTPBase<Text> implements Text {
 	}
 
 	set value(text: string) {
+		const parsed = Text.safeFrom(text);
+		if (parsed.success) this._text = parsed.data.toString();
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this._text;
+	}
+
+	set postgres(text: string) {
 		const parsed = Text.safeFrom(text);
 		if (parsed.success) this._text = parsed.data.toString();
 		else throw parsed.error;

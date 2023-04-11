@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Float4 } from "./Float4.js";
 
 describe("Float4Constructor", () => {
@@ -286,6 +288,20 @@ describe("Float4", () => {
 
 		expect(() => (float4.value = "10e400")).toThrowError("Number must be less than or equal to 9.9999999999999999999999999999999999999e+37");
 	});
+
+	test("get postgres()", () => {
+		expect(Float4.from(1).postgres).toEqual("1");
+		expect(Float4.from("2").postgres).toEqual("2");
+		expect(Float4.from({ value: "3" }).postgres).toEqual("3");
+	});
+
+	test("set postgres(...)", () => {
+		const float4 = Float4.from(1);
+		float4.postgres = "2";
+		expect(float4.postgres).toEqual("2");
+
+		expect(() => (float4.postgres = "10e400")).toThrowError("Number must be less than or equal to 9.9999999999999999999999999999999999999e+37");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -359,6 +375,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_float4' type
+		types.setTypeParser(1021 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -379,6 +398,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestfloat4
 			`);
+
+			result.rows[0].float4 = parser<Float4>(Float4)(result.rows[0].float4);
+			result.rows[0]._float4 = arrayParser<Float4>(Float4, ",")(result.rows[0]._float4);
 
 			expect(Float4.isFloat4(result.rows[0].float4)).toBe(true);
 			expect(Float4.from(1).equals(result.rows[0].float4)).toBe(true);

@@ -20,6 +20,7 @@ interface Polygon {
 	points: Point[];
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): RawPolygonObject;
@@ -333,6 +334,16 @@ class PolygonClass extends PGTPBase<Polygon> implements Polygon {
 	}
 
 	set value(polygon: string) {
+		const parsed = Polygon.safeFrom(polygon);
+		if (parsed.success) this._points = parsed.data.points;
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(polygon: string) {
 		const parsed = Polygon.safeFrom(polygon);
 		if (parsed.success) this._points = parsed.data.points;
 		else throw parsed.error;

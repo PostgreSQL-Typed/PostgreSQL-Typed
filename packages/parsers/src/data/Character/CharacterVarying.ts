@@ -15,6 +15,7 @@ interface CharacterVarying<N extends number> {
 	characterVarying: string;
 
 	value: string;
+	postgres: string;
 
 	get n(): N;
 
@@ -258,6 +259,16 @@ class CharacterVaryingClass<N extends number> extends PGTPBase<CharacterVarying<
 	}
 
 	set value(character: string) {
+		const parsed = new CharacterVaryingConstructorClass(this._n).safeFrom(character);
+		if (parsed.success) this._character = parsed.data.toString();
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this._character;
+	}
+
+	set postgres(character: string) {
 		const parsed = new CharacterVaryingConstructorClass(this._n).safeFrom(character);
 		if (parsed.success) this._character = parsed.data.toString();
 		else throw parsed.error;

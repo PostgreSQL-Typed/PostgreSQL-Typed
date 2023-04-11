@@ -1,7 +1,9 @@
 import { DateTime } from "luxon";
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { Timestamp } from "./Timestamp.js";
@@ -458,6 +460,20 @@ describe("Timestamp", () => {
 		timestamp.value = "2024-01-01T22:10:09";
 		expect(timestamp.value).toBe("2024-01-01T22:10:09Z");
 	});
+
+	test("get postgres()", () => {
+		const timestamp = Timestamp.from("2023-01-01T22:10:09");
+		expect(timestamp.postgres).toBe("2023-01-01T22:10:09Z");
+	});
+
+	test("set postgres()", () => {
+		const timestamp = Timestamp.from("2023-01-01T22:10:09");
+		expect(() => {
+			timestamp.postgres = "a" as any;
+		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS', received 'a'");
+		timestamp.postgres = "2024-01-01T22:10:09";
+		expect(timestamp.postgres).toBe("2024-01-01T22:10:09Z");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -545,6 +561,10 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the 'timestamp' and '_timestamp' types
+		types.setTypeParser(1114 as any, value => value);
+		types.setTypeParser(1115 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -565,6 +585,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitesttimestamp
 			`);
+
+			result.rows[0].timestamp = parser<Timestamp>(Timestamp)(result.rows[0].timestamp);
+			result.rows[0]._timestamp = arrayParser<Timestamp>(Timestamp)(result.rows[0]._timestamp);
 
 			expect(result.rows[0].timestamp.toString()).toStrictEqual(
 				Timestamp.from({

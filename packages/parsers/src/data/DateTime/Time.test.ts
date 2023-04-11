@@ -1,7 +1,9 @@
 import { DateTime } from "luxon";
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Time } from "./Time.js";
 
 describe("TimeConstructor", () => {
@@ -242,6 +244,20 @@ describe("Time", () => {
 			time.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const time = Time.from("22:10:09");
+		expect(time.postgres).toBe("22:10:09");
+	});
+
+	test("set postgres(...)", () => {
+		const time = Time.from("22:10:09");
+		time.postgres = "11:22:33";
+		expect(time.postgres).toBe("11:22:33");
+		expect(() => {
+			time.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -272,6 +288,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_time' type
+		types.setTypeParser(1183 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -292,6 +311,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitesttime
 			`);
+
+			result.rows[0].time = parser<Time>(Time)(result.rows[0].time);
+			result.rows[0]._time = arrayParser<Time>(Time, ",")(result.rows[0]._time);
 
 			expect(result.rows[0].time.toString()).toStrictEqual(
 				Time.from({

@@ -1,8 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { Timestamp } from "./Timestamp.js";
@@ -739,6 +741,20 @@ describe("TimestampTZ", () => {
 		timestamp.value = "2024-01-01T22:10:09 +02:00";
 		expect(timestamp.value).toBe("2024-01-01T22:10:09+02:00");
 	});
+
+	test("get postgres()", () => {
+		const timestamp = TimestampTZ.from("2023-01-01T22:10:09+02:00");
+		expect(timestamp.postgres).toBe("2023-01-01T22:10:09+02:00");
+	});
+
+	test("set postgres()", () => {
+		const timestamp = TimestampTZ.from("2023-01-01T22:10:09 +02:00");
+		expect(() => {
+			timestamp.postgres = "a" as any;
+		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS+HH:MM', received 'a'");
+		timestamp.postgres = "2024-01-01T22:10:09 +02:00";
+		expect(timestamp.postgres).toBe("2024-01-01T22:10:09+02:00");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -857,6 +873,10 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the 'timestamptz' and '_timestamptz' types
+		types.setTypeParser(1184 as any, value => value);
+		types.setTypeParser(1185 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -877,6 +897,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitesttimestamptz
 			`);
+
+			result.rows[0].timestamptz = parser<TimestampTZ>(TimestampTZ)(result.rows[0].timestamptz);
+			result.rows[0]._timestamptz = arrayParser<TimestampTZ>(TimestampTZ)(result.rows[0]._timestamptz);
 
 			expect(result.rows[0].timestamptz.toString()).toStrictEqual(TimestampTZ.from("2004-10-19 05:05:06.789 +00:00").toString());
 			expect(result.rows[0]._timestamptz).toHaveLength(2);

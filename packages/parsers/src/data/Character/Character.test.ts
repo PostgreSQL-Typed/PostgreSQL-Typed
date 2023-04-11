@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Character } from "./Character.js";
 
 describe("CharacterConstructor", () => {
@@ -177,7 +179,7 @@ describe("CharacterConstructor", () => {
 		expect(() => Character.setN(1.5)).toThrowError("Number must be whole");
 		expect(() => Character.setN(-1)).toThrowError("Number must be greater than or equal to 1");
 		expect(() => Character.setN(10_485_761)).toThrowError("Number must be less than or equal to 10485760");
-		expect(() => Character.setN(true as any)).toThrowError("Expected 'number', received 'boolean'");
+		expect(() => Character.setN(true as any)).toThrowError("Expected 'number' | 'infinity', received 'boolean'");
 	});
 
 	test("get n()", () => {
@@ -282,6 +284,20 @@ describe("Character", () => {
 
 		expect(() => (char.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
 	});
+
+	test("get postgres()", () => {
+		expect(Character.setN(3).from("abc").postgres).toEqual("abc");
+		expect(Character.setN(3).from("abc").postgres).toEqual("abc");
+		expect(Character.setN(3).from({ value: "abc" }).postgres).toEqual("abc");
+	});
+
+	test("set postgres(...)", () => {
+		const char = Character.from("a");
+		char.postgres = "b" as any;
+		expect(char.postgres).toEqual("b");
+
+		expect(() => (char.postgres = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -308,6 +324,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_bpchar' type
+		types.setTypeParser(1014 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -333,25 +352,30 @@ describe("PostgreSQL", () => {
 				SELECT * FROM public.vitestchar
 			`);
 
-			expect(Character.isCharacter(result.rows[0].char)).toBe(true);
-			expect(Character.from("a").equals(result.rows[0].char)).toBe(true);
+			result.rows[0].char = parser<Character<number>>(Character)(result.rows[0].char);
+			result.rows[0]._char = arrayParser<Character<number>>(Character, ",")(result.rows[0]._char);
+			result.rows[0].bpchar = parser<Character<number>>(Character)(result.rows[0].bpchar);
+			result.rows[0]._bpchar = arrayParser<Character<number>>(Character, ",")(result.rows[0]._bpchar);
 
-			expect(Character.isCharacter(result.rows[0].bpchar)).toBe(true);
-			expect(Character.from("c").equals(result.rows[0].bpchar)).toBe(true);
+			expect(Character.isAnyCharacter(result.rows[0].char)).toBe(true);
+			expect(Character.from("a").equals(result.rows[0].char.value)).toBe(true);
+
+			expect(Character.isAnyCharacter(result.rows[0].bpchar)).toBe(true);
+			expect(Character.from("c").equals(result.rows[0].bpchar.value)).toBe(true);
 
 			const [a, b] = result.rows[0]._char;
 			expect(result.rows[0]._char).toHaveLength(2);
-			expect(Character.isCharacter(a)).toBe(true);
-			expect(Character.from("a").equals(a)).toBe(true);
-			expect(Character.isCharacter(b)).toBe(true);
-			expect(Character.from("b").equals(b)).toBe(true);
+			expect(Character.isAnyCharacter(a)).toBe(true);
+			expect(Character.from("a").equals(a.value)).toBe(true);
+			expect(Character.isAnyCharacter(b)).toBe(true);
+			expect(Character.from("b").equals(b.value)).toBe(true);
 
 			const [c, d] = result.rows[0]._bpchar;
 			expect(result.rows[0]._bpchar).toHaveLength(2);
-			expect(Character.isCharacter(c)).toBe(true);
-			expect(Character.from("c").equals(c)).toBe(true);
-			expect(Character.isCharacter(d)).toBe(true);
-			expect(Character.from("d").equals(d)).toBe(true);
+			expect(Character.isAnyCharacter(c)).toBe(true);
+			expect(Character.from("c").equals(c.value)).toBe(true);
+			expect(Character.isAnyCharacter(d)).toBe(true);
+			expect(Character.from("d").equals(d.value)).toBe(true);
 		} catch (error_) {
 			error = error_;
 			// eslint-disable-next-line no-console

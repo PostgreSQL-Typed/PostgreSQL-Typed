@@ -14,6 +14,7 @@ interface Name {
 	name: string;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): NameObject;
@@ -177,6 +178,16 @@ class NameClass extends PGTPBase<Name> implements Name {
 	}
 
 	set value(name: string) {
+		const parsed = Name.safeFrom(name);
+		if (parsed.success) this._name = parsed.data.toString();
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this._name;
+	}
+
+	set postgres(name: string) {
 		const parsed = Name.safeFrom(name);
 		if (parsed.success) this._name = parsed.data.toString();
 		else throw parsed.error;

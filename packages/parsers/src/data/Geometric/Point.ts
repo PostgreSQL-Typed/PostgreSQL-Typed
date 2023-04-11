@@ -17,6 +17,7 @@ interface Point {
 	y: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): PointObject;
@@ -256,6 +257,18 @@ class PointClass extends PGTPBase<Point> implements Point {
 	}
 
 	set value(point: string) {
+		const parsed = Point.safeFrom(point);
+		if (parsed.success) {
+			this._x = parsed.data.x;
+			this._y = parsed.data.y;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(point: string) {
 		const parsed = Point.safeFrom(point);
 		if (parsed.success) {
 			this._x = parsed.data.x;

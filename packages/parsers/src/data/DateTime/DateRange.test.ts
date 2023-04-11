@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
 import { Date } from "./Date.js";
 import { DateRange } from "./DateRange.js";
@@ -337,6 +339,17 @@ describe("DateRange", () => {
 		dateRange.value = "(2022-11-04,2022-12-05]";
 		expect(dateRange.value).toBe("(2022-11-04,2022-12-05]");
 	});
+
+	test("get postgres()", () => {
+		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
+		expect(dateRange.postgres).toBe("[2022-09-02,2022-10-03)");
+	});
+
+	test("set postgres(...)", () => {
+		const dateRange = DateRange.from("[2022-09-02,2022-10-03)");
+		dateRange.postgres = "(2022-11-04,2022-12-05]";
+		expect(dateRange.postgres).toBe("(2022-11-04,2022-12-05]");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -376,6 +389,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestdaterange
 			`);
+
+			result.rows[0].daterange = parser<DateRange>(DateRange)(result.rows[0].daterange);
+			result.rows[0]._daterange = arrayParser<DateRange>(DateRange)(result.rows[0]._daterange);
 
 			expect(result.rows[0].daterange.toString()).toStrictEqual(DateRange.from("[2022-09-02,2022-10-03)").toString());
 			expect(result.rows[0]._daterange).toHaveLength(2);

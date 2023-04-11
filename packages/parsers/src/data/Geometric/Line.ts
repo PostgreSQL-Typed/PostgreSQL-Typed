@@ -19,6 +19,7 @@ interface Line {
 	c: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): LineObject;
@@ -286,6 +287,19 @@ class LineClass extends PGTPBase<Line> implements Line {
 	}
 
 	set value(line: string) {
+		const parsed = Line.safeFrom(line);
+		if (parsed.success) {
+			this._a = parsed.data.a;
+			this._b = parsed.data.b;
+			this._c = parsed.data.c;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(line: string) {
 		const parsed = Line.safeFrom(line);
 		if (parsed.success) {
 			this._a = parsed.data.a;

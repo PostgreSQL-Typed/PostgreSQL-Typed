@@ -1,7 +1,9 @@
 import { DateTime } from "luxon";
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Date } from "./Date.js";
 
 describe("DateConstructor", () => {
@@ -184,6 +186,20 @@ describe("Date", () => {
 			date.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const date = Date.from("2022-09-02");
+		expect(date.postgres).toBe("2022-09-02");
+	});
+
+	test("set postgres(...)", () => {
+		const date = Date.from("2022-09-02");
+		date.postgres = "2023-09-02";
+		expect(date.postgres).toBe("2023-09-02");
+		expect(() => {
+			date.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -202,6 +218,10 @@ describe("PostgreSQL", () => {
 		});
 
 		await client.connect();
+
+		//* PG has a native parser for the 'date' and '_date' types
+		types.setTypeParser(1082 as any, value => value);
+		types.setTypeParser(1182 as any, value => value);
 
 		let error = null;
 		try {
@@ -223,6 +243,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestdate
 			`);
+
+			result.rows[0].date = parser<Date>(Date)(result.rows[0].date);
+			result.rows[0]._date = arrayParser<Date>(Date, ",")(result.rows[0]._date);
 
 			expect(result.rows[0].date.toString()).toStrictEqual(
 				Date.from({

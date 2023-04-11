@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/filename-case */
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Text } from "./Text.js";
 
 describe("TextConstructor", () => {
@@ -161,6 +163,20 @@ describe("Text", () => {
 			text.value = true as any;
 		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const text = Text.from("abc");
+		expect(text.postgres).toBe("abc");
+	});
+
+	test("set postgres(...)", () => {
+		const text = Text.from("abc");
+		text.postgres = "def";
+		expect(text.postgres).toBe("def");
+		expect(() => {
+			text.postgres = true as any;
+		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -180,6 +196,9 @@ describe("PostgreSQL", () => {
 		});
 
 		await client.connect();
+
+		//* PG has a native parser for the '_text' type
+		types.setTypeParser(1009 as any, value => value);
 
 		let error = null;
 		try {
@@ -201,6 +220,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitesttext
 			`);
+
+			result.rows[0].text = parser<Text>(Text)(result.rows[0].text);
+			result.rows[0]._text = arrayParser<Text>(Text, ",")(result.rows[0]._text);
 
 			expect(result.rows[0].text.toString()).toStrictEqual(Text.from("abc").toString());
 			expect(result.rows[0]._text).toHaveLength(2);

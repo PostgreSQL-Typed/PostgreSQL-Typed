@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
 import { DateMultiRange } from "./DateMultiRange.js";
 import { DateRange } from "./DateRange.js";
@@ -258,6 +260,28 @@ describe("DateMultiRange", () => {
 		expect(dateMultiRange.ranges[1].equals(DateRange.from("[2023-01-08,2024-12-12)"))).toBe(true);
 		expect(dateMultiRange.ranges[2].equals(DateRange.from("[2025-01-01,2026-01-01)"))).toBe(true);
 	});
+
+	test("get postgres()", () => {
+		const dateMultiRange = DateMultiRange.from(
+			DateRange.from("[2021-01-01,2022-01-01)"),
+			DateRange.from("[2023-01-01,2024-01-01)"),
+			DateRange.from("[2025-01-01,2026-01-01)")
+		);
+		expect(dateMultiRange.postgres).toBe("{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}");
+	});
+
+	test("set postgres(...)", () => {
+		const dateMultiRange = DateMultiRange.from(
+			DateRange.from("[2021-01-01,2022-01-01)"),
+			DateRange.from("[2023-01-01,2024-01-01)"),
+			DateRange.from("[2025-01-01,2026-01-01)")
+		);
+		dateMultiRange.postgres = "{[2021-01-01,2022-01-01),[2023-01-08,2024-12-12),[2025-01-01,2026-01-01)}";
+		expect(dateMultiRange.ranges).toHaveLength(3);
+		expect(dateMultiRange.ranges[0].equals(DateRange.from("[2021-01-01,2022-01-01)"))).toBe(true);
+		expect(dateMultiRange.ranges[1].equals(DateRange.from("[2023-01-08,2024-12-12)"))).toBe(true);
+		expect(dateMultiRange.ranges[2].equals(DateRange.from("[2025-01-01,2026-01-01)"))).toBe(true);
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -308,6 +332,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestdatemultirange
 			`);
+
+			result.rows[0].datemultirange = parser<DateMultiRange>(DateMultiRange)(result.rows[0].datemultirange);
+			result.rows[0]._datemultirange = arrayParser<DateMultiRange>(DateMultiRange)(result.rows[0]._datemultirange);
 
 			expect(result.rows[0].datemultirange.toString()).toStrictEqual(
 				DateMultiRange.from("{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}").toString()

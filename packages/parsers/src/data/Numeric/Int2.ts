@@ -14,6 +14,7 @@ interface Int2 {
 	int2: number;
 
 	value: number;
+	postgres: number;
 
 	toString(): string;
 	toNumber(): number;
@@ -218,6 +219,16 @@ class Int2Class extends PGTPBase<Int2> implements Int2 {
 	}
 
 	set value(int2: number) {
+		const parsed = Int2.safeFrom(int2);
+		if (parsed.success) this._int2 = parsed.data.toNumber();
+		else throw parsed.error;
+	}
+
+	get postgres(): number {
+		return this._int2;
+	}
+
+	set postgres(int2: number) {
 		const parsed = Int2.safeFrom(int2);
 		if (parsed.success) this._int2 = parsed.data.toNumber();
 		else throw parsed.error;

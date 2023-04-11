@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Bit } from "./Bit.js";
 
 describe("BitConstructor", () => {
@@ -212,7 +214,7 @@ describe("BitConstructor", () => {
 		//* It should error on invalid n values
 		expect(() => Bit.setN(1.5)).toThrowError("Number must be whole");
 		expect(() => Bit.setN(-1)).toThrowError("Number must be greater than or equal to 1");
-		expect(() => Bit.setN(true as any)).toThrowError("Expected 'number', received 'boolean'");
+		expect(() => Bit.setN(true as any)).toThrowError("Expected 'number' | 'infinity', received 'boolean'");
 	});
 
 	test("get n()", () => {
@@ -336,6 +338,20 @@ describe("Bit", () => {
 
 		expect(() => (bit.value = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
 	});
+
+	test("get postgres()", () => {
+		expect(Bit.setN(3).from(5).postgres).toEqual("101");
+		expect(Bit.setN(3).from("100").postgres).toEqual("100");
+		expect(Bit.setN(3).from({ value: "100" }).postgres).toEqual("100");
+	});
+
+	test("set postgres(...)", () => {
+		const bit = Bit.from(1);
+		bit.postgres = "0" as any;
+		expect(bit.postgres).toEqual("0");
+
+		expect(() => (bit.postgres = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -383,15 +399,18 @@ describe("PostgreSQL", () => {
 				SELECT * FROM public.vitestbit
 			`);
 
-			expect(Bit.isBit(result.rows[0].bit)).toBe(true);
-			expect(Bit.from(1).equals(result.rows[0].bit)).toBe(true);
+			result.rows[0].bit = parser<Bit<number>>(Bit)(result.rows[0].bit);
+			result.rows[0]._bit = arrayParser<Bit<number>>(Bit, ",")(result.rows[0]._bit);
+
+			expect(Bit.isAnyBit(result.rows[0].bit)).toBe(true);
+			expect(Bit.from(1).equals(result.rows[0].bit.value)).toBe(true);
 
 			const [a, b] = result.rows[0]._bit;
 			expect(result.rows[0]._bit).toHaveLength(2);
-			expect(Bit.isBit(a)).toBe(true);
-			expect(Bit.from(0).equals(a)).toBe(true);
-			expect(Bit.isBit(b)).toBe(true);
-			expect(Bit.from(1).equals(b)).toBe(true);
+			expect(Bit.isAnyBit(a)).toBe(true);
+			expect(Bit.from(0).equals(a.value)).toBe(true);
+			expect(Bit.isAnyBit(b)).toBe(true);
+			expect(Bit.from(1).equals(b.value)).toBe(true);
 		} catch (error_) {
 			error = error_;
 			// eslint-disable-next-line no-console

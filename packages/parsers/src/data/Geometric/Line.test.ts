@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Line } from "./Line.js";
 
 describe("LineConstructor", () => {
@@ -126,6 +128,20 @@ describe("Line", () => {
 			line.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const line = Line.from("{1,2,3}");
+		expect(line.postgres).toBe("{1,2,3}");
+	});
+
+	test("set postgres(...)", () => {
+		const line = Line.from("{1,2,3}");
+		line.postgres = "{3,4,5}";
+		expect(line.postgres).toBe("{3,4,5}");
+		expect(() => {
+			line.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -184,6 +200,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestline
 			`);
+
+			result.rows[0].line = parser<Line>(Line)(result.rows[0].line);
+			result.rows[0]._line = arrayParser<Line>(Line)(result.rows[0]._line);
 
 			expect(result.rows[0].line.toString()).toStrictEqual(
 				Line.from({

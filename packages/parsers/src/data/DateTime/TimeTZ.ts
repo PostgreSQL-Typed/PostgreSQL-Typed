@@ -31,6 +31,7 @@ interface TimeTZ {
 	offset: Offset;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): TimeTZObject;
@@ -718,6 +719,20 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 	}
 
 	set value(time: string) {
+		const parsed = TimeTZ.safeFrom(time);
+		if (parsed.success) {
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+			this._offset = parsed.data.offset;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(time: string) {
 		const parsed = TimeTZ.safeFrom(time);
 		if (parsed.success) {
 			this._hour = parsed.data.hour;

@@ -1,8 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime } from "luxon";
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Time } from "./Time.js";
 import { TimeTZ } from "./TimeTZ.js";
 
@@ -429,6 +431,20 @@ describe("TimeTZ", () => {
 			time.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const time = TimeTZ.from("22:10:09+02:00");
+		expect(time.postgres).toBe("22:10:09+02:00");
+	});
+
+	test("set postgres(...)", () => {
+		const time = TimeTZ.from("22:10:09+02:00");
+		time.postgres = "11:22:33+01:00";
+		expect(time.postgres).toBe("11:22:33+01:00");
+		expect(() => {
+			time.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -461,6 +477,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_timetz' type
+		types.setTypeParser(1270 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -481,6 +500,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitesttimetz
 			`);
+
+			result.rows[0].timetz = parser<TimeTZ>(TimeTZ)(result.rows[0].timetz);
+			result.rows[0]._timetz = arrayParser<TimeTZ>(TimeTZ, ",")(result.rows[0]._timetz);
 
 			expect(result.rows[0].timetz.toString()).toStrictEqual(TimeTZ.from("04:05:06.789-01:00").toString());
 			expect(result.rows[0]._timetz).toHaveLength(2);

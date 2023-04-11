@@ -1,7 +1,9 @@
 /* eslint-disable unicorn/filename-case */
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { OID } from "./OID.js";
 
 describe("OIDConstructor", () => {
@@ -313,6 +315,20 @@ describe("OID", () => {
 
 		expect(() => (oid.value = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
 	});
+
+	test("get postgres()", () => {
+		expect(OID.from(1).postgres).toEqual(1);
+		expect(OID.from("2").postgres).toEqual(2);
+		expect(OID.from({ value: 3 }).postgres).toEqual(3);
+	});
+
+	test("set postgres(...)", () => {
+		const oid = OID.from(1);
+		oid.postgres = 2;
+		expect(oid.postgres).toEqual(2);
+
+		expect(() => (oid.postgres = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -354,6 +370,9 @@ describe("PostgreSQL", () => {
 		try {
 			await client.connect();
 
+			//* PG has a native parser for the '_oid' type
+			types.setTypeParser(1028 as any, value => value);
+
 			await client.query(`
 				CREATE TABLE IF NOT EXISTS public.vitestoid (
 					oid oid NULL,
@@ -373,8 +392,11 @@ describe("PostgreSQL", () => {
 		}
 
 		const result = await client.query(`
-				SELECT * FROM public.vitestoid
-			`);
+			SELECT * FROM public.vitestoid
+		`);
+
+		result.rows[0].oid = parser<OID>(OID)(result.rows[0].oid);
+		result.rows[0]._oid = arrayParser<OID>(OID, ",")(result.rows[0]._oid);
 
 		expect(OID.isOID(result.rows[0].oid)).toBe(true);
 		expect(OID.from(1).equals(result.rows[0].oid)).toBe(true);

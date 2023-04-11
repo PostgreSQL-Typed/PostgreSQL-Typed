@@ -63,6 +63,14 @@ describe("TimestampTZRange", () => {
 	test.todo("set value(...)", () => {
 		//
 	});
+
+	test.todo("get postgres()", () => {
+		//
+	});
+
+	test.todo("set postgres(...)", () => {
+		//
+	});
 });
 
 describe("PostgreSQL", () => {

@@ -21,6 +21,7 @@ interface Float4 {
 	float4: BigNumber;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toBigNumber(): BigNumber;
@@ -191,6 +192,16 @@ class Float4Class extends PGTPBase<Float4> implements Float4 {
 	}
 
 	set value(float4: string) {
+		const parsed = Float4.safeFrom(float4);
+		if (parsed.success) this._float4 = parsed.data.float4;
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(float4: string) {
 		const parsed = Float4.safeFrom(float4);
 		if (parsed.success) this._float4 = parsed.data.float4;
 		else throw parsed.error;

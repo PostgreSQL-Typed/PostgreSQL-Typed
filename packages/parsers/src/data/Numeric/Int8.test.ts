@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Int8 } from "./Int8.js";
 
 describe("Int8Constructor", () => {
@@ -326,6 +328,20 @@ describe("Int8", () => {
 
 		expect(() => (int8.value = "9223372036854775808")).toThrowError("BigInt must be less than or equal to 9223372036854775807");
 	});
+
+	test("get postgres()", () => {
+		expect(Int8.from(1).postgres).toEqual("1");
+		expect(Int8.from("2").postgres).toEqual("2");
+		expect(Int8.from({ value: "3" }).postgres).toEqual("3");
+	});
+
+	test("set postgres(...)", () => {
+		const int8 = Int8.from(1);
+		int8.postgres = "2";
+		expect(int8.postgres).toEqual("2");
+
+		expect(() => (int8.postgres = "9223372036854775808")).toThrowError("BigInt must be less than or equal to 9223372036854775807");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -348,6 +364,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_int8' type
+		types.setTypeParser(1016 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -368,6 +387,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestint8
 			`);
+
+			result.rows[0].int8 = parser<Int8>(Int8)(result.rows[0].int8);
+			result.rows[0]._int8 = arrayParser<Int8>(Int8, ",")(result.rows[0]._int8);
 
 			expect(Int8.isInt8(result.rows[0].int8)).toBe(true);
 			expect(Int8.from(1).equals(result.rows[0].int8)).toBe(true);

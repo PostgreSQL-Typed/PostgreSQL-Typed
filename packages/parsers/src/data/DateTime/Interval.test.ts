@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Interval, IntervalStyle } from "./Interval.js";
 
 describe("IntervalStyle", () => {
@@ -315,6 +317,20 @@ describe("Interval", () => {
 			interval.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const interval = Interval.from("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+		expect(interval.postgres).toBe("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+	});
+
+	test("set postgres(...)", () => {
+		const interval = Interval.from("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+		interval.postgres = "2 years 3 months 4 days 5 hours 6 minutes 7 seconds 8 milliseconds";
+		expect(interval.postgres).toBe("2 years 3 months 4 days 5 hours 6 minutes 7 seconds 8 milliseconds");
+		expect(() => {
+			interval.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -602,6 +618,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_interval' type
+		types.setTypeParser(1187 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -622,6 +641,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestinterval
 			`);
+
+			result.rows[0].interval = parser<Interval>(Interval)(result.rows[0].interval);
+			result.rows[0]._interval = arrayParser<Interval>(Interval)(result.rows[0]._interval);
 
 			expect(result.rows[0].interval.toString()).toStrictEqual(
 				Interval.from({

@@ -48,6 +48,7 @@ interface Range<DataType, DataTypeObject> {
 	readonly empty: boolean;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): RawRangeObject<DataTypeObject>;
@@ -617,6 +618,19 @@ const getRange = <
 		}
 
 		set value(range: string) {
+			const parsed = Range.safeFrom(range);
+			if (parsed.success) {
+				this._values = parsed.data.values;
+				this._lower = parsed.data.lower;
+				this._upper = parsed.data.upper;
+			} else throw parsed.error;
+		}
+
+		get postgres(): string {
+			return this.toString();
+		}
+
+		set postgres(range: string) {
 			const parsed = Range.safeFrom(range);
 			if (parsed.success) {
 				this._values = parsed.data.values;

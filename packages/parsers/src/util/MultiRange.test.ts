@@ -106,6 +106,10 @@ class TestClass extends PGTPBase<TestClass> {
 	get value(): string {
 		return this._data;
 	}
+
+	get postgres(): string {
+		return this._data;
+	}
 }
 
 const TestRange: RangeConstructor<Test, TestObject> = getRange<Test, TestObject>(testClass, testClass.isTest, "TestRange"),
@@ -448,5 +452,37 @@ describe("MultiRange", () => {
 		}).toThrowError("Expected '}', received 'l'");
 		invalid1.value = "{(b,d]}";
 		expect(test1.value).toBe("{(b,d]}");
+	});
+
+	test("get postgres()", () => {
+		expect(TestMultiRange.from("{(a,c]}").postgres).toBe("{(a,c]}");
+		expect(TestMultiRange.from("{[a,c)}").postgres).toBe("{[a,c)}");
+		expect(TestMultiRange.from("{[a,c]}").postgres).toBe("{[a,c]}");
+		expect(TestMultiRange.from("{(a,c)}").postgres).toBe("{(a,c)}");
+		expect(TestMultiRange.from("{}").postgres).toBe("{}");
+		expect(TestMultiRange.from("{[a,a)}").postgres).toBe("{empty}");
+		expect(TestMultiRange.from("{(a,a]}").postgres).toBe("{empty}");
+	});
+
+	test("set postgres(...)", () => {
+		const test1 = TestMultiRange.from("{(a,c]}");
+		expect(test1.postgres).toBe("{(a,c]}");
+		test1.postgres = "{(b,d]}";
+		expect(test1.postgres).toBe("{(b,d]}");
+
+		const test2 = TestMultiRange.from("{(a,c]}");
+		expect(test2.postgres).toBe("{(a,c]}");
+		test2.postgres = "{}";
+		expect(test2.postgres).toBe("{}");
+
+		const invalid1 = TestMultiRange.from("{(a,c]}");
+		expect(() => {
+			invalid1.postgres = "fail" as any;
+		}).toThrowError("Expected '{', received 'f'");
+		expect(() => {
+			invalid1.postgres = "{fail" as any;
+		}).toThrowError("Expected '}', received 'l'");
+		invalid1.postgres = "{(b,d]}";
+		expect(test1.postgres).toBe("{(b,d]}");
 	});
 });

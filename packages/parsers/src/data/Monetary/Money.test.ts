@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Money } from "./Money.js";
 
 describe("MoneyConstructor", () => {
@@ -291,6 +293,20 @@ describe("Money", () => {
 
 		expect(() => (money.value = "10e400")).toThrowError("Number must be less than or equal to 92233720368547758.07");
 	});
+
+	test("get postgres()", () => {
+		expect(Money.from(1).postgres).toEqual("1.00");
+		expect(Money.from("2").postgres).toEqual("2.00");
+		expect(Money.from({ value: "3" }).postgres).toEqual("3.00");
+	});
+
+	test("set postgres(...)", () => {
+		const money = Money.from("1");
+		money.postgres = "2.00";
+		expect(money.postgres).toEqual("2.00");
+
+		expect(() => (money.postgres = "10e400")).toThrowError("Number must be less than or equal to 92233720368547758.07");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -322,6 +338,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_money' type
+		types.setTypeParser(791 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -342,6 +361,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestmoney
 			`);
+
+			result.rows[0].money = parser<Money>(Money)(result.rows[0].money);
+			result.rows[0]._money = arrayParser<Money>(Money, ",")(result.rows[0]._money);
 
 			expect(Money.isMoney(result.rows[0].money)).toBe(true);
 			expect(Money.from(1).equals(result.rows[0].money)).toBe(true);

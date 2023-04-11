@@ -1,13 +1,8 @@
-import { OID } from "@postgresql-typed/oids";
 import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
-import pg from "pg";
-const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { arrayParser } from "../../util/arrayParser.js";
-import { parser } from "../../util/parser.js";
 import { PGTPBase } from "../../util/PGTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
@@ -19,6 +14,7 @@ interface Int8 {
 	int8: bigint;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toBigint(): bigint;
@@ -231,9 +227,16 @@ class Int8Class extends PGTPBase<Int8> implements Int8 {
 		if (parsed.success) this._int8 = parsed.data.int8;
 		else throw parsed.error;
 	}
-}
 
-types.setTypeParser(OID.int8 as any, parser<Int8>(Int8));
-types.setTypeParser(OID._int8 as any, arrayParser<Int8>(Int8, ","));
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(int8: string) {
+		const parsed = Int8.safeFrom(int8);
+		if (parsed.success) this._int8 = parsed.data.int8;
+		else throw parsed.error;
+	}
+}
 
 export { Int8, Int8Constructor, Int8Object };

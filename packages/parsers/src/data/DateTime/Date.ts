@@ -24,6 +24,7 @@ interface Date {
 	day: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): DateObject;
@@ -402,6 +403,19 @@ class DateClass extends PGTPBase<Date> implements Date {
 	}
 
 	set value(date: string) {
+		const parsed = Date.safeFrom(date);
+		if (parsed.success) {
+			this._year = parsed.data.year;
+			this._month = parsed.data.month;
+			this._day = parsed.data.day;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(date: string) {
 		const parsed = Date.safeFrom(date);
 		if (parsed.success) {
 			this._year = parsed.data.year;

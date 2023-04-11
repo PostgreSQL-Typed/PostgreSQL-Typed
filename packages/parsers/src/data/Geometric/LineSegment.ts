@@ -23,6 +23,7 @@ interface LineSegment {
 	b: Point;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): RawLineSegmentObject;
@@ -307,6 +308,18 @@ class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
 	}
 
 	set value(lineSegment: string) {
+		const parsed = LineSegment.safeFrom(lineSegment);
+		if (parsed.success) {
+			this._a = parsed.data.a;
+			this._b = parsed.data.b;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(lineSegment: string) {
 		const parsed = LineSegment.safeFrom(lineSegment);
 		if (parsed.success) {
 			this._a = parsed.data.a;

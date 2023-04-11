@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Point } from "./Point.js";
 
 describe("PointConstructor", () => {
@@ -117,6 +119,20 @@ describe("Point", () => {
 			point.value = true as any;
 		}).toThrowError("Expected 'number' | 'nan' | 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const point = Point.from("(2.0,2.0)");
+		expect(point.postgres).toBe("(2,2)");
+	});
+
+	test("set postgres(...)", () => {
+		const point = Point.from("(2.0,2.0)");
+		point.postgres = "(1.0,1.0)";
+		expect(point.postgres).toBe("(1,1)");
+		expect(() => {
+			point.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'nan' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -145,6 +161,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_point' type
+		types.setTypeParser(1017 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -165,6 +184,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestpoint
 			`);
+
+			result.rows[0].point = parser<Point>(Point)(result.rows[0].point);
+			result.rows[0]._point = arrayParser<Point>(Point)(result.rows[0]._point);
 
 			expect(result.rows[0].point.toString()).toStrictEqual(Point.from({ x: 1, y: 2 }).toString());
 			expect(result.rows[0]._point).toHaveLength(2);

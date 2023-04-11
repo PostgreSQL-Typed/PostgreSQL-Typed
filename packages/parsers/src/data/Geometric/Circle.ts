@@ -19,6 +19,7 @@ interface Circle {
 	radius: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): CircleObject;
@@ -288,6 +289,19 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 	}
 
 	set value(circle: string) {
+		const parsed = Circle.safeFrom(circle);
+		if (parsed.success) {
+			this._x = parsed.data.x;
+			this._y = parsed.data.y;
+			this._radius = parsed.data.radius;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(circle: string) {
 		const parsed = Circle.safeFrom(circle);
 		if (parsed.success) {
 			this._x = parsed.data.x;

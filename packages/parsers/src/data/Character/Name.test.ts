@@ -2,6 +2,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Name } from "./Name.js";
 
 describe("NameConstructor", () => {
@@ -174,6 +176,20 @@ describe("Name", () => {
 			name.value = true as any;
 		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const name = Name.from("abc");
+		expect(name.postgres).toBe("abc");
+	});
+
+	test("set postgres(...)", () => {
+		const name = Name.from("abc");
+		name.postgres = "def";
+		expect(name.postgres).toBe("def");
+		expect(() => {
+			name.postgres = true as any;
+		}).toThrowError("Expected 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -222,6 +238,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestname
 			`);
+
+			result.rows[0].name = parser<Name>(Name)(result.rows[0].name);
+			result.rows[0]._name = arrayParser<Name>(Name, ",")(result.rows[0]._name);
 
 			expect(result.rows[0].name.toString()).toStrictEqual(Name.from("abc").toString());
 			expect(result.rows[0]._name).toHaveLength(2);

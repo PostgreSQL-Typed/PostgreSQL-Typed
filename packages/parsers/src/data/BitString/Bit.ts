@@ -15,6 +15,7 @@ interface Bit<N extends number> {
 	bit: string;
 
 	value: string;
+	postgres: string;
 
 	get n(): N;
 
@@ -300,6 +301,16 @@ class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
 	}
 
 	set value(bit: string) {
+		const parsed = new BitConstructorClass(this._n).safeFrom(bit);
+		if (parsed.success) this._bit = parsed.data.toString();
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this._bit;
+	}
+
+	set postgres(bit: string) {
 		const parsed = new BitConstructorClass(this._n).safeFrom(bit);
 		if (parsed.success) this._bit = parsed.data.toString();
 		else throw parsed.error;

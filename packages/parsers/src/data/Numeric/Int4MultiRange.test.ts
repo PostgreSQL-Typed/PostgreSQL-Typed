@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
 import { Int4MultiRange } from "./Int4MultiRange.js";
 import { Int4Range } from "./Int4Range.js";
@@ -203,6 +205,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestint4multirange
 			`);
+
+			result.rows[0].int4multirange = parser<Int4MultiRange>(Int4MultiRange)(result.rows[0].int4multirange);
+			result.rows[0]._int4multirange = arrayParser<Int4MultiRange>(Int4MultiRange)(result.rows[0]._int4multirange);
 
 			expect(result.rows[0].int4multirange.toString()).toStrictEqual(Int4MultiRange.from("{[1,3),[11,13),[21,23)}").toString());
 			expect(result.rows[0]._int4multirange).toHaveLength(2);

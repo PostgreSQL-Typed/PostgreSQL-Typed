@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Point } from "./Point.js";
 import { Polygon } from "./Polygon.js";
 
@@ -185,6 +187,20 @@ describe("Polygon", () => {
 			polygon.value = true as any;
 		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const polygon = Polygon.from("((2.0,2.0),(0.0,0.0))");
+		expect(polygon.postgres).toBe("((2,2),(0,0))");
+	});
+
+	test("set postgres(...)", () => {
+		const polygon = Polygon.from("((2.0,2.0),(0.0,0.0))");
+		polygon.postgres = "((1.0,1.0),(3.0,3.0))";
+		expect(polygon.postgres).toBe("((1,1),(3,3))");
+		expect(() => {
+			polygon.postgres = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -246,6 +262,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestpolygon
 			`);
+
+			result.rows[0].polygon = parser<Polygon>(Polygon)(result.rows[0].polygon);
+			result.rows[0]._polygon = arrayParser<Polygon>(Polygon)(result.rows[0]._polygon);
 
 			expect(result.rows[0].polygon.toString()).toStrictEqual(
 				Polygon.from({

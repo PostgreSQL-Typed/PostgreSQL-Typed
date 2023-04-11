@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Float8 } from "./Float8.js";
 
 describe("Float8Constructor", () => {
@@ -286,6 +288,20 @@ describe("Float8", () => {
 
 		expect(() => (float8.value = "10e400")).toThrowError("Number must be less than or equal to 1e+308");
 	});
+
+	test("get postgres()", () => {
+		expect(Float8.from(1).postgres).toEqual("1");
+		expect(Float8.from("2").postgres).toEqual("2");
+		expect(Float8.from({ value: "3" }).postgres).toEqual("3");
+	});
+
+	test("set postgres(...)", () => {
+		const float8 = Float8.from(1);
+		float8.postgres = "2";
+		expect(float8.postgres).toEqual("2");
+
+		expect(() => (float8.postgres = "10e400")).toThrowError("Number must be less than or equal to 1e+308");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -354,6 +370,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_float8' type
+		types.setTypeParser(1022 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -374,6 +393,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestfloat8
 			`);
+
+			result.rows[0].float8 = parser<Float8>(Float8)(result.rows[0].float8);
+			result.rows[0]._float8 = arrayParser<Float8>(Float8, ",")(result.rows[0]._float8);
 
 			expect(Float8.isFloat8(result.rows[0].float8)).toBe(true);
 			expect(Float8.from(1).equals(result.rows[0].float8)).toBe(true);

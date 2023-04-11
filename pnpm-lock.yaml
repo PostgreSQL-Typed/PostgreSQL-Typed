@@ -162,7 +162,6 @@ importers:
 
   packages/parsers:
     specifiers:
-      '@postgresql-typed/oids': workspace:*
       '@postgresql-typed/util': workspace:*
       '@types/luxon': ^3.0.1
       '@types/pg': ^8.6.5
@@ -174,17 +173,16 @@ importers:
       source-map-support: ^0.5.21
       typescript: ^4.9.5
     dependencies:
-      '@postgresql-typed/oids': link:../oids
       '@postgresql-typed/util': link:../util
       bignumber.js: 9.1.1
       ip-address: 8.1.0
       jsprim: 1.4.2
       luxon: 3.2.1
-      pg: 8.9.0
       source-map-support: 0.5.21
     devDependencies:
       '@types/luxon': 3.2.0
       '@types/pg': 8.6.6
+      pg: 8.9.0
       typescript: 4.9.5
 
   packages/pg:

@@ -61,6 +61,7 @@ interface Interval {
 	milliseconds: number;
 
 	value: string;
+	postgres: string;
 
 	/**
 	 * @param style The style to use when converting the interval to a string. Defaults to `PostgreSQL`.
@@ -875,6 +876,23 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	}
 
 	set value(interval: string) {
+		const parsed = Interval.safeFrom(interval);
+		if (parsed.success) {
+			this._years = parsed.data.years;
+			this._months = parsed.data.months;
+			this._days = parsed.data.days;
+			this._hours = parsed.data.hours;
+			this._minutes = parsed.data.minutes;
+			this._seconds = parsed.data.seconds;
+			this._milliseconds = parsed.data.milliseconds;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(interval: string) {
 		const parsed = Interval.safeFrom(interval);
 		if (parsed.success) {
 			this._years = parsed.data.years;

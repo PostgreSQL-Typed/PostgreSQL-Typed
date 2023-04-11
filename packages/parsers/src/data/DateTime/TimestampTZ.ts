@@ -78,6 +78,7 @@ interface TimestampTZ {
 	offset: Offset;
 
 	value: string;
+	postgres: string;
 
 	/**
 	 * @param style The style to use when converting the timestamp to a string. Defaults to `ISO`.
@@ -1419,6 +1420,23 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 	}
 
 	set value(timestamp: string) {
+		const parsed = TimestampTZ.safeFrom(timestamp);
+		if (parsed.success) {
+			this._year = parsed.data.year;
+			this._month = parsed.data.month;
+			this._day = parsed.data.day;
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+			this._offset = parsed.data.offset;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(timestamp: string) {
 		const parsed = TimestampTZ.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

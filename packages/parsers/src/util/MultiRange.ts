@@ -21,6 +21,7 @@ interface MultiRange<DataType, DataTypeObject> {
 	ranges: Range<DataType, DataTypeObject>[];
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): RawMultiRangeObject<DataTypeObject>;
@@ -328,6 +329,16 @@ const getMultiRange = <
 		}
 
 		set value(range: string) {
+			const parsed = MultiRange.safeFrom(range);
+			if (parsed.success) this._ranges = parsed.data.ranges;
+			else throw parsed.error;
+		}
+
+		get postgres(): string {
+			return this.toString();
+		}
+
+		set postgres(range: string) {
 			const parsed = MultiRange.safeFrom(range);
 			if (parsed.success) this._ranges = parsed.data.ranges;
 			else throw parsed.error;

@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { CharacterVarying } from "./CharacterVarying.js";
 
 describe("CharacterVaryingConstructor", () => {
@@ -264,6 +266,19 @@ describe("CharacterVarying", () => {
 
 		expect(() => (character.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
 	});
+
+	test("get postgres()", () => {
+		expect(CharacterVarying.setN(3).from("abc").postgres).toEqual("abc");
+		expect(CharacterVarying.setN(3).from({ value: "abc" }).postgres).toEqual("abc");
+	});
+
+	test("set postgres(...)", () => {
+		const character = CharacterVarying.setN(2).from("a");
+		character.postgres = "b";
+		expect(character.postgres).toEqual("b");
+
+		expect(() => (character.postgres = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 2");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -290,6 +305,9 @@ describe("PostgreSQL", () => {
 
 		await client.connect();
 
+		//* PG has a native parser for the '_varchar' type
+		types.setTypeParser(1015 as any, value => value);
+
 		let error = null;
 		try {
 			await client.query(`
@@ -310,6 +328,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestvarchar
 			`);
+
+			result.rows[0].varchar = parser<CharacterVarying<number>>(CharacterVarying)(result.rows[0].varchar);
+			result.rows[0]._varchar = arrayParser<CharacterVarying<number>>(CharacterVarying, ",")(result.rows[0]._varchar);
 
 			expect(CharacterVarying.isCharacterVarying(result.rows[0].varchar)).toBe(true);
 			expect(CharacterVarying.from("a").equals(result.rows[0].varchar)).toBe(true);

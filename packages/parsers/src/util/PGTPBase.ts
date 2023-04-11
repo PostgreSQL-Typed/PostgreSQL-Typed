@@ -13,6 +13,7 @@ export abstract class PGTPBase<DataType> {
 	}
 
 	abstract value: string | number | boolean;
+	abstract postgres: string | number | boolean;
 
 	abstract _equals(context: ParseContext): ParseReturnType<{
 		readonly equals: boolean;

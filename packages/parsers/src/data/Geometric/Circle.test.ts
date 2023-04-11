@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Circle } from "./Circle";
 
 describe("CircleConstructor", () => {
@@ -126,6 +128,20 @@ describe("Circle", () => {
 			circle.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const circle = Circle.from("<(2,2),1>");
+		expect(circle.postgres).toBe("<(2,2),1>");
+	});
+
+	test("set postgres(...)", () => {
+		const circle = Circle.from("<(2,2),1>");
+		circle.postgres = "<(1,1),3>";
+		expect(circle.postgres).toBe("<(1,1),3>");
+		expect(() => {
+			circle.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -180,6 +196,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestcircle
 			`);
+
+			result.rows[0].circle = parser<Circle>(Circle)(result.rows[0].circle);
+			result.rows[0]._circle = arrayParser<Circle>(Circle)(result.rows[0]._circle);
 
 			expect(result.rows[0].circle.toString()).toStrictEqual(Circle.from({ x: 1, y: 2, radius: 3 }).toString());
 			expect(result.rows[0]._circle).toHaveLength(2);

@@ -21,6 +21,7 @@ interface Box {
 	y2: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): BoxObject;
@@ -294,6 +295,20 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	}
 
 	set value(box: string) {
+		const parsed = Box.safeFrom(box);
+		if (parsed.success) {
+			this._x1 = parsed.data.x1;
+			this._y1 = parsed.data.y1;
+			this._x2 = parsed.data.x2;
+			this._y2 = parsed.data.y2;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(box: string) {
 		const parsed = Box.safeFrom(box);
 		if (parsed.success) {
 			this._x1 = parsed.data.x1;

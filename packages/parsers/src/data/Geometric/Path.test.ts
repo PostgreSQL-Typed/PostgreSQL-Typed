@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Connection, Path } from "./Path.js";
 import { Point } from "./Point.js";
 
@@ -237,6 +239,20 @@ describe("Path", () => {
 			path.value = true as any;
 		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const path = Path.from("[(-2.0,-2.0),(0.0,0.0)]");
+		expect(path.postgres).toBe("[(-2,-2),(0,0)]");
+	});
+
+	test("set postgres(...)", () => {
+		const path = Path.from("[(-2.0,-2.0),(0.0,0.0)]");
+		path.postgres = "[(1,1),(3,3)]";
+		expect(path.postgres).toBe("[(1,1),(3,3)]");
+		expect(() => {
+			path.postgres = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -294,6 +310,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestpath
 			`);
+
+			result.rows[0].path = parser<Path>(Path)(result.rows[0].path);
+			result.rows[0]._path = arrayParser<Path>(Path)(result.rows[0]._path);
 
 			expect(result.rows[0].path.toString()).toStrictEqual(
 				Path.from({

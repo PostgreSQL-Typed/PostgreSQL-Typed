@@ -15,6 +15,7 @@ interface BitVarying<N extends number> {
 	bitVarying: string;
 
 	value: string;
+	postgres: string;
 
 	get n(): N;
 
@@ -295,6 +296,16 @@ class BitVaryingClass<N extends number> extends PGTPBase<BitVarying<N>> implemen
 	}
 
 	set value(bit: string) {
+		const parsed = new BitVaryingConstructorClass(this._n).safeFrom(bit);
+		if (parsed.success) this._bit = parsed.data.toString();
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this._bit;
+	}
+
+	set postgres(bit: string) {
 		const parsed = new BitVaryingConstructorClass(this._n).safeFrom(bit);
 		if (parsed.success) this._bit = parsed.data.toString();
 		else throw parsed.error;

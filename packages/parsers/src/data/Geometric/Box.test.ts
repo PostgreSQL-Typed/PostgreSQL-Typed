@@ -2,7 +2,9 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
-import { Box } from "./Box.js";
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
+import { Box, isBox } from "./Box.js";
 
 describe("BoxConstructor", () => {
 	test("_parse(...)", () => {
@@ -143,6 +145,35 @@ describe("Box", () => {
 			box.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const box = Box.from("(2.0,2.0),(0.0,0.0)");
+		expect(box.postgres).toBe("(2,2),(0,0)");
+	});
+
+	test("set postgres(...)", () => {
+		const box = Box.from("(2.0,2.0),(0.0,0.0)");
+		box.postgres = "(1.0,1.0),(3.0,3.0)";
+		expect(box.postgres).toBe("(1,1),(3,3)");
+		expect(() => {
+			box.postgres = true as any;
+		}).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+	});
+});
+
+describe("isBox(...)", () => {
+	test("should return true for a Box", () => {
+		expect(isBox(Box.from("(2.0,2.0),(0.0,0.0)"))).toBe(true);
+	});
+
+	test("should return true for a Box Constructor", () => {
+		expect(isBox(Box)).toBe(true);
+	});
+
+	test("should return false for a non-Box", () => {
+		expect(isBox(true as any)).toBe(false);
+		expect(isBox(1 as any)).toBe(false);
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -197,6 +228,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestbox
 			`);
+
+			result.rows[0].box = parser<Box>(Box)(result.rows[0].box);
+			result.rows[0]._box = arrayParser<Box>(Box, ";")(result.rows[0]._box);
 
 			expect(result.rows[0].box.toString()).toStrictEqual(Box.from({ x1: 3, y1: 4, x2: 1, y2: 2 }).toString());
 			expect(result.rows[0]._box).toHaveLength(2);

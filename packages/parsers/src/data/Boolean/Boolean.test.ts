@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Boolean } from "./Boolean.js";
 
 describe("BooleanConstructor", () => {
@@ -270,6 +272,22 @@ describe("Boolean", () => {
 			"Expected 'true' | 't' | 'yes' | 'y' | '1' | 'on' | 'false' | 'f' | 'no' | 'n' | '0' | 'off' | 'of', received '2'"
 		);
 	});
+
+	test("get postgres()", () => {
+		expect(Boolean.from(1).postgres).toEqual(true);
+		expect(Boolean.from("0").postgres).toEqual(false);
+		expect(Boolean.from({ value: true }).postgres).toEqual(true);
+	});
+
+	test("set postgres(...)", () => {
+		const bool = Boolean.from(true);
+		bool.postgres = false;
+		expect(bool.postgres).toEqual(false);
+
+		expect(() => (bool.postgres = 2 as any)).toThrowError(
+			"Expected 'true' | 't' | 'yes' | 'y' | '1' | 'on' | 'false' | 'f' | 'no' | 'n' | '0' | 'off' | 'of', received '2'"
+		);
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -315,6 +333,9 @@ describe("PostgreSQL", () => {
 		try {
 			await client.connect();
 
+			//* PG has a native parser for the '_boolean' type
+			types.setTypeParser(1000 as any, value => value);
+
 			await client.query(`
 				CREATE TABLE IF NOT EXISTS public.vitestboolean (
 					boolean bool NULL,
@@ -336,6 +357,11 @@ describe("PostgreSQL", () => {
 		const result = await client.query(`
 				SELECT * FROM public.vitestboolean
 			`);
+
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		result.rows[0].boolean = parser<Boolean>(Boolean)(result.rows[0].boolean);
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		result.rows[0]._boolean = arrayParser<Boolean>(Boolean, ",")(result.rows[0]._boolean);
 
 		expect(Boolean.isBoolean(result.rows[0].boolean)).toBe(true);
 		expect(Boolean.from(true).equals(result.rows[0].boolean)).toBe(true);

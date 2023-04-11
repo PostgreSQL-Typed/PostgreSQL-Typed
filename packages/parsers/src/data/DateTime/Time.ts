@@ -1,7 +1,5 @@
 import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 import { DateTime, Zone } from "luxon";
-import pg from "pg";
-const { types } = pg;
 
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
@@ -26,6 +24,7 @@ interface Time {
 	second: number;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toJSON(): TimeObject;
@@ -475,6 +474,19 @@ class TimeClass extends PGTPBase<Time> implements Time {
 	}
 
 	set value(time: string) {
+		const parsed = Time.safeFrom(time);
+		if (parsed.success) {
+			this._hour = parsed.data.hour;
+			this._minute = parsed.data.minute;
+			this._second = parsed.data.second;
+		} else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(time: string) {
 		const parsed = Time.safeFrom(time);
 		if (parsed.success) {
 			this._hour = parsed.data.hour;

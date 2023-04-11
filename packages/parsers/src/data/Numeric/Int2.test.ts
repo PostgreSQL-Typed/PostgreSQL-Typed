@@ -1,6 +1,8 @@
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { Int2 } from "./Int2.js";
 
 describe("Int2Constructor", () => {
@@ -312,6 +314,20 @@ describe("Int2", () => {
 
 		expect(() => (int2.value = 32_768)).toThrowError("Number must be less than or equal to 32767");
 	});
+
+	test("get postgres()", () => {
+		expect(Int2.from(1).postgres).toEqual(1);
+		expect(Int2.from("2").postgres).toEqual(2);
+		expect(Int2.from({ value: 3 }).postgres).toEqual(3);
+	});
+
+	test("set postgres(...)", () => {
+		const int2 = Int2.from(1);
+		int2.postgres = 2;
+		expect(int2.postgres).toEqual(2);
+
+		expect(() => (int2.postgres = 32_768)).toThrowError("Number must be less than or equal to 32767");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -335,6 +351,9 @@ describe("PostgreSQL", () => {
 		try {
 			await client.connect();
 
+			//* PG has a native parser for the '_int2' type
+			types.setTypeParser(1005 as any, value => value);
+
 			await client.query(`
 				CREATE TABLE IF NOT EXISTS public.vitestint2 (
 					int2 int2 NULL,
@@ -354,8 +373,11 @@ describe("PostgreSQL", () => {
 		}
 
 		const result = await client.query(`
-				SELECT * FROM public.vitestint2
-			`);
+			SELECT * FROM public.vitestint2
+		`);
+
+		result.rows[0].int2 = parser<Int2>(Int2)(result.rows[0].int2);
+		result.rows[0]._int2 = arrayParser<Int2>(Int2, ",")(result.rows[0]._int2);
 
 		expect(Int2.isInt2(result.rows[0].int2)).toBe(true);
 		expect(Int2.from(1).equals(result.rows[0].int2)).toBe(true);

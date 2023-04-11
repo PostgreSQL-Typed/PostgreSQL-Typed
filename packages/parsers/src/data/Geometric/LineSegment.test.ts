@@ -1,6 +1,8 @@
 import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { parser } from "../../util/parser.js";
 import { LineSegment } from "./LineSegment.js";
 import { Point } from "./Point.js";
 
@@ -218,6 +220,20 @@ describe("LineSegment", () => {
 			lineSegment.value = true as any;
 		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
 	});
+
+	test("get postgres()", () => {
+		const lineSegment = LineSegment.from("[(-2,-2),(0,0)]");
+		expect(lineSegment.postgres).toBe("[(-2,-2),(0,0)]");
+	});
+
+	test("set postgres(...)", () => {
+		const lineSegment = LineSegment.from("[(-2,-2),(0,0)]");
+		lineSegment.postgres = "[(2,2),(4,4)]";
+		expect(lineSegment.postgres).toBe("[(2,2),(4,4)]");
+		expect(() => {
+			lineSegment.postgres = true as any;
+		}).toThrowError("Expected 'string' | 'object' | 'array', received 'boolean'");
+	});
 });
 
 describe("PostgreSQL", () => {
@@ -268,6 +284,9 @@ describe("PostgreSQL", () => {
 			const result = await client.query(`
 				SELECT * FROM public.vitestlseg
 			`);
+
+			result.rows[0].lseg = parser<LineSegment>(LineSegment)(result.rows[0].lseg);
+			result.rows[0]._lseg = arrayParser<LineSegment>(LineSegment)(result.rows[0]._lseg);
 
 			expect(result.rows[0].lseg.toString()).toStrictEqual(
 				LineSegment.from({

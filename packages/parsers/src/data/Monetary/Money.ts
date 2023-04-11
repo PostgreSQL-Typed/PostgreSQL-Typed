@@ -18,6 +18,7 @@ interface Money {
 	money: BigNumber;
 
 	value: string;
+	postgres: string;
 
 	toString(): string;
 	toBigNumber(): BigNumber;
@@ -195,6 +196,16 @@ class MoneyClass extends PGTPBase<Money> implements Money {
 	}
 
 	set value(money: string) {
+		const parsed = Money.safeFrom(money);
+		if (parsed.success) this._money = parsed.data.money;
+		else throw parsed.error;
+	}
+
+	get postgres(): string {
+		return this.toString();
+	}
+
+	set postgres(money: string) {
 		const parsed = Money.safeFrom(money);
 		if (parsed.success) this._money = parsed.data.money;
 		else throw parsed.error;

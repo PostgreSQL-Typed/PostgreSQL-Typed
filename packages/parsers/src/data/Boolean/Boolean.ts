@@ -15,6 +15,7 @@ interface Boolean {
 	boolean: boolean;
 
 	value: boolean;
+	postgres: boolean;
 
 	toString(): string;
 	toNumber(): number;
@@ -195,6 +196,16 @@ class BooleanClass extends PGTPBase<Boolean> implements Boolean {
 	}
 
 	set value(bool: boolean) {
+		const parsed = Boolean.safeFrom(bool);
+		if (parsed.success) this._boolean = parsed.data.toBoolean();
+		else throw parsed.error;
+	}
+
+	get postgres(): boolean {
+		return this._boolean;
+	}
+
+	set postgres(bool: boolean) {
 		const parsed = Boolean.safeFrom(bool);
 		if (parsed.success) this._boolean = parsed.data.toBoolean();
 		else throw parsed.error;

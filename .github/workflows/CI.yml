@@ -5,7 +5,7 @@ jobs:
     name: '@PostgreSQL-Typed/Core'
     uses: ./.github/workflows/package.yml
     with:
-      package: postgresql-typed
+      package: '@postgresql-typed/core'
   "PostgreSQL-Caching":
     name: PostgreSQL-Caching
     uses: ./.github/workflows/package.yml
@@ -31,6 +31,16 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/ui'
+  "pg":
+    name: '@PostgreSQL-Typed/pg'
+    uses: ./.github/workflows/package.yml
+    with:
+      package: '@postgresql-typed/pg'
+  "postgres":
+    name: '@PostgreSQL-Typed/postgres'
+    uses: ./.github/workflows/package.yml
+    with:
+      package: '@postgresql-typed/postgres'
   coverage:
     name: Coverage
     needs: [Core, PostgreSQL-Caching, OIDs, Parsers, CLI, UI]

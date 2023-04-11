@@ -21,5 +21,6 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
-  "unocss.root": "packages/ui"
+	"unocss.root": "packages/ui",
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

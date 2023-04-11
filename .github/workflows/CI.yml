@@ -31,6 +31,11 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/ui'
+  "Util":
+    name: '@PostgreSQL-Typed/Util'
+    uses: ./.github/workflows/package.yml
+    with:
+      package: '@postgresql-typed/util'
   "pg":
     name: '@PostgreSQL-Typed/pg'
     uses: ./.github/workflows/package.yml
@@ -43,7 +48,7 @@ jobs:
       package: '@postgresql-typed/postgres'
   coverage:
     name: Coverage
-    needs: [Core, PostgreSQL-Caching, OIDs, Parsers, CLI, UI, pg, postgres]
+    needs: [Core, PostgreSQL-Caching, OIDs, Parsers, CLI, UI, Util, pg, postgres]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

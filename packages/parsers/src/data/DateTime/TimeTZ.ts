@@ -30,10 +30,11 @@ interface TimeTZ {
 	second: number;
 	offset: Offset;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toJSON(): TimeTZObject;
 
 	toTime(): Time;
@@ -49,6 +50,7 @@ interface TimeTZ {
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
 
 	equals(string: string): boolean;
+	equals(unixTimestamp: number): boolean;
 	equals(
 		hour: number,
 		minute: number,
@@ -60,6 +62,7 @@ interface TimeTZ {
 	equals(timetz: TimeTZ | globalThis.Date | DateTime): boolean;
 	equals(object: TimeTZObject): boolean;
 	safeEquals(string: string): SafeEquals<TimeTZ>;
+	safeEquals(unixTimestamp: number): SafeEquals<TimeTZ>;
 	safeEquals(
 		hour: number,
 		minute: number,
@@ -74,10 +77,12 @@ interface TimeTZ {
 
 interface TimeTZConstructor {
 	from(string: string): TimeTZ;
+	from(unixTimestamp: number): TimeTZ;
 	from(hour: number, minute: number, second: number, offsetHour: number, offsetMinute: number, offsetDirection: OffsetDirection | OffsetDirectionType): TimeTZ;
 	from(timetz: TimeTZ | globalThis.Date | DateTime): TimeTZ;
 	from(object: TimeTZObject): TimeTZ;
 	safeFrom(string: string): SafeFrom<TimeTZ>;
+	safeFrom(unixTimestamp: number): SafeFrom<TimeTZ>;
 	safeFrom(
 		hour: number,
 		minute: number,
@@ -157,6 +162,15 @@ class TimeTZConstructorClass extends PGTPConstructorBase<TimeTZ> implements Time
 
 	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<TimeTZ> {
 		const totalLength = otherArguments.length + 1;
+		if (totalLength === 1) {
+			return this._parseObject(
+				context,
+				DateTime.fromMillis(argument, {
+					zone: "UTC",
+				})
+			);
+		}
+
 		if (totalLength !== 6) {
 			this.setIssueForContext(
 				context,
@@ -456,6 +470,11 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 		return `${pad(this._hour)}:${pad(this._minute)}:${pad(this._second)}${formatOffset(this._offset, { returnEmpty: true })}`;
 	}
 
+	toNumber(): number {
+		const todayUnix = DateTime.now().setZone("UTC").startOf("day").toMillis();
+		return this.toDateTime("UTC").toMillis() - todayUnix;
+	}
+
 	toJSON(): TimeTZObject {
 		return {
 			hour: this._hour,
@@ -714,11 +733,11 @@ class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
 		this._offset = parsedOffset.obj;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(time: string) {
+	set value(time: number) {
 		const parsed = TimeTZ.safeFrom(time);
 		if (parsed.success) {
 			this._hour = parsed.data.hour;

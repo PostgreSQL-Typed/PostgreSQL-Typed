@@ -506,6 +506,11 @@ describe("TimestampTZ", () => {
 		expect(TimestampTZ.from("PT0S").toString("ISO-Duration-Short")).toBe("PT0S");
 	});
 
+	test("toNumber()", () => {
+		const timestamptz = TimestampTZ.from("2023-01-01T22:10:09-02:00");
+		expect(timestamptz.toNumber()).toBe(1_672_618_209_000);
+	});
+
 	test("toJSON()", () => {
 		const timestamptz = TimestampTZ.from("2023-01-01T22:10:09-02:00");
 		expect(timestamptz.toJSON()).toEqual({
@@ -730,7 +735,7 @@ describe("TimestampTZ", () => {
 
 	test("get value()", () => {
 		const timestamp = TimestampTZ.from("2023-01-01T22:10:09+02:00");
-		expect(timestamp.value).toBe("2023-01-01T22:10:09+02:00");
+		expect(timestamp.value).toBe(1_672_603_809_000);
 	});
 
 	test("set value()", () => {
@@ -738,8 +743,8 @@ describe("TimestampTZ", () => {
 		expect(() => {
 			timestamp.value = "a" as any;
 		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS+HH:MM', received 'a'");
-		timestamp.value = "2024-01-01T22:10:09 +02:00";
-		expect(timestamp.value).toBe("2024-01-01T22:10:09+02:00");
+		timestamp.value = 1_704_139_809_000;
+		expect(timestamp.value).toBe(1_704_139_809_000);
 	});
 
 	test("get postgres()", () => {

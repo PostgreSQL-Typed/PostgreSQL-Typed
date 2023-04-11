@@ -77,7 +77,7 @@ interface TimestampTZ {
 	second: number;
 	offset: Offset;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	/**
@@ -100,6 +100,10 @@ interface TimestampTZ {
 	 * timestamp.toString("SQL"); // "2023-01 01 20:00:23.123456-13:00"
 	 */
 	toString(style?: TimestampStyle | TimestampStyleType): string;
+	/**
+	 * @returns The timestamp as a unix timestamp.
+	 */
+	toNumber(): number;
 	toJSON(): TimestampTZObject;
 
 	toDate(): Date;
@@ -118,6 +122,7 @@ interface TimestampTZ {
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
 
 	equals(string: string): boolean;
+	equals(unixTimestamp: number): boolean;
 	equals(
 		year: number,
 		month: number,
@@ -132,6 +137,7 @@ interface TimestampTZ {
 	equals(timestamptz: TimestampTZ | globalThis.Date | DateTime): boolean;
 	equals(object: TimestampTZObject): boolean;
 	safeEquals(string: string): SafeEquals<TimestampTZ>;
+	safeEquals(unixTimestamp: number): SafeEquals<TimestampTZ>;
 	safeEquals(
 		year: number,
 		month: number,
@@ -149,6 +155,7 @@ interface TimestampTZ {
 
 interface TimestampTZConstructor {
 	from(string: string): TimestampTZ;
+	from(unixTimestamp: number): TimestampTZ;
 	from(
 		year: number,
 		month: number,
@@ -163,6 +170,7 @@ interface TimestampTZConstructor {
 	from(timestamptz: TimestampTZ | globalThis.Date | DateTime): TimestampTZ;
 	from(object: TimestampTZObject): TimestampTZ;
 	safeFrom(string: string): SafeFrom<TimestampTZ>;
+	safeFrom(unixTimestamp: number): SafeFrom<TimestampTZ>;
 	safeFrom(
 		year: number,
 		month: number,
@@ -536,6 +544,15 @@ class TimestampTZConstructorClass extends PGTPConstructorBase<TimestampTZ> imple
 
 	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<TimestampTZ> {
 		const totalLength = otherArguments.length + 1;
+		if (totalLength === 1) {
+			return this._parseObject(
+				context,
+				DateTime.fromMillis(argument, {
+					zone: "UTC",
+				})
+			);
+		}
+
 		if (totalLength !== 9) {
 			this.setIssueForContext(
 				context,
@@ -593,8 +610,8 @@ class TimestampTZConstructorClass extends PGTPConstructorBase<TimestampTZ> imple
 				];
 				return OK(
 					new TimestampTZClass(year, month, day, hour, minute, second, {
-						hour: offset / 60,
-						minute: offset % 60,
+						hour: Math.abs(offset / 60),
+						minute: Math.abs(offset % 60),
 						/* c8 ignore next 2 */
 						// globalThis.Date.getTimezoneOffset() returns system timezone offset, so it's always positive or negative depending on the system timezone
 						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
@@ -620,8 +637,8 @@ class TimestampTZConstructorClass extends PGTPConstructorBase<TimestampTZ> imple
 				];
 				return OK(
 					new TimestampTZClass(year, month, day, hour, minute, second, {
-						hour: offset / 60,
-						minute: offset % 60,
+						hour: Math.abs(offset / 60),
+						minute: Math.abs(offset % 60),
 						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
 					})
 				);
@@ -1027,6 +1044,10 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 		})}`;
 	}
 
+	toNumber(): number {
+		return this.toDateTime("UTC").toMillis();
+	}
+
 	toJSON(): TimestampTZObject {
 		return {
 			year: this._year,
@@ -1415,11 +1436,11 @@ class TimestampTZClass extends PGTPBase<TimestampTZ> implements TimestampTZ {
 		this._offset = parsedOffset.obj;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(timestamp: string) {
+	set value(timestamp: number) {
 		const parsed = TimestampTZ.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

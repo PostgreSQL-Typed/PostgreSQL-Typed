@@ -286,6 +286,11 @@ describe("Timestamp", () => {
 		expect(Timestamp.from("2023-01-01T00:00:00Z").toString("ISO-Duration-Short")).toBe("P2023Y1M1D");
 	});
 
+	test("toNumber()", () => {
+		const timestamptz = Timestamp.from("2023-01-01T22:10:09Z");
+		expect(timestamptz.toNumber()).toBe(1_672_611_009_000);
+	});
+
 	test("toJSON()", () => {
 		const timestamp = Timestamp.from("2023-01-01T22:10:09Z");
 		expect(timestamp.toJSON()).toEqual({
@@ -449,7 +454,7 @@ describe("Timestamp", () => {
 
 	test("get value()", () => {
 		const timestamp = Timestamp.from("2023-01-01T22:10:09");
-		expect(timestamp.value).toBe("2023-01-01T22:10:09Z");
+		expect(timestamp.value).toBe(1_672_611_009_000);
 	});
 
 	test("set value()", () => {
@@ -457,8 +462,8 @@ describe("Timestamp", () => {
 		expect(() => {
 			timestamp.value = "a" as any;
 		}).toThrowError("Expected 'LIKE YYYY-MM-DD HH:MM:SS', received 'a'");
-		timestamp.value = "2024-01-01T22:10:09";
-		expect(timestamp.value).toBe("2024-01-01T22:10:09Z");
+		timestamp.value = 1_725_235_200_000;
+		expect(timestamp.toString()).toBe("2024-09-02T00:00:00Z");
 	});
 
 	test("get postgres()", () => {

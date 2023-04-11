@@ -146,6 +146,11 @@ describe("Time", () => {
 		expect(time.toString()).toBe("22:10:09");
 	});
 
+	test("toNumber()", () => {
+		const timestamptz = Time.from("22:10:09");
+		expect(timestamptz.toNumber()).toBe(79_809_000);
+	});
+
 	test("toJSON()", () => {
 		const time = Time.from("22:10:09");
 		expect(time.toJSON()).toEqual({
@@ -233,13 +238,13 @@ describe("Time", () => {
 
 	test("get value()", () => {
 		const time = Time.from("22:10:09");
-		expect(time.value).toBe("22:10:09");
+		expect(time.value).toBe(79_809_000);
 	});
 
 	test("set value(...)", () => {
 		const time = Time.from("22:10:09");
-		time.value = "11:22:33";
-		expect(time.value).toBe("11:22:33");
+		time.value = 1_725_276_153_000;
+		expect(time.toString()).toBe("11:22:33");
 		expect(() => {
 			time.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");

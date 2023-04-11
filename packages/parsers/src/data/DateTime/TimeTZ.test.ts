@@ -277,6 +277,11 @@ describe("TimeTZ", () => {
 		expect(timestamptz1.toString()).toBe("22:10:09+02:00");
 	});
 
+	test("toNumber()", () => {
+		const timestamptz = TimeTZ.from("22:10:09+02:00");
+		expect(timestamptz.toNumber()).toBe(72_609_000);
+	});
+
 	test("toJSON()", () => {
 		const timestamptz = TimeTZ.from("2023-01-01T22:10:09-02:00");
 		expect(timestamptz.toJSON()).toEqual({
@@ -420,13 +425,13 @@ describe("TimeTZ", () => {
 
 	test("get value()", () => {
 		const time = TimeTZ.from("22:10:09+02:00");
-		expect(time.value).toBe("22:10:09+02:00");
+		expect(time.value).toBe(72_609_000);
 	});
 
 	test("set value(...)", () => {
 		const time = TimeTZ.from("22:10:09+02:00");
-		time.value = "11:22:33+01:00";
-		expect(time.value).toBe("11:22:33+01:00");
+		time.value = 1_681_208_553_000;
+		expect(time.toString()).toBe("10:22:33");
 		expect(() => {
 			time.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");

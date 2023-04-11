@@ -43,10 +43,14 @@ time1.hours; // 12
 time1.minutes; // 34
 time1.seconds; // 56.789
 
-time1.value; // "12:34:56.789"
+time1.value; // 45296789
+time1.postgres; // "12:34:56.789"
 
 //* It has a `toString()` method that returns a string representation of the time:
 time1.toString(); // "12:34:56.789"
+
+//* It has a `toNumber()` method that returns a unix timestamp representation of the time:
+time1.toNumber(); // 45296789
 
 //* It has a `toJSON()` method that returns a JSON representation of the time:
 time1.toJSON(); // { hours: 12, minutes: 34, seconds: 56.789 }

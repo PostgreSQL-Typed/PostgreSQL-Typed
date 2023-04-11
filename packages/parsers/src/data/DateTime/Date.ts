@@ -23,10 +23,11 @@ interface Date {
 	month: number;
 	day: number;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toJSON(): DateObject;
 
 	/**
@@ -39,10 +40,12 @@ interface Date {
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
 
 	equals(string: string): boolean;
+	equals(unixTimestamp: number): boolean;
 	equals(year: number, month: number, day: number): boolean;
 	equals(date: Date | globalThis.Date | DateTime): boolean;
 	equals(object: DateObject): boolean;
 	safeEquals(string: string): SafeEquals<Date>;
+	safeEquals(unixTimestamp: number): SafeEquals<Date>;
 	safeEquals(year: number, month: number, day: number): SafeEquals<Date>;
 	safeEquals(date: Date | globalThis.Date | DateTime): SafeEquals<Date>;
 	safeEquals(object: DateObject): SafeEquals<Date>;
@@ -50,10 +53,12 @@ interface Date {
 
 interface DateConstructor {
 	from(string: string): Date;
+	from(unixTimestamp: number): Date;
 	from(year: number, month: number, day: number): Date;
 	from(date: Date | globalThis.Date | DateTime): Date;
 	from(object: DateObject): Date;
 	safeFrom(string: string): SafeFrom<Date>;
+	safeFrom(unixTimestamp: number): SafeFrom<Date>;
 	safeFrom(year: number, month: number, day: number): SafeFrom<Date>;
 	safeFrom(date: Date | globalThis.Date | DateTime): SafeFrom<Date>;
 	safeFrom(object: DateObject): SafeFrom<Date>;
@@ -125,6 +130,16 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 
 	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Date> {
 		const totalLength = otherArguments.length + 1;
+
+		if (totalLength === 1) {
+			return this._parseObject(
+				context,
+				DateTime.fromMillis(argument, {
+					zone: "UTC",
+				})
+			);
+		}
+
 		if (totalLength !== 3) {
 			this.setIssueForContext(
 				context,
@@ -250,6 +265,10 @@ class DateClass extends PGTPBase<Date> implements Date {
 
 	toString(): string {
 		return `${this._year}-${pad(this._month)}-${pad(this._day)}`;
+	}
+
+	toNumber(): number {
+		return this.toDateTime("UTC").toMillis();
 	}
 
 	toJSON(): DateObject {
@@ -398,11 +417,11 @@ class DateClass extends PGTPBase<Date> implements Date {
 		this._day = day;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(date: string) {
+	set value(date: number) {
 		const parsed = Date.safeFrom(date);
 		if (parsed.success) {
 			this._year = parsed.data.year;

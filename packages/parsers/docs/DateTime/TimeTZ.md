@@ -51,10 +51,14 @@ timeTZ1.offset.hours; // 5
 timeTZ1.offset.minutes; // 0
 timeTZ1.offset.direction; // "minus"
 
-timeTZ1.value; // "12:34:56.789-05:00"
+timeTZ1.value; // 63296789
+timeTZ1.postgres; // "12:34:56.789-05:00"
 
 //* It has a `toString()` method that returns a string representation of the timeTZ:
 timeTZ1.toString(); // "12:34:56.789-05:00"
+
+//* It has a `toNumber()` method that returns a unix timestamp representation of the timeTZ:
+timeTZ1.toNumber(); // 63296789
 
 //* It has a `toJSON()` method that returns a JSON representation of the timeTZ:
 timeTZ1.toJSON(); // { hours: 12, minutes: 34, seconds: 56.789, offset: { hours: 5, minutes: 0, direction: "minus" } }

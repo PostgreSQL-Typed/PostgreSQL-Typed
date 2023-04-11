@@ -63,7 +63,8 @@ timestampTZ1.offset.hours; // 1
 timestampTZ1.offset.minutes; // 0
 timestampTZ1.offset.direction; // "plus"
 
-timestampTZ1.value; // "2020-01-01 12:34:56.789 +01:00"
+timestampTZ1.value; // 1577878496789
+timestampTZ1.postgres; // "2020-01-01 12:34:56.789 +01:00"
 
 //* It has a `toString()` method that returns a string representation of the timestampTZ:
 timestampTZ1.toString(); // "2020-01-01 12:34:56.789 +01:00"
@@ -85,6 +86,9 @@ timestampTZ1.toString(); // "2020-01-01 12:34:56.789 +01:00"
  * timestamp.toString("PostgreSQL-Short"); // "Sun Jan 01 2023 20:00:23.123456 -13:00"
  * timestamp.toString("SQL"); // "2023-01 01 20:00:23.123456-13:00"
  */
+
+//* It has a `toNumber()` method that returns a unix timestamp representation of the timestampTZ:
+timestampTZ1.toNumber(); // 1577878496789
 
 //* It has a `toJSON()` method that returns a JSON representation of the timestampTZ:
 timestampTZ1.toJSON(); // { year: 2020, month: 1, day: 1, hours: 12, minutes: 34, seconds: 56.789, offset: { hours: 1, minutes: 0, direction: "plus" } }

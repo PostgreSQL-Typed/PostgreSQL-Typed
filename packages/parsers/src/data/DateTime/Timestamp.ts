@@ -32,7 +32,7 @@ interface Timestamp {
 	minute: number;
 	second: number;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	/**
@@ -55,6 +55,10 @@ interface Timestamp {
 	 * timestamp.toString("SQL"); // "2023-01 01 20:00:23.123456"
 	 */
 	toString(style?: TimestampStyle | TimestampStyleType): string;
+	/**
+	 * @returns The timestamp as a unix timestamp.
+	 */
+	toNumber(): number;
 	toJSON(): TimestampObject;
 
 	toDate(): Date;
@@ -71,10 +75,12 @@ interface Timestamp {
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
 
 	equals(string: string): boolean;
+	equals(unixTimestamp: number): boolean;
 	equals(year: number, month: number, day: number, hour: number, minute: number, second: number): boolean;
 	equals(timestamp: Timestamp | globalThis.Date | DateTime): boolean;
 	equals(object: TimestampObject): boolean;
 	safeEquals(string: string): SafeEquals<Timestamp>;
+	safeEquals(unixTimestamp: number): SafeEquals<Timestamp>;
 	safeEquals(year: number, month: number, day: number, hour: number, minute: number, second: number): SafeEquals<Timestamp>;
 	safeEquals(timestamp: Timestamp | globalThis.Date | DateTime): SafeEquals<Timestamp>;
 	safeEquals(object: TimestampObject): SafeEquals<Timestamp>;
@@ -82,10 +88,12 @@ interface Timestamp {
 
 interface TimestampConstructor {
 	from(string: string): Timestamp;
+	from(unixTimestamp: number): Timestamp;
 	from(year: number, month: number, day: number, hour: number, minute: number, second: number): Timestamp;
 	from(timestamp: Timestamp | globalThis.Date | DateTime): Timestamp;
 	from(object: TimestampObject): Timestamp;
 	safeFrom(string: string): SafeFrom<Timestamp>;
+	safeFrom(unixTimestamp: number): SafeFrom<Timestamp>;
 	safeFrom(year: number, month: number, day: number, hour: number, minute: number, second: number): SafeFrom<Timestamp>;
 	safeFrom(timestamp: Timestamp | globalThis.Date | DateTime): SafeFrom<Timestamp>;
 	safeFrom(object: TimestampObject): SafeFrom<Timestamp>;
@@ -168,6 +176,15 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 
 	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Timestamp> {
 		const totalLength = otherArguments.length + 1;
+		if (totalLength === 1) {
+			return this._parseObject(
+				context,
+				DateTime.fromMillis(argument, {
+					zone: "UTC",
+				})
+			);
+		}
+
 		if (totalLength !== 6) {
 			this.setIssueForContext(
 				context,
@@ -455,6 +472,10 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		return asTimestampTZ.toString(style);
 	}
 
+	toNumber(): number {
+		return this.toDateTime("UTC").toMillis();
+	}
+
 	toJSON(): TimestampObject {
 		return {
 			year: this._year,
@@ -712,11 +733,11 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		this._second = second;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(timestamp: string) {
+	set value(timestamp: number) {
 		const parsed = Timestamp.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

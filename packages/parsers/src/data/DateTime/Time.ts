@@ -23,10 +23,11 @@ interface Time {
 	minute: number;
 	second: number;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toJSON(): TimeObject;
 
 	/**
@@ -40,10 +41,12 @@ interface Time {
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date;
 
 	equals(string: string): boolean;
+	equals(unixTimestamp: number): boolean;
 	equals(hour: number, minute: number, second: number): boolean;
 	equals(time: Time | globalThis.Date | DateTime): boolean;
 	equals(object: TimeObject): boolean;
 	safeEquals(string: string): SafeEquals<Time>;
+	safeEquals(unixTimestamp: number): SafeEquals<Time>;
 	safeEquals(hour: number, minute: number, second: number): SafeEquals<Time>;
 	safeEquals(time: Time | globalThis.Date | DateTime): SafeEquals<Time>;
 	safeEquals(object: TimeObject): SafeEquals<Time>;
@@ -51,10 +54,12 @@ interface Time {
 
 interface TimeConstructor {
 	from(string: string): Time;
+	from(unixTimestamp: number): Time;
 	from(hour: number, minute: number, second: number): Time;
 	from(time: Time | globalThis.Date | DateTime): Time;
 	from(object: TimeObject): Time;
 	safeFrom(string: string): SafeFrom<Time>;
+	safeFrom(unixTimestamp: number): SafeFrom<Time>;
 	safeFrom(hour: number, minute: number, second: number): SafeFrom<Time>;
 	safeFrom(time: Time | globalThis.Date | DateTime): SafeFrom<Time>;
 	safeFrom(object: TimeObject): SafeFrom<Time>;
@@ -127,6 +132,15 @@ class TimeConstructorClass extends PGTPConstructorBase<Time> implements TimeCons
 
 	private _parseNumber(context: ParseContext, argument: number, otherArguments: any[]): ParseReturnType<Time> {
 		const totalLength = otherArguments.length + 1;
+		if (totalLength === 1) {
+			return this._parseObject(
+				context,
+				DateTime.fromMillis(argument, {
+					zone: "UTC",
+				})
+			);
+		}
+
 		if (totalLength !== 3) {
 			this.setIssueForContext(
 				context,
@@ -329,6 +343,11 @@ class TimeClass extends PGTPBase<Time> implements Time {
 		return `${pad(this._hour)}:${pad(this._minute)}:${pad(this._second)}`;
 	}
 
+	toNumber(): number {
+		const todayUnix = DateTime.now().setZone("UTC").startOf("day").toMillis();
+		return this.toDateTime("UTC").toMillis() - todayUnix;
+	}
+
 	toJSON(): TimeObject {
 		return {
 			hour: this._hour,
@@ -469,11 +488,11 @@ class TimeClass extends PGTPBase<Time> implements Time {
 		this._second = second;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(time: string) {
+	set value(time: number) {
 		const parsed = Time.safeFrom(time);
 		if (parsed.success) {
 			this._hour = parsed.data.hour;

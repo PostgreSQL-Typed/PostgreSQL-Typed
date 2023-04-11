@@ -39,10 +39,14 @@ date1.year; // 2020
 date1.month; // 1
 date1.day; // 1
 
-date1.value; // "2020-01-01"
+date1.value; // 1577836800000
+date1.postgres; // "2020-01-01"
 
 //* It has a `toString()` method that returns a string representation of the date:
 date1.toString(); // "2020-01-01"
+
+//* It has a `toNumber()` method that returns a unix timestamp representation of the date:
+date1.toNumber(); // 1577836800000
 
 //* It has a `toJSON()` method that returns a JSON representation of the date:
 date1.toJSON(); // { year: 2020, month: 1, day: 1 }

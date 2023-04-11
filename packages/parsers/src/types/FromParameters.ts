@@ -85,7 +85,7 @@ export type FromParameters<T extends Constructors | null> =
 		? string | Text | TextObject
 		: //* DateTime
 		T extends DateConstructor
-		? string | Date | globalThis.Date | DateTime | DateObject
+		? string | number | Date | globalThis.Date | DateTime | DateObject
 		: T extends DateMultiRangeConstructor
 		? string | DateMultiRange | DateMultiRangeObject | RawDateMultiRangeObject | DateRange[]
 		: T extends DateRangeConstructor
@@ -93,21 +93,21 @@ export type FromParameters<T extends Constructors | null> =
 		: T extends IntervalConstructor
 		? string | Interval | IntervalObject
 		: T extends TimeConstructor
-		? string | Time | globalThis.Date | DateTime | TimeObject
+		? string | number | Time | globalThis.Date | DateTime | TimeObject
 		: T extends TimestampConstructor
-		? string | Timestamp | globalThis.Date | DateTime | TimestampObject
+		? string | number | Timestamp | globalThis.Date | DateTime | TimestampObject
 		: T extends TimestampMultiRangeConstructor
 		? string | TimestampMultiRange | TimestampMultiRangeObject | RawTimestampMultiRangeObject | TimestampRange[]
 		: T extends TimestampRangeConstructor
 		? string | TimestampRange | TimestampRangeObject | RawTimestampRangeObject | [Timestamp, Timestamp]
 		: T extends TimestampTZConstructor
-		? string | TimestampTZ | globalThis.Date | DateTime | TimestampTZObject
+		? string | number | TimestampTZ | globalThis.Date | DateTime | TimestampTZObject
 		: T extends TimestampTZMultiRangeConstructor
 		? string | TimestampTZMultiRange | TimestampTZMultiRangeObject | RawTimestampTZMultiRangeObject | TimestampTZRange[]
 		: T extends TimestampTZRangeConstructor
 		? string | TimestampTZRange | TimestampTZRangeObject | RawTimestampTZRangeObject | [TimestampTZ, TimestampTZ]
 		: T extends TimeTZConstructor
-		? string | TimeTZ | globalThis.Date | DateTime | TimeTZObject
+		? string | number | TimeTZ | globalThis.Date | DateTime | TimeTZObject
 		: //* Geometric
 		T extends BoxConstructor
 		? string | Box | BoxObject

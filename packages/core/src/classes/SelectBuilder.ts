@@ -212,7 +212,7 @@ export class SelectBuilder<
 
 		let query = `SELECT ${getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select)}\nFROM ${tableLocation} %${tableLocation}%${
 			joins.length > 0 ? `\n${joins.map(join => join.data.query).join("\n")}` : ""
-		}${this._where ? `\n${this._where.data}` : ""}${this._groupBy ? `\n${this._groupBy.data}` : ""}${this._limit ? `\n${this._limit.data}` : ""}${
+		}${this._where ? `\n${this._where.data.query}` : ""}${this._groupBy ? `\n${this._groupBy.data}` : ""}${this._limit ? `\n${this._limit.data}` : ""}${
 			this._fetch ? `\n${this._fetch.data}` : ""
 		}`;
 

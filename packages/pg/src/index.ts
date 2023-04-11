@@ -125,6 +125,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			rows: result.rows,
 			rowCount: result.rowCount,
 			command: result.command,
+			input: {
+				query,
+				values,
+			},
 		});
 	}
 

@@ -236,12 +236,12 @@ export class SelectBuilder<
 
 		const runningQuery = this.client.safeQuery<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>(query, [
 			...(this._where?.data.variables.map(variable => {
-				if (typeof variable !== "string") return variable.value;
+				if (typeof variable !== "string") return variable.postgres;
 				return variable;
 			}) ?? []),
 			...joins.flatMap(join =>
 				join.data.variables.map(variable => {
-					if (typeof variable !== "string") return variable.value;
+					if (typeof variable !== "string") return variable.postgres;
 					return variable;
 				})
 			),

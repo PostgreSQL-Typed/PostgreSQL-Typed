@@ -1,4 +1,4 @@
-import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
+import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
@@ -173,7 +173,7 @@ export function getRawOnQuery<
 		}
 
 		const columnName = key.toString().split(".")[2],
-			result = getRawFilterOperator(onKey, table.getParserOfTable(columnName as any));
+			result = getRawFilterOperator(onKey, table.getParserOfTable(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
 
 		if (!result.success) return result;
 		const [rawFilterOperator, ...variables] = result.data;

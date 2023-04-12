@@ -1,10 +1,11 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { Client } from "./Client";
-import { Database } from "./Database";
-import { Schema } from "./Schema";
-import { Table } from "./Table";
-import { TestData, testData } from "./testData";
+import { Client } from "../__mocks__/client";
+import type { BaseClient } from "./BaseClient";
+import type { Database } from "./Database";
+import type { Schema } from "./Schema";
+import type { Table } from "./Table";
+import { type TestData, testData } from "./testData";
 
 describe("Database", () => {
 	test("get name()", () => {
@@ -20,7 +21,7 @@ describe("Database", () => {
 
 		expectTypeOf(database).toMatchTypeOf<Database<TestData, TestData["db1"], false>>();
 
-		expectTypeOf(database.client).toEqualTypeOf<Client<TestData, false>>();
+		expectTypeOf(database.client).toEqualTypeOf<BaseClient<TestData, false>>();
 		expect(database.client).toBe(client);
 	});
 
@@ -42,6 +43,16 @@ describe("Database", () => {
 		// Should throw an error if the schema name is not valid
 		// @ts-expect-error - Should throw an error
 		expect(() => database.schema("schema3")).toThrowError();
+
+		//* Expect the shortcut method `sch(...)` to work the same as `schema(...)`
+		expectTypeOf(database.sch).toBeFunction();
+		expectTypeOf(database.sch).parameter(0).toEqualTypeOf<"schema1" | "schema2">();
+		expectTypeOf(database.sch("schema1")).toMatchTypeOf<Schema<TestData, TestData["db1"], false, "db1.schema1">>();
+		expectTypeOf(database.sch("schema2")).toMatchTypeOf<Schema<TestData, TestData["db1"], false, "db1.schema2">>();
+
+		// Should throw an error if the schema name is not valid
+		// @ts-expect-error - Should throw an error
+		expect(() => database.sch("schema3")).toThrowError();
 	});
 
 	test("get schemas()", () => {
@@ -77,6 +88,17 @@ describe("Database", () => {
 		// Should throw an error if the table location is not valid
 		// @ts-expect-error - Should throw an error
 		expect(() => database.table("schema1.table3")).toThrowError();
+
+		//* Expect the shortcut method `tbl(...)` to work the same as `table(...)`
+		expectTypeOf(database.tbl).toBeFunction();
+		expectTypeOf(database.tbl).parameter(0).toEqualTypeOf<"schema1.table1" | "schema1.table2" | "schema2.table3">();
+		expectTypeOf(database.tbl("schema1.table1")).toMatchTypeOf<Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>();
+		expectTypeOf(database.tbl("schema1.table2")).toMatchTypeOf<Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table2">>();
+		expectTypeOf(database.tbl("schema2.table3")).toMatchTypeOf<Table<TestData, TestData["db1"], false, "db1.schema2", "db1.schema2.table3">>();
+
+		// Should throw an error if the table location is not valid
+		// @ts-expect-error - Should throw an error
+		expect(() => database.tbl("schema1.table3")).toThrowError();
 	});
 
 	test("get tables()", () => {

@@ -77,17 +77,12 @@ export function getRawJoinQuery<
 							keys: parsedObject.missingKeys,
 						});
 						break;
-					case parsedObject.invalidKeys.length > 0:
+					default:
 						error = getPGTError({
 							code: "invalid_key_type",
 							...parsedObject.invalidKeys[0],
 						});
 						break;
-					default:
-						error = getPGTError({
-							code: "unrecognized_keys",
-							keys: [],
-						});
 				}
 				return { success: false, error };
 			}

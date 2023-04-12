@@ -9,12 +9,18 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	private _ready = false;
 	private _connectionError?: PGTError;
 
+	constructor(postgresData: RawPostgresData<InnerPostgresData>, connectionString: string);
+	constructor(postgresData: RawPostgresData<InnerPostgresData>, config: ClientConfig);
+	constructor(postgresData: RawPostgresData<InnerPostgresData>, pgConfig?: string | ClientConfig);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, pgConfig?: string | ClientConfig) {
 		super(postgresData);
 
 		this._client = new PGClient(pgConfig);
 	}
 
+	async testConnection(connectionString: string): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
+	async testConnection(config: ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
+	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
 	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
 		if (pgConfig) this._client = new PGClient(pgConfig);
@@ -138,6 +144,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	get connectionError(): PGTError | undefined {
 		return this._connectionError;
+	}
+
+	get client(): PGClient {
+		return this._client;
 	}
 }
 

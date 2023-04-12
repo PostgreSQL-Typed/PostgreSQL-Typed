@@ -1,7 +1,7 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { Client } from "../classes/Client";
-import { TestData, testData } from "../classes/testData";
+import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../classes/testData";
 import { isReady } from "./isReady";
 
 describe("isReady", () => {
@@ -14,7 +14,6 @@ describe("isReady", () => {
 		client = await client.testConnection();
 
 		expect(client.ready).toBe(false);
-		expect(client.connectionError).toBeInstanceOf(Error);
 
 		expect(isReady(client)).toBe(false);
 		if (isReady(client)) expect.fail("Client should not be ready");
@@ -24,13 +23,11 @@ describe("isReady", () => {
 
 	test("true", async () => {
 		let client: Client<TestData, false> | Client<TestData, true> = new Client<TestData>(testData, {
-			options: {
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
-			},
+			password: "password",
+			host: "localhost",
+			user: "postgres",
+			database: "postgres",
+			port: 5432,
 		});
 
 		client = await client.testConnection();

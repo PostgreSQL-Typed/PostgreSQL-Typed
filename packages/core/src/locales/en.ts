@@ -82,6 +82,22 @@ const errorMap: ErrorMap = issue => {
 							IssueCode.invalid_join_type ? " as a join type" : ""
 					  }, received '${issue.received}'`;
 			break;
+		case IssueCode.invalid_join:
+			switch (issue.type) {
+				case "class":
+					message = "Expected a class extending the 'Table' class";
+					break;
+				case "database":
+					message = "Cannot join a table from a different database";
+					break;
+				case "duplicate":
+					message = "Cannot join the same table twice";
+					break;
+				default:
+					message = "Invalid input";
+					throw new Error(message);
+			}
+			break;
 		default:
 			message = "Invalid IssueCode";
 			throw new Error(message);

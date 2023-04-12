@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { Client } from "./Client";
+import { Client } from "../__mocks__/client";
+import type { BaseClient } from "./BaseClient";
 import type { Database } from "./Database";
 import type { Schema } from "./Schema";
 import type { Table } from "./Table";
@@ -27,7 +28,7 @@ describe("Schema", () => {
 
 		expectTypeOf(schema).toMatchTypeOf<Schema<TestData, TestData["db1"], false, "db1.schema1">>();
 
-		expectTypeOf(schema.client).toEqualTypeOf<Client<TestData, false>>();
+		expectTypeOf(schema.client).toEqualTypeOf<BaseClient<TestData, false>>();
 		expect(schema.client).toBe(client);
 	});
 
@@ -39,6 +40,10 @@ describe("Schema", () => {
 
 		expectTypeOf(schema.database).toEqualTypeOf<Database<TestData, TestData["db1"], false>>();
 		expect(schema.database).toEqual(database);
+
+		//* Expect the shortcut method `db()` to work the same as `database()`
+		expectTypeOf(schema.db).toEqualTypeOf<Database<TestData, TestData["db1"], false>>();
+		expect(schema.db).toEqual(database);
 	});
 
 	test("get tableNames()", () => {
@@ -59,6 +64,16 @@ describe("Schema", () => {
 		// Should throw an error if the table name is not valid
 		// @ts-expect-error - Should throw an error
 		expect(() => schema.table("table3")).toThrowError();
+
+		//* Expect the shortcut method `tbl(...)` to work the same as `table(...)`
+		expectTypeOf(schema.tbl).toBeFunction();
+		expectTypeOf(schema.tbl).parameter(0).toEqualTypeOf<"table1" | "table2">();
+		expectTypeOf(schema.tbl("table1")).toMatchTypeOf<Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table1">>();
+		expectTypeOf(schema.tbl("table2")).toMatchTypeOf<Table<TestData, TestData["db1"], false, "db1.schema1", "db1.schema1.table2">>();
+
+		// Should throw an error if the table name is not valid
+		// @ts-expect-error - Should throw an error
+		expect(() => schema.tbl("table3")).toThrowError();
 	});
 
 	test("get tables()", () => {

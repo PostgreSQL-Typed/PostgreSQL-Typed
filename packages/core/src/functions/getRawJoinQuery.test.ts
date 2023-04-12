@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { Client } from "../classes/Client";
-import { TestData, testData } from "../classes/testData";
+import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../classes/testData";
 import { getRawJoinQuery } from "./getRawJoinQuery";
 
 describe("getRawJoinQuery", () => {
@@ -19,9 +19,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "CROSS JOIN schema1.table2",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "CROSS JOIN schema1.table2",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -39,9 +42,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "NATURAL JOIN schema1.table2",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "NATURAL JOIN schema1.table2",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -59,9 +65,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "NATURAL INNER JOIN schema1.table2",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "NATURAL INNER JOIN schema1.table2",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -79,9 +88,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "NATURAL LEFT JOIN schema1.table2",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "NATURAL LEFT JOIN schema1.table2",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -99,9 +111,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "NATURAL RIGHT JOIN schema1.table2",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "NATURAL RIGHT JOIN schema1.table2",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -122,9 +137,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 
 		expect(
@@ -138,9 +156,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -161,9 +182,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "LEFT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "LEFT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -184,9 +208,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "RIGHT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "RIGHT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -207,9 +234,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "FULL JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "FULL JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -230,9 +260,12 @@ describe("getRawJoinQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "FULL OUTER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
-			variables: [],
-			tableLocation: "schema1.table2",
+			success: true,
+			data: {
+				query: "FULL OUTER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
+				variables: [],
+				tableLocation: "schema1.table2",
+			},
 		});
 	});
 
@@ -241,7 +274,7 @@ describe("getRawJoinQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(() =>
+		expect(
 			getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
 				{
 					$TYPE: "other",
@@ -252,6 +285,42 @@ describe("getRawJoinQuery", () => {
 				table2,
 				[table1]
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error(
+				"Expected 'CROSS' | 'NATURAL' | 'NATURAL INNER' | 'NATURAL LEFT' | 'NATURAL RIGHT' | 'INNER' | 'LEFT' | 'RIGHT' | 'FULL' | 'FULL OUTER' as a join type, received 'other'"
+			),
+		});
+	});
+
+	test("invalid input", () => {
+		const client = new Client<TestData>(testData),
+			table1 = client.table("db1.schema1.table1"),
+			table2 = client.table("db1.schema1.table2");
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(true as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Expected 'object', received 'boolean'"),
+		});
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({} as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Missing key in object: '$ON'"),
+		});
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: {}, b: true } as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Unrecognized key in object: 'b'"),
+		});
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: true } as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Expected 'object' for key '$ON', received 'boolean'"),
+		});
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: {} } as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Object must have exactly 1 key(s)"),
+		});
 	});
 });

@@ -57,11 +57,13 @@ export class Table<
 
 	get columns(): ColumnsOfTable<InnerPostgresData, TableLocation>[] {
 		return Object.keys(
+			/* c8 ignore next 2 */
+			// Ignored for all the ?. because it's impossible to test
 			this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns ?? {}
 		) as ColumnsOfTable<InnerPostgresData, TableLocation>[];
 	}
 
-	getParserOfTable<Column extends ColumnsOfTable<InnerPostgresData, TableLocation>>(
+	getParserOfColumn<Column extends ColumnsOfTable<InnerPostgresData, TableLocation>>(
 		column: Column
 	): PGTPParserOfColumn<InnerPostgresData, TableLocation, Column> {
 		const columnObject = this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns[column];

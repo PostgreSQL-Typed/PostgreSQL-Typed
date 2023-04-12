@@ -1,8 +1,8 @@
 import { UUID } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
-import { Client } from "../classes/Client";
-import { TestData, testData } from "../classes/testData";
+import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../classes/testData";
 import { getRawOnQuery } from "./getRawOnQuery";
 
 describe("getRawOnQuery", () => {
@@ -20,8 +20,11 @@ describe("getRawOnQuery", () => {
 				[table1]
 			)
 		).toEqual({
-			query: "schema1.table2.id = schema1.table1.id",
-			variables: [],
+			success: true,
+			data: {
+				query: "schema1.table2.id = schema1.table1.id",
+				variables: [],
+			},
 		});
 	});
 
@@ -43,17 +46,21 @@ describe("getRawOnQuery", () => {
 					[table1]
 				);
 
-				return {
-					query: result.query,
-					variables: result.variables.map(variable => {
+				if (result.success) {
+					result.data.variables = result.data.variables.map(variable => {
 						if (typeof variable === "string") return variable;
 						return variable.value;
-					}),
-				};
+					}) as any;
+				}
+
+				return result;
 			})()
 		).toEqual({
-			query: "schema1.table2.id = %?%",
-			variables: [uuid.value],
+			success: true,
+			data: {
+				query: "schema1.table2.id = %?%",
+				variables: [uuid.value],
+			},
 		});
 	});
 
@@ -82,17 +89,21 @@ describe("getRawOnQuery", () => {
 					[table1]
 				);
 
-				return {
-					query: result.query,
-					variables: result.variables.map(variable => {
+				if (result.success) {
+					result.data.variables = result.data.variables.map(variable => {
 						if (typeof variable === "string") return variable;
 						return variable.value;
-					}),
-				};
+					}) as any;
+				}
+
+				return result;
 			})()
 		).toEqual({
-			query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
-			variables: [uuid.value],
+			success: true,
+			data: {
+				query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
+				variables: [uuid.value],
+			},
 		});
 	});
 
@@ -102,7 +113,7 @@ describe("getRawOnQuery", () => {
 			table2 = client.table("db1.schema1.table2"),
 			uuid = UUID.generate();
 
-		expect(() =>
+		expect(
 			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
 				{
 					$AND: [
@@ -129,7 +140,10 @@ describe("getRawOnQuery", () => {
 				[table1],
 				9
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Object must have a depth of at most 10"),
+		});
 	});
 
 	test("keys", () => {
@@ -137,7 +151,7 @@ describe("getRawOnQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(() =>
+		expect(
 			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
 				{
 					"schema1.table2.id": "schema1.table1.id",
@@ -153,9 +167,17 @@ describe("getRawOnQuery", () => {
 				table2,
 				[table1]
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Object must have exactly 1 key(s)"),
+		});
 
-		expect(() =>
+		expect(getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({} as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Object must have exactly 1 key(s)"),
+		});
+
+		expect(
 			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
 				{
 					$AND: undefined,
@@ -163,6 +185,76 @@ describe("getRawOnQuery", () => {
 				table2,
 				[table1]
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Required"),
+		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": true as any,
+				},
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'object' | 'string' | 'undefined' for key 'schema1.table2.id', received 'boolean'"),
+		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					any: "any",
+				} as any,
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Unrecognized key in object: 'any'"),
+		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": undefined,
+				},
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Required"),
+		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": "abc" as any,
+				},
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'schema1.table1.id' as a join type, received 'abc'"),
+		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": {
+						$EQUAL: 1 as any,
+					},
+				},
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'string' | 'object', received 'number'"),
+		});
 	});
 });

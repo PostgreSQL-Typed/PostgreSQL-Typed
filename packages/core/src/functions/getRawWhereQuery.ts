@@ -88,8 +88,9 @@ export function getRawWhereQuery<
 		return {
 			success: true,
 			data: {
-				query: `\n${spaces}(\n${spaces}  ${succeededQueries
+				query: `WHERE\n${spaces}(\n${spaces}  ${succeededQueries
 					.map(query => query.query.trim())
+					.map(query => (query.startsWith("WHERE") ? query.slice(5).trim() : query))
 					.join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
 				variables: succeededQueries.flatMap(query => query.variables),
 			},
@@ -111,6 +112,7 @@ export function getRawWhereQuery<
 						keys: parsedObject.otherKeys,
 					});
 					break;
+				/* c8 ignore next 6 */
 				case parsedObject.missingKeys.length > 0:
 					error = getPGTError({
 						code: "missing_keys",
@@ -123,6 +125,7 @@ export function getRawWhereQuery<
 						...parsedObject.invalidKeys[0],
 					});
 					break;
+				/* c8 ignore next 6 */
 				default:
 					error = getPGTError({
 						code: "unrecognized_keys",
@@ -174,9 +177,10 @@ export function getRawWhereQuery<
 			table = joinedTables.find(table => table.schema.name === schemaName && table.name === tableName);
 
 		//* Make sure the table exists
+		/* c8 ignore next */
 		if (!table) throw new Error("Internal error: table does not exist");
 
-		const result = getRawFilterOperator(whereKey, table.getParserOfTable(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
+		const result = getRawFilterOperator(whereKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
 
 		if (!result.success) return result;
 		const [rawFilterOperator, ...variables] = result.data;
@@ -184,7 +188,7 @@ export function getRawWhereQuery<
 		return {
 			success: true,
 			data: {
-				query: `${key.toString()} ${rawFilterOperator}`,
+				query: `WHERE ${key.toString()} ${rawFilterOperator}`,
 				variables,
 			},
 		};

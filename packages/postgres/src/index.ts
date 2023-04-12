@@ -156,6 +156,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	get connectionError(): PGTError | undefined {
 		return this._connectionError;
 	}
+
+	get client(): postgres.Sql<Record<string, any>> {
+		return this._client;
+	}
 }
 
 export { isReady } from "@postgresql-typed/core";

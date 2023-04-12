@@ -110,6 +110,7 @@ export function getRawOnQuery<
 						keys: parsedObject.otherKeys,
 					});
 					break;
+				/* c8 ignore next 6 */
 				case parsedObject.missingKeys.length > 0:
 					error = getPGTError({
 						code: "missing_keys",
@@ -122,6 +123,7 @@ export function getRawOnQuery<
 						...parsedObject.invalidKeys[0],
 					});
 					break;
+				/* c8 ignore next 6 */
 				default:
 					error = getPGTError({
 						code: "unrecognized_keys",
@@ -145,7 +147,6 @@ export function getRawOnQuery<
 
 		const onKey = on[key] as string | FilterOperators<unknown>;
 
-		//TODO make sure the key is a valid column location
 		//* table.column = otherTable.otherColumn
 		if (typeof onKey === "string") {
 			const joinedColumns = joinedTables.flatMap(joinedTable =>
@@ -173,7 +174,7 @@ export function getRawOnQuery<
 		}
 
 		const columnName = key.toString().split(".")[2],
-			result = getRawFilterOperator(onKey, table.getParserOfTable(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
+			result = getRawFilterOperator(onKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
 
 		if (!result.success) return result;
 		const [rawFilterOperator, ...variables] = result.data;

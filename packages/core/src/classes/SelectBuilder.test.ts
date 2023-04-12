@@ -1,6 +1,6 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 
-import { Client } from "./Client";
+import { Client } from "../__mocks__/client";
 import { type TestData, testData } from "./testData";
 
 describe("SelectBuilder", () => {
@@ -13,13 +13,15 @@ describe("SelectBuilder", () => {
 						"schema1.table2.id": "schema1.table1.id",
 					},
 				})
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id");
 
 		//* Make sure you can't join the same table twice
-		expect(() => {
+		expect(
 			table1.select
 				.join(table2, {
 					$ON: {
@@ -30,18 +32,29 @@ describe("SelectBuilder", () => {
 					$ON: {
 						"schema1.table2.id": "schema1.table1.id",
 					},
-				});
-		}).toThrowError();
+				})
+				.execute("*")
+		).toEqual({
+			success: false,
+			error: new Error("Cannot join the same table twice"),
+		});
 
 		//* Make sure you can't join from a different database
-		expect(() => {
-			const table3 = new Client<TestData>(testData).table("db2.schema3.table4");
-			table1.select.join(table3 as any, {
-				$ON: {
-					"schema3.table4.id": "schema1.table1.id",
-				},
-			});
-		}).toThrowError();
+		expect(
+			(() => {
+				const table3 = new Client<TestData>(testData).table("db2.schema3.table4");
+				return table1.select
+					.join(table3 as any, {
+						$ON: {
+							"schema3.table4.id": "schema1.table1.id",
+						},
+					})
+					.execute("*");
+			})()
+		).toEqual({
+			success: false,
+			error: new Error("Cannot join a table from a different database"),
+		});
 	});
 
 	test("where(...)", () => {
@@ -52,7 +65,9 @@ describe("SelectBuilder", () => {
 						$ILIKE: "test",
 					},
 				})
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nWHERE t.id ILIKE $1");
@@ -60,7 +75,7 @@ describe("SelectBuilder", () => {
 
 	test("groupBy(...)", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1"),
-			query = table.select.groupBy("schema1.table1.id").execute("*", true);
+			query = table.select.groupBy("schema1.table1.id").execute("*", { raw: true });
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nGROUP BY t.id");
@@ -74,7 +89,9 @@ describe("SelectBuilder", () => {
 					},
 				})
 				.groupBy(["schema1.table1.id", "schema1.table2.id"])
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query2).toEqualTypeOf<string>();
 		expect(query2).toBe("SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nGROUP BY t.id, t1.id");
@@ -88,7 +105,9 @@ describe("SelectBuilder", () => {
 						"schema1.table1.id": "ASC",
 					},
 				})
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC");
@@ -107,7 +126,9 @@ describe("SelectBuilder", () => {
 						"schema1.table2.id": "DESC",
 					},
 				})
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query2).toEqualTypeOf<string>();
 		expect(query2).toBe("SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nORDER BY t.id ASC, t1.id DESC");
@@ -117,7 +138,9 @@ describe("SelectBuilder", () => {
 			.orderBy({
 				nulls: "NULLS FIRST",
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query3).toEqualTypeOf<string>();
 		expect(query3).toBe("SELECT *\nFROM schema1.table1 t\nORDER BY NULLS FIRST");
@@ -130,7 +153,9 @@ describe("SelectBuilder", () => {
 				},
 				nulls: "NULLS FIRST",
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query4).toEqualTypeOf<string>();
 		expect(query4).toBe("SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS FIRST");
@@ -140,7 +165,9 @@ describe("SelectBuilder", () => {
 			.orderBy({
 				nulls: "NULLS LAST",
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query5).toEqualTypeOf<string>();
 		expect(query5).toBe("SELECT *\nFROM schema1.table1 t\nORDER BY NULLS LAST");
@@ -153,7 +180,9 @@ describe("SelectBuilder", () => {
 				},
 				nulls: "NULLS LAST",
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query6).toEqualTypeOf<string>();
 		expect(query6).toBe("SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS LAST");
@@ -161,13 +190,17 @@ describe("SelectBuilder", () => {
 
 	test("limit(...)", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1"),
-			query = table.select.limit(10).execute("*", true);
+			query = table.select.limit(10).execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nLIMIT 10");
 
 		//* With offset
-		const query2 = table.select.limit(10, 5).execute("*", true);
+		const query2 = table.select.limit(10, 5).execute("*", {
+			raw: true,
+		});
 
 		expectTypeOf(query2).toEqualTypeOf<string>();
 		expect(query2).toBe("SELECT *\nFROM schema1.table1 t\nLIMIT 10\nOFFSET 5");
@@ -179,7 +212,9 @@ describe("SelectBuilder", () => {
 				.fetch({
 					fetch: 10,
 				})
-				.execute("*", true);
+				.execute("*", {
+					raw: true,
+				});
 
 		expectTypeOf(query).toEqualTypeOf<string>();
 		expect(query).toBe("SELECT *\nFROM schema1.table1 t\nFETCH FIRST 10 ROWS ONLY");
@@ -190,7 +225,9 @@ describe("SelectBuilder", () => {
 				fetch: 10,
 				offset: 5,
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query2).toEqualTypeOf<string>();
 		expect(query2).toBe("SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH FIRST 10 ROWS ONLY");
@@ -202,7 +239,9 @@ describe("SelectBuilder", () => {
 				offset: 5,
 				type: "NEXT",
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query3).toEqualTypeOf<string>();
 		expect(query3).toBe("SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH NEXT 10 ROWS ONLY");
@@ -213,7 +252,9 @@ describe("SelectBuilder", () => {
 				fetch: 1,
 				offset: 1,
 			})
-			.execute("*", true);
+			.execute("*", {
+				raw: true,
+			});
 
 		expectTypeOf(query4).toEqualTypeOf<string>();
 		expect(query4).toBe("SELECT *\nFROM schema1.table1 t\nOFFSET 1 ROW\nFETCH FIRST 1 ROW ONLY");
@@ -221,18 +262,19 @@ describe("SelectBuilder", () => {
 
 	test("execute(...)", async () => {
 		const table = new Client<TestData>(testData, {
-				options: {
-					password: "password",
-					host: "localhost",
-					user: "postgres",
-					database: "postgres",
-					port: 5432,
-				},
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
 			}).table("db1.schema1.table1"),
 			query = table.select.execute("*");
 
 		expectTypeOf(query).not.toEqualTypeOf<string>();
 
-		await expect(query).rejects.toThrowError('relation "schema1.table1" does not exist');
+		await expect(query).resolves.toEqual({
+			success: false,
+			error: new Error("The client is not ready yet, please make sure you ran the 'testConnection' method before querying the database."),
+		});
 	});
 });

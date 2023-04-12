@@ -139,17 +139,19 @@ importers:
       '@postgresql-typed/parsers': workspace:*
       '@postgresql-typed/util': workspace:*
       '@types/node': ^18.6.2
-      postgres: ^3.3.3
+      '@types/pg': ^8.6.5
+      pg: ^8.10.0
       source-map-support: ^0.5.21
       typescript: ^4.9.5
     dependencies:
       '@postgresql-typed/util': link:../util
-      postgres: 3.3.3
       source-map-support: 0.5.21
     devDependencies:
       '@postgresql-typed/cli': link:../cli
       '@postgresql-typed/parsers': link:../parsers
       '@types/node': 18.15.3
+      '@types/pg': 8.6.6
+      pg: 8.10.0
       typescript: 4.9.5
 
   packages/oids:
@@ -9017,7 +9019,6 @@ packages:
       pg: '>=8.0'
     dependencies:
       pg: 8.10.0
-    dev: false
 
   /pg-protocol/1.6.0:
     resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
@@ -9048,7 +9049,6 @@ packages:
       pg-protocol: 1.6.0
       pg-types: 2.2.0
       pgpass: 1.0.5
-    dev: false
 
   /pg/8.9.0:
     resolution: {integrity: sha512-ZJM+qkEbtOHRuXjmvBtOgNOXOtLSbxiMiUVMgE4rV6Zwocy03RicCVvDXgx8l4Biwo8/qORUnEqn2fdQzV7KCg==}
@@ -9480,10 +9480,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       xtend: 4.0.2
-
-  /postgres/3.3.3:
-    resolution: {integrity: sha512-FGLZOpZSXePRIQu6LJpJUDikzuhplWI80uyyfmKBiljpfO+Z4nuClwpq3/dsRnitxVDsgFN5duJ7eUTaC0meQQ==}
-    dev: false
 
   /preferred-pm/3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}

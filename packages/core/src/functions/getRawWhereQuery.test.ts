@@ -1,9 +1,9 @@
 import { UUID } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
-import { Client } from "../classes/Client";
-import { TestData, testData } from "../classes/testData";
-import { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards";
+import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../classes/testData";
+import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards";
 import { getRawWhereQuery } from "./getRawWhereQuery";
 
 describe("getRawWhereQuery", () => {
@@ -20,8 +20,11 @@ describe("getRawWhereQuery", () => {
 				[table1, table2]
 			)
 		).toEqual({
-			query: "schema1.table2.id = schema1.table1.id",
-			variables: [],
+			success: true,
+			data: {
+				query: "schema1.table2.id = schema1.table1.id",
+				variables: [],
+			},
 		});
 	});
 
@@ -48,17 +51,21 @@ describe("getRawWhereQuery", () => {
 					[table1, table2]
 				);
 
-				return {
-					query: result.query,
-					variables: result.variables.map(variable => {
+				if (result.success) {
+					result.data.variables = result.data.variables.map(variable => {
 						if (typeof variable === "string") return variable;
 						return variable.value;
-					}),
-				};
+					}) as any;
+				}
+
+				return result;
 			})()
 		).toEqual({
-			query: "schema1.table2.id = %?%",
-			variables: [uuid.value],
+			success: true,
+			data: {
+				query: "WHERE schema1.table2.id = %?%",
+				variables: [uuid.value],
+			},
 		});
 	});
 
@@ -92,17 +99,21 @@ describe("getRawWhereQuery", () => {
 					[table1, table2]
 				);
 
-				return {
-					query: result.query,
-					variables: result.variables.map(variable => {
+				if (result.success) {
+					result.data.variables = result.data.variables.map(variable => {
 						if (typeof variable === "string") return variable;
 						return variable.value;
-					}),
-				};
+					}) as any;
+				}
+
+				return result;
 			})()
 		).toEqual({
-			query: "\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
-			variables: [uuid.value],
+			success: true,
+			data: {
+				query: "WHERE\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
+				variables: [uuid.value],
+			},
 		});
 	});
 
@@ -112,7 +123,7 @@ describe("getRawWhereQuery", () => {
 			table2 = client.table("db1.schema1.table2"),
 			uuid = UUID.generate();
 
-		expect(() =>
+		expect(
 			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
 				{
 					$AND: [
@@ -138,7 +149,10 @@ describe("getRawWhereQuery", () => {
 				[table1, table2],
 				9
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Object must have a depth of at most 10"),
+		});
 	});
 
 	test("keys", () => {
@@ -146,7 +160,7 @@ describe("getRawWhereQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(() =>
+		expect(
 			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
 				{
 					"schema1.table2.id": "schema1.table1.id",
@@ -161,15 +175,93 @@ describe("getRawWhereQuery", () => {
 				},
 				[table1, table2]
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Object must have exactly 1 key(s)"),
+		});
 
-		expect(() =>
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({}, [
+				table1,
+				table2,
+			])
+		).toEqual({
+			success: false,
+			error: new Error("Object must have exactly 1 key(s)"),
+		});
+
+		expect(
 			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
 				{
 					$AND: undefined,
 				},
 				[table1, table2]
 			)
-		).toThrowError();
+		).toEqual({
+			success: false,
+			error: new Error("Required"),
+		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": true as any,
+				},
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'object' | 'string' | 'undefined' for key 'schema1.table2.id', received 'boolean'"),
+		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					any: "any",
+				} as any,
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Unrecognized key in object: 'any'"),
+		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": undefined,
+				},
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Required"),
+		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": "abc" as any,
+				},
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'schema1.table1.id' as a join type, received 'abc'"),
+		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					"schema1.table2.id": {
+						$EQUAL: 1 as any,
+					},
+				},
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'string' | 'object', received 'number'"),
+		});
 	});
 });

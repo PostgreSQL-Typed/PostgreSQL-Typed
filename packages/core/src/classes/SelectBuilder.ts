@@ -1,5 +1,7 @@
 import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
 
+import { getPGTError } from "../functions/getPGTError.js";
+import { getRawGroupBy } from "../functions/getRawGroupBy.js";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
@@ -19,7 +21,7 @@ import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsF
 import type { WhereQuery } from "../types/types/WhereQuery.js";
 import type { PGTError } from "../util/PGTError.js";
 import type { BaseClient } from "./BaseClient.js";
-import type { Table } from "./Table.js";
+import { Table } from "./Table.js";
 
 export class SelectBuilder<
 	InnerPostgresData extends PostgresData,
@@ -66,18 +68,39 @@ export class SelectBuilder<
 		filter: Filter
 		//TODO add a way to get the raw query from the on object and add it to the Query type
 	): SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables | JoinedTable> {
-		//TODO make sure input is valid
+		if (!(table instanceof Table)) {
+			this._joins.push({
+				success: false,
+				error: getPGTError({
+					code: "invalid_join",
+					type: "class",
+				}),
+			});
+			return this as SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables | JoinedTable>;
+		}
 
 		//* Make sure the tables are in the same database
 		if (table.database.name !== this.databaseData.name) {
-			//TODO make this a custom error
-			throw new Error("Cannot join tables from different databases");
+			this._joins.push({
+				success: false,
+				error: getPGTError({
+					code: "invalid_join",
+					type: "database",
+				}),
+			});
+			return this as SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables | JoinedTable>;
 		}
 
 		//* Make sure the tables aren't already joined
 		if (this.tables.some(t => t.location === table.location)) {
-			//TODO make this a custom error
-			throw new Error("Cannot join the same table twice");
+			this._joins.push({
+				success: false,
+				error: getPGTError({
+					code: "invalid_join",
+					type: "duplicate",
+				}),
+			});
+			return this as SelectBuilder<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables | JoinedTable>;
 		}
 
 		this._joins.push(getRawJoinQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, JoinedTable>(filter, table, this.tables));
@@ -86,30 +109,12 @@ export class SelectBuilder<
 	}
 
 	where(where: WhereQuery<JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>) {
-		//TODO make sure input is valid
-
-		const rawQuery = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>(
-			where,
-			this.tables
-		);
-		this._where = rawQuery.success
-			? {
-					success: true,
-					data: {
-						query: `WHERE ${rawQuery.data.query}`,
-						variables: rawQuery.data.variables,
-					},
-			  }
-			: rawQuery;
-
+		this._where = getRawWhereQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, TableColumnsFromSchemaOnwards<JoinedTables>>(where, this.tables);
 		return this;
 	}
 
 	groupBy(groupBy: GroupBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>) {
-		//TODO make sure input is valid
-
-		this._groupBy = { success: true, data: `GROUP BY ${Array.isArray(groupBy) ? [...new Set(groupBy)].join(", ") : groupBy}` };
-
+		this._groupBy = getRawGroupBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>(groupBy, this.tables);
 		return this;
 	}
 

@@ -13,6 +13,7 @@ export const IssueCode = arrayToEnum([
 	"query_error",
 	"invalid_string",
 	"invalid_join_type",
+	"invalid_join",
 ]);
 
 export type IssueCode = keyof typeof IssueCode;
@@ -73,6 +74,11 @@ export interface InvalidJoinTypeIssue extends Omit<InvalidStringIssue, "code"> {
 	code: typeof IssueCode.invalid_join_type;
 }
 
+export interface InvalidJoinIssue {
+	code: typeof IssueCode.invalid_join;
+	type: "class" | "database" | "duplicate";
+}
+
 export type IssueWithoutMessage =
 	| InvalidKeyTypeIssue
 	| InvalidTypeIssue
@@ -83,7 +89,8 @@ export type IssueWithoutMessage =
 	| TooBigIssue
 	| QueryErrorIssue
 	| InvalidStringIssue
-	| InvalidJoinTypeIssue;
+	| InvalidJoinTypeIssue
+	| InvalidJoinIssue;
 
 export type Issue = IssueWithoutMessage & {
 	message: string;

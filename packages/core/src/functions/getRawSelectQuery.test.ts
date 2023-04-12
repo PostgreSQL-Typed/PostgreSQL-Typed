@@ -1,7 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import { Client } from "../classes/Client";
-import { TestData, testData } from "../classes/testData";
+import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../classes/testData";
+import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards";
 import { getRawSelectQuery } from "./getRawSelectQuery";
 
 describe("getRawSelectQuery", () => {
@@ -10,10 +11,10 @@ describe("getRawSelectQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>("*")).toBe("*");
+		expect(getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>("*")).toBe("*");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"*": true,
 			})
 		).toBe("*");
@@ -24,10 +25,10 @@ describe("getRawSelectQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>("COUNT(*)")).toBe("COUNT(*)");
+		expect(getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>("COUNT(*)")).toBe("COUNT(*)");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"COUNT(*)": true,
 			})
 		).toBe("COUNT(*)");
@@ -38,8 +39,8 @@ describe("getRawSelectQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>("schema1.table1.id")).toBe("schema1.table1.id");
-		expect(getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>(["schema1.table1.id", "schema1.table2.id"])).toBe(
+		expect(getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>("schema1.table1.id")).toBe("schema1.table1.id");
+		expect(getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(["schema1.table1.id", "schema1.table2.id"])).toBe(
 			"schema1.table1.id,\nschema1.table2.id"
 		);
 	});
@@ -49,9 +50,9 @@ describe("getRawSelectQuery", () => {
 			table1 = client.table("db1.schema1.table1"),
 			table2 = client.table("db1.schema1.table2");
 
-		expect(getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({ "schema1.table1.id": true })).toBe("schema1.table1.id");
+		expect(getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({ "schema1.table1.id": true })).toBe("schema1.table1.id");
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": true,
 				"schema1.table2.id": true,
 			})
@@ -64,7 +65,7 @@ describe("getRawSelectQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": {
 					alias: "identifier",
 				},
@@ -72,7 +73,7 @@ describe("getRawSelectQuery", () => {
 		).toBe("schema1.table1.id AS identifier");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": {
 					alias: "identifier",
 				},
@@ -89,7 +90,7 @@ describe("getRawSelectQuery", () => {
 			table2 = client.table("db1.schema1.table2");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": {
 					distinct: true,
 				},
@@ -97,7 +98,7 @@ describe("getRawSelectQuery", () => {
 		).toBe("DISTINCT schema1.table1.id");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": {
 					distinct: true,
 				},
@@ -108,7 +109,7 @@ describe("getRawSelectQuery", () => {
 		).toBe("DISTINCT schema1.table1.id,\nDISTINCT ON (schema1.table2.id) schema1.table2.id");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": {
 					distinct: true,
 					alias: "identifier",
@@ -121,7 +122,7 @@ describe("getRawSelectQuery", () => {
 		).toBe("DISTINCT schema1.table1.id AS identifier,\nDISTINCT ON (schema1.table2.id) identifier2");
 
 		expect(
-			getRawSelectQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2>({
+			getRawSelectQuery<TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>({
 				"schema1.table1.id": undefined,
 			})
 		).toBe("schema1.table1.id");

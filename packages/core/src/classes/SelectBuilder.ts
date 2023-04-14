@@ -1,14 +1,18 @@
 import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
 
 import { getPGTError } from "../functions/getPGTError.js";
+import { getRawFetch } from "../functions/getRawFetch.js";
 import { getRawGroupBy } from "../functions/getRawGroupBy.js";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
+import { getRawLimit } from "../functions/getRawLimit.js";
+import { getRawOrderBy } from "../functions/getRawOrderBy.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
 import { getTableIdentifier } from "../functions/getTableIdentifier.js";
 import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { Fetch } from "../types/types/Fetch.js";
 import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
@@ -49,6 +53,7 @@ export class SelectBuilder<
 		  >
 		| undefined;
 	private _groupBy: Safe<string> | undefined;
+	private _orderBy: Safe<string> | undefined;
 	private _limit: Safe<string> | undefined;
 	private _fetch: Safe<string> | undefined;
 
@@ -122,33 +127,17 @@ export class SelectBuilder<
 	//having() { }
 
 	orderBy(orderBy: OrderBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>) {
-		//TODO make sure input is valid
-
-		const { columns, nulls } = orderBy,
-			orderByColumns = columns ? Object.entries(columns).map(([column, direction]) => `${column} ${direction}`) : undefined;
-
-		this._groupBy = { success: true, data: `ORDER BY${orderByColumns ? ` ${orderByColumns.join(", ")}` : ""}${nulls ? ` ${nulls}` : ""}` };
-
+		this._orderBy = getRawOrderBy<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables>(orderBy, this.tables);
 		return this;
 	}
 
 	limit(limit: number, offset?: number) {
-		//TODO make sure input is valid
-
-		this._limit = { success: true, data: offset ? `LIMIT ${limit}\nOFFSET ${offset}` : `LIMIT ${limit}` };
-
+		this._limit = getRawLimit(limit, offset);
 		return this;
 	}
 
-	fetch(fetch: { fetch: number; type?: "FIRST" | "NEXT"; offset?: number }) {
-		//TODO make sure input is valid
-		fetch.type ??= "FIRST";
-
-		const { fetch: fetchAmount, type, offset } = fetch,
-			fetchString = `FETCH ${type} ${fetchAmount} ${fetchAmount > 1 ? "ROWS" : "ROW"} ONLY`;
-
-		this._fetch = { success: true, data: offset ? `OFFSET ${offset} ${offset > 1 ? "ROWS" : "ROW"}\n${fetchString}` : fetchString };
-
+	fetch(fetch: Fetch) {
+		this._fetch = getRawFetch(fetch);
 		return this;
 	}
 
@@ -212,14 +201,15 @@ export class SelectBuilder<
 		}[];
 		if (this._where && !this._where.success) return this._where;
 		if (this._groupBy && !this._groupBy.success) return this._groupBy;
+		if (this._orderBy && !this._orderBy.success) return this._orderBy;
 		if (this._limit && !this._limit.success) return this._limit;
 		if (this._fetch && !this._fetch.success) return this._fetch;
 
 		let query = `SELECT ${getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select)}\nFROM ${tableLocation} %${tableLocation}%${
 			joins.length > 0 ? `\n${joins.map(join => join.data.query).join("\n")}` : ""
-		}${this._where ? `\n${this._where.data.query}` : ""}${this._groupBy ? `\n${this._groupBy.data}` : ""}${this._limit ? `\n${this._limit.data}` : ""}${
-			this._fetch ? `\n${this._fetch.data}` : ""
-		}`;
+		}${this._where ? `\n${this._where.data.query}` : ""}${this._groupBy?.success ? `\n${this._groupBy.data}` : ""}${
+			this._orderBy ? `\n${this._orderBy.data}` : ""
+		}${this._limit ? `\n${this._limit.data}` : ""}${this._fetch ? `\n${this._fetch.data}` : ""}`;
 
 		//* Replace the table locations with the short names
 		const mainTableShort = getTableIdentifier(tableLocation, usedTableLocations);

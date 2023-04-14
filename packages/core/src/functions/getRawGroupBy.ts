@@ -76,9 +76,13 @@ export function getRawGroupBy<
 			};
 		}
 
+		//* %schema.table%.column
+		const strings = groupBy.split(".") as [string, string, string],
+			tableLocation = `%${strings[0]}.${strings[1]}%.${strings[2]}`;
+
 		return {
 			success: true,
-			data: `GROUP BY ${groupBy}`,
+			data: `GROUP BY ${tableLocation}`,
 		};
 	}
 }

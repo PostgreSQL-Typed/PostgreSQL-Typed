@@ -149,7 +149,7 @@ export class SelectBuilder<
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
-	>(select: Select, options?: Options & { raw: true }): string;
+	>(select: Select, options?: Options & { raw: true }): Safe<string, PGTError | PGTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
@@ -199,13 +199,17 @@ export class SelectBuilder<
 				tableLocation: string;
 			};
 		}[];
+
 		if (this._where && !this._where.success) return this._where;
 		if (this._groupBy && !this._groupBy.success) return this._groupBy;
 		if (this._orderBy && !this._orderBy.success) return this._orderBy;
 		if (this._limit && !this._limit.success) return this._limit;
 		if (this._fetch && !this._fetch.success) return this._fetch;
 
-		let query = `SELECT ${getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select)}\nFROM ${tableLocation} %${tableLocation}%${
+		const selectQuery = getRawSelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>, Select>(select as Select, this.tables);
+		if (!selectQuery.success) return selectQuery;
+
+		let query = `SELECT ${selectQuery.data.query}\nFROM ${tableLocation} %${tableLocation}%${
 			joins.length > 0 ? `\n${joins.map(join => join.data.query).join("\n")}` : ""
 		}${this._where ? `\n${this._where.data.query}` : ""}${this._groupBy?.success ? `\n${this._groupBy.data}` : ""}${
 			this._orderBy ? `\n${this._orderBy.data}` : ""
@@ -227,7 +231,12 @@ export class SelectBuilder<
 		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
 		//* If the query is raw, return it
-		if (options?.raw) return query;
+		if (options?.raw) {
+			return {
+				success: true,
+				data: query,
+			};
+		}
 
 		const runningQuery = this.client.safeQuery<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>(query, [
 			...(this._where?.data.variables.map(variable => {
@@ -247,6 +256,25 @@ export class SelectBuilder<
 				runningQuery
 					.then(result => {
 						if (!result.success) return resolve(result);
+						//* Map all values to their parsers
+						result.data.rows = result.data.rows.map(row => {
+							return Object.fromEntries(
+								Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => {
+									/* c8 ignore start */
+									// eslint-disable-next-line unicorn/no-null
+									const result = value === null ? null : selectQuery.data.mappings[key].parser.safeFrom(value.toString());
+
+									if (result !== null && !result.success) {
+										resolve(result);
+										// eslint-disable-next-line unicorn/no-null
+										return [key, null];
+									}
+									// eslint-disable-next-line unicorn/no-null
+									return [key, result === null ? null : result.data];
+								})
+							);
+						}) as SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>[];
+
 						if (options?.valuesOnly) {
 							result.data.rows = result.data.rows.map(row => {
 								//* Map all the values of the object to the .value property of them.
@@ -255,6 +283,7 @@ export class SelectBuilder<
 									Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => [key, value === null ? null : value.value])
 								);
 							}) as SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>[];
+							/* c8 ignore stop */
 						}
 						resolve(result);
 					})

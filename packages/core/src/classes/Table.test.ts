@@ -2,12 +2,12 @@ import { PGTPParserClass, UUIDConstructor } from "@postgresql-typed/parsers";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../__mocks__/testData";
 import type { BaseClient } from "./BaseClient";
 import type { Database } from "./Database";
 import type { Schema } from "./Schema";
 import { SelectBuilder } from "./SelectBuilder";
 import type { Table } from "./Table";
-import { type TestData, testData } from "./testData";
 
 describe("Table", () => {
 	test("get name()", () => {

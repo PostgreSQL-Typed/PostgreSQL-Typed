@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
-import { type TestData, testData } from "../classes/testData";
+import { type TestData, testData } from "../__mocks__/testData";
 import { getRawJoinQuery } from "./getRawJoinQuery";
 
 describe("getRawJoinQuery", () => {

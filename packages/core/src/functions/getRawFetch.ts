@@ -77,7 +77,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 	if (offset === undefined) {
 		return {
 			success: true,
-			data: `FETCH ${type} ${fetchAmount} ${fetchAmount > 1 ? "ROWS" : "ROW"} ONLY`,
+			data: `FETCH ${type} ${fetchAmount} ${fetchAmount === 1 ? "ROW" : "ROWS"} ONLY`,
 		};
 	}
 
@@ -95,6 +95,6 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 
 	return {
 		success: true,
-		data: `OFFSET ${offset} ${offset > 1 ? "ROWS" : "ROW"}\nFETCH ${type} ${fetchAmount} ${fetchAmount > 1 ? "ROWS" : "ROW"} ONLY`,
+		data: `OFFSET ${offset} ${offset === 1 ? "ROW" : "ROWS"}\nFETCH ${type} ${fetchAmount} ${fetchAmount === 1 ? "ROW" : "ROWS"} ONLY`,
 	};
 }

@@ -1,4 +1,4 @@
-import { joinValues, ParsedType } from "@postgresql-typed/util";
+import { joinValues } from "@postgresql-typed/util";
 
 import { type ErrorMap, IssueCode } from "../util/PGTError.js";
 
@@ -6,19 +6,13 @@ const errorMap: ErrorMap = issue => {
 	let message: string;
 	switch (issue.code) {
 		case IssueCode.invalid_type:
-			message =
-				issue.received === ParsedType.undefined
-					? "Required"
-					: `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`}, received '${issue.received}'`;
+			message = `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`}, received '${issue.received}'`;
 
 			break;
 		case IssueCode.invalid_key_type:
-			message =
-				issue.received === ParsedType.undefined
-					? `Required key "${issue.objectKey}"`
-					: `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`} for key '${issue.objectKey}', received '${
-							issue.received
-					  }'`;
+			message = `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`} for key '${
+				issue.objectKey
+			}', received '${issue.received}'`;
 			break;
 		case IssueCode.unrecognized_keys:
 			message = `Unrecognized key${issue.keys.length > 1 ? "s" : ""} in object: ${joinValues(issue.keys)}`;
@@ -37,12 +31,10 @@ const errorMap: ErrorMap = issue => {
 				case "number":
 					message = `Number must be ${issue.exact ? "exactly equal to" : issue.inclusive ? "greater than or equal to" : "greater than"} ${issue.minimum}`;
 					break;
-				case "arguments":
-					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} argument(s)`;
-					break;
 				case "keys":
 					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} key(s)`;
 					break;
+				/* c8 ignore next 4 */
 				default:
 					message = "Invalid input";
 					throw new Error(message);
@@ -53,18 +45,13 @@ const errorMap: ErrorMap = issue => {
 				case "array":
 					message = `Array must contain ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} element(s)`;
 					break;
-				case "number":
-					message = `Number must be ${issue.exact ? "exactly" : issue.inclusive ? "less than or equal to" : "less than"} ${issue.maximum}`;
-					break;
-				case "arguments":
-					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} argument(s)`;
-					break;
 				case "keys":
 					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} key(s)`;
 					break;
 				case "depth":
 					message = `Object must have a depth of ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum}`;
 					break;
+				/* c8 ignore next 4 */
 				default:
 					message = "Invalid input";
 					throw new Error(message);
@@ -75,12 +62,9 @@ const errorMap: ErrorMap = issue => {
 			break;
 		case IssueCode.invalid_string:
 		case IssueCode.invalid_join_type:
-			message =
-				issue.received === ParsedType.undefined
-					? "Required"
-					: `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`}${
-							IssueCode.invalid_join_type ? " as a join type" : ""
-					  }, received '${issue.received}'`;
+			message = `Expected ${Array.isArray(issue.expected) ? joinValues(issue.expected, " | ") : `'${issue.expected}'`}${
+				issue.code === IssueCode.invalid_join_type ? " as a join type" : ""
+			}, received '${issue.received}'`;
 			break;
 		case IssueCode.invalid_join:
 			switch (issue.type) {
@@ -93,11 +77,13 @@ const errorMap: ErrorMap = issue => {
 				case "duplicate":
 					message = "Cannot join the same table twice";
 					break;
+				/* c8 ignore next 4 */
 				default:
 					message = "Invalid input";
 					throw new Error(message);
 			}
 			break;
+		/* c8 ignore next 4 */
 		default:
 			message = "Invalid IssueCode";
 			throw new Error(message);

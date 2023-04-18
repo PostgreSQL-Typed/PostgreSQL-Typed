@@ -1,12 +1,11 @@
-import type { ConstructorFromParser, Int4, Parsers, ValueFromConstructor } from "@postgresql-typed/parsers";
+import type { ConstructorFromParser, Parsers, ValueFromConstructor } from "@postgresql-typed/parsers";
 
+import type { Count } from "../../functions/getRawJoinQuery.js";
 import type { DatabaseData } from "../interfaces/DatabaseData.js";
 import type { ColumnFromPath } from "./ColumnFromPath.js";
 import type { ParserFromColumn } from "./ParserFromColumn.js";
 import type { SelectQuery, SelectQueryObject } from "./SelectQuery.js";
 import type { InnerObjectsToUnion, MergeUnionOfObjects } from "./UnionObjects.js";
-
-type Count = Int4;
 
 export type SelectQueryResponse<
 	InnerDatabaseData extends DatabaseData,

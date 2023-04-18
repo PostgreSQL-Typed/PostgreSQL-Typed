@@ -2,7 +2,7 @@ import { UUID } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
-import { type TestData, testData } from "../classes/testData";
+import { type TestData, testData } from "../__mocks__/testData";
 import { getRawOnQuery } from "./getRawOnQuery";
 
 describe("getRawOnQuery", () => {
@@ -187,7 +187,7 @@ describe("getRawOnQuery", () => {
 			)
 		).toEqual({
 			success: false,
-			error: new Error("Required"),
+			error: new Error("Expected 'array', received 'undefined'"),
 		});
 
 		expect(
@@ -226,7 +226,7 @@ describe("getRawOnQuery", () => {
 			)
 		).toEqual({
 			success: false,
-			error: new Error("Required"),
+			error: new Error("Expected 'object' | 'string', received 'undefined'"),
 		});
 
 		expect(
@@ -239,7 +239,7 @@ describe("getRawOnQuery", () => {
 			)
 		).toEqual({
 			success: false,
-			error: new Error("Expected 'schema1.table1.id' as a join type, received 'abc'"),
+			error: new Error("Expected 'schema1.table1.id', received 'abc'"),
 		});
 
 		expect(

@@ -1,4 +1,4 @@
-import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
+import { Int4, type Int4Constructor, type Parsers, type PGTPError, PGTPParser, type PGTPParserClass } from "@postgresql-typed/parsers";
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
@@ -10,6 +10,9 @@ import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
 import { isJoinType, joinTypes } from "./isJoinType.js";
+
+export type Count = Int4;
+export const CountParser: PGTPParserClass<Int4Constructor> = PGTPParser(Int4);
 
 export function getRawJoinQuery<
 	InnerPostgresData extends PostgresData,

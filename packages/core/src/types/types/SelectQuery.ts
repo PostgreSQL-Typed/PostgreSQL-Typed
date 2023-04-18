@@ -2,7 +2,7 @@ export type SelectQueryObject<JoinedTablesColumns extends string> = Partial<
 	Record<
 		"COUNT(*)",
 		| {
-				alias?: string;
+				alias: string;
 		  }
 		| true
 	> &

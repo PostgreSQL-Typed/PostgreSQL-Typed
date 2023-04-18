@@ -45,6 +45,7 @@
 	},
 	"devDependencies": {
 		"@postgresql-typed/cli": "workspace:*",
+		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/parsers": "workspace:*",
 		"@types/node": "^18.6.2",
 		"@types/pg": "^8.6.5",

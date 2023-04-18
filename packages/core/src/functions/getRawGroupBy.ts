@@ -62,7 +62,14 @@ export function getRawGroupBy<
 
 		return {
 			success: true,
-			data: `GROUP BY ${groupBy.join(", ")}`,
+			data: `GROUP BY ${groupBy
+				.map(group => {
+					//* %schema.table%.column
+					const strings = group.split(".") as [string, string, string],
+						tableLocation = `%${strings[0]}.${strings[1]}%.${strings[2]}`;
+					return tableLocation;
+				})
+				.join(", ")}`,
 		};
 	} else {
 		if (!availableColumns.includes(groupBy)) {

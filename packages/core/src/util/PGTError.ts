@@ -48,7 +48,7 @@ export interface TooSmallIssue {
 	minimum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "arguments" | "keys";
+	type: "array" | "number" | "keys";
 }
 
 export interface TooBigIssue {
@@ -56,7 +56,7 @@ export interface TooBigIssue {
 	maximum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "arguments" | "keys" | "depth";
+	type: "array" | "keys" | "depth";
 }
 
 export type QueryErrorIssue = {

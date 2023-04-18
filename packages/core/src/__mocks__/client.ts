@@ -1,5 +1,7 @@
+import { OID } from "@postgresql-typed/oids";
+import { CharacterVarying, parser, UUID } from "@postgresql-typed/parsers";
 import { INVALID, OK, ParseReturnType } from "@postgresql-typed/util";
-import { Client as PGClient, type ClientConfig, type QueryResult } from "pg";
+import { Client as PGClient, type ClientConfig, type QueryResult, types } from "pg";
 
 import { BaseClient } from "../classes/BaseClient.js";
 import { setIssueForContext } from "../functions/setIssueForContext.js";
@@ -7,6 +9,9 @@ import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { Context } from "../types/types/Context.js";
 import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
+
+types.setTypeParser(OID.varchar as any, parser<CharacterVarying<number>>(CharacterVarying));
+types.setTypeParser(OID.uuid as any, parser<UUID>(UUID));
 
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: PGClient;

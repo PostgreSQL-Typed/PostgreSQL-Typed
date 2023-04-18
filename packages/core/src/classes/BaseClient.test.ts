@@ -2,12 +2,12 @@ import type { Client as PGClient } from "pg";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
+import { type TestData, testData } from "../__mocks__/testData";
 import { isReady } from "../functions/isReady";
 import { BaseClient } from "./BaseClient";
 import type { Database } from "./Database";
 import type { Schema } from "./Schema";
 import type { Table } from "./Table";
-import { type TestData, testData } from "./testData";
 
 describe("BaseClient", () => {
 	test("BaseClient<..., false>.testConnection()", async () => {

@@ -1,7 +1,6 @@
 {
-	"private": true,
 	"name": "@postgresql-typed/core",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
 	"exports": "./lib/index.js",
@@ -51,5 +50,10 @@
 		"@types/pg": "^8.6.5",
 		"pg": "^8.10.0",
 		"typescript": "^4.9.5"
+	},
+	"packageManager": "pnpm@7.17.0",
+	"engines": {
+		"node": ">=16",
+		"pnpm": ">=7.17.0"
 	}
 }

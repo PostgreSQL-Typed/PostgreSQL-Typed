@@ -171,6 +171,32 @@ describe("locales/en", () => {
 				inclusive: true,
 			})
 		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_small",
+				type: "arguments",
+				minimum: 1,
+			})
+		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_small",
+				type: "arguments",
+				minimum: 1,
+				exact: true,
+			})
+		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_small",
+				type: "arguments",
+				minimum: 1,
+				inclusive: true,
+			})
+		).not.toThrowError();
 	});
 
 	test("IssueCode.too_big", () => {
@@ -247,6 +273,32 @@ describe("locales/en", () => {
 			errorMap({
 				code: "too_big",
 				type: "keys",
+				maximum: 1,
+				inclusive: true,
+			})
+		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_big",
+				type: "arguments",
+				maximum: 1,
+			})
+		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_big",
+				type: "arguments",
+				maximum: 1,
+				exact: true,
+			})
+		).not.toThrowError();
+
+		expect(() =>
+			errorMap({
+				code: "too_big",
+				type: "arguments",
 				maximum: 1,
 				inclusive: true,
 			})

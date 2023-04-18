@@ -15,7 +15,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/PostgreSQL-Typed/PostgreSQL-Typed.git",
-		"directory": "packages/pg"
+		"directory": "packages/postgres"
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"

@@ -31,6 +31,9 @@ const errorMap: ErrorMap = issue => {
 				case "number":
 					message = `Number must be ${issue.exact ? "exactly equal to" : issue.inclusive ? "greater than or equal to" : "greater than"} ${issue.minimum}`;
 					break;
+				case "arguments":
+					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} argument(s)`;
+					break;
 				case "keys":
 					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at least" : "more than"} ${issue.minimum} key(s)`;
 					break;
@@ -47,6 +50,9 @@ const errorMap: ErrorMap = issue => {
 					break;
 				case "keys":
 					message = `Object must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} key(s)`;
+					break;
+				case "arguments":
+					message = `Function must have ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum} argument(s)`;
 					break;
 				case "depth":
 					message = `Object must have a depth of ${issue.exact ? "exactly" : issue.inclusive ? "at most" : "less than"} ${issue.maximum}`;

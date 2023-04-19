@@ -9,7 +9,7 @@ import { getPGTError } from "./getPGTError.js";
 import { filterOperators, isFilterOperator } from "./isFilterOperator.js";
 
 export function getRawFilterOperator(
-	filter: FilterOperators<unknown>,
+	filter: FilterOperators<unknown, any, any>,
 	parser: PGTPParserClass<ConstructorFromParser<Parsers>>
 ): Safe<[string, ...(Parsers | string)[]], PGTError | PGTPError> {
 	const keys = Object.keys(filter),

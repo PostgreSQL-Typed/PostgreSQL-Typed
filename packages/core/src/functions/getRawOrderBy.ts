@@ -1,9 +1,9 @@
 import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { OrderBy as OrderByQuery } from "../types/types/OrderBy.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
@@ -20,6 +20,7 @@ export function getRawOrderBy<
 		JoinedTables
 	>
 >(orderBy: OrderBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PGTError> {
+	//* Make sure the orderBy is an object
 	const parsedType = getParsedType(orderBy);
 	if (parsedType !== ParsedType.object) {
 		return {
@@ -32,6 +33,7 @@ export function getRawOrderBy<
 		};
 	}
 
+	//* Make sure the orderBy has the correct keys
 	const parsedObject = hasKeys<OrderBy>(orderBy, [
 		["nulls", [ParsedType.string, ParsedType.undefined]],
 		["columns", [ParsedType.object, ParsedType.undefined]],
@@ -60,6 +62,7 @@ export function getRawOrderBy<
 
 	const { columns, nulls } = parsedObject.obj;
 
+	//* Make sure the orderBy has at least one column
 	if (!columns && !nulls) {
 		return {
 			success: false,
@@ -72,6 +75,7 @@ export function getRawOrderBy<
 		};
 	}
 
+	//* Make sure the nulls value is valid if it exists
 	if (nulls && !isOneOf(["NULLS FIRST", "NULLS LAST"], nulls)) {
 		return {
 			success: false,
@@ -85,6 +89,7 @@ export function getRawOrderBy<
 
 	let validColumns: [string, string][] = [];
 	if (columns) {
+		//* Make sure the columns is a valid object
 		const availableColumns = tables.flatMap(table => table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`)),
 			parsedColumns = hasKeys<Record<string, string>>(
 				columns,
@@ -128,6 +133,7 @@ export function getRawOrderBy<
 
 		const filteredColumns = Object.entries(parsedColumns.obj).filter(([, value]) => value);
 
+		//* Make sure the directions are valid
 		for (const [, direction] of filteredColumns) {
 			if (!isOneOf(["ASC", "DESC"], direction)) {
 				return {
@@ -141,6 +147,7 @@ export function getRawOrderBy<
 			}
 		}
 
+		//* Map the columns to the correct format
 		validColumns = filteredColumns.map(([column, direction]) => {
 			//* %schema.table%.column
 			const strings = column.split(".") as [string, string, string],
@@ -150,6 +157,7 @@ export function getRawOrderBy<
 		});
 	}
 
+	//* Return the raw ORDER BY
 	return {
 		success: true,
 		data: `ORDER BY${validColumns.length > 0 ? ` ${validColumns.map(([column, direction]) => `${column} ${direction}`).join(", ")}` : ""}${

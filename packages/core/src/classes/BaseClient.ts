@@ -1,9 +1,9 @@
 import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { Context } from "../types/types/Context.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Query } from "../types/types/Query.js";
+import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
@@ -62,7 +62,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	}
 
 	database<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
-		// Validate the database name exists (Is needed for non-TypeScript users)
+		//* Validate the database name exists (Is needed for non-TypeScript users)
 		if (!this.databaseNames.includes(database)) throw new Error(`Database "${database.toString()}" does not exist`);
 
 		return new Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready>(this, this.postgresData[database]);
@@ -87,7 +87,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	schema<SchemaLocation extends SchemaLocations<InnerPostgresData>>(
 		schema: SchemaLocation
 	): SchemaLocation extends `${infer Database}.${string}` ? Schema<InnerPostgresData, InnerPostgresData[Database], Ready, SchemaLocation> : never {
-		// Validate the schema location exists (Is needed for non-TypeScript users)
+		//* Validate the schema location exists (Is needed for non-TypeScript users)
 		if (!this.schemaLocations.includes(schema)) throw new Error(`Schema "${schema}" does not exist`);
 
 		const [database] = (schema as string).split(".");
@@ -133,7 +133,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	}
 
 	get schemaLocations(): SchemaLocations<InnerPostgresData>[] {
-		// Map over the databases and schemas and return the schema locations (database.schema)
+		//* Map over the databases and schemas and return the schema locations (database.schema)
 		return Object.entries(this.postgresData).flatMap(([databaseName, databaseData]: [string, RawDatabaseData<InnerPostgresData[keyof InnerPostgresData]>]) =>
 			databaseData.schemas.map(schema => `${databaseName}.${schema.name.toString()}` as SchemaLocations<InnerPostgresData>)
 		);
@@ -147,7 +147,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 			? TemporarySchemaLocation
 			: never
 	>(table: TableLocation): Table<InnerPostgresData, InnerPostgresData[DatabaseName], Ready, SchemaLocation, TableLocation> {
-		// Validate the table location exists (Is needed for non-TypeScript users)
+		//* Validate the table location exists (Is needed for non-TypeScript users)
 		if (!this.tableLocations.includes(table)) throw new Error(`Table "${table}" does not exist`);
 
 		const [database] = (table as string).split(".");
@@ -215,7 +215,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	}
 
 	get tableLocations(): TableLocations<InnerPostgresData>[] {
-		// Map over the databases and schemas and return the table locations (database.schema.table)
+		//* Map over the databases and schemas and return the table locations (database.schema.table)
 		return Object.entries(this.postgresData).flatMap(([databaseName, databaseData]: [string, RawDatabaseData<InnerPostgresData[keyof InnerPostgresData]>]) =>
 			databaseData.schemas.flatMap(schema =>
 				schema.tables.map(table => `${databaseName}.${schema.name.toString()}.${table.name}` as TableLocations<InnerPostgresData>)

@@ -105,6 +105,19 @@ describe("getRawOnQuery", () => {
 				variables: [uuid.value],
 			},
 		});
+
+		expect(
+			getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					$OR: [],
+				},
+				table2,
+				[table1]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Array must contain at least 1 element(s)"),
+		});
 	});
 
 	test("depth", () => {

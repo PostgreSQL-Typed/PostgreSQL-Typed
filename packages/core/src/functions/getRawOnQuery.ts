@@ -2,10 +2,10 @@ import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from 
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { OnQuery } from "../types/types/OnQuery.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
@@ -65,7 +65,9 @@ export function getRawOnQuery<
 	const key = keys[0],
 		spaces = " ".repeat(depth * 2 + 2);
 
+	//* $AND: [on, on, on] or $OR: [on, on, on]
 	if (isRootFilterOperator(key as string)) {
+		//* Make sure the value is an array
 		const parsedType = getParsedType(on[key]);
 		if (parsedType !== ParsedType.array) {
 			return {
@@ -78,14 +80,30 @@ export function getRawOnQuery<
 			};
 		}
 
+		//* Make sure the array is not empty
+		if ((on[key] as On[]).length === 0) {
+			return {
+				success: false,
+				error: getPGTError({
+					code: "too_small",
+					type: "array",
+					minimum: 1,
+					inclusive: true,
+				}),
+			};
+		}
+
+		//* Get the individual queries
 		const queries = (on[key] as On[]).map(andValue => getRawOnQuery(andValue as any, table, joinedTables, depth + 1)),
 			succeededQueries: { query: string; variables: (Parsers | string)[] }[] = [];
 
+		//* Make sure all the queries succeeded
 		for (const query of queries) {
 			if (!query.success) return query;
 			succeededQueries.push(query.data);
 		}
 
+		//* Return the query
 		return {
 			success: true,
 			data: {
@@ -95,96 +113,105 @@ export function getRawOnQuery<
 				variables: succeededQueries.flatMap(query => query.variables),
 			},
 		};
-	} else {
-		const tableColumns = table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`),
-			parsedObject = hasKeys<On>(
-				on,
-				tableColumns.map(column => [column, [ParsedType.object, ParsedType.string, ParsedType.undefined]])
-			);
-		if (!parsedObject.success) {
-			let error: PGTError;
-			switch (true) {
-				case parsedObject.otherKeys.length > 0:
-					error = getPGTError({
-						code: "unrecognized_keys",
-						keys: parsedObject.otherKeys,
-					});
-					break;
-				/* c8 ignore next 6 */
-				case parsedObject.missingKeys.length > 0:
-					error = getPGTError({
-						code: "missing_keys",
-						keys: parsedObject.missingKeys,
-					});
-					break;
-				case parsedObject.invalidKeys.length > 0:
-					error = getPGTError({
-						code: "invalid_key_type",
-						...parsedObject.invalidKeys[0],
-					});
-					break;
-				/* c8 ignore next 6 */
-				default:
-					error = getPGTError({
-						code: "unrecognized_keys",
-						keys: [],
-					});
-			}
-			return { success: false, error };
-		}
+	}
 
-		const parsedType = getParsedType(on[key]);
-		if (parsedType === ParsedType.undefined) {
+	//* $column: value
+
+	//* Make sure the key is a column
+	const tableColumns = table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`),
+		parsedObject = hasKeys<On>(
+			on,
+			tableColumns.map(column => [column, [ParsedType.object, ParsedType.string, ParsedType.undefined]])
+		);
+	if (!parsedObject.success) {
+		let error: PGTError;
+		switch (true) {
+			case parsedObject.otherKeys.length > 0:
+				error = getPGTError({
+					code: "unrecognized_keys",
+					keys: parsedObject.otherKeys,
+				});
+				break;
+			/* c8 ignore next 6 */
+			case parsedObject.missingKeys.length > 0:
+				error = getPGTError({
+					code: "missing_keys",
+					keys: parsedObject.missingKeys,
+				});
+				break;
+			case parsedObject.invalidKeys.length > 0:
+				error = getPGTError({
+					code: "invalid_key_type",
+					...parsedObject.invalidKeys[0],
+				});
+				break;
+			/* c8 ignore next 6 */
+			default:
+				error = getPGTError({
+					code: "unrecognized_keys",
+					keys: [],
+				});
+		}
+		return { success: false, error };
+	}
+
+	//* Make sure the value is an object or a string (not undefined)
+	const parsedType = getParsedType(on[key]);
+	if (parsedType === ParsedType.undefined) {
+		return {
+			success: false,
+			error: getPGTError({
+				code: "invalid_type",
+				expected: [ParsedType.object, ParsedType.string],
+				received: parsedType,
+			}),
+		};
+	}
+
+	const onKey = on[key] as string | FilterOperators<unknown, any, any>;
+
+	//* table.column = otherTable.otherColumn
+	if (typeof onKey === "string") {
+		const joinedColumns = joinedTables.flatMap(joinedTable =>
+			joinedTable.columns.map(column => `${joinedTable.schema.name}.${joinedTable.name}.${column.toString()}`)
+		);
+
+		//* Make sure the column is a joined column
+		if (!joinedColumns.includes(onKey)) {
 			return {
 				success: false,
 				error: getPGTError({
-					code: "invalid_type",
-					expected: [ParsedType.object, ParsedType.string],
-					received: parsedType,
+					code: "invalid_string",
+					expected: joinedColumns,
+					received: onKey,
 				}),
 			};
 		}
 
-		const onKey = on[key] as string | FilterOperators<unknown>;
-
-		//* table.column = otherTable.otherColumn
-		if (typeof onKey === "string") {
-			const joinedColumns = joinedTables.flatMap(joinedTable =>
-				joinedTable.columns.map(column => `${joinedTable.schema.name}.${joinedTable.name}.${column.toString()}`)
-			);
-
-			if (!joinedColumns.includes(onKey)) {
-				return {
-					success: false,
-					error: getPGTError({
-						code: "invalid_string",
-						expected: joinedColumns,
-						received: onKey,
-					}),
-				};
-			}
-
-			return {
-				success: true,
-				data: {
-					query: `${key.toString()} = ${onKey}`,
-					variables: [],
-				},
-			};
-		}
-
-		const columnName = key.toString().split(".")[2],
-			result = getRawFilterOperator(onKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
-
-		if (!result.success) return result;
-		const [rawFilterOperator, ...variables] = result.data;
-
+		//* Return the query
 		return {
 			success: true,
 			data: {
-				query: `${key.toString()} ${rawFilterOperator}`,
-				variables,
+				query: `${key.toString()} = ${onKey}`,
+				variables: [],
 			},
 		};
 	}
+
+	//* Get the raw filter operator
+	const columnName = key.toString().split(".")[2],
+		result = getRawFilterOperator(onKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
+
+	//* Make sure the filter operator succeeded
+	if (!result.success) return result;
+	const [rawFilterOperator, ...variables] = result.data;
+
+	//* Return the query
+	return {
+		success: true,
+		data: {
+			query: `${key.toString()} ${rawFilterOperator}`,
+			variables,
+		},
+	};
 }

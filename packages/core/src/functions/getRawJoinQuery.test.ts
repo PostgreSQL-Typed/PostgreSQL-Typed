@@ -305,7 +305,7 @@ describe("getRawJoinQuery", () => {
 
 		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({} as any, table2, [table1])).toEqual({
 			success: false,
-			error: new Error("Missing key in object: '$ON'"),
+			error: new Error("Missing keys in object: '$ON', '$TYPE'"),
 		});
 
 		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: {}, b: true } as any, table2, [table1])).toEqual({
@@ -315,12 +315,24 @@ describe("getRawJoinQuery", () => {
 
 		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: true } as any, table2, [table1])).toEqual({
 			success: false,
-			error: new Error("Expected 'object' for key '$ON', received 'boolean'"),
+			error: new Error("Expected 'object' | 'undefined' for key '$ON', received 'boolean'"),
 		});
 
 		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $ON: {} } as any, table2, [table1])).toEqual({
 			success: false,
 			error: new Error("Object must have exactly 1 key(s)"),
+		});
+
+		expect(getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $TYPE: "INNER" } as any, table2, [table1])).toEqual({
+			success: false,
+			error: new Error("Missing key in object: '$ON'"),
+		});
+
+		expect(
+			getRawJoinQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>({ $TYPE: "INNER", $ON: undefined } as any, table2, [table1])
+		).toEqual({
+			success: false,
+			error: new Error("Expected 'object' for key '$ON', received 'undefined'"),
 		});
 	});
 });

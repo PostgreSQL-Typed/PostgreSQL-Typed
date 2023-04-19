@@ -115,6 +115,18 @@ describe("getRawWhereQuery", () => {
 				variables: [uuid.value],
 			},
 		});
+
+		expect(
+			getRawWhereQuery<TestData, TestData["db1"], false, typeof table1 | typeof table2, TableColumnsFromSchemaOnwards<typeof table1 | typeof table2>>(
+				{
+					$AND: [],
+				},
+				[table1, table2]
+			)
+		).toEqual({
+			success: false,
+			error: new Error("Array must contain at least 1 element(s)"),
+		});
 	});
 
 	test("depth", () => {

@@ -1,6 +1,6 @@
 import type { Parsers } from "@postgresql-typed/parsers";
 
-import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { DatabaseData } from "./DatabaseData.js";
 
 export type ParserFromColumn<
 	Paths extends string,

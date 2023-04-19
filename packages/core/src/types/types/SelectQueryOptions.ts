@@ -12,9 +12,9 @@ export type SelectQueryOptions = {
 	 */
 	valuesOnly?: boolean;
 	/**
-	 * If the query should be nested, this allows you to use this query as a subquery in another query (for example in a join, or in a where clause)
+	 * If the query is a subquery, this allows you to use this query as a subquery in another query (for example in a join, or in a where clause)
 	 *
 	 * @default false
 	 */
-	nested?: boolean;
+	subquery?: boolean;
 };

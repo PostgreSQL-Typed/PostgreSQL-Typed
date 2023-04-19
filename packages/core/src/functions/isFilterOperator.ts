@@ -19,4 +19,4 @@ export const filterOperators = [
 	"$IS_NOT_NULL",
 ];
 
-export const isFilterOperator = (value: any): value is keyof FilterOperators<any> => filterOperators.includes(value);
+export const isFilterOperator = (value: any): value is keyof FilterOperators<any, any, any> => filterOperators.includes(value);

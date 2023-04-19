@@ -1,4 +1,4 @@
-import type { DatabaseData } from "../interfaces/DatabaseData.js";
+import type { DatabaseData } from "./DatabaseData.js";
 import type { Join } from "./Join.js";
 import type { NestedPaths } from "./NestedPaths.js";
 

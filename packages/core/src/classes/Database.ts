@@ -1,6 +1,6 @@
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
+import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
@@ -26,7 +26,7 @@ export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData 
 		DatabaseName extends InnerDatabaseData["name"] = InnerDatabaseData["name"],
 		SchemaLocation extends SchemaLocations<InnerPostgresData> = SchemaLocationByPath<InnerPostgresData, DatabaseName, SchemaName>
 	>(schemaName: SchemaName) {
-		// Validate the schema name exists (Is needed for non-TypeScript users)
+		//* Validate the schema name exists (Is needed for non-TypeScript users)
 		if (!this.schemaNames.includes(schemaName)) throw new Error(`Schema "${schemaName.toString()}" does not exist in database "${this.name}"`);
 
 		return new Schema<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation>(
@@ -74,7 +74,7 @@ export class Database<InnerPostgresData extends PostgresData, InnerDatabaseData 
 		SchemaLocation extends SchemaLocations<InnerPostgresData> = SchemaLocationByPath<InnerPostgresData, DatabaseName, SchemaName>,
 		TableLocation extends TableLocations<InnerPostgresData> = TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
 	>(tableNameWithSchema: TableNameWithSchema): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation> {
-		// Validate the table location exists (Is needed for non-TypeScript users)
+		//* Validate the table location exists (Is needed for non-TypeScript users)
 		if (!this.tableLocations.includes(tableNameWithSchema)) throw new Error(`Table "${tableNameWithSchema}" does not exist in database "${this.name}"`);
 
 		return new Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation>(

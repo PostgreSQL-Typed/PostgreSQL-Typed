@@ -5,6 +5,7 @@ import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 
 export function getRawLimit(limit: number, offset?: number): Safe<string, PGTError> {
+	//* Make sure the limit is a number
 	const parsedType = getParsedType(limit);
 	if (parsedType !== ParsedType.number) {
 		return {
@@ -30,6 +31,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 		};
 	}
 
+	//* If there is no offset, return the limit
 	if (offset === undefined) {
 		return {
 			success: true,
@@ -37,6 +39,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 		};
 	}
 
+	//* Make sure the offset is a number
 	const parsedOffsetType = getParsedType(offset);
 	if (parsedOffsetType !== ParsedType.number) {
 		return {
@@ -62,6 +65,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 		};
 	}
 
+	//* Return the limit and offset
 	return {
 		success: true,
 		data: `LIMIT ${limit}\nOFFSET ${offset}`,

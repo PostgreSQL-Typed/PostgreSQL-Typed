@@ -1,9 +1,9 @@
 import type { ConstructorFromParser, Constructors, FromParameters, Parsers } from "@postgresql-typed/parsers";
 
 import type { Table } from "../../classes/Table.js";
-import type { DatabaseData } from "../interfaces/DatabaseData.js";
 import type { FilterOperators } from "../interfaces/FilterOperators.js";
-import type { PostgresData } from "../interfaces/PostgresData.js";
+import type { DatabaseData } from "./DatabaseData.js";
+import type { PostgresData } from "./PostgresData.js";
 
 export type FilterByTableColumn<
 	FromTable extends Table<any, any, any, any, any>,
@@ -25,4 +25,4 @@ export type FilterByTableColumn<
 			? FromParameters<ConstructorFromParser<ColumnData>>
 			: never
 		: never
-> = FilterOperators<NonNullable<ActualType>>;
+> = FilterOperators<NonNullable<ActualType>, InnerPostgresData, InnerDatabaseData>;

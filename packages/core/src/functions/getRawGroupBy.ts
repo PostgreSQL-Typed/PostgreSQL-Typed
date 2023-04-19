@@ -1,9 +1,9 @@
 import { getParsedType, isOneOf, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { GroupBy as GroupByQuery } from "../types/types/GroupBy.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
@@ -23,6 +23,7 @@ export function getRawGroupBy<
 	const availableColumns = tables.flatMap(table => table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`)),
 		parsedType = getParsedType(groupBy);
 
+	//* Make sure the groupBy is an array or a string
 	if (!isOneOf([ParsedType.array, ParsedType.string], parsedType)) {
 		return {
 			success: false,
@@ -34,6 +35,7 @@ export function getRawGroupBy<
 		};
 	}
 
+	//* If the groupBy is an array, make sure all the items are strings
 	if (Array.isArray(groupBy)) {
 		for (const column of groupBy) {
 			const columnType = getParsedType(column);
@@ -48,6 +50,7 @@ export function getRawGroupBy<
 				};
 			}
 
+			//* Make sure the column is available
 			if (!availableColumns.includes(column)) {
 				return {
 					success: false,
@@ -60,6 +63,7 @@ export function getRawGroupBy<
 			}
 		}
 
+		//* Return the groupBy
 		return {
 			success: true,
 			data: `GROUP BY ${groupBy
@@ -72,6 +76,7 @@ export function getRawGroupBy<
 				.join(", ")}`,
 		};
 	} else {
+		//* Make sure the column is available
 		if (!availableColumns.includes(groupBy)) {
 			return {
 				success: false,
@@ -87,6 +92,7 @@ export function getRawGroupBy<
 		const strings = groupBy.split(".") as [string, string, string],
 			tableLocation = `%${strings[0]}.${strings[1]}%.${strings[2]}`;
 
+		//* Return the groupBy
 		return {
 			success: true,
 			data: `GROUP BY ${tableLocation}`,

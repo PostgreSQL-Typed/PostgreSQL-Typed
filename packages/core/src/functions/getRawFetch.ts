@@ -6,6 +6,7 @@ import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 
 export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
+	//* Make sure the fetch is an object
 	const parsedType = getParsedType(fetch);
 	if (parsedType !== ParsedType.object) {
 		return {
@@ -18,6 +19,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 		};
 	}
 
+	//* Make sure the fetch object has the correct keys
 	const parsedObject = hasKeys<Fetch>(fetch, [
 		["fetch", ParsedType.number],
 		["type", [ParsedType.string, ParsedType.undefined]],
@@ -48,6 +50,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 
 	const fetchObject = parsedObject.obj;
 
+	//* Make sure the fetch type is valid and default it to "FIRST"
 	fetchObject.type ??= "FIRST";
 	if (!isOneOf(["FIRST", "NEXT"], fetchObject.type)) {
 		return {
@@ -62,6 +65,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 
 	const { fetch: fetchAmount, type, offset } = fetchObject;
 
+	//* Make sure the fetch amount is valid
 	if (fetchAmount < 0) {
 		return {
 			success: false,
@@ -74,6 +78,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 		};
 	}
 
+	//* If there is no offset, just return the fetch amount
 	if (offset === undefined) {
 		return {
 			success: true,
@@ -81,6 +86,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 		};
 	}
 
+	//* Make sure the offset is valid
 	if (offset < 0) {
 		return {
 			success: false,
@@ -93,6 +99,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 		};
 	}
 
+	//* Return the fetch amount and offset amount
 	return {
 		success: true,
 		data: `OFFSET ${offset} ${offset === 1 ? "ROW" : "ROWS"}\nFETCH ${type} ${fetchAmount} ${fetchAmount === 1 ? "ROW" : "ROWS"} ONLY`,

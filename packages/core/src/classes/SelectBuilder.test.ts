@@ -443,6 +443,26 @@ describe("SelectBuilder", () => {
 			await client.safeQuery(dropSchemaQueryDatabase2);
 			throw error;
 		}
+
+		expect(client.table("db2.schema3.table5").select.execute("*", 1 as any)).toEqual({
+			success: false,
+			error: new Error("Expected 'object' | 'undefined', received 'number'"),
+		});
+
+		expect(client.table("db2.schema3.table5").select.execute("*", {})).toEqual({
+			success: false,
+			error: new Error("Missing keys in object: 'raw', 'valuesOnly', 'subquery'"),
+		});
+
+		expect(client.table("db2.schema3.table5").select.execute("*", { foo: 1 } as any)).toEqual({
+			success: false,
+			error: new Error("Unrecognized key in object: 'foo'"),
+		});
+
+		expect(client.table("db2.schema3.table5").select.execute("*", { raw: 1 } as any)).toEqual({
+			success: false,
+			error: new Error("Expected 'boolean' | 'undefined' for key 'raw', received 'number'"),
+		});
 	});
 
 	test("execute(..., { valuesOnly: true })", async () => {

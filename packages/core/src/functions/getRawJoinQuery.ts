@@ -2,15 +2,16 @@ import { Int4, type Int4Constructor, type Parsers, type PGTPError, PGTPParser, t
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
 import { isJoinType, joinTypes } from "./isJoinType.js";
 
+//* This is a custom type for the count function
 export type Count = Int4;
 export const CountParser: PGTPParserClass<Int4Constructor> = PGTPParser(Int4);
 
@@ -41,6 +42,37 @@ export function getRawJoinQuery<
 		};
 	}
 
+	//* Make sure the filter has the correct keys
+	const parsedObject = hasKeys<Filter>(filter, [
+		["$ON", [ParsedType.object, ParsedType.undefined]],
+		["$TYPE", [ParsedType.string, ParsedType.undefined]],
+	]);
+	if (!parsedObject.success) {
+		let error: PGTError;
+		switch (true) {
+			case parsedObject.otherKeys.length > 0:
+				error = getPGTError({
+					code: "unrecognized_keys",
+					keys: parsedObject.otherKeys,
+				});
+				break;
+			case parsedObject.missingKeys.length > 0:
+				error = getPGTError({
+					code: "missing_keys",
+					keys: parsedObject.missingKeys,
+				});
+				break;
+			default:
+				error = getPGTError({
+					code: "invalid_key_type",
+					...parsedObject.invalidKeys[0],
+				});
+				break;
+		}
+		return { success: false, error };
+	}
+
+	//* If the filter has a $TYPE key, make sure it's a valid join type
 	if (filter.$TYPE && !isJoinType(filter.$TYPE)) {
 		return {
 			success: false,
@@ -65,9 +97,12 @@ export function getRawJoinQuery<
 				["$ON", ParsedType.object],
 				["$TYPE", [ParsedType.string, ParsedType.undefined]],
 			]);
+
+			//* Make sure the ON filter is set and is an object
 			if (!parsedObject.success) {
 				let error: PGTError;
 				switch (true) {
+					/* c8 ignore next 6 */
 					case parsedObject.otherKeys.length > 0:
 						error = getPGTError({
 							code: "unrecognized_keys",
@@ -90,6 +125,7 @@ export function getRawJoinQuery<
 				return { success: false, error };
 			}
 
+			//* Get the ON query
 			const onQuery = getRawOnQuery<InnerPostgresData, InnerDatabaseData, Ready, JoinedTables, JoinedTable>(filter.$ON, table, joinedTables);
 			if (!onQuery.success) return onQuery;
 			return {

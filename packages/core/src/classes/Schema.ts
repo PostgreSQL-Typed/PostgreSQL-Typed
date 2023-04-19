@@ -1,6 +1,6 @@
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
+import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
@@ -36,7 +36,7 @@ export class Schema<
 
 	get tableNames(): (keyof InnerDatabaseData["schemas"][SchemaName]["tables"])[] {
 		/* c8 ignore next 2 */
-		// The ?? [] is an assert never. It should never be reached, but if it is, it will return an empty array.
+		//* The ?? [] is an assert never. It should never be reached, but if it is, it will return an empty array.
 		return this.databaseData.schemas.find(schema => schema.name === this.name)?.tables.map(table => table.name) ?? [];
 	}
 
@@ -44,7 +44,7 @@ export class Schema<
 		TableName extends keyof InnerDatabaseData["schemas"][SchemaName]["tables"],
 		TableLocation extends TableLocations<InnerPostgresData> = TableLocationByPath<InnerPostgresData, DatabaseName, SchemaName, TableName>
 	>(tableName: TableName): Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation> {
-		// Validate the table name exists (Is needed for non-TypeScript users)
+		//* Validate the table name exists (Is needed for non-TypeScript users)
 		if (!this.tableNames.includes(tableName)) throw new Error(`Table "${tableName.toString()}" does not exist in schema "${this.name}"`);
 
 		return new Table<InnerPostgresData, InnerDatabaseData, Ready, SchemaLocation, TableLocation>(

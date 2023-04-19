@@ -18,6 +18,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	},
 	PGTError
 > {
+	//* Make sure the select is a string, array, or object
 	const parsedType = getParsedType(select);
 	if (!isOneOf([ParsedType.array, ParsedType.object, ParsedType.string], parsedType)) {
 		return {
@@ -30,13 +31,14 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		};
 	}
 
+	//* Get all the columns from the tables
 	const allColumns = new Set(
 		tables.flatMap(joinedTable => joinedTable.columns.map(column => `${joinedTable.schema.name}.${joinedTable.name}.${column.toString()}`))
 	);
 
 	if (typeof select === "string") {
+		//* If the select is a string, make sure it's a valid string
 		const allowedStrings = new Set(["*", "COUNT(*)", ...allColumns]);
-
 		if (!isOneOf<string, string>([...allowedStrings], select)) {
 			return {
 				success: false,
@@ -48,6 +50,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			};
 		}
 
+		//* If the select is ALL (*), return all the columns in the mappings
 		if (select === "*") {
 			return {
 				success: true,
@@ -58,6 +61,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			};
 		}
 
+		//* If the select is COUNT(*), return the count parser in the mappings
 		if (select === "COUNT(*)") {
 			return {
 				success: true,
@@ -70,8 +74,8 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			};
 		}
 
+		//* If the select is a column, return the column in the mappings
 		const [columnName, parser, schemaName, tableName] = getParserOfColumnPath(select, tables);
-
 		return {
 			success: true,
 			data: {
@@ -82,6 +86,8 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			},
 		};
 	}
+
+	//* If the select is an array, make sure it's an array of valid strings
 	if (Array.isArray(select)) {
 		for (const column of select) {
 			if (!isOneOf<string, string>([...allColumns], column)) {
@@ -96,6 +102,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			}
 		}
 
+		//* Return the array of columns in the mappings
 		return {
 			success: true,
 			data: {
@@ -110,6 +117,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		};
 	}
 
+	//* If the select is an object, make sure it has valid keys
 	const parsedObject = hasKeys(select, [
 		["*", [ParsedType.boolean, ParsedType.undefined]],
 		["COUNT(*)", [ParsedType.boolean, ParsedType.object, ParsedType.undefined]],
@@ -138,6 +146,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		};
 	}
 
+	//* Make sure the select has at least one key
 	if (Object.values(select).filter(Boolean).length === 0) {
 		return {
 			success: false,
@@ -152,6 +161,8 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 
 	const rows = new Set<string>(),
 		mappings: Record<string, PGTPParserClass<ConstructorFromParser<Parsers>>> = {};
+
+	//* Loop through the select object and add the columns to the rows and mappings
 	for (const [key, value] of Object.entries(select).filter(([, v]) => Boolean(v)) as [
 		string,
 		(
@@ -163,6 +174,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			| undefined
 		)
 	][]) {
+		//* if the key is ALL (*), add all the columns to the mappings, and just add the key to the rows
 		if (key === "*") {
 			if (!rows.has("*")) rows.add("*");
 			for (const column of allColumns) {
@@ -173,15 +185,18 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		}
 
 		if (key === "COUNT(*)") {
+			//* If the key is COUNT(*), and the value is true, add the count parser to the mappings, and just add the key to the rows
 			if (typeof value === "boolean") {
 				if (!rows.has("COUNT(*)")) rows.add("COUNT(*)");
 				mappings.count = CountParser;
 				continue;
 			}
 
+			//* If the key is COUNT(*), and the value is an object, add the count parser to the mappings, and add the key with the alias to the rows
 			if (typeof value === "object") {
 				const parsedObject = hasKeys(value, [["alias", [ParsedType.string]]]);
 
+				//* If the value has invalid keys, return an error
 				if (!parsedObject.success) {
 					return {
 						success: false,
@@ -204,6 +219,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 					};
 				}
 
+				//* It should always pass this check, but just in case
 				if (value.alias) {
 					if (!rows.has("COUNT(*)")) rows.add(`COUNT(*) AS ${value.alias}`);
 					mappings[value.alias] = CountParser;
@@ -212,14 +228,19 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			}
 		}
 
+		//* If the key is a column, add the column to the mappings, and add the key to the rows
+
+		//* Fetch the parser of the column
 		const [columnName, parser, schemaName, tableName] = getParserOfColumnPath(key, tables);
 
+		//* If the value is true, add the column to the rows and mappings
 		if (typeof value === "boolean") {
 			if (!rows.has(columnName)) rows.add(`%${schemaName}.${tableName}%.${columnName}`);
 			mappings[columnName] = parser;
 			continue;
 		}
 
+		//* If the value is an object, make sure it has valid keys
 		if (typeof value === "object") {
 			const parsedObject = hasKeys(value, [
 				["alias", [ParsedType.string, ParsedType.undefined]],
@@ -248,6 +269,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 				};
 			}
 
+			//* If the value has no keys, return an error
 			const totalKeys = Object.values(value).filter(Boolean).length;
 			if (totalKeys === 0) {
 				return {
@@ -262,6 +284,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			}
 
 			if (value.distinct) {
+				//* If the value has the distinct key, and it's not a boolean, make sure it's "ON"
 				if (typeof value.distinct === "string" && value.distinct !== "ON") {
 					return {
 						success: false,
@@ -300,6 +323,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		}
 	}
 
+	//* return the query and mappings
 	return {
 		success: true,
 		data: {
@@ -316,7 +340,7 @@ function getParserOfColumnPath(
 	const [schemaName, tableName, columnName] = path.split("."),
 		table = tables.find(table => table.schema.name === schemaName && table.name === tableName);
 
-	//* Make sure the table exists
+	//* Make sure the table exists, it should always exist, but just in case
 	/* c8 ignore next */
 	if (!table) throw new Error("Internal error: table does not exist");
 

@@ -1,7 +1,7 @@
 import type { PGTPParser } from "@postgresql-typed/parsers";
 
-import type { Tables } from "../types/Tables.js";
 import type { DatabaseData } from "./DatabaseData.js";
+import type { Tables } from "./Tables.js";
 
 export type RawDatabaseData<InnerDatabaseData extends DatabaseData> = {
 	name: InnerDatabaseData["name"];

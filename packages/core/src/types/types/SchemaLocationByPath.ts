@@ -1,6 +1,6 @@
-import type { PostgresData } from "../interfaces/PostgresData.js";
 import type { Join } from "./Join.js";
 import type { NestedPaths } from "./NestedPaths.js";
+import type { PostgresData } from "./PostgresData.js";
 import type { SchemaLocations } from "./SchemaLocations.js";
 
 type SchemaLocationByPathInner<

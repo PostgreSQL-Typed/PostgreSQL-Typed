@@ -1,6 +1,6 @@
 import type { Table } from "../../classes/Table.js";
-import type { DatabaseData } from "../interfaces/DatabaseData.js";
-import type { PostgresData } from "../interfaces/PostgresData.js";
+import type { DatabaseData } from "./DatabaseData.js";
+import type { PostgresData } from "./PostgresData.js";
 import type { TableColumnsFromSchemaOnwards } from "./TableColumnsFromSchemaOnwards.js";
 
 export type GroupBy<

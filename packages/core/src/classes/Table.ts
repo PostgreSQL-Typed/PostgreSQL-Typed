@@ -1,8 +1,8 @@
-import type { DatabaseData } from "../types/interfaces/DatabaseData.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
-import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
+import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { PGTPParserOfColumn } from "../types/types/PGTPParserOfColumn.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
+import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import type { BaseClient } from "./BaseClient.js";
@@ -58,7 +58,7 @@ export class Table<
 	get columns(): ColumnsOfTable<InnerPostgresData, TableLocation>[] {
 		return Object.keys(
 			/* c8 ignore next 2 */
-			// Ignored for all the ?. because it's impossible to test
+			//* Ignored for all the ?. because it's impossible to test because it should always be defined
 			this.databaseData.schemas.find(s => s.name === this.schema.name)?.tables.find(t => t.name === (this.name as string))?.columns ?? {}
 		) as ColumnsOfTable<InnerPostgresData, TableLocation>[];
 	}

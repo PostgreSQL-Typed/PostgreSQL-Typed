@@ -1,4 +1,4 @@
-import type { PostgresData } from "../interfaces/PostgresData.js";
+import type { PostgresData } from "./PostgresData.js";
 import type { TableLocations } from "./TableLocations.js";
 
 export type ColumnsOfTable<

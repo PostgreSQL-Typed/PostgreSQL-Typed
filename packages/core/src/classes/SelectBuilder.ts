@@ -15,6 +15,7 @@ import type { RawDatabaseData } from "../types/interfaces/RawDatabaseData.js";
 import type { Fetch } from "../types/types/Fetch.js";
 import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
+import type { NestedSelectQuery } from "../types/types/NestedSelectQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
 import type { Query } from "../types/types/Query.js";
 import type { Safe } from "../types/types/Safe.js";
@@ -153,6 +154,10 @@ export class SelectBuilder<
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
+	>(select: Select, options?: Options & { nested: true }): Safe<NestedSelectQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions = SelectQueryOptions
 	>(
 		select: Select,
 		options?: Options & { raw?: false; valuesOnly: true }
@@ -172,6 +177,8 @@ export class SelectBuilder<
 		select: Select = "*",
 		options?: Options
 	) {
+		//TODO Validate incoming options;
+
 		const tableLocation = this.table.location.split(".").slice(1).join("."),
 			usedTableLocations: string[] = [];
 
@@ -228,7 +235,8 @@ export class SelectBuilder<
 
 		//* Replace all ? with $1, $2, etc
 		const count = query.match(/%\?%/g)?.length ?? 0;
-		for (let index = 1; index <= count; index++) query = query.replace("%?%", `$${index}`);
+		let index = 1;
+		for (; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
 		//* If the query is raw, return it
 		if (options?.raw) {
@@ -238,7 +246,7 @@ export class SelectBuilder<
 			};
 		}
 
-		const runningQuery = this.client.safeQuery<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>(query, [
+		const variables = [
 			...(this._where?.data.variables.map(variable => {
 				if (typeof variable !== "string") return variable.postgres;
 				return variable;
@@ -249,7 +257,25 @@ export class SelectBuilder<
 					return variable;
 				})
 			),
-		]);
+		];
+
+		if (options?.nested) {
+			return {
+				success: true,
+				data: Object.freeze({
+					query,
+					variables,
+					variablesIndex: index,
+					usedTableLocations,
+					database: this.table.database,
+				} satisfies NestedSelectQuery<InnerPostgresData, InnerDatabaseData, Ready>),
+			};
+		}
+
+		const runningQuery = this.client.safeQuery<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>(
+			query,
+			variables
+		);
 
 		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PGTError | PGTPError>>(
 			(resolve, reject) => {
@@ -261,6 +287,7 @@ export class SelectBuilder<
 							return Object.fromEntries(
 								Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => {
 									/* c8 ignore start */
+									if (!selectQuery.data.mappings[key]?.parser) return [key, value];
 									// eslint-disable-next-line unicorn/no-null
 									const result = value === null ? null : selectQuery.data.mappings[key].parser.safeFrom(value.toString());
 
@@ -279,8 +306,11 @@ export class SelectBuilder<
 							result.data.rows = result.data.rows.map(row => {
 								//* Map all the values of the object to the .value property of them.
 								return Object.fromEntries(
-									// eslint-disable-next-line unicorn/no-null
-									Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => [key, value === null ? null : value.value])
+									Object.entries(row as Record<string, Parsers | null>).map(([key, value]) => [
+										key,
+										// eslint-disable-next-line unicorn/no-null
+										value === null ? null : "value" in value ? value.value : value,
+									])
 								);
 							}) as SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>[];
 							/* c8 ignore stop */

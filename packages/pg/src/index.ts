@@ -23,6 +23,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
 	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
+		await this._client.end();
 		if (pgConfig) this._client = new PGClient(pgConfig);
 		try {
 			await this._client.connect();

@@ -34,13 +34,15 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
 
-		await this._client.end();
-		if (urlOrOptions !== undefined)
+		if (urlOrOptions !== undefined) {
+			await this._client.end();
 			this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
+		}
 
 		try {
 			await this._client.unsafe("SELECT 1");
 			this._ready = true;
+
 			return this as Client<InnerPostgresData, true>;
 		} catch (error) {
 			this._connectionError = new PGTError({

@@ -7,6 +7,7 @@ import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { OnQuery } from "../types/types/OnQuery.js";
 import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
+import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
@@ -24,7 +25,7 @@ export function getRawOnQuery<
 	table: JoinedTable,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[],
 	depth = 0
-): Safe<{ query: string; variables: (Parsers | string)[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
 	//* Make sure the depth is less than 10
 	//TODO make the depth limit a config option
 	if (depth > 10) {
@@ -95,7 +96,7 @@ export function getRawOnQuery<
 
 		//* Get the individual queries
 		const queries = (on[key] as On[]).map(andValue => getRawOnQuery(andValue as any, table, joinedTables, depth + 1)),
-			succeededQueries: { query: string; variables: (Parsers | string)[] }[] = [];
+			succeededQueries: { query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }[] = [];
 
 		//* Make sure all the queries succeeded
 		for (const query of queries) {
@@ -111,6 +112,7 @@ export function getRawOnQuery<
 					.map(query => query.query.trim())
 					.join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
 				variables: succeededQueries.flatMap(query => query.variables),
+				subqueries: succeededQueries.flatMap(query => query.subqueries),
 			},
 		};
 	}
@@ -194,17 +196,23 @@ export function getRawOnQuery<
 			data: {
 				query: `${key.toString()} = ${onKey}`,
 				variables: [],
+				subqueries: [],
 			},
 		};
 	}
 
 	//* Get the raw filter operator
 	const columnName = key.toString().split(".")[2],
-		result = getRawFilterOperator(onKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
+		result = getRawFilterOperator(
+			onKey,
+			table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>,
+			table.database,
+			depth * 2 + 2
+		);
 
 	//* Make sure the filter operator succeeded
 	if (!result.success) return result;
-	const [rawFilterOperator, ...variables] = result.data;
+	const [rawFilterOperator, ...variables] = result.data.result;
 
 	//* Return the query
 	return {
@@ -212,6 +220,7 @@ export function getRawOnQuery<
 		data: {
 			query: `${key.toString()} ${rawFilterOperator}`,
 			variables,
+			subqueries: result.data.subquery ? [result.data.subquery] : [],
 		},
 	};
 }

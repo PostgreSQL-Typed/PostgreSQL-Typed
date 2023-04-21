@@ -2,10 +2,11 @@ import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from 
 import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import { FilterOperators } from "../types/interfaces/FilterOperators.js";
+import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
 import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
+import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
@@ -23,7 +24,7 @@ export function getRawWhereQuery<
 	where: Where,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[],
 	depth = 0
-): Safe<{ query: string; variables: (Parsers | string)[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
 	//* Make sure the depth is less than 10
 	//TODO make the depth limit a config option
 	if (depth > 10) {
@@ -94,7 +95,7 @@ export function getRawWhereQuery<
 
 		//* Get the raw where query for each where object
 		const queries = (where[key] as Where[]).map(andValue => getRawWhereQuery(andValue as any, joinedTables, depth + 1)),
-			succeededQueries: { query: string; variables: (Parsers | string)[] }[] = [];
+			succeededQueries: { query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }[] = [];
 
 		//* Make sure all the queries succeeded
 		for (const query of queries) {
@@ -111,6 +112,7 @@ export function getRawWhereQuery<
 					.map(query => (query.startsWith("WHERE") ? query.slice(5).trim() : query))
 					.join(`\n${spaces}  ${(key as string).replace("$", "")} `)}\n${spaces})`,
 				variables: succeededQueries.flatMap(query => query.variables),
+				subqueries: succeededQueries.flatMap(query => query.subqueries),
 			},
 		};
 	}
@@ -193,6 +195,7 @@ export function getRawWhereQuery<
 			data: {
 				query: `${key.toString()} = ${whereKey}`,
 				variables: [],
+				subqueries: [],
 			},
 		};
 	}
@@ -205,11 +208,16 @@ export function getRawWhereQuery<
 	if (!table) throw new Error("Internal error: table does not exist");
 
 	//* Get the raw filter operator
-	const result = getRawFilterOperator(whereKey, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>);
+	const result = getRawFilterOperator(
+		whereKey,
+		table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>,
+		table.database,
+		depth * 2 + 2
+	);
 
 	//* Make sure the filter operator succeeded
 	if (!result.success) return result;
-	const [rawFilterOperator, ...variables] = result.data;
+	const [rawFilterOperator, ...variables] = result.data.result;
 
 	//* Return the raw where query
 	return {
@@ -217,6 +225,7 @@ export function getRawWhereQuery<
 		data: {
 			query: `WHERE ${key.toString()} ${rawFilterOperator}`,
 			variables,
+			subqueries: result.data.subquery ? [result.data.subquery] : [],
 		},
 	};
 }

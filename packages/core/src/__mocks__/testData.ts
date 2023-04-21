@@ -1,4 +1,13 @@
-import { CharacterVarying, CharacterVaryingConstructor, PGTPParser, PGTPParserClass, UUID, UUIDConstructor } from "@postgresql-typed/parsers";
+import {
+	CharacterVarying,
+	CharacterVaryingConstructor,
+	PGTPParser,
+	PGTPParserClass,
+	Text,
+	TextConstructor,
+	UUID,
+	UUIDConstructor,
+} from "@postgresql-typed/parsers";
 
 export type TestData = {
 	db1: {
@@ -57,9 +66,11 @@ export type TestData = {
 						primary_key: "id";
 						columns: {
 							id: UUID;
+							text: Text;
 						};
 						insert_parameters: {
 							id: UUID;
+							text: Text;
 						};
 					};
 					table5: {
@@ -137,9 +148,11 @@ export const testData = {
 						primary_key: "id" as const,
 						columns: {
 							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
+							text: PGTPParser(Text) as PGTPParserClass<TextConstructor>,
 						},
 						insert_parameters: {
 							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
+							text: PGTPParser(Text).optional() as PGTPParserClass<TextConstructor>,
 						},
 					},
 					{
@@ -194,7 +207,8 @@ DROP SCHEMA IF EXISTS "schema3" CASCADE;
 
 export const createTableQueryDatabase2 = `
 CREATE TABLE IF NOT EXISTS "schema3"."table4" (
-	"id" UUID NOT NULL
+	"id" UUID NOT NULL,
+	text TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "schema3"."table5" (
@@ -203,7 +217,11 @@ CREATE TABLE IF NOT EXISTS "schema3"."table5" (
 );
 `;
 
-export const insertQueryDatabase2 = `
+export const insertQueryDatabase2T4 = `
+INSERT INTO "schema3"."table4" ("id", "text") VALUES ($1, $2);
+`;
+
+export const insertQueryDatabase2T5 = `
 INSERT INTO "schema3"."table5" ("id", "not_uuid") VALUES ($1, $2);
 `;
 

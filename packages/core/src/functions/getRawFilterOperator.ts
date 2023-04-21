@@ -1,17 +1,21 @@
 import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
 import { isBox } from "@postgresql-typed/parsers";
-import { getParsedType, isOneOf } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
 
+import { Database } from "../classes/Database.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
 import type { Safe } from "../types/types/Safe.js";
+import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { filterOperators, isFilterOperator } from "./isFilterOperator.js";
 
 export function getRawFilterOperator(
 	filter: FilterOperators<unknown, any, any>,
-	parser: PGTPParserClass<ConstructorFromParser<Parsers>>
-): Safe<[string, ...(Parsers | string)[]], PGTError | PGTPError> {
+	parser: PGTPParserClass<ConstructorFromParser<Parsers>>,
+	database: Database<any, any, boolean>,
+	spaces: number
+): Safe<{ result: [string, ...(Parsers | string)[]]; subquery?: SelectSubQuery<any, any, boolean> }, PGTError | PGTPError> {
 	const keys = Object.keys(filter),
 		delimiter = isBox(parser.parser) ? ";" : ",";
 
@@ -57,8 +61,122 @@ export function getRawFilterOperator(
 		case "$LESS_THAN":
 		case "$LESS_THAN_OR_EQUAL": {
 			//* Make sure the input value is valid;
-			const result = parser.isValid(filter[key]);
-			if (!result.success) return result;
+			const result = parser.isValid(filter[key]),
+				operator =
+					key === "$EQUAL"
+						? "="
+						: key === "$NOT_EQUAL"
+						? "!="
+						: key === "$GREATER_THAN"
+						? ">"
+						: key === "$GREATER_THAN_OR_EQUAL"
+						? ">="
+						: key === "$LESS_THAN"
+						? "<"
+						: "<=";
+
+			if (!result.success) {
+				//* Check if it is a subquery
+				const parsedType = getParsedType(filter[key]);
+				if (parsedType !== ParsedType.object) return result;
+
+				const parsedObject = hasKeys<Safe<Record<string, unknown>>>(filter[key] as any, [
+					["success", [ParsedType.boolean]],
+					["data", [ParsedType.object, ParsedType.undefined]],
+					["error", [ParsedType.object, ParsedType.undefined]],
+				]);
+
+				if (!parsedObject.success) return result;
+				if (!parsedObject.obj.success) return parsedObject.obj;
+
+				const parsedData = hasKeys<SelectSubQuery<any, any, boolean>>(parsedObject.obj.data, [
+					["query", ParsedType.string],
+					["variables", ParsedType.array],
+					["variablesIndex", ParsedType.number],
+					["usedTableLocations", ParsedType.array],
+					["database", ParsedType.object],
+				]);
+
+				if (!parsedData.success) {
+					return {
+						success: false,
+						error: getPGTError(
+							parsedData.otherKeys.length > 0
+								? {
+										code: "unrecognized_keys",
+										keys: parsedData.otherKeys,
+								  }
+								: parsedData.missingKeys.length > 0
+								? {
+										code: "missing_keys",
+										keys: parsedData.missingKeys,
+								  }
+								: {
+										code: "invalid_key_type",
+										...parsedData.invalidKeys[0],
+								  }
+						),
+					};
+				}
+
+				if (!(parsedData.obj.database instanceof Database)) {
+					return {
+						success: false,
+						error: getPGTError({
+							code: "invalid_type",
+							expected: ParsedType.object,
+							received: getParsedType(parsedData.obj.database),
+						}),
+					};
+				}
+
+				if (parsedData.obj.database.name !== database.name) {
+					return {
+						success: false,
+						error: getPGTError({
+							code: "invalid_join",
+							type: "database",
+						}),
+					};
+				}
+
+				for (const usedTableLocation of parsedData.obj.usedTableLocations) {
+					const usedTableType = getParsedType(usedTableLocation);
+					if (usedTableType !== ParsedType.string) {
+						return {
+							success: false,
+							error: getPGTError({
+								code: "invalid_type",
+								expected: ParsedType.string,
+								received: usedTableType,
+							}),
+						};
+					}
+				}
+
+				for (const variable of parsedData.obj.variables) {
+					const variableType = getParsedType(variable);
+					if (!isOneOf([ParsedType.string, ParsedType.number, ParsedType.boolean], variableType)) {
+						return {
+							success: false,
+							error: getPGTError({
+								code: "invalid_type",
+								expected: [ParsedType.string, ParsedType.number, ParsedType.boolean],
+								received: variableType,
+							}),
+						};
+					}
+				}
+
+				const spacesString = " ".repeat(spaces);
+				return {
+					success: true,
+					data: {
+						result: [`${operator} (\n${spacesString}${parsedData.obj.query.split("\n").join(`\n${spacesString}`)}\n)`],
+						subquery: parsedData.obj,
+					},
+				};
+			}
 
 			const parsedType = getParsedType(result.data);
 			if (isOneOf(["null", "undefined"], parsedType)) {
@@ -72,22 +190,10 @@ export function getRawFilterOperator(
 				};
 			}
 
-			const value: Parsers | string = Array.isArray(result.data) ? `{${result.data.map(v => v?.value).join(delimiter)}}` : (result.data as Parsers),
-				operator =
-					key === "$EQUAL"
-						? "="
-						: key === "$NOT_EQUAL"
-						? "!="
-						: key === "$GREATER_THAN"
-						? ">"
-						: key === "$GREATER_THAN_OR_EQUAL"
-						? ">="
-						: key === "$LESS_THAN"
-						? "<"
-						: "<=";
+			const value: Parsers | string = Array.isArray(result.data) ? `{${result.data.map(v => v?.value).join(delimiter)}}` : (result.data as Parsers);
 			return {
 				success: true,
-				data: [`${operator} %?%`, value],
+				data: { result: [`${operator} %?%`, value] },
 			};
 		}
 		case "$LIKE":
@@ -109,7 +215,7 @@ export function getRawFilterOperator(
 			const operator = key.slice(1).replace("_", " ");
 			return {
 				success: true,
-				data: [`${operator} %?%`, filter[key] as string],
+				data: { result: [`${operator} %?%`, filter[key] as string] },
 			};
 		}
 		case "$IN":
@@ -164,7 +270,7 @@ export function getRawFilterOperator(
 				operator = key.slice(1).replace("_", " ");
 			return {
 				success: true,
-				data: [`${operator} (${questionMarks})`, ...finalValues],
+				data: { result: [`${operator} (${questionMarks})`, ...finalValues] },
 			};
 		}
 		case "$BETWEEN":
@@ -239,11 +345,13 @@ export function getRawFilterOperator(
 			const operator = key.slice(1).replace("_", " ");
 			return {
 				success: true,
-				data: [
-					`${operator} %?% AND %?%`,
-					Array.isArray(valueA.data) ? `{${valueA.data.map(v => v?.value).join(delimiter)}}` : (valueA.data as Parsers),
-					Array.isArray(valueB.data) ? `{${valueB.data.map(v => v?.value).join(delimiter)}}` : (valueB.data as Parsers),
-				],
+				data: {
+					result: [
+						`${operator} %?% AND %?%`,
+						Array.isArray(valueA.data) ? `{${valueA.data.map(v => v?.value).join(delimiter)}}` : (valueA.data as Parsers),
+						Array.isArray(valueB.data) ? `{${valueB.data.map(v => v?.value).join(delimiter)}}` : (valueB.data as Parsers),
+					],
+				},
 			};
 		}
 		case "$IS_NULL":
@@ -260,7 +368,7 @@ export function getRawFilterOperator(
 			}
 			return {
 				success: true,
-				data: [key.slice(1).replace("_", " ")],
+				data: { result: [key.slice(1).replace("_", " ")] },
 			};
 		/* c8 ignore next 4 */
 		default:

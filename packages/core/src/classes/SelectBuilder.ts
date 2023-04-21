@@ -22,6 +22,7 @@ import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
 import type { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
 import type { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
+import type { SelectRawQuery } from "../types/types/SelectRawQuery.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
@@ -42,6 +43,7 @@ export class SelectBuilder<
 			query: string;
 			variables: (Parsers | string)[];
 			tableLocation: string;
+			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
 		PGTError | PGTPError
 	>[] = [];
@@ -49,6 +51,7 @@ export class SelectBuilder<
 		{
 			query: string;
 			variables: (Parsers | string)[];
+			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
 		PGTError | PGTPError
 	>;
@@ -149,7 +152,7 @@ export class SelectBuilder<
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
-	>(select: Select, options?: Options & { raw: true }): Safe<string, PGTError | PGTPError>;
+	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PGTError | PGTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions = SelectQueryOptions
@@ -224,9 +227,6 @@ export class SelectBuilder<
 			}
 		}
 
-		const tableLocation = this.table.location.split(".").slice(1).join("."),
-			usedTableLocations: string[] = [];
-
 		//* Have to redo the type as only valids or only invalids are returned
 		let joins = this._joins as
 			| {
@@ -239,6 +239,7 @@ export class SelectBuilder<
 						query: string;
 						variables: (Parsers | string)[];
 						tableLocation: string;
+						subqueries: SelectSubQuery<any, any, boolean>[];
 					};
 			  }[];
 
@@ -250,6 +251,7 @@ export class SelectBuilder<
 				query: string;
 				variables: (Parsers | string)[];
 				tableLocation: string;
+				subqueries: SelectSubQuery<any, any, boolean>[];
 			};
 		}[];
 
@@ -259,6 +261,12 @@ export class SelectBuilder<
 		if (this._orderBy && !this._orderBy.success) return this._orderBy;
 		if (this._limit && !this._limit.success) return this._limit;
 		if (this._fetch && !this._fetch.success) return this._fetch;
+
+		const tableLocation = this.table.location.split(".").slice(1).join("."),
+			usedTableLocations: string[] = [
+				...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.usedTableLocations)),
+				...(this._where ? this._where.data.subqueries.flatMap(subquery => subquery.usedTableLocations) : []),
+			];
 
 		//* Build the query
 		let query = `SELECT ${selectQuery.data.query}\nFROM ${tableLocation} %${tableLocation}%${
@@ -284,27 +292,32 @@ export class SelectBuilder<
 		let index = 1;
 		for (; index <= count; index++) query = query.replace("%?%", `$${index}`);
 
-		//* If the query is raw, return it
-		if (options?.raw) {
-			return {
-				success: true,
-				data: query,
-			};
-		}
-
-		//* Get all the variables and map them to the correct postgres type
+		//* Get all the variables and map them to the correct postgres type, the ones from subqueries are already mapped
 		const variables = [
-			...(this._where?.data.variables.map(variable => {
-				if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
-				return variable;
-			}) ?? []),
+			...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.variables)),
 			...joins.flatMap(join =>
 				join.data.variables.map(variable => {
 					if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
 					return variable;
 				})
 			),
+			...(this._where?.data.subqueries.flatMap(subquery => subquery.variables) ?? []),
+			...(this._where?.data.variables.map(variable => {
+				if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
+				return variable;
+			}) ?? []),
 		];
+
+		//* If the query is raw, return it
+		if (options?.raw) {
+			return {
+				success: true,
+				data: {
+					query,
+					variables,
+				},
+			};
+		}
 
 		//* If the query is a subquery, this allows you to use this query as a subquery in another query (for example in a join, or in a where clause)
 		if (options?.subquery) {

@@ -10,7 +10,8 @@ import {
 	createTableQueryDatabase2,
 	dropSchemaQueryDatabase1,
 	dropSchemaQueryDatabase2,
-	insertQueryDatabase2,
+	insertQueryDatabase2T4,
+	insertQueryDatabase2T5,
 	type TestData,
 	testData,
 } from "../__mocks__/testData";
@@ -30,7 +31,7 @@ describe("SelectBuilder", () => {
 					raw: true,
 				});
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id", variables: [] } });
 
 		//* Make sure the table is an instance of Table
 		expect(
@@ -95,7 +96,7 @@ describe("SelectBuilder", () => {
 					raw: true,
 				});
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nWHERE t.id ILIKE $1" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nWHERE t.id ILIKE $1", variables: ["test"] } });
 
 		//* An invalid where clause
 		const query2 = table.select
@@ -113,7 +114,7 @@ describe("SelectBuilder", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1"),
 			query = table.select.groupBy("schema1.table1.id").execute("*", { raw: true });
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nGROUP BY t.id" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nGROUP BY t.id", variables: [] } });
 
 		//* With multiple columns
 		const table2 = new Client<TestData>(testData).table("db1.schema1.table2"),
@@ -128,7 +129,10 @@ describe("SelectBuilder", () => {
 					raw: true,
 				});
 
-		expect(query2).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nGROUP BY t.id, t1.id" });
+		expect(query2).toEqual({
+			success: true,
+			data: { query: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nGROUP BY t.id, t1.id", variables: [] },
+		});
 
 		//* An invalid groupBy clause
 		const query3 = table.select.groupBy(true as any).execute("*", { raw: true });
@@ -148,7 +152,7 @@ describe("SelectBuilder", () => {
 					raw: true,
 				});
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC", variables: [] } });
 
 		//* With multiple columns
 		const table2 = new Client<TestData>(testData).table("db1.schema1.table2"),
@@ -170,7 +174,10 @@ describe("SelectBuilder", () => {
 
 		expect(query2).toEqual({
 			success: true,
-			data: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nORDER BY t.id ASC, t1.id DESC",
+			data: {
+				query: "SELECT *\nFROM schema1.table1 t\nINNER JOIN schema1.table2 t1\nON t1.id = t.id\nORDER BY t.id ASC, t1.id DESC",
+				variables: [],
+			},
 		});
 
 		//* With nulls first
@@ -182,7 +189,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query3).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nORDER BY NULLS FIRST" });
+		expect(query3).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nORDER BY NULLS FIRST", variables: [] } });
 
 		//* With nulls first with column(s)
 		const query4 = table.select
@@ -196,7 +203,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query4).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS FIRST" });
+		expect(query4).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS FIRST", variables: [] } });
 
 		//* With nulls last
 		const query5 = table.select
@@ -207,7 +214,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query5).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nORDER BY NULLS LAST" });
+		expect(query5).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nORDER BY NULLS LAST", variables: [] } });
 
 		//* With nulls last with column(s)
 		const query6 = table.select
@@ -221,7 +228,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query6).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS LAST" });
+		expect(query6).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nORDER BY t.id ASC NULLS LAST", variables: [] } });
 
 		//* An invalid orderBy clause
 		const query7 = table.select.orderBy(true as any).execute("*", { raw: true });
@@ -235,14 +242,14 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nLIMIT 10" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nLIMIT 10", variables: [] } });
 
 		//* With offset
 		const query2 = table.select.limit(10, 5).execute("*", {
 			raw: true,
 		});
 
-		expect(query2).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nLIMIT 10\nOFFSET 5" });
+		expect(query2).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nLIMIT 10\nOFFSET 5", variables: [] } });
 
 		//* An invalid limit clause
 		const query3 = table.select.limit(true as any).execute("*", { raw: true });
@@ -260,7 +267,7 @@ describe("SelectBuilder", () => {
 					raw: true,
 				});
 
-		expect(query).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nFETCH FIRST 10 ROWS ONLY" });
+		expect(query).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nFETCH FIRST 10 ROWS ONLY", variables: [] } });
 
 		//* With offset
 		const query2 = table.select
@@ -272,7 +279,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query2).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH FIRST 10 ROWS ONLY" });
+		expect(query2).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH FIRST 10 ROWS ONLY", variables: [] } });
 
 		//* With NEXT
 		const query3 = table.select
@@ -285,7 +292,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query3).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH NEXT 10 ROWS ONLY" });
+		expect(query3).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nOFFSET 5 ROWS\nFETCH NEXT 10 ROWS ONLY", variables: [] } });
 
 		//* If the value is 1 then it should be ROW instead of ROWS
 		const query4 = table.select
@@ -297,7 +304,7 @@ describe("SelectBuilder", () => {
 				raw: true,
 			});
 
-		expect(query4).toEqual({ success: true, data: "SELECT *\nFROM schema1.table1 t\nOFFSET 1 ROW\nFETCH FIRST 1 ROW ONLY" });
+		expect(query4).toEqual({ success: true, data: { query: "SELECT *\nFROM schema1.table1 t\nOFFSET 1 ROW\nFETCH FIRST 1 ROW ONLY", variables: [] } });
 
 		//* An invalid fetch clause
 		const query5 = table.select.fetch(true as any).execute("*", { raw: true });
@@ -362,7 +369,7 @@ describe("SelectBuilder", () => {
 			const clearTable = await client.safeQuery(clearTableQueryDatabase2);
 			expect(clearTable.success).toBe(true);
 
-			const tableInsertion = await client.safeQuery(insertQueryDatabase2, ["5696cdd5-2c60-4964-8b95-3fd1c97e7592", "c9edf3fd-aaa6-4d43-a602-efad6a03ef17"]);
+			const tableInsertion = await client.safeQuery(insertQueryDatabase2T5, ["5696cdd5-2c60-4964-8b95-3fd1c97e7592", "c9edf3fd-aaa6-4d43-a602-efad6a03ef17"]);
 			expect(tableInsertion.success).toBe(true);
 
 			const query2 = client.table("db2.schema3.table5").select.execute("*"),
@@ -483,7 +490,7 @@ describe("SelectBuilder", () => {
 			const tableCreation = await client.safeQuery(createTableQueryDatabase2);
 			expect(tableCreation.success).toBe(true);
 
-			const tableInsertion = await client.safeQuery(insertQueryDatabase2, ["b8d0b5c0-5f9a-11eb-ae93-0242ac130002", "882c83b1-4a65-4b69-b969-c0f53ccbd5ca"]);
+			const tableInsertion = await client.safeQuery(insertQueryDatabase2T5, ["b8d0b5c0-5f9a-11eb-ae93-0242ac130002", "882c83b1-4a65-4b69-b969-c0f53ccbd5ca"]);
 			expect(tableInsertion.success).toBe(true);
 
 			const query = client.table("db2.schema3.table5").select.execute("*", {
@@ -507,6 +514,88 @@ describe("SelectBuilder", () => {
 					],
 				},
 			});
+
+			await client.safeQuery(dropSchemaQueryDatabase2);
+		} catch (error) {
+			await client.safeQuery(dropSchemaQueryDatabase2);
+			throw error;
+		}
+
+		//* An invalid select clause
+		const query = client.table("db2.schema3.table5").select.execute("id" as any, {
+			raw: true,
+		});
+
+		expect(query.success).toBe(false);
+	});
+
+	test("execute(..., { subquery: true })", async () => {
+		const client = await new Client<TestData>(testData, {
+			password: "password",
+			host: "localhost",
+			user: "postgres",
+			database: "postgres",
+			port: 5432,
+		}).testConnection();
+
+		if (!isReady(client)) expect.fail();
+
+		try {
+			const schemaCreation = await client.safeQuery(createSchemaQueryDatabase2);
+			expect(schemaCreation.success).toBe(true);
+
+			const tableCreation = await client.safeQuery(createTableQueryDatabase2);
+			expect(tableCreation.success).toBe(true);
+
+			const tableInsertionT4 = await client.safeQuery(insertQueryDatabase2T4, ["b8d0b5c0-5f9a-11eb-ae93-0242ac130002", "wow!"]);
+			expect(tableInsertionT4.success).toBe(true);
+
+			const tableInsertionT5 = await client.safeQuery(insertQueryDatabase2T5, ["b8d0b5c0-5f9a-11eb-ae93-0242ac130002", "882c83b1-4a65-4b69-b969-c0f53ccbd5ca"]);
+			expect(tableInsertionT5.success).toBe(true);
+
+			const subquery = client
+				.table("db2.schema3.table5")
+				.select.where({
+					"schema3.table5.not_uuid": {
+						$EQUAL: "882c83b1-4a65-4b69-b969-c0f53ccbd5ca",
+					},
+				})
+				.execute("schema3.table5.id", {
+					subquery: true,
+				});
+
+			expect(subquery.success).toBe(true);
+
+			const query = client
+				.table("db2.schema3.table4")
+				.select.where({
+					"schema3.table4.id": {
+						$EQUAL: subquery,
+					},
+				})
+				.execute("*", {
+					valuesOnly: true,
+				});
+
+			await expect(query).resolves.toEqual({
+				success: true,
+				data: {
+					command: "SELECT",
+					input: {
+						query: "SELECT *\nFROM schema3.table4 t1\nWHERE t1.id = (\n  SELECT t.id\n  FROM schema3.table5 t\n  WHERE t.not_uuid = $1\n)",
+						values: ["882c83b1-4a65-4b69-b969-c0f53ccbd5ca"],
+					},
+					rowCount: 1,
+					rows: [
+						{
+							id: "b8d0b5c0-5f9a-11eb-ae93-0242ac130002",
+							text: "wow!",
+						},
+					],
+				},
+			});
+
+			await client.safeQuery(dropSchemaQueryDatabase2);
 		} catch (error) {
 			await client.safeQuery(dropSchemaQueryDatabase2);
 			throw error;

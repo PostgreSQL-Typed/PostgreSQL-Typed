@@ -24,6 +24,7 @@ describe("getRawJoinQuery", () => {
 				query: "CROSS JOIN schema1.table2",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -47,6 +48,7 @@ describe("getRawJoinQuery", () => {
 				query: "NATURAL JOIN schema1.table2",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -70,6 +72,7 @@ describe("getRawJoinQuery", () => {
 				query: "NATURAL INNER JOIN schema1.table2",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -93,6 +96,7 @@ describe("getRawJoinQuery", () => {
 				query: "NATURAL LEFT JOIN schema1.table2",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -116,6 +120,7 @@ describe("getRawJoinQuery", () => {
 				query: "NATURAL RIGHT JOIN schema1.table2",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -142,6 +147,7 @@ describe("getRawJoinQuery", () => {
 				query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 
@@ -161,6 +167,7 @@ describe("getRawJoinQuery", () => {
 				query: "INNER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -187,6 +194,7 @@ describe("getRawJoinQuery", () => {
 				query: "LEFT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -213,6 +221,7 @@ describe("getRawJoinQuery", () => {
 				query: "RIGHT JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -239,6 +248,7 @@ describe("getRawJoinQuery", () => {
 				query: "FULL JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});
@@ -265,6 +275,7 @@ describe("getRawJoinQuery", () => {
 				query: "FULL OUTER JOIN schema1.table2 %schema1.table2%\nON schema1.table2.id = schema1.table1.id",
 				variables: [],
 				tableLocation: "schema1.table2",
+				subqueries: [],
 			},
 		});
 	});

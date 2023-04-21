@@ -5,8 +5,8 @@ import { Client as PGClient, type ClientConfig, type QueryResult, types } from "
 
 import { BaseClient } from "../classes/BaseClient.js";
 import { setIssueForContext } from "../functions/setIssueForContext.js";
-import type { PostgresData } from "../types/interfaces/PostgresData.js";
 import type { Context } from "../types/types/Context.js";
+import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
 

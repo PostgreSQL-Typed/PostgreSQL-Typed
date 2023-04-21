@@ -24,6 +24,7 @@ describe("getRawWhereQuery", () => {
 			data: {
 				query: "schema1.table2.id = schema1.table1.id",
 				variables: [],
+				subqueries: [],
 			},
 		});
 	});
@@ -65,6 +66,7 @@ describe("getRawWhereQuery", () => {
 			data: {
 				query: "WHERE schema1.table2.id = %?%",
 				variables: [uuid.value],
+				subqueries: [],
 			},
 		});
 	});
@@ -113,6 +115,7 @@ describe("getRawWhereQuery", () => {
 			data: {
 				query: "WHERE\n  (\n    schema1.table2.id = %?%\n    AND schema1.table2.id = schema1.table1.id\n  )",
 				variables: [uuid.value],
+				subqueries: [],
 			},
 		});
 

@@ -6,6 +6,7 @@ import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Safe } from "../types/types/Safe.js";
+import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
@@ -26,7 +27,7 @@ export function getRawJoinQuery<
 	filter: Filter,
 	table: JoinedTable,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]
-): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
 	//* Table.location is in the format of "database.schema.table" but we only want "schema.table"
 	const tableLocation: string = table.location.split(".").slice(1).join("."),
 		//* Make sure the filter is an object
@@ -90,7 +91,7 @@ export function getRawJoinQuery<
 		case "NATURAL INNER":
 		case "NATURAL LEFT":
 		case "NATURAL RIGHT":
-			return { success: true, data: { query: `${filter.$TYPE} JOIN ${tableLocation}`, variables: [], tableLocation } };
+			return { success: true, data: { query: `${filter.$TYPE} JOIN ${tableLocation}`, variables: [], tableLocation, subqueries: [] } };
 
 		default: {
 			const parsedObject = hasKeys<Filter>(filter, [
@@ -134,6 +135,7 @@ export function getRawJoinQuery<
 					query: `${filter.$TYPE ?? "INNER"} JOIN ${tableLocation} %${tableLocation}%\nON ${onQuery.data.query}`,
 					variables: onQuery.data.variables,
 					tableLocation,
+					subqueries: onQuery.data.subqueries,
 				},
 			};
 		}

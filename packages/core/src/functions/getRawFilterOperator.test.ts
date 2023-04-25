@@ -161,7 +161,7 @@ describe("getRawFilterOperator", () => {
 		expect(notArrayResult.success).toBe(false);
 		if (notArrayResult.success) expect.fail();
 
-		const notEnoughItemsResult = getRawFilterOperator({ $IN: [1] }, parser, {} as any, 0);
+		const notEnoughItemsResult = getRawFilterOperator({ $IN: [] }, parser, {} as any, 0);
 		expect(notEnoughItemsResult.success).toBe(false);
 		if (notEnoughItemsResult.success) expect.fail();
 
@@ -196,7 +196,7 @@ describe("getRawFilterOperator", () => {
 		expect(notArrayResult.success).toBe(false);
 		if (notArrayResult.success) expect.fail();
 
-		const notEnoughItemsResult = getRawFilterOperator({ $NOT_IN: [1] }, parser, {} as any, 0);
+		const notEnoughItemsResult = getRawFilterOperator({ $NOT_IN: [] }, parser, {} as any, 0);
 		expect(notEnoughItemsResult.success).toBe(false);
 		if (notEnoughItemsResult.success) expect.fail();
 

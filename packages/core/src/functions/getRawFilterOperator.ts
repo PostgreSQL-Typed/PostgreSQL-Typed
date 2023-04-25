@@ -233,15 +233,15 @@ export function getRawFilterOperator(
 				};
 			}
 
-			//* Make sure it has atleast 2 entries
-			if (filterKey.length < 2) {
+			//* Make sure it has atleast 1 entry
+			if (filterKey.length === 0) {
 				return {
 					success: false,
 					error: getPGTError({
 						code: "too_small",
 						type: "array",
-						minimum: 2,
-						exact: false,
+						minimum: 1,
+						inclusive: true,
 					}),
 				};
 			}

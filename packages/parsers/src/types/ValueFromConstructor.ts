@@ -73,7 +73,7 @@ export type ValueFromConstructor<T extends Constructors | null> =
 		? string
 		: //* DateTime
 		T extends DateConstructor
-		? string
+		? number
 		: T extends DateMultiRangeConstructor
 		? string
 		: T extends DateRangeConstructor
@@ -81,21 +81,21 @@ export type ValueFromConstructor<T extends Constructors | null> =
 		: T extends IntervalConstructor
 		? string
 		: T extends TimeConstructor
-		? string
+		? number
 		: T extends TimestampConstructor
-		? string
+		? number
 		: T extends TimestampMultiRangeConstructor
 		? string
 		: T extends TimestampRangeConstructor
 		? string
 		: T extends TimestampTZConstructor
-		? string
+		? number
 		: T extends TimestampTZMultiRangeConstructor
 		? string
 		: T extends TimestampTZRangeConstructor
 		? string
 		: T extends TimeTZConstructor
-		? string
+		? number
 		: //* Geometric
 		T extends BoxConstructor
 		? string

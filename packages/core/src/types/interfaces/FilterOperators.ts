@@ -24,3 +24,4 @@ export interface FilterOperators<TValue, InnerPostgresData extends PostgresData,
 	$IS_NULL?: true;
 	$IS_NOT_NULL?: true;
 }
+//TODO Add a shorthand for $EQUAL

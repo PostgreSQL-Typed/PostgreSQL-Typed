@@ -74,8 +74,8 @@ export const types: Record<string, postgres.PostgresType<any>> = {
 	bool: {
 		to: OID.bool,
 		from: [OID.bool],
+		/* c8 ignore next 2 */
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		/* c8 ignore next 1 */
 		serialize: (value: string | null) => parser<Boolean>(Boolean)(value)?.postgres ?? null,
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		parse: parser<Boolean>(Boolean),

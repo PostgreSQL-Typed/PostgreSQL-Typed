@@ -15,7 +15,7 @@ interface OID {
 	oid: number;
 
 	value: number;
-	postgres: number;
+	postgres: string;
 
 	toString(): string;
 	toNumber(): number;
@@ -227,11 +227,11 @@ class OIDClass extends PGTPBase<OID> implements OID {
 		else throw parsed.error;
 	}
 
-	get postgres(): number {
-		return this._oid;
+	get postgres(): string {
+		return this.toString();
 	}
 
-	set postgres(oid: number) {
+	set postgres(oid: string) {
 		const parsed = OID.safeFrom(oid);
 		if (parsed.success) this._oid = parsed.data.toNumber();
 		else throw parsed.error;

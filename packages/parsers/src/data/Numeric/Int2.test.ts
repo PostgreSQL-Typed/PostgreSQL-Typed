@@ -316,17 +316,17 @@ describe("Int2", () => {
 	});
 
 	test("get postgres()", () => {
-		expect(Int2.from(1).postgres).toEqual(1);
-		expect(Int2.from("2").postgres).toEqual(2);
-		expect(Int2.from({ value: 3 }).postgres).toEqual(3);
+		expect(Int2.from(1).postgres).toEqual("1");
+		expect(Int2.from("2").postgres).toEqual("2");
+		expect(Int2.from({ value: 3 }).postgres).toEqual("3");
 	});
 
 	test("set postgres(...)", () => {
 		const int2 = Int2.from(1);
-		int2.postgres = 2;
-		expect(int2.postgres).toEqual(2);
+		int2.postgres = "2";
+		expect(int2.postgres).toEqual("2");
 
-		expect(() => (int2.postgres = 32_768)).toThrowError("Number must be less than or equal to 32767");
+		expect(() => (int2.postgres = "32768")).toThrowError("Number must be less than or equal to 32767");
 	});
 });
 

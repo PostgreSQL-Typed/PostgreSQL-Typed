@@ -14,7 +14,7 @@ interface Int4 {
 	int4: number;
 
 	value: number;
-	postgres: number;
+	postgres: string;
 
 	toString(): string;
 	toNumber(): number;
@@ -224,11 +224,11 @@ class Int4Class extends PGTPBase<Int4> implements Int4 {
 		else throw parsed.error;
 	}
 
-	get postgres(): number {
-		return this._int4;
+	get postgres(): string {
+		return this.toString();
 	}
 
-	set postgres(int4: number) {
+	set postgres(int4: string) {
 		const parsed = Int4.safeFrom(int4);
 		if (parsed.success) this._int4 = parsed.data.toNumber();
 		else throw parsed.error;

@@ -304,17 +304,17 @@ describe("Int4", () => {
 	});
 
 	test("get postgres()", () => {
-		expect(Int4.from(1).postgres).toEqual(1);
-		expect(Int4.from("2").postgres).toEqual(2);
-		expect(Int4.from({ value: 3 }).postgres).toEqual(3);
+		expect(Int4.from(1).postgres).toEqual("1");
+		expect(Int4.from("2").postgres).toEqual("2");
+		expect(Int4.from({ value: 3 }).postgres).toEqual("3");
 	});
 
 	test("set postgres(...)", () => {
 		const int4 = Int4.from(1);
-		int4.postgres = 2;
-		expect(int4.postgres).toEqual(2);
+		int4.postgres = "2";
+		expect(int4.postgres).toEqual("2");
 
-		expect(() => (int4.postgres = 2_147_483_648)).toThrowError("Number must be less than or equal to 2147483647");
+		expect(() => (int4.postgres = "2147483648")).toThrowError("Number must be less than or equal to 2147483647");
 	});
 });
 

@@ -64,14 +64,17 @@ describe("BitString", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestbit (bit, bit2, _bit)
         VALUES (
-          '1',
-          '11',
-          '{0, 1}'
+          $1::bit,
+					$2::bit(2),
+					$3::_bit
         )
-      `);
+      `,
+				["1", "11", "{0, 1}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestbit
@@ -124,13 +127,16 @@ describe("BitString", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestvarbit (varbit, _varbit)
         VALUES (
-          '1',
-          '{0, 1}'
+          $1::varbit,
+					$2::_varbit
         )
-      `);
+      `,
+				["1", "{0, 1}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestvarbit
@@ -180,13 +186,16 @@ describe("Boolean", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestboolean (boolean, _boolean)
         VALUES (
-          true,
-          '{true, false}'
+          $1::bool,
+					$2::_bool
         )
-      `);
+      `,
+				["true", "{true, false}"]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}
@@ -241,15 +250,18 @@ describe("Character", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestchar (char, _char, bpchar, _bpchar)
         VALUES (
-          'a',
-          '{a, b}',
-          'c',
-          '{c, d}'
+          $1::char,
+					$2::_char,
+					$3::bpchar,
+					$4::_bpchar
         )
-      `);
+      `,
+				["a", "{a, b}", "c", "{c, d}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestchar
@@ -306,13 +318,16 @@ describe("Character", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestvarchar (varchar, _varchar)
         VALUES (
-          'a',
-          '{a, b}'
+          $1::varchar,
+					$2::_varchar
         )
-      `);
+      `,
+				["a", "{a, b}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestvarchar
@@ -359,13 +374,16 @@ describe("Character", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestname (name, _name)
         VALUES (
-          'abc',
-          '{abc, def}'
+          $1::name,
+					$2::_name
         )
-      `);
+      `,
+				["abc", "{abc, def}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestname
@@ -407,13 +425,16 @@ describe("Character", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttext (text, _text)
         VALUES (
-          'abc',
-          '{abc, def}'
+          $1::text,
+					$2::_text
         )
-      `);
+      `,
+				["abc", "{abc, def}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttext
@@ -459,13 +480,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestdate (date, _date)
         VALUES (
-          '2022-09-02',
-          '{ 1997-08-24, 2022-09-02 }'
+          $1::date,
+					$2::_date
         )
-      `);
+      `,
+				["2022-09-02", "{ 1997-08-24, 2022-09-02 }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestdate
@@ -537,13 +561,19 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestdatemultirange (datemultirange, _datemultirange)
         VALUES (
-          '{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}',
-          '{\\{[1999-01-08\\,2022-01-01)\\,[2023-01-08\\,2024-01-01)\\},\\{[2025-01-08\\,2026-01-01)\\,[2027-01-08\\,2028-01-01)\\}}'
+          $1::datemultirange,
+					$2::_datemultirange
         )
-      `);
+      `,
+				[
+					"{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}",
+					"{\\{[1999-01-08\\,2022-01-01)\\,[2023-01-08\\,2024-01-01)\\},\\{[2025-01-08\\,2026-01-01)\\,[2027-01-08\\,2028-01-01)\\}}",
+				]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestdatemultirange
@@ -591,13 +621,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestdaterange (daterange, _daterange)
         VALUES (
-          '[2022-09-02,2022-10-03)',
-          '{[2022-09-02\\,2022-10-03),(2022-11-02\\,2022-12-03]}'
+          $1::daterange,
+					$2::_daterange
         )
-      `);
+      `,
+				["[2022-09-02,2022-10-03)", "{[2022-09-02\\,2022-10-03),(2022-11-02\\,2022-12-03]}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestdaterange
@@ -639,13 +672,19 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestinterval (interval, _interval)
         VALUES (
-          '1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds',
-          '{ 1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds, 7 years 6 months 5 days 4 hours 3 minutes 2.001 seconds }'
+          $1::interval,
+					$2::_interval
         )
-      `);
+      `,
+				[
+					"1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds",
+					"{ 1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds, 7 years 6 months 5 days 4 hours 3 minutes 2.001 seconds }",
+				]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestinterval
@@ -717,13 +756,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttime (time, _time)
         VALUES (
-          '04:05:06.789',
-          '{ 01:02:03.456, 04:05:06.789 }'
+          $1::time,
+					$2::_time
         )
-      `);
+      `,
+				["04:05:06.789", "{ 01:02:03.456, 04:05:06.789 }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttime
@@ -783,13 +825,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestamp (timestamp, _timestamp)
         VALUES (
-          '2004-10-19 10:23:54.678',
-          '{ 2019-01-02 03:04:05.678, 2022-09-08 07:06:05 }'
+          $1::timestamp,
+					$2::_timestamp
         )
-      `);
+      `,
+				["2004-10-19 10:23:54.678", "{ 2019-01-02 03:04:05.678, 2022-09-08 07:06:05 }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestamp
@@ -870,13 +915,19 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestampmultirange (tsmultirange, _tsmultirange)
         VALUES (
-          '{[1999-01-08 01:02:03.456,2022-01-01 02:03:04.567),[2023-01-08 01:02:03.456,2024-01-01 02:03:04.567),[2025-01-08 01:02:03,2026-01-01 02:03:04)}',
-          '{\\{[1999-01-08 01:02:03.456\\,2022-01-01 02:03:04.567)\\,[2023-01-08 01:02:03.456\\,2024-01-01 02:03:04.567)\\},\\{[2025-01-08 01:02:03\\,2026-01-01 02:03:04)\\,[2027-01-08 03:04:05\\,2028-01-01 04:05:06)\\}}'
+          $1::tsmultirange,
+					$2::_tsmultirange
         )
-      `);
+      `,
+				[
+					"{[1999-01-08 01:02:03.456,2022-01-01 02:03:04.567),[2023-01-08 01:02:03.456,2024-01-01 02:03:04.567),[2025-01-08 01:02:03,2026-01-01 02:03:04)}",
+					"{\\{[1999-01-08 01:02:03.456\\,2022-01-01 02:03:04.567)\\,[2023-01-08 01:02:03.456\\,2024-01-01 02:03:04.567)\\},\\{[2025-01-08 01:02:03\\,2026-01-01 02:03:04)\\,[2027-01-08 03:04:05\\,2028-01-01 04:05:06)\\}}",
+				]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestampmultirange
@@ -926,13 +977,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestamprange (tsrange, _tsrange)
         VALUES (
-          '[2022-09-02 01:02:03,2022-10-03 02:03:04)',
-          '{[2022-09-02 01:02:03\\,2022-10-03 02:03:04),(2022-11-02 01:02:03\\,2022-12-03 04:05:06.789]}'
+          $1::tsrange,
+					$2::_tsrange
         )
-      `);
+      `,
+				["[2022-09-02 01:02:03,2022-10-03 02:03:04)", "{[2022-09-02 01:02:03\\,2022-10-03 02:03:04),(2022-11-02 01:02:03\\,2022-12-03 04:05:06.789]}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestamprange
@@ -974,13 +1028,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestamptz (timestamptz, _timestamptz)
         VALUES (
-          '2004-10-19 04:05:06.789 -01:00',
-          '{ 2004-10-19T04:05:06.789+01:00, 2004-10-19 10:23:54.678 EST }'
+          $1::timestamptz,
+					$2::_timestamptz
         )
-      `);
+      `,
+				["2004-10-19 04:05:06.789 -01:00", "{ 2004-10-19T04:05:06.789+01:00, 2004-10-19 10:23:54.678 EST }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestamptz
@@ -1034,13 +1091,19 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestamptzmultirange (tstzmultirange, _tstzmultirange)
         VALUES (
-          '{[1999-01-08 01:02:03.456-01:00,2022-01-01 02:03:04.567+02:00),[2023-01-08 01:02:03.456 EST,2024-01-01 02:03:04.567 GMT),[2025-01-08 01:02:03 +09:00,2026-01-01 02:03:04 -06:00)}',
-          '{\\{[1999-01-08 01:02:03.456-01:00\\,2022-01-01 02:03:04.567+02:00)\\,[2023-01-08 01:02:03.456 EST\\,2024-01-01 02:03:04.567 GMT)\\},\\{[2025-01-08 01:02:03 +09:00\\,2026-01-01 02:03:04 -06:00)\\,[2027-01-08 03:04:05 EST\\,2028-01-01 04:05:06+01:00)\\}}'
+          $1::tstzmultirange,
+					$2::_tstzmultirange
         )
-      `);
+      `,
+				[
+					"{[1999-01-08 01:02:03.456-01:00,2022-01-01 02:03:04.567+02:00),[2023-01-08 01:02:03.456 EST,2024-01-01 02:03:04.567 GMT),[2025-01-08 01:02:03 +09:00,2026-01-01 02:03:04 -06:00)}",
+					"{\\{[1999-01-08 01:02:03.456-01:00\\,2022-01-01 02:03:04.567+02:00)\\,[2023-01-08 01:02:03.456 EST\\,2024-01-01 02:03:04.567 GMT)\\},\\{[2025-01-08 01:02:03 +09:00\\,2026-01-01 02:03:04 -06:00)\\,[2027-01-08 03:04:05 EST\\,2028-01-01 04:05:06+01:00)\\}}",
+				]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestamptzmultirange
@@ -1090,13 +1153,19 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimestamptzrange (tstzrange, _tstzrange)
         VALUES (
-          '[2022-09-02 01:02:03 +01:00,2022-10-03 02:03:04 EST)',
-          '{[2022-09-02 01:02:03 -01:00\\,2022-10-03 02:03:04 GMT),(2022-11-02 01:02:03 +09:00\\,2022-12-03 04:05:06.789 -06:00]}'
+          $1::tstzrange,
+					$2::_tstzrange
         )
-      `);
+      `,
+				[
+					"[2022-09-02 01:02:03 +01:00,2022-10-03 02:03:04 EST)",
+					"{[2022-09-02 01:02:03 -01:00\\,2022-10-03 02:03:04 GMT),(2022-11-02 01:02:03 +09:00\\,2022-12-03 04:05:06.789 -06:00]}",
+				]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimestamptzrange
@@ -1138,13 +1207,16 @@ describe("DateTime", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitesttimetz (timetz, _timetz)
         VALUES (
-          '04:05:06.789-01:00',
-          '{ 01:02:03.456+08:00, 04:05:06.789 EST }'
+          $1::timetz,
+					$2::_timetz
         )
-      `);
+      `,
+				["04:05:06.789-01:00", "{ 01:02:03.456+08:00, 04:05:06.789 EST }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitesttimetz
@@ -1190,13 +1262,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestbox (box, _box)
         VALUES (
-          '(1,2),(3,4)',
-          '{(1.1\\,2.2)\\,(3.3\\,4.4);(5.5\\,6.6)\\,(7.7\\,8.8)}'
+          $1::box,
+					$2::_box
         )
-      `);
+      `,
+				["(1,2),(3,4)", "{(1.1\\,2.2)\\,(3.3\\,4.4);(5.5\\,6.6)\\,(7.7\\,8.8)}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestbox
@@ -1238,13 +1313,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestcircle (circle, _circle)
         VALUES (
-          '<(1,2),3>',
-          '{ <(1.1\\,2.2)\\,3.3>, <(4\\,5)\\,6> }'
+          $1::circle,
+					$2::_circle
         )
-      `);
+      `,
+				["<(1,2),3>", "{ <(1.1\\,2.2)\\,3.3>, <(4\\,5)\\,6> }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestcircle
@@ -1286,13 +1364,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestline (line, _line)
         VALUES (
-          '{1.1,2.2,3.3}',
-          '{\\{1.1\\,2.2\\,3.3\\},\\{4.4\\,5.5\\,6.6\\}}'
+          $1::line,
+					$2::_line
         )
-      `);
+      `,
+				["{1.1,2.2,3.3}", "{\\{1.1\\,2.2\\,3.3\\},\\{4.4\\,5.5\\,6.6\\}}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestline
@@ -1352,13 +1433,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestlseg (lseg, _lseg)
         VALUES (
-          '[(1.1,2.2),(3.3,4.4)]',
-          '{ \\[(1.1\\,2.2)\\,(3.3\\,4.4)\\], \\[(5.5\\,6.6)\\,(7.7\\,8.8)\\] }'
+          $1::lseg,
+					$2::_lseg
         )
-      `);
+      `,
+				["[(1.1,2.2),(3.3,4.4)]", "{ \\[(1.1\\,2.2)\\,(3.3\\,4.4)\\], \\[(5.5\\,6.6)\\,(7.7\\,8.8)\\] }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestlseg
@@ -1415,13 +1499,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestpath (path, _path)
         VALUES (
-          '((1.1,2.2),(3.3,4.4))',
-          '{((1.1\\,2.2)\\,(3.3\\,4.4)),[(5.5\\,6.6)\\,(7.7\\,8.8)]}'
+          $1::path,
+					$2::_path
         )
-      `);
+      `,
+				["((1.1,2.2),(3.3,4.4))", "{((1.1\\,2.2)\\,(3.3\\,4.4)),[(5.5\\,6.6)\\,(7.7\\,8.8)]}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestpath
@@ -1478,13 +1565,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestpoint (point, _point)
         VALUES (
-          '(1,2)',
-          '{ (1.1\\,2.2), (3.3\\,4.4) }'
+          $1::point,
+					$2::_point
         )
-      `);
+      `,
+				["(1,2)", "{ (1.1\\,2.2), (3.3\\,4.4) }"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestpoint
@@ -1526,13 +1616,16 @@ describe("Geometric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestpolygon (polygon, _polygon)
         VALUES (
-          '((1.1,2.2),(3.3,4.4))',
-          '{((1.1\\,2.2)\\,(3.3\\,4.4)),((5.5\\,6.6)\\,(7.7\\,8.8))}'
+          $1::polygon,
+					$2::_polygon
         )
-      `);
+      `,
+				["((1.1,2.2),(3.3,4.4))", "{((1.1\\,2.2)\\,(3.3\\,4.4)),((5.5\\,6.6)\\,(7.7\\,8.8))}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestpolygon
@@ -1590,13 +1683,16 @@ describe("Monetary", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestmoney (money, _money)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::money,
+					$2::_money
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestmoney
@@ -1647,13 +1743,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestfloat4 (float4, _float4)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::float4,
+					$2::_float4
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestfloat4
@@ -1700,13 +1799,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestfloat8 (float8, _float8)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::float8,
+					$2::_float8
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestfloat8
@@ -1752,13 +1854,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint2 (int2, _int2)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::int2,
+					$2::_int2
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}
@@ -1806,13 +1911,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint4 (int4, _int4)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::int4,
+					$2::_int4
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}
@@ -1873,13 +1981,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint4multirange (int4multirange, _int4multirange)
         VALUES (
-          '{[1,3),[11,13),[21,23)}',
-          '{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}'
+          $1::int4multirange,
+					$2::_int4multirange
         )
-      `);
+      `,
+				["{[1,3),[11,13),[21,23)}", "{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestint4multirange
@@ -1921,13 +2032,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint4range (int4range, _int4range)
         VALUES (
-          '[1,3)',
-          '{[1\\,3),(5\\,7]}'
+          $1::int4range,
+					$2::_int4range
         )
-      `);
+      `,
+				["[1,3)", "{[1\\,3),(5\\,7]}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestint4range
@@ -1969,13 +2083,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint8 (int8, _int8)
         VALUES (
-          1,
-          '{2, 3}'
+          $1::int8,
+					$2::_int8
         )
-      `);
+      `,
+				[1, "{2, 3}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestint8
@@ -2033,13 +2150,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint8multirange (int8multirange, _int8multirange)
         VALUES (
-          '{[1,3),[11,13),[21,23)}',
-          '{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}'
+          $1::int8multirange,
+					$2::_int8multirange
         )
-      `);
+      `,
+				["{[1,3),[11,13),[21,23)}", "{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestint8multirange
@@ -2081,13 +2201,16 @@ describe("Numeric", () => {
         )
       `);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
         INSERT INTO public.vitestint8range (int8range, _int8range)
         VALUES (
-          '[1,3)',
-          '{[1\\,3),(5\\,7]}'
+          $1::int8range,
+					$2::_int8range
         )
-      `);
+      `,
+				["[1,3)", "{[1\\,3),(5\\,7]}"]
+			);
 
 			const result = await client.unsafe(`
         SELECT * FROM public.vitestint8range
@@ -2132,13 +2255,16 @@ describe("ObjectIdentifier", () => {
 				)
 			`);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
 				INSERT INTO public.vitestoid (oid, _oid)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::oid,
+					$2::_oid
 				)
-			`);
+			`,
+				[1, "{2, 3}"]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}
@@ -2191,13 +2317,16 @@ describe("UUID", () => {
 				)
 			`);
 
-			await client.unsafe(`
+			await client.unsafe(
+				`
 				INSERT INTO public.vitestuuid (uuid, _uuid)
 				VALUES (
-					'A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11',
-					'{A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11, A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11}'
+					$1::uuid,
+					$2::_uuid
 				)
-			`);
+			`,
+				["A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11", "{A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11, A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11}"]
+			);
 
 			const result = await client.unsafe(`
 				SELECT * FROM public.vitestuuid

@@ -274,17 +274,17 @@ describe("Boolean", () => {
 	});
 
 	test("get postgres()", () => {
-		expect(Boolean.from(1).postgres).toEqual(true);
-		expect(Boolean.from("0").postgres).toEqual(false);
-		expect(Boolean.from({ value: true }).postgres).toEqual(true);
+		expect(Boolean.from(1).postgres).toEqual("true");
+		expect(Boolean.from("0").postgres).toEqual("false");
+		expect(Boolean.from({ value: true }).postgres).toEqual("true");
 	});
 
 	test("set postgres(...)", () => {
 		const bool = Boolean.from(true);
-		bool.postgres = false;
-		expect(bool.postgres).toEqual(false);
+		bool.postgres = "false";
+		expect(bool.postgres).toEqual("false");
 
-		expect(() => (bool.postgres = 2 as any)).toThrowError(
+		expect(() => (bool.postgres = "2" as any)).toThrowError(
 			"Expected 'true' | 't' | 'yes' | 'y' | '1' | 'on' | 'false' | 'f' | 'no' | 'n' | '0' | 'off' | 'of', received '2'"
 		);
 	});

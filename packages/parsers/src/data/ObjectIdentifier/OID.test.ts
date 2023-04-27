@@ -317,17 +317,17 @@ describe("OID", () => {
 	});
 
 	test("get postgres()", () => {
-		expect(OID.from(1).postgres).toEqual(1);
-		expect(OID.from("2").postgres).toEqual(2);
-		expect(OID.from({ value: 3 }).postgres).toEqual(3);
+		expect(OID.from(1).postgres).toEqual("1");
+		expect(OID.from("2").postgres).toEqual("2");
+		expect(OID.from({ value: 3 }).postgres).toEqual("3");
 	});
 
 	test("set postgres(...)", () => {
 		const oid = OID.from(1);
-		oid.postgres = 2;
-		expect(oid.postgres).toEqual(2);
+		oid.postgres = "2";
+		expect(oid.postgres).toEqual("2");
 
-		expect(() => (oid.postgres = 4_294_967_296)).toThrowError("Number must be less than or equal to 4294967295");
+		expect(() => (oid.postgres = "4294967296")).toThrowError("Number must be less than or equal to 4294967295");
 	});
 });
 

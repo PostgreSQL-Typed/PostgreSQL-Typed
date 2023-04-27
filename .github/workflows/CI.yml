@@ -6,11 +6,6 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/core'
-  "PostgreSQL-Caching":
-    name: PostgreSQL-Caching
-    uses: ./.github/workflows/package.yml
-    with:
-      package: postgresql-caching
   "OIDs":
     name: '@PostgreSQL-Typed/OIDs'
     uses: ./.github/workflows/package.yml

@@ -48,24 +48,6 @@
 <p>
 
 <br/>
-<!-- PostgreSQL-Caching -->
-<h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Caching">
-		PostgreSQL-Caching
-	</a>
-</h2>
-<div align="center">
-	<!-- badges -->
-	<a href="https://www.npmjs.com/package/postgresql-caching">
-		<img src="https://img.shields.io/npm/v/postgresql-caching.svg?logo=npm" alt="PostgreSQL-Caching Version"/>
-		<img src="https://img.shields.io/badge/coverage-64.61%25-critical.svg?placeholder=$coverage-url$/packages/PostgreSQL-Caching&logo=vitest&style=flat" alt="PostgreSQL-Caching Coverage"/>
-	</a>
-</div>
-<p align="center">
-  A caching layer for PostgreSQL clients
-<p>
-
-<br/>
 <!-- @PostgreSQL-Typed/OIDs -->
 <h2 align="center">
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/oids">

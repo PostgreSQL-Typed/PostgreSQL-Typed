@@ -1,9 +1,10 @@
 import type { Constructors } from "../types/Constructors.js";
 import type { FromParameters } from "../types/FromParameters.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
+import type { PGTPBase } from "./PGTPBase.js";
 
 export const serializer =
-	<DataType>(constructor: Constructors | ObjectFunction<DataType>) =>
+	<DataType>(constructor: Constructors | ObjectFunction<PGTPBase<DataType>>) =>
 	(value: FromParameters<Constructors> | null) => {
 		if (value === null) return "NULL";
 		try {

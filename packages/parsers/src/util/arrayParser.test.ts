@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { ObjectFunction } from "../types/ObjectFunction.js";
 
+import type { ObjectFunction } from "../types/ObjectFunction.js";
 import { arrayParser } from "./arrayParser.js";
 
 const testObject = {

@@ -280,7 +280,7 @@ importers:
         version: link:../util
       postgres:
         specifier: github:Bas950/postgres
-        version: github.com/Bas950/postgres/7a02288c405afbfc3e014795c752dccfc7eb52e9
+        version: github.com/Bas950/postgres/a10bb6a892efaeef4252172fd7ed95608f007ed5
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -10909,8 +10909,8 @@ packages:
   /zod@3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
 
-  github.com/Bas950/postgres/7a02288c405afbfc3e014795c752dccfc7eb52e9:
-    resolution: {tarball: https://codeload.github.com/Bas950/postgres/tar.gz/7a02288c405afbfc3e014795c752dccfc7eb52e9}
+  github.com/Bas950/postgres/a10bb6a892efaeef4252172fd7ed95608f007ed5:
+    resolution: {tarball: https://codeload.github.com/Bas950/postgres/tar.gz/a10bb6a892efaeef4252172fd7ed95608f007ed5}
     name: postgres
     version: 3.3.4
     prepare: true

@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Boolean } from "./Boolean.js";
 
 describe("BooleanConstructor", () => {
@@ -343,13 +345,26 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				// eslint-disable-next-line @typescript-eslint/ban-types
+				serializer<Boolean>(Boolean)(true),
+				// eslint-disable-next-line @typescript-eslint/ban-types
+				arraySerializer<Boolean>(Boolean, ",")([true, false]),
+			];
+
+			expect(singleInput).toEqual("true");
+			expect(arrayInput).toEqual("{true,false}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestboolean (boolean, _boolean)
 				VALUES (
-					true,
-					'{true, false}'
+					$1::bool,
+					$2::_bool
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}

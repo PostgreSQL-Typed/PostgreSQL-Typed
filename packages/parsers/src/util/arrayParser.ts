@@ -1,4 +1,4 @@
-import { Constructors } from "../index.js";
+import type { Constructors } from "../types/Constructors.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const arrayParser =

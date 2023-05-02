@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
-import { parser } from "./parser.js";
+import { serializer } from "./serializer.js";
 
 const testObject = {
 	from: (value: string) => {
@@ -22,15 +22,15 @@ const testObject = {
 	},
 } as unknown as ObjectFunction<number>;
 
-describe("parser", () => {
-	const parser2 = parser(testObject);
-	it("should return an Object array if the string is valid", () => {
-		expect(parser2("0")?.value).toStrictEqual(0);
+describe("serializer", () => {
+	const serializer2 = serializer(testObject);
+	it("should return a string if it is valid", () => {
+		expect(serializer2("0")).toStrictEqual("0");
 	});
 
-	it("should return null if string is invalid", () => {
-		expect(parser2("bla")).toBeNull();
-		expect(parser2('{"0","1"}')).toBeNull();
-		expect(parser2(null)).toBeNull();
+	it("should return NULL if string is invalid", () => {
+		expect(serializer2("bla")).toStrictEqual("NULL");
+		expect(serializer2('{"0","1"}')).toStrictEqual("NULL");
+		expect(serializer2(null)).toStrictEqual("NULL");
 	});
 });

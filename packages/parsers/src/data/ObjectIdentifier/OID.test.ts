@@ -3,7 +3,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { OID } from "./OID.js";
 
 describe("OIDConstructor", () => {
@@ -380,13 +382,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<OID>(OID)(OID.from(1)), arraySerializer<OID>(OID, ",")([OID.from(2), OID.from(3)])];
+
+			expect(singleInput).toEqual("1");
+			expect(arrayInput).toEqual("{2,3}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestoid (oid, _oid)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::oid,
+					$2::_oid
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}

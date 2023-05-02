@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { Int4 } from "./Int4.js";
 import { Int4Range } from "./Int4Range.js";
 
@@ -281,13 +283,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Int4Range>(Int4Range)(Int4Range.from("[1,3)")),
+				arraySerializer<Int4Range>(Int4Range)([Int4Range.from("[1,3)"), Int4Range.from("(5,7]")]),
+			];
+
+			expect(singleInput).toStrictEqual("[1,3)");
+			expect(arrayInput).toStrictEqual('{"[1\\,3)","(5\\,7]"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint4range (int4range, _int4range)
 				VALUES (
-					'[1,3)',
-					'{[1\\,3),(5\\,7]}'
+					$1::int4range,
+					$2::_int4range
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestint4range

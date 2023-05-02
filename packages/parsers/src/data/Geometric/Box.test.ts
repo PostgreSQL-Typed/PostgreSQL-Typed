@@ -3,7 +3,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Box, isBox } from "./Box.js";
 
 describe("BoxConstructor", () => {
@@ -217,13 +219,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Box>(Box)(Box.from("(1,2),(3,4)")),
+				arraySerializer<Box>(Box, ";")([Box.from("(1.1,2.2),(3.3,4.4)"), Box.from("(5.5,6.6),(7.7,8.8)")]),
+			];
+
+			expect(singleInput).toBe("(1,2),(3,4)");
+			expect(arrayInput).toBe("{(1.1,2.2),(3.3,4.4);(5.5,6.6),(7.7,8.8)}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestbox (box, _box)
 				VALUES (
-					'(1,2),(3,4)',
-					'{(1.1\,2.2)\,(3.3\,4.4);(5.5\,6.6)\,(7.7\,8.8)}'
+					$1::box,
+					$2::_box
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestbox

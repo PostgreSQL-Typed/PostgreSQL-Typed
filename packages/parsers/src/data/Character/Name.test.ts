@@ -3,7 +3,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Name } from "./Name.js";
 
 describe("NameConstructor", () => {
@@ -227,13 +229,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Name>(Name)(Name.from("abc")), arraySerializer<Name>(Name, ",")([Name.from("abc"), Name.from("def")])];
+
+			expect(singleInput).toBe("abc");
+			expect(arrayInput).toBe("{abc,def}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestname (name, _name)
 				VALUES (
-					'abc',
-					'{abc, def}'
+					$1::name,
+					$2::_name
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestname

@@ -81,7 +81,6 @@ export interface TooBigIssue {
 export interface InvalidNLengthIssue {
 	code: typeof IssueCode.invalid_n_length;
 	maximum: number;
-	exact?: boolean;
 	received: number;
 }
 

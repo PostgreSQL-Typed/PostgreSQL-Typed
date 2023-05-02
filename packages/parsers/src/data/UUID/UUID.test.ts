@@ -1,7 +1,11 @@
 /* eslint-disable unicorn/filename-case */
-import { Client } from "pg";
+import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
+import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
+import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { UUID } from "./UUID.js";
 
 describe("UUIDConstructor", () => {
@@ -229,10 +233,13 @@ describe("PostgreSQL", () => {
 			application_name: "uuid.test.ts",
 		});
 
-		await client.connect();
-
 		let error = null;
 		try {
+			await client.connect();
+
+			//* PG has a native parser for the '_uuid' type
+			types.setTypeParser(2951 as any, value => value);
+
 			await client.query(`
 				CREATE TABLE public.vitestuuid (
 					uuid uuid NULL,
@@ -240,17 +247,31 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<UUID>(UUID)(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")),
+				arraySerializer<UUID>(UUID, ",")([UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11"), UUID.from("A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11")]),
+			];
+
+			expect(singleInput).toBe("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11");
+			expect(arrayInput).toBe("{a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11,a0eebc99-8c0b-4ef8-bb6d-6bb9bd380a11}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestuuid (uuid, _uuid)
 				VALUES (
-					'A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11',
-					'{A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11, A0EEBC99-8C0B-4EF8-BB6D-6BB9BD380A11}'
+					$1::uuid,
+					$2::_uuid
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestuuid
 			`);
+
+			result.rows[0].uuid = parser<UUID>(UUID)(result.rows[0].uuid);
+			result.rows[0]._uuid = arrayParser<UUID>(UUID, ",")(result.rows[0]._uuid);
 
 			expect(result.rows[0].uuid.toString()).toStrictEqual(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").toString());
 			expect(result.rows[0]._uuid).toHaveLength(2);

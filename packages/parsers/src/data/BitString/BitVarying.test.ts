@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { BitVarying } from "./BitVarying.js";
 
 describe("BitVaryingConstructor", () => {
@@ -373,13 +375,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<BitVarying<number>>(BitVarying)(BitVarying.from(1)),
+				arraySerializer<BitVarying<number>>(BitVarying, ",")([BitVarying.from(0), BitVarying.from(1)]),
+			];
+
+			expect(singleInput).toEqual("1");
+			expect(arrayInput).toEqual("{0,1}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestvarbit (varbit, _varbit)
 				VALUES (
-					'1',
-					'{0, 1}'
+					$1::varbit,
+					$2::_varbit
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestvarbit

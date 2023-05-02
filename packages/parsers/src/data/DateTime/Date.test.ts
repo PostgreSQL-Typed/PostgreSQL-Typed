@@ -3,7 +3,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Date } from "./Date.js";
 
 describe("DateConstructor", () => {
@@ -237,13 +239,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Date>(Date)(Date.from("2022-09-02")),
+				arraySerializer<Date>(Date, ",")([Date.from("1997-08-24"), Date.from("2022-09-02")]),
+			];
+
+			expect(singleInput).toBe("2022-09-02");
+			expect(arrayInput).toBe("{1997-08-24,2022-09-02}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestdate (date, _date)
 				VALUES (
-					'2022-09-02',
-					'{ 1997-08-24, 2022-09-02 }'
+					$1::date,
+					$2::_date
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestdate

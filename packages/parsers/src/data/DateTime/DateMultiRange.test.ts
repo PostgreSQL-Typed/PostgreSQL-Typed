@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { DateMultiRange } from "./DateMultiRange.js";
 import { DateRange } from "./DateRange.js";
 
@@ -321,13 +323,29 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<DateMultiRange>(DateMultiRange)(
+					DateMultiRange.from(DateRange.from("[1999-01-08,2022-01-01)"), DateRange.from("[2023-01-08,2024-01-01)"), DateRange.from("[2025-01-08,2026-01-01)"))
+				),
+				arraySerializer<DateMultiRange>(DateMultiRange)([
+					DateMultiRange.from(DateRange.from("[1999-01-08,2022-01-01)"), DateRange.from("[2023-01-08,2024-01-01)")),
+					DateMultiRange.from(DateRange.from("[2025-01-08,2026-01-01)"), DateRange.from("[2027-01-08,2028-01-01)")),
+				]),
+			];
+
+			expect(singleInput).toBe("{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}");
+			expect(arrayInput).toBe('{"\\{[1999-01-08\\,2022-01-01)\\,[2023-01-08\\,2024-01-01)\\}","\\{[2025-01-08\\,2026-01-01)\\,[2027-01-08\\,2028-01-01)\\}"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestdatemultirange (datemultirange, _datemultirange)
 				VALUES (
-					'{[1999-01-08,2022-01-01),[2023-01-08,2024-01-01),[2025-01-08,2026-01-01)}',
-					'{\\{[1999-01-08\\,2022-01-01)\\,[2023-01-08\\,2024-01-01)\\},\\{[2025-01-08\\,2026-01-01)\\,[2027-01-08\\,2028-01-01)\\}}'
+					$1::datemultirange,
+					$2::_datemultirange
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestdatemultirange

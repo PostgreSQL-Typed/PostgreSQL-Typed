@@ -81,7 +81,7 @@ const errorMap: ErrorMap = issue => {
 			}
 			break;
 		case IssueCode.invalid_n_length:
-			message = `Invalid 'n' length: ${issue.received}, 'n' must be ${issue.exact ? "exactly" : "less than or equal to"} ${issue.maximum}`;
+			message = `Invalid 'n' length: ${issue.received}, 'n' must be less than or equal to ${issue.maximum}`;
 			break;
 		case IssueCode.not_finite:
 			message = "Number must be finite";

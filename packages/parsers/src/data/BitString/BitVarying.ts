@@ -190,7 +190,7 @@ class BitVaryingConstructorClass<N extends number> extends PGTPConstructorBase<B
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<BitVarying<N>> {
 		if (this.isAnyBitVarying(argument)) {
 			// Make sure the bit is the correct length
-			if (argument.n !== this._n && this._n !== Number.POSITIVE_INFINITY) {
+			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
 					maximum: this._n,

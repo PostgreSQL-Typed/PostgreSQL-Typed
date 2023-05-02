@@ -3,7 +3,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Text } from "./Text.js";
 
 describe("TextConstructor", () => {
@@ -209,13 +211,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Text>(Text)(Text.from("abc")), arraySerializer<Text>(Text, ",")([Text.from("abc"), Text.from("def")])];
+
+			expect(singleInput).toBe("abc");
+			expect(arrayInput).toBe("{abc,def}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitesttext (text, _text)
 				VALUES (
-					'abc',
-					'{abc, def}'
+					$1::text,
+					$2::_text
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitesttext

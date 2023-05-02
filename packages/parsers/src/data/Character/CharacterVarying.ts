@@ -157,7 +157,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<CharacterVarying<N>> {
 		if (this.isAnyCharacterVarying(argument)) {
 			// Make sure the character is the correct length
-			if (argument.n !== this._n && this._n !== Number.POSITIVE_INFINITY) {
+			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
 					maximum: this._n,

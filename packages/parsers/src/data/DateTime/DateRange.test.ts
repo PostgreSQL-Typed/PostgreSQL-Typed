@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { Date } from "./Date.js";
 import { DateRange } from "./DateRange.js";
 
@@ -378,13 +380,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<DateRange>(DateRange)(DateRange.from("[2022-09-02,2022-10-03)")),
+				arraySerializer<DateRange>(DateRange)([DateRange.from("[2022-09-02,2022-10-03)"), DateRange.from("(2022-11-02,2022-12-03]")]),
+			];
+
+			expect(singleInput).toBe("[2022-09-02,2022-10-03)");
+			expect(arrayInput).toBe('{"[2022-09-02\\,2022-10-03)","(2022-11-02\\,2022-12-03]"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestdaterange (daterange, _daterange)
 				VALUES (
-					'[2022-09-02,2022-10-03)',
-					'{[2022-09-02\\,2022-10-03),(2022-11-02\\,2022-12-03]}'
+					$1::daterange,
+					$2::_daterange
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestdaterange

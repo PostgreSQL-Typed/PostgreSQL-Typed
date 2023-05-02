@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { Int4MultiRange } from "./Int4MultiRange.js";
 import { Int4Range } from "./Int4Range.js";
 
@@ -194,13 +196,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Int4MultiRange>(Int4MultiRange)(Int4MultiRange.from("{[1,3),[11,13),[21,23)}")),
+				arraySerializer<Int4MultiRange>(Int4MultiRange)([Int4MultiRange.from("{[1,3),[11,13)}"), Int4MultiRange.from("{[21,23),[31,33)}")]),
+			];
+
+			expect(singleInput).toBe("{[1,3),[11,13),[21,23)}");
+			expect(arrayInput).toBe('{"\\{[1\\,3)\\,[11\\,13)\\}","\\{[21\\,23)\\,[31\\,33)\\}"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint4multirange (int4multirange, _int4multirange)
 				VALUES (
-					'{[1,3),[11,13),[21,23)}',
-					'{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}'
+					$1::int4multirange,
+					$2::_int4multirange
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestint4multirange

@@ -147,7 +147,6 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 				code: "invalid_n_length",
 				maximum: this._n,
 				received: argument.length,
-				exact: true,
 			});
 			return INVALID;
 		}
@@ -161,12 +160,11 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Character<N>> {
 		if (this.isAnyCharacter(argument)) {
 			// Make sure the character is the correct length
-			if (argument.n !== this._n) {
+			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
 					maximum: this._n,
 					received: argument.n,
-					exact: true,
 				});
 				return INVALID;
 			}

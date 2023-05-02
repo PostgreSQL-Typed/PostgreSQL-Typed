@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Int8 } from "./Int8.js";
 
 describe("Int8Constructor", () => {
@@ -376,13 +378,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Int8>(Int8)(Int8.from(1)), arraySerializer<Int8>(Int8, ",")([Int8.from(2), Int8.from(3)])];
+
+			expect(singleInput).toEqual("1");
+			expect(arrayInput).toEqual("{2,3}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint8 (int8, _int8)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::int8,
+					$2::_int8
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestint8

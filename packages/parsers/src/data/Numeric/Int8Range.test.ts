@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { Int8 } from "./Int8.js";
 import { Int8Range } from "./Int8Range.js";
 
@@ -268,13 +270,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Int8Range>(Int8Range)(Int8Range.from("[1,3)")),
+				arraySerializer<Int8Range>(Int8Range)([Int8Range.from("[1,3)"), Int8Range.from("(5,7]")]),
+			];
+
+			expect(singleInput).toStrictEqual("[1,3)");
+			expect(arrayInput).toStrictEqual('{"[1\\,3)","(5\\,7]"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint8range (int8range, _int8range)
 				VALUES (
-					'[1,3)',
-					'{[1\\,3),(5\\,7]}'
+					$1::int8range,
+					$2::_int8range
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestint8range

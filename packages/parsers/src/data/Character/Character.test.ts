@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Character } from "./Character.js";
 
 describe("CharacterConstructor", () => {
@@ -49,8 +51,7 @@ describe("CharacterConstructor", () => {
 				code: "invalid_n_length",
 				maximum: 1,
 				received: 3,
-				exact: true,
-				message: "Invalid 'n' length: 3, 'n' must be exactly 1",
+				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
 			});
 		}
 
@@ -130,10 +131,9 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(invalidCharLength.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				exact: true,
 				maximum: 1,
 				received: 2,
-				message: "Invalid 'n' length: 2, 'n' must be exactly 1",
+				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
 			});
 		}
 		//#endregion
@@ -268,7 +268,7 @@ describe("Character", () => {
 		char.character = "b" as any;
 		expect(char.character).toEqual("b");
 
-		expect(() => (char.character = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (char.character = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 
 	test("get value()", () => {
@@ -282,7 +282,7 @@ describe("Character", () => {
 		char.value = "b" as any;
 		expect(char.value).toEqual("b");
 
-		expect(() => (char.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (char.value = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 
 	test("get postgres()", () => {
@@ -296,7 +296,7 @@ describe("Character", () => {
 		char.postgres = "b" as any;
 		expect(char.postgres).toEqual("b");
 
-		expect(() => (char.postgres = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (char.postgres = "abc" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 });
 
@@ -338,15 +338,30 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInputChar, arrayInputChar, singleInputBpchar, arrayInputBpchar] = [
+				serializer<Character<number>>(Character)(Character.from("a")),
+				arraySerializer<Character<number>>(Character, ",")([Character.from("a"), Character.from("b")]),
+				serializer<Character<number>>(Character)(Character.from("c")),
+				arraySerializer<Character<number>>(Character, ",")([Character.from("c"), Character.from("d")]),
+			];
+
+			expect(singleInputChar).toEqual("a");
+			expect(arrayInputChar).toEqual("{a,b}");
+			expect(singleInputBpchar).toEqual("c");
+			expect(arrayInputBpchar).toEqual("{c,d}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestchar (char, _char, bpchar, _bpchar)
 				VALUES (
-					'a',
-					'{a, b}',
-					'c',
-					'{c, d}'
+					$1::"char",
+					$2::_char,
+					$3::bpchar,
+					$4::_bpchar
 				)
-			`);
+			`,
+				[singleInputChar, arrayInputChar, singleInputBpchar, arrayInputBpchar]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestchar

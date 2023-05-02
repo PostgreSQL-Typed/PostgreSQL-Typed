@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { LineSegment } from "./LineSegment.js";
 import { Point } from "./Point.js";
 
@@ -273,13 +275,38 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<LineSegment>(LineSegment)(
+					LineSegment.from({
+						a: Point.from("(1.1,2.2)"),
+						b: Point.from("(3.3,4.4)"),
+					})
+				),
+				arraySerializer<LineSegment>(LineSegment)([
+					LineSegment.from({
+						a: Point.from("(1.1,2.2)"),
+						b: Point.from("(3.3,4.4)"),
+					}),
+					LineSegment.from({
+						a: Point.from("(5.5,6.6)"),
+						b: Point.from("(7.7,8.8)"),
+					}),
+				]),
+			];
+
+			expect(singleInput).toStrictEqual("[(1.1,2.2),(3.3,4.4)]");
+			expect(arrayInput).toStrictEqual('{"[(1.1\\,2.2)\\,(3.3\\,4.4)]","[(5.5\\,6.6)\\,(7.7\\,8.8)]"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestlseg (lseg, _lseg)
 				VALUES (
-					'[(1.1,2.2),(3.3,4.4)]',
-					'{ \\[(1.1\\,2.2)\\,(3.3\\,4.4)\\], \\[(5.5\\,6.6)\\,(7.7\\,8.8)\\] }'
+					$1::lseg,
+					$2::_lseg
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestlseg

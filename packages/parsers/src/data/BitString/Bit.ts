@@ -155,7 +155,6 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 				code: "invalid_n_length",
 				maximum: this._n,
 				received: argument.length,
-				exact: true,
 			});
 			return INVALID;
 		}
@@ -194,12 +193,11 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Bit<N>> {
 		if (this.isAnyBit(argument)) {
 			// Make sure the bit is the correct length
-			if (argument.n !== this._n) {
+			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
 					maximum: this._n,
 					received: argument.n,
-					exact: true,
 				});
 				return INVALID;
 			}

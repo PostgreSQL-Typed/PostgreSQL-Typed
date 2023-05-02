@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Int4 } from "./Int4.js";
 
 describe("Int4Constructor", () => {
@@ -349,13 +351,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Int4>(Int4)(Int4.from(1)), arraySerializer<Int4>(Int4, ",")([Int4.from(2), Int4.from(3)])];
+
+			expect(singleInput).toEqual("1");
+			expect(arrayInput).toEqual("{2,3}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint4 (int4, _int4)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::int4,
+					$2::_int4
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 		} catch {
 			expect.fail("Failed to connect to PostgreSQL");
 		}

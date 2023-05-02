@@ -3,7 +3,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Time } from "./Time.js";
 
 describe("TimeConstructor", () => {
@@ -305,13 +307,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Time>(Time)(Time.from("04:05:06.789")),
+				arraySerializer<Time>(Time, ",")([Time.from("01:02:03.456"), Time.from("04:05:06.789")]),
+			];
+
+			expect(singleInput).toBe("04:05:06.789");
+			expect(arrayInput).toBe("{01:02:03.456,04:05:06.789}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitesttime (time, _time)
 				VALUES (
-					'04:05:06.789',
-					'{ 01:02:03.456, 04:05:06.789 }'
+					$1::time,
+					$2::_time
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitesttime

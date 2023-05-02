@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Point } from "./Point.js";
 import { Polygon } from "./Polygon.js";
 
@@ -251,13 +253,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Polygon>(Polygon)(Polygon.from("((1.1,2.2),(3.3,4.4))")),
+				arraySerializer<Polygon>(Polygon)([Polygon.from("((1,2),(3,4))"), Polygon.from("((5.5,6.6),(7.7,8.8))")]),
+			];
+
+			expect(singleInput).toBe("((1.1,2.2),(3.3,4.4))");
+			expect(arrayInput).toBe('{"((1\\,2)\\,(3\\,4))","((5.5\\,6.6)\\,(7.7\\,8.8))"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestpolygon (polygon, _polygon)
 				VALUES (
-					'((1.1,2.2),(3.3,4.4))',
-					'{((1.1\\,2.2)\\,(3.3\\,4.4)),((5.5\\,6.6)\\,(7.7\\,8.8))}'
+					$1::polygon,
+					$2::_polygon
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestpolygon
@@ -274,7 +287,7 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._polygon).toHaveLength(2);
 			expect(result.rows[0]._polygon[0].toString()).toStrictEqual(
 				Polygon.from({
-					points: [Point.from({ x: 1.1, y: 2.2 }), Point.from({ x: 3.3, y: 4.4 })],
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				}).toString()
 			);
 			expect(result.rows[0]._polygon[1].toString()).toStrictEqual(

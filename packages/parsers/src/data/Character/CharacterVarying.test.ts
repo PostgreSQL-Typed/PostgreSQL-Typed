@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { CharacterVarying } from "./CharacterVarying.js";
 
 describe("CharacterVaryingConstructor", () => {
@@ -317,13 +319,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<CharacterVarying<number>>(CharacterVarying)(CharacterVarying.from("a")),
+				arraySerializer<CharacterVarying<number>>(CharacterVarying, ",")([CharacterVarying.from("a"), CharacterVarying.from("b")]),
+			];
+
+			expect(singleInput).toEqual("a");
+			expect(arrayInput).toEqual("{a,b}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestvarchar (varchar, _varchar)
 				VALUES (
-					'a',
-					'{a, b}'
+					$1::varchar,
+					$2::_varchar
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestvarchar

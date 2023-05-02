@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Money } from "./Money.js";
 
 describe("MoneyConstructor", () => {
@@ -350,13 +352,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Money>(Money)(Money.from(1)), arraySerializer<Money>(Money, ",")([Money.from(2), Money.from(3)])];
+
+			expect(singleInput).toEqual("1.00");
+			expect(arrayInput).toEqual("{2.00,3.00}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestmoney (money, _money)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::money,
+					$2::_money
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestmoney

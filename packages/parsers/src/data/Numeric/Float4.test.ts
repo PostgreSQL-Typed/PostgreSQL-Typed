@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Float4 } from "./Float4.js";
 
 describe("Float4Constructor", () => {
@@ -387,13 +389,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Float4>(Float4)(Float4.from(1)), arraySerializer<Float4>(Float4, ",")([Float4.from(2), Float4.from(3)])];
+
+			expect(singleInput).toBe("1");
+			expect(arrayInput).toBe("{2,3}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestfloat4 (float4, _float4)
 				VALUES (
-					1,
-					'{2, 3}'
+					$1::float4,
+					$2::_float4
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestfloat4

@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Circle } from "./Circle";
 
 describe("CircleConstructor", () => {
@@ -185,13 +187,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Circle>(Circle)(Circle.from({ x: 1, y: 2, radius: 3 })),
+				arraySerializer<Circle>(Circle)([Circle.from({ x: 1.1, y: 2.2, radius: 3.3 }), Circle.from({ x: 4, y: 5, radius: 6 })]),
+			];
+
+			expect(singleInput).toStrictEqual("<(1,2),3>");
+			expect(arrayInput).toStrictEqual('{"<(1.1\\,2.2)\\,3.3>","<(4\\,5)\\,6>"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestcircle (circle, _circle)
 				VALUES (
-					'<(1,2),3>',
-					'{ <(1.1\\,2.2)\\,3.3>, <(4\\,5)\\,6> }'
+					$1::circle,
+					$2::_circle
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestcircle

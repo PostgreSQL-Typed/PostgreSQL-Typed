@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Line } from "./Line.js";
 
 describe("LineConstructor", () => {
@@ -189,13 +191,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Line>(Line)(Line.from({ a: 1.1, b: 2.2, c: 3.3 })),
+				arraySerializer<Line>(Line)([Line.from({ a: 1, b: 2, c: 3 }), Line.from({ a: 4.4, b: 5.5, c: 6.6 })]),
+			];
+
+			expect(singleInput).toBe("{1.1,2.2,3.3}");
+			expect(arrayInput).toBe('{"\\{1\\,2\\,3\\}","\\{4.4\\,5.5\\,6.6\\}"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestline (line, _line)
 				VALUES (
-					'{1.1,2.2,3.3}',
-					'{\\{1.1\\,2.2\\,3.3\\},\\{4.4\\,5.5\\,6.6\\}}'
+					$1::line,
+					$2::_line
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestline
@@ -214,9 +227,9 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._line).toHaveLength(2);
 			expect(result.rows[0]._line[0].toString()).toStrictEqual(
 				Line.from({
-					a: 1.1,
-					b: 2.2,
-					c: 3.3,
+					a: 1,
+					b: 2,
+					c: 3,
 				}).toString()
 			);
 			expect(result.rows[0]._line[1].toString()).toStrictEqual(

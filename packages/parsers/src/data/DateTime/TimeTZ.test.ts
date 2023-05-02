@@ -4,7 +4,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Time } from "./Time.js";
 import { TimeTZ } from "./TimeTZ.js";
 
@@ -494,13 +496,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<TimeTZ>(TimeTZ)(TimeTZ.from("04:05:06.789-01:00")),
+				arraySerializer<TimeTZ>(TimeTZ, ",")([TimeTZ.from("01:02:03.456+08:00"), TimeTZ.from("04:05:06.789-05:00")]),
+			];
+
+			expect(singleInput).toStrictEqual("04:05:06.789-01:00");
+			expect(arrayInput).toStrictEqual("{01:02:03.456+08:00,04:05:06.789-05:00}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitesttimetz (timetz, _timetz)
 				VALUES (
-					'04:05:06.789-01:00',
-					'{ 01:02:03.456+08:00, 04:05:06.789 EST }'
+					$1::timetz,
+					$2::_timetz
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitesttimetz

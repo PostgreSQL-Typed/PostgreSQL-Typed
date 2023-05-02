@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Interval, IntervalStyle } from "./Interval.js";
 
 describe("IntervalStyle", () => {
@@ -630,13 +632,29 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Interval>(Interval)(Interval.from("1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds")),
+				arraySerializer<Interval>(Interval)([
+					Interval.from("1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds"),
+					Interval.from("7 years 6 months 5 days 4 hours 3 minutes 2.001 seconds"),
+				]),
+			];
+
+			expect(singleInput).toStrictEqual("1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds");
+			expect(arrayInput).toStrictEqual(
+				'{"1 years 2 months 3 days 4 hours 5 minutes 6 seconds 7 milliseconds","7 years 6 months 5 days 4 hours 3 minutes 2 seconds 1 milliseconds"}'
+			);
+
+			await client.query(
+				`
 				INSERT INTO public.vitestinterval (interval, _interval)
 				VALUES (
-					'1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds',
-					'{ 1 year 2 months 3 days 4 hours 5 minutes 6.007 seconds, 7 years 6 months 5 days 4 hours 3 minutes 2.001 seconds }'
+					$1::interval,
+					$2::_interval
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestinterval

@@ -3,7 +3,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { Timestamp } from "./Timestamp.js";
@@ -579,13 +581,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Timestamp>(Timestamp)(Timestamp.from("2004-10-19 10:23:54.678")),
+				arraySerializer<Timestamp>(Timestamp)([Timestamp.from("2019-01-02 03:04:05.678"), Timestamp.from("2022-09-08 07:06:05")]),
+			];
+
+			expect(singleInput).toStrictEqual("2004-10-19T10:23:54.678Z");
+			expect(arrayInput).toStrictEqual('{"2019-01-02T03:04:05.678Z","2022-09-08T07:06:05Z"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitesttimestamp (timestamp, _timestamp)
 				VALUES (
-					'2004-10-19 10:23:54.678',
-					'{ 2019-01-02 03:04:05.678, 2022-09-08 07:06:05 }'
+					$1::timestamp,
+					$2::_timestamp
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitesttimestamp

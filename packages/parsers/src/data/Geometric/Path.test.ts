@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Connection, Path } from "./Path.js";
 import { Point } from "./Point.js";
 
@@ -299,13 +301,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Path>(Path)(Path.from("((1.1,2.2),(3.3,4.4))")),
+				arraySerializer<Path>(Path)([Path.from("((1,2),(3,4))"), Path.from("[(5.5,6.6),(7.7,8.8)]")]),
+			];
+
+			expect(singleInput).toStrictEqual("((1.1,2.2),(3.3,4.4))");
+			expect(arrayInput).toStrictEqual('{"((1\\,2)\\,(3\\,4))","[(5.5\\,6.6)\\,(7.7\\,8.8)]"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestpath (path, _path)
 				VALUES (
-					'((1.1,2.2),(3.3,4.4))',
-					'{((1.1\\,2.2)\\,(3.3\\,4.4)),[(5.5\\,6.6)\\,(7.7\\,8.8)]}'
+					$1::path,
+					$2::_path
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestpath
@@ -323,7 +336,7 @@ describe("PostgreSQL", () => {
 			expect(result.rows[0]._path).toHaveLength(2);
 			expect(result.rows[0]._path[0].toString()).toStrictEqual(
 				Path.from({
-					points: [Point.from({ x: 1.1, y: 2.2 }), Point.from({ x: 3.3, y: 4.4 })],
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 					connection: "closed",
 				}).toString()
 			);

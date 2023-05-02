@@ -2,7 +2,9 @@ import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Point } from "./Point.js";
 
 describe("PointConstructor", () => {
@@ -173,13 +175,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Point>(Point)(Point.from({ x: 1, y: 2 })),
+				arraySerializer<Point>(Point)([Point.from({ x: 1.1, y: 2.2 }), Point.from({ x: 3.3, y: 4.4 })]),
+			];
+
+			expect(singleInput).toBe("(1,2)");
+			expect(arrayInput).toBe('{"(1.1\\,2.2)","(3.3\\,4.4)"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestpoint (point, _point)
 				VALUES (
-					'(1,2)',
-					'{ (1.1\\,2.2), (3.3\\,4.4) }'
+					$1::point,
+					$2::_point
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestpoint

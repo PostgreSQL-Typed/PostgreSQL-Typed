@@ -2,8 +2,10 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { LowerRange, UpperRange } from "../../util/Range.js";
+import { serializer } from "../../util/serializer.js";
 import { Int8MultiRange } from "./Int8MultiRange.js";
 import { Int8Range } from "./Int8Range.js";
 
@@ -194,13 +196,24 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [
+				serializer<Int8MultiRange>(Int8MultiRange)("{[1,3),[11,13),[21,23)}"),
+				arraySerializer<Int8MultiRange>(Int8MultiRange)([Int8MultiRange.from("{[1,3),[11,13)}"), Int8MultiRange.from("{[21,23),[31,33)}")]),
+			];
+
+			expect(singleInput).toBe("{[1,3),[11,13),[21,23)}");
+			expect(arrayInput).toBe('{"\\{[1\\,3)\\,[11\\,13)\\}","\\{[21\\,23)\\,[31\\,33)\\}"}');
+
+			await client.query(
+				`
 				INSERT INTO public.vitestint8multirange (int8multirange, _int8multirange)
 				VALUES (
-					'{[1,3),[11,13),[21,23)}',
-					'{\\{[1\\,3)\\,[11\\,13)\\},\\{[21\\,23)\\,[31\\,33)\\}}'
+					$1::int8multirange,
+					$2::_int8multirange
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestint8multirange

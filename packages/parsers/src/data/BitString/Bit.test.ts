@@ -2,7 +2,9 @@ import { Client } from "pg";
 import { describe, expect, it, test } from "vitest";
 
 import { arrayParser } from "../../util/arrayParser.js";
+import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
+import { serializer } from "../../util/serializer.js";
 import { Bit } from "./Bit.js";
 
 describe("BitConstructor", () => {
@@ -72,8 +74,7 @@ describe("BitConstructor", () => {
 				code: "invalid_n_length",
 				maximum: 1,
 				received: 3,
-				exact: true,
-				message: "Invalid 'n' length: 3, 'n' must be exactly 1",
+				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
 			});
 		}
 
@@ -166,10 +167,9 @@ describe("BitConstructor", () => {
 		else {
 			expect(invalidBitLength.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				exact: true,
 				maximum: 1,
 				received: 2,
-				message: "Invalid 'n' length: 2, 'n' must be exactly 1",
+				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
 			});
 		}
 		//#endregion
@@ -322,7 +322,7 @@ describe("Bit", () => {
 		bit.bit = "0" as any;
 		expect(bit.bit).toEqual("0");
 
-		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (bit.bit = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 
 	test("get value()", () => {
@@ -336,7 +336,7 @@ describe("Bit", () => {
 		bit.value = "0" as any;
 		expect(bit.value).toEqual("0");
 
-		expect(() => (bit.value = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (bit.value = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 
 	test("get postgres()", () => {
@@ -350,7 +350,7 @@ describe("Bit", () => {
 		bit.postgres = "0" as any;
 		expect(bit.postgres).toEqual("0");
 
-		expect(() => (bit.postgres = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be exactly 1");
+		expect(() => (bit.postgres = "101" as any)).toThrowError("Invalid 'n' length: 3, 'n' must be less than or equal to 1");
 	});
 });
 
@@ -387,13 +387,21 @@ describe("PostgreSQL", () => {
 				)
 			`);
 
-			await client.query(`
+			const [singleInput, arrayInput] = [serializer<Bit<number>>(Bit)(Bit.from(1)), arraySerializer<Bit<number>>(Bit, ",")([Bit.from(0), Bit.from(1)])];
+
+			expect(singleInput).toEqual("1");
+			expect(arrayInput).toEqual("{0,1}");
+
+			await client.query(
+				`
 				INSERT INTO public.vitestbit (bit, _bit)
 				VALUES (
-					'1',
-					'{0, 1}'
+					$1::bit,
+					$2::_bit
 				)
-			`);
+			`,
+				[singleInput, arrayInput]
+			);
 
 			const result = await client.query(`
 				SELECT * FROM public.vitestbit

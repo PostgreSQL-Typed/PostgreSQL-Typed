@@ -21,6 +21,7 @@
 		"prepare": "husky install configs/.husky",
 		"dev": "turbo run dev",
 		"build": "turbo run build",
+		"build:ci": "turbo run build --cache-dir=.turbo",
 		"clean": "rimraf ./packages/*/{lib,dist,.turbo,coverage}",
 		"clean:all": "pnpm clean && rimraf ./packages/*/node_modules node_modules",
 		"test": "turbo run test",

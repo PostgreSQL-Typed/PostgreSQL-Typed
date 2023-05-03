@@ -1,7 +1,7 @@
 {
 	"name": "@postgresql-typed/core",
 	"version": "0.1.0",
-	"description": "A type-safe PostgreSQL client for Node.js",
+	"description": "A type-safe PostgreSQL client for Node.js (Core, Shared between @PostgreSQL-Typed/pg and @PostgreSQL-Typed/postgres)",
 	"type": "module",
 	"exports": "./lib/index.js",
 	"types": "./lib/index.d.ts",

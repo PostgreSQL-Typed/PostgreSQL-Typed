@@ -4,7 +4,7 @@ import type { PostgresData } from "./PostgresData.js";
 
 export type SelectSubQuery<InnerPostgresData extends PostgresData, InnerDatabaseData extends DatabaseData, Ready extends boolean> = {
 	readonly query: string;
-	readonly variables: (string | number | boolean)[];
+	readonly variables: string[];
 	readonly variablesIndex: number;
 	readonly usedTableLocations: string[];
 	readonly database: Database<InnerPostgresData, InnerDatabaseData, Ready>;

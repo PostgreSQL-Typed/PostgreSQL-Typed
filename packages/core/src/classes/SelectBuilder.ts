@@ -151,29 +151,32 @@ export class SelectBuilder<
 	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
-		Options extends SelectQueryOptions = SelectQueryOptions
+		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PGTError | PGTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
-		Options extends SelectQueryOptions = SelectQueryOptions
-	>(select: Select, options?: Options & { subquery: true }): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
-	execute<
-		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
-		Options extends SelectQueryOptions = SelectQueryOptions
+		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
-		options?: Options & { raw?: false; valuesOnly: true }
+		options?: Options & { raw?: false; subquery: true }
+	): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
+	execute<
+		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
+		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
+	>(
+		select: Select,
+		options?: Options & { raw?: false; subquery?: false; valuesOnly: true }
 	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
-		Options extends SelectQueryOptions = SelectQueryOptions
+		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
-		options?: Options & { raw?: false; valuesOnly?: false }
+		options?: Options & { raw?: false; subquery?: false; valuesOnly?: false }
 	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
-		Options extends SelectQueryOptions = SelectQueryOptions
+		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		//@ts-expect-error It can be initialized as "*"
 		select: Select = "*",
@@ -202,6 +205,7 @@ export class SelectBuilder<
 				["raw", [ParsedType.boolean, ParsedType.undefined]],
 				["valuesOnly", [ParsedType.boolean, ParsedType.undefined]],
 				["subquery", [ParsedType.boolean, ParsedType.undefined]],
+				["previousSubquery", [ParsedType.object, ParsedType.undefined]],
 			]);
 
 			if (!parsedObject.success) {
@@ -256,6 +260,7 @@ export class SelectBuilder<
 		}[];
 
 		//* If any of the otherr clauses are invalid, return the first invalid clause
+		if (options?.previousSubquery?.success === false) return options?.previousSubquery;
 		if (this._where && !this._where.success) return this._where;
 		if (this._groupBy && !this._groupBy.success) return this._groupBy;
 		if (this._orderBy && !this._orderBy.success) return this._orderBy;
@@ -263,10 +268,7 @@ export class SelectBuilder<
 		if (this._fetch && !this._fetch.success) return this._fetch;
 
 		const tableLocation = this.table.location.split(".").slice(1).join("."),
-			usedTableLocations: string[] = [
-				...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.usedTableLocations)),
-				...(this._where ? this._where.data.subqueries.flatMap(subquery => subquery.usedTableLocations) : []),
-			];
+			usedTableLocations: string[] = [...(options?.previousSubquery?.data.usedTableLocations ?? [])];
 
 		//* Build the query
 		let query = `SELECT ${selectQuery.data.query}\nFROM ${tableLocation} %${tableLocation}%${
@@ -288,12 +290,12 @@ export class SelectBuilder<
 		}
 
 		//* Replace all ? with $1, $2, etc
-		const count = query.match(/%\?%/g)?.length ?? 0;
-		let index = 1;
-		for (; index <= count; index++) query = query.replace("%?%", `$${index}`);
+		const count = (query.match(/%\?%/g)?.length ?? 0) + ((options?.previousSubquery?.data.variablesIndex ?? 1) - 1);
+		let variablesIndex = options?.previousSubquery?.data.variablesIndex ?? 1;
+		for (; variablesIndex <= count; variablesIndex++) query = query.replace("%?%", `$${variablesIndex}`);
 
 		//* Get all the variables and map them to the correct postgres type, the ones from subqueries are already mapped
-		const variables = [
+		const variables: string[] = [
 			...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.variables)),
 			...joins.flatMap(join =>
 				join.data.variables.map(variable => {
@@ -327,7 +329,7 @@ export class SelectBuilder<
 				data: Object.freeze({
 					query,
 					variables,
-					variablesIndex: index,
+					variablesIndex,
 					usedTableLocations,
 					database: this.table.database,
 					//* Make sure it satisfies the SelectSubQuery type

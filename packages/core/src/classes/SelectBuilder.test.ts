@@ -458,7 +458,7 @@ describe("SelectBuilder", () => {
 
 		expect(client.table("db2.schema3.table5").select.execute("*", {})).toEqual({
 			success: false,
-			error: new Error("Missing keys in object: 'raw', 'valuesOnly', 'subquery'"),
+			error: new Error("Missing keys in object: 'raw', 'valuesOnly', 'subquery', 'previousSubquery'"),
 		});
 
 		expect(client.table("db2.schema3.table5").select.execute("*", { foo: 1 } as any)).toEqual({
@@ -569,12 +569,22 @@ describe("SelectBuilder", () => {
 			const query = client
 				.table("db2.schema3.table4")
 				.select.where({
-					"schema3.table4.id": {
-						$EQUAL: subquery,
-					},
+					$OR: [
+						{
+							"schema3.table4.id": {
+								$EQUAL: subquery,
+							},
+						},
+						{
+							"schema3.table4.id": {
+								$EQUAL: "b8d0b5c0-5f9a-11eb-ae93-0242ac130002",
+							},
+						},
+					],
 				})
 				.execute("*", {
 					valuesOnly: true,
+					previousSubquery: subquery,
 				});
 
 			await expect(query).resolves.toEqual({
@@ -582,8 +592,9 @@ describe("SelectBuilder", () => {
 				data: {
 					command: "SELECT",
 					input: {
-						query: "SELECT *\nFROM schema3.table4 t1\nWHERE t1.id = (\n  SELECT t.id\n  FROM schema3.table5 t\n  WHERE t.not_uuid = $1\n)",
-						values: ["882c83b1-4a65-4b69-b969-c0f53ccbd5ca"],
+						query:
+							"SELECT *\nFROM schema3.table4 t1\nWHERE\n  (\n    t1.id = (\n      SELECT t.id\n      FROM schema3.table5 t\n      WHERE t.not_uuid = $1\n    )\n    OR t1.id = $2\n  )",
+						values: ["882c83b1-4a65-4b69-b969-c0f53ccbd5ca", "b8d0b5c0-5f9a-11eb-ae93-0242ac130002"],
 					},
 					rowCount: 1,
 					rows: [
@@ -607,5 +618,33 @@ describe("SelectBuilder", () => {
 		});
 
 		expect(query.success).toBe(false);
+
+		//* An invalid subquery
+		const subquery = client
+			.table("db2.schema3.table5")
+			.select.where({
+				"schema3.table5.id": {
+					$EQUAL: "1",
+				},
+			})
+			.execute("schema3.table5.id", {
+				subquery: true,
+			});
+
+		expect(subquery.success).toBe(false);
+
+		const invalidQuery = await client
+			.table("db2.schema3.table4")
+			.select.where({
+				"schema3.table4.id": {
+					$EQUAL: subquery,
+				},
+			})
+			.execute("*", {
+				valuesOnly: true,
+				previousSubquery: subquery,
+			});
+
+		expect(invalidQuery.success).toBe(false);
 	});
 });

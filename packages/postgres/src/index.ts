@@ -66,7 +66,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 
-		//* context should have [string, (string | number | boolean)[]]
+		//* context should have [string, string[]]
 		if (context.data.length !== 2) {
 			setIssueForContext(
 				context,
@@ -90,7 +90,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		const [query, values] = context.data,
 			allowedQueryTypes = [ParsedType.string],
 			allowedValueTypes = [ParsedType.array],
-			allowedInnerValueTypes = [ParsedType.number, ParsedType.string, ParsedType.boolean],
+			allowedInnerValueTypes = [ParsedType.string],
 			parsedQueryType = getParsedType(query),
 			parsedValueType = getParsedType(values);
 
@@ -125,11 +125,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			}
 		}
 
-		return this._runQuery<Data>(context, query as string, values as (string | number | boolean)[]);
+		return this._runQuery<Data>(context, query as string, values as string[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: (string | number | boolean)[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
 		let result: Awaited<ReturnType<typeof this._client.unsafe>>;
 		try {
 			result = await this._client.unsafe(query, values);

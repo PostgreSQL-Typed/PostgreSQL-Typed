@@ -156,12 +156,12 @@ export function getRawFilterOperator(
 
 				for (const variable of parsedData.obj.variables) {
 					const variableType = getParsedType(variable);
-					if (!isOneOf([ParsedType.string, ParsedType.number, ParsedType.boolean], variableType)) {
+					if (!isOneOf([ParsedType.string], variableType)) {
 						return {
 							success: false,
 							error: getPGTError({
 								code: "invalid_type",
-								expected: [ParsedType.string, ParsedType.number, ParsedType.boolean],
+								expected: [ParsedType.string],
 								received: variableType,
 							}),
 						};
@@ -172,7 +172,7 @@ export function getRawFilterOperator(
 				return {
 					success: true,
 					data: {
-						result: [`${operator} (\n${spacesString}${parsedData.obj.query.split("\n").join(`\n${spacesString}`)}\n)`],
+						result: [`${operator} (\n${spacesString}  ${parsedData.obj.query.split("\n").join(`\n${spacesString}  `)}\n${spacesString})`],
 						subquery: parsedData.obj,
 					},
 				};

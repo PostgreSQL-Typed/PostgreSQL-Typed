@@ -37,6 +37,7 @@ class TestClass extends PGTPRangeBase<TestClass, TestClass> {
 	}
 
 	value: string | number | boolean;
+	postgres: string;
 
 	toString(): string {
 		return this._data;

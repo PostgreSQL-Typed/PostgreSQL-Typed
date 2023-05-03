@@ -53,11 +53,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 		const [query, values] = context.data;
 
-		return this._runQuery<Data>(context, query as string, values as (string | number | boolean)[]);
+		return this._runQuery<Data>(context, query as string, values as string[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: (string | number | boolean)[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
 		let result: QueryResult;
 		try {
 			result = await this._client.query(query, values);

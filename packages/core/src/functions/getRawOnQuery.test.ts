@@ -273,4 +273,34 @@ describe("getRawOnQuery", () => {
 			error: new Error("Expected 'string' | 'object', received 'number'"),
 		});
 	});
+
+	test("subqueries", () => {
+		const client = new Client<TestData>(testData),
+			table1 = client.table("db1.schema1.table1"),
+			table2 = client.table("db1.schema1.table2"),
+			subquery = table1.select
+				.where({
+					"schema1.table1.id": {
+						$EQUAL: UUID.generate(),
+					},
+				})
+				.execute("schema1.table1.id", {
+					subquery: true,
+				}),
+			result = getRawOnQuery<TestData, TestData["db1"], false, typeof table1, typeof table2>(
+				{
+					"schema1.table2.id": {
+						$EQUAL: subquery,
+					},
+				},
+				table2,
+				[table1]
+			);
+
+		expect(result.success).toBe(true);
+		if (!result.success) expect.fail();
+
+		expect(result.data.query).toBe("schema1.table2.id = (\n    SELECT t.id\n    FROM schema1.table1 t\n    WHERE t.id = $1\n  )");
+		expect(result.data.variables).toEqual([]);
+	});
 });

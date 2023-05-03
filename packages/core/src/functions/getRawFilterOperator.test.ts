@@ -1,6 +1,8 @@
 import { Box, Int2, PGTPParser, Text } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
+import { Client } from "../__mocks__/client";
+import { TestData, testData } from "../__mocks__/testData";
 import { getRawFilterOperator } from "./getRawFilterOperator";
 
 describe("getRawFilterOperator", () => {
@@ -321,5 +323,164 @@ describe("getRawFilterOperator", () => {
 		const notBooleanResult = getRawFilterOperator({ $IS_NOT_NULL: 1 } as any, parser, {} as any, 0);
 		expect(notBooleanResult.success).toBe(false);
 		if (notBooleanResult.success) expect.fail();
+	});
+
+	test("Invalid subquery", () => {
+		const result1 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {},
+				},
+			},
+			parser,
+			{} as any,
+			0
+		);
+		expect(result1.success).toBe(false);
+		if (result1.success) expect.fail();
+
+		const result2 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						query: 1,
+						variables: [],
+						variablesIndex: 0,
+						usedTableLocations: [],
+						database: {},
+					},
+				},
+			},
+			parser,
+			{} as any,
+			0
+		);
+		expect(result2.success).toBe(false);
+		if (result2.success) expect.fail();
+
+		const result3 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						foo: "bar",
+					},
+				},
+			},
+			parser,
+			{} as any,
+			0
+		);
+		expect(result3.success).toBe(false);
+		if (result3.success) expect.fail();
+
+		const result4 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						query: "",
+						variables: [],
+						variablesIndex: 0,
+						usedTableLocations: [],
+						database: {},
+					},
+				},
+			},
+			parser,
+			{} as any,
+			0
+		);
+		expect(result4.success).toBe(false);
+		if (result4.success) expect.fail();
+
+		const client = new Client<TestData>(testData),
+			database1 = client.database("db1"),
+			database2 = client.database("db2"),
+			result5 = getRawFilterOperator(
+				{
+					$EQUAL: {
+						success: true,
+						data: {
+							query: "",
+							variables: [],
+							variablesIndex: 0,
+							usedTableLocations: [],
+							database: database2,
+						},
+					},
+				},
+				parser,
+				database1,
+				0
+			);
+
+		expect(result5.success).toBe(false);
+		if (result5.success) expect.fail();
+
+		const result6 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						query: "",
+						variables: [1],
+						variablesIndex: 0,
+						usedTableLocations: [],
+						database: database1,
+					},
+				},
+			},
+			parser,
+			database1,
+			0
+		);
+
+		expect(result6.success).toBe(false);
+		if (result6.success) expect.fail();
+
+		const result7 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						query: "",
+						variables: [],
+						variablesIndex: 1,
+						usedTableLocations: [1],
+						database: database1,
+					},
+				},
+			},
+			parser,
+			database1,
+			0
+		);
+
+		expect(result7.success).toBe(false);
+		if (result7.success) expect.fail();
+
+		const result8 = getRawFilterOperator(
+			{
+				$EQUAL: {
+					success: true,
+					data: {
+						query: "",
+						variables: ["foo"],
+
+						variablesIndex: 0,
+						usedTableLocations: ["bar"],
+						database: database1,
+					},
+				},
+			},
+			parser,
+			database1,
+			0
+		);
+
+		expect(result8.success).toBe(true);
 	});
 });

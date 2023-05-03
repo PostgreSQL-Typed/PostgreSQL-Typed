@@ -29,7 +29,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	abstract get ready(): Ready;
 	abstract get connectionError(): PGTError | undefined;
 
-	async query<Data>(query: string, variables: (string | number | boolean)[]): Promise<Query<Data>>;
+	async query<Data>(query: string, variables: string[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>> {
 		const result = await this.safeQuery<Data>(...data);
@@ -37,7 +37,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		throw result.error;
 	}
 
-	async safeQuery<Data>(query: string, variables: (string | number | boolean)[]): Promise<Safe<Query<Data>>>;
+	async safeQuery<Data>(query: string, variables: string[]): Promise<Safe<Query<Data>>>;
 	async safeQuery<Data>(...data: unknown[]): Promise<Safe<Query<Data>>>;
 	async safeQuery<Data>(...data: unknown[]): Promise<Safe<Query<Data>>> {
 		const context: Context = {

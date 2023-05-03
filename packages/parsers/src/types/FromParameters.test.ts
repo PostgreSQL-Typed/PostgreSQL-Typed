@@ -130,7 +130,7 @@ describe("FromParameters", () => {
 
 	test("FromParameters<DateConstructor>", () => {
 		let a: FromParameters<DateConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | Date | globalThis.Date | DateTime | DateObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | number | Date | globalThis.Date | DateTime | DateObject | undefined>();
 	});
 
 	test("FromParameters<DateMultiRangeConstructor>", () => {
@@ -150,12 +150,12 @@ describe("FromParameters", () => {
 
 	test("FromParameters<TimeConstructor>", () => {
 		let a: FromParameters<TimeConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | Time | globalThis.Date | DateTime | TimeObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | number | Time | globalThis.Date | DateTime | TimeObject | undefined>();
 	});
 
 	test("FromParameters<TimestampConstructor>", () => {
 		let a: FromParameters<TimestampConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | Timestamp | globalThis.Date | DateTime | TimestampObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | number | Timestamp | globalThis.Date | DateTime | TimestampObject | undefined>();
 	});
 
 	test("FromParameters<TimestampMultiRangeConstructor>", () => {
@@ -170,7 +170,7 @@ describe("FromParameters", () => {
 
 	test("FromParameters<TimestampTZConstructor>", () => {
 		let a: FromParameters<TimestampTZConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | TimestampTZ | globalThis.Date | DateTime | TimestampTZObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | number | TimestampTZ | globalThis.Date | DateTime | TimestampTZObject | undefined>();
 	});
 
 	test("FromParameters<TimestampTZMultiRangeConstructor>", () => {
@@ -187,7 +187,7 @@ describe("FromParameters", () => {
 
 	test("TimeTZ", () => {
 		let a: FromParameters<TimeTZConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | TimeTZ | globalThis.Date | DateTime | TimeTZObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | number | TimeTZ | globalThis.Date | DateTime | TimeTZObject | undefined>();
 	});
 
 	test("FromParameters<BoxConstructor>", () => {

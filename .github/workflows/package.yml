@@ -17,6 +17,8 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
+        with:
+          turbo-prefix: lint-${{ inputs.package }}
 
       - name: Run lint
         run: pnpm lint:ci --filter ${{ inputs.package }}
@@ -30,6 +32,8 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
+        with:
+          turbo-prefix: build-${{ inputs.package }}
 
       - name: Run build
         run: pnpm build:ci --filter ${{ inputs.package }}
@@ -65,6 +69,7 @@ jobs:
         uses: ./.github/actions/prepareEnvironment
         with:
           node-version: ${{ matrix.node }}
+          turbo-prefix: test-${{ inputs.package }}-${{matrix.node}}-${{matrix.postgres}}
 
       - name: Run build
         run: pnpm build:ci --filter ${{ inputs.package }}

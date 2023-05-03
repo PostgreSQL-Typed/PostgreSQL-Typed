@@ -51,6 +51,8 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
+        with:
+          turbo-prefix: "coverage"
 
       - name: Download coverage
         uses: actions/download-artifact@v3
@@ -70,6 +72,8 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
+        with:
+          turbo-prefix: "changesets"
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

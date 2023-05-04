@@ -36,7 +36,7 @@ export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId
 		case "domain_data":
 			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.domainDataFileName);
 		case "debug":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.debugFileName, "json");
+			return formatFileType(typeConfig.debugFileName, "json");
 		case "re_export":
 			return getFilenameTemplate(config, id.of);
 	}

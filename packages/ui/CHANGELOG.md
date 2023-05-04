@@ -1,6 +1,6 @@
 # @postgresql-typed/ui
 
-## 1.0.0
+## 0.2.0
 
 ### Minor Changes
 
@@ -11,4 +11,4 @@
 - Updated dependencies [5989692]
 - Updated dependencies [5989692]
 - Updated dependencies [5989692]
-  - @postgresql-typed/cli@1.0.0
+  - @postgresql-typed/cli@0.2.0

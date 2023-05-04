@@ -1,7 +1,8 @@
-import type { Config } from "../../../types/interfaces/Config.js";
+import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+
 import type { TypeId } from "../../../types/types/TypeId.js";
 
-export function getExportNameTemplate(config: Config, id: TypeId): string {
+export function getExportNameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId): string {
 	switch (id.type) {
 		case "table_type":
 			return config.types.tableTypeName;

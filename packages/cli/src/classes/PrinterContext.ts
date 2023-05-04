@@ -1,5 +1,6 @@
+import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+
 import { FileContent } from "../classes/FileContent.js";
-import type { Config } from "../types/interfaces/Config.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
 import type { FileExport } from "../types/interfaces/FileExport.js";
 import type { FileName } from "../types/types/FileName.js";
@@ -12,7 +13,7 @@ export class PrinterContext {
 	private readonly _files = new Map<FileName, FileContent>();
 	private readonly _rawFiles = new Map<FileName, string>();
 
-	constructor(public readonly config: Config) {}
+	constructor(public readonly config: PostgreSQLTypedCLIConfig) {}
 
 	private _pushDeclaration(id: TypeId, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		const file = resolveFilename(this.config, id),

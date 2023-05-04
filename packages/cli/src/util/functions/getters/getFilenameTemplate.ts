@@ -1,7 +1,8 @@
-import type { Config } from "../../../types/interfaces/Config.js";
+import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+
 import type { TypeId } from "../../../types/types/TypeId.js";
 
-export function getFilenameTemplate(config: Config, id: TypeId): string {
+export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId): string {
 	const {
 		tableFileName,
 		tableDataFileName,

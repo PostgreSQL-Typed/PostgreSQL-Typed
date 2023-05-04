@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import type { Connection, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import pg from "pg";
 
 import type { ProgressBar } from "../classes/ProgressBar.js";
@@ -7,8 +8,6 @@ import { ClassKind } from "../types/enums/ClassKind.js";
 import type { Attribute } from "../types/interfaces/Attribute.js";
 import type { Class } from "../types/interfaces/Class.js";
 import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
-import type { Config } from "../types/interfaces/Config.js";
-import type { Connection } from "../types/interfaces/Connection.js";
 import type { Constraint } from "../types/interfaces/Constraint.js";
 import type { FetchedData } from "../types/interfaces/FetchedData.js";
 import type { Table } from "../types/interfaces/Table.js";
@@ -32,7 +31,7 @@ export class Fetcher {
 	private constraints: Constraint[] = [];
 	private LOGGER = LOGGER?.extend("Fetcher");
 	constructor(
-		private readonly config: Config,
+		private readonly config: PostgreSQLTypedCLIConfig,
 		private readonly progressBar: ProgressBar,
 		private readonly connection: string | Connection,
 		private readonly generatorConfig?: GenerateArguments<boolean>

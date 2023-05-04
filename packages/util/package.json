@@ -40,6 +40,7 @@
 	},
 	"dependencies": {
 		"bignumber.js": "^9.1.1",
+		"esbuild": "^0.17.18",
 		"luxon": "^3.0.3"
 	},
 	"devDependencies": {

@@ -28,7 +28,7 @@ export const Generate = {
 async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<ReturnDebug>): Promise<ReturnDebug extends true ? FetchedData[] : void> {
 	const log = LOGGER?.extend("Command").extend("Generate");
 	log?.("Running command...");
-	const configHandler = await new ConfigHandler().loadConfig(arguments_),
+	const configHandler = await new ConfigHandler().loadConfig(),
 		{ connections, filepath, config } = configHandler,
 		//fetches * steps in fetcher + steps in printer
 		totalSteps = connections.length * 5 + 1,

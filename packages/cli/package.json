@@ -3,7 +3,10 @@
 	"version": "0.1.0",
 	"description": "Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.",
 	"type": "module",
-	"exports": "./lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./config": "./lib/config.js"
+	},
 	"types": "./lib/index.d.ts",
 	"license": "MPL-2.0",
 	"author": {
@@ -45,6 +48,7 @@
 	},
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",
+		"@postgresql-typed/util": "workspace:*",
 		"camelcase": "6.3.0",
 		"chalk": "4.1.2",
 		"command-line-args": "^5.2.1",

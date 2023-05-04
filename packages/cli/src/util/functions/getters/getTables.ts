@@ -1,9 +1,9 @@
+import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import type { Client } from "pg";
 
-import type { Config } from "../../../types/interfaces/Config.js";
 import type { Table } from "../../../types/interfaces/Table.js";
 
-export async function getTables(client: Client, config: Config, databaseName: string): Promise<Table[]> {
+export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig, databaseName: string): Promise<Table[]> {
 	const { rows } = await client.query<Table>(`
 			SELECT
 				t.table_schema as schema_name,

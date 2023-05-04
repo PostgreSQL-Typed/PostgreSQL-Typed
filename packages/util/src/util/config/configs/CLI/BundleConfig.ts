@@ -207,7 +207,7 @@ export interface BundleConfig {
 	 * - `singular`: Remove the "s" from the end of the type name
 	 * - `default`: The default formatter set by the 'defaultFormatter' option
 	 *
-	 * @default "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ SCHEMA_NAME | default }}Data"
+	 * @default "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}Data"
 	 */
 	schemaDataTypeName: string;
 
@@ -283,14 +283,16 @@ export function setDefaultBundleConfig(config: Record<string, any>): BundleConfi
 		bundleFileName: config.bundleFileName ?? "index.ts",
 		domainTypeName: config.domainTypeName ?? "{{ TYPE_NAME | default }}",
 		domainDataTypeName: config.domainDataTypeName ?? "{{ TYPE_NAME | default }}Data",
-		enumTypeName: config.enumTypeName ?? "{{ TYPE_NAME | default }}",
-		primaryKeyTypeName: config.primaryKeyTypeName ?? "{{ TABLE_NAME | default }}PrimaryKey",
-		tableTypeName: config.tableTypeName ?? "{{ TABLE_NAME | default }}",
-		tableDataTypeName: config.tableDataTypeName ?? "{{ TABLE_NAME | default }}Data",
-		tableInsertParametersTypeName: config.tableInsertParametersTypeName ?? "{{ TABLE_NAME | default }}InsertParameters",
-		tableInsertParametersDataTypeName: config.tableInsertParametersDataTypeName ?? "{{ TABLE_NAME | default }}InsertParametersData",
-		schemaTypeName: config.schemaTypeName ?? "{{ SCHEMA_NAME | default }}",
-		schemaDataTypeName: config.schemaDataTypeName ?? "{{ SCHEMA_NAME | default }}Data",
+		enumTypeName: config.enumTypeName ?? "{{ DATABASE_NAME | default }}{{ TYPE_NAME | default }}",
+		primaryKeyTypeName: config.primaryKeyTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}PrimaryKey",
+		tableTypeName: config.tableTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}",
+		tableDataTypeName: config.tableDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}Data",
+		tableInsertParametersTypeName:
+			config.tableInsertParametersTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParameters",
+		tableInsertParametersDataTypeName:
+			config.tableInsertParametersDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParametersData",
+		schemaTypeName: config.schemaTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}",
+		schemaDataTypeName: config.schemaDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}Data",
 		databaseTypeName: config.databaseTypeName ?? "{{ DATABASE_NAME | default }}",
 		databaseDataTypeName: config.databaseDataTypeName ?? "{{ DATABASE_NAME | default }}Data",
 		fullExportTypeName: config.fullExportTypeName ?? "Databases",

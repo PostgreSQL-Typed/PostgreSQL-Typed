@@ -1,10 +1,10 @@
 import { dirname, relative } from "node:path/posix";
 
+import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+
 import { ImportState } from "../classes/ImportState.js";
-import type { Config } from "../types/interfaces/Config.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
 import type { FileExport } from "../types/interfaces/FileExport.js";
-import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 import type { FileName } from "../types/types/FileName.js";
 import type { IdentifierName } from "../types/types/IdentifierName.js";
 import type { TypeId } from "../types/types/TypeId.js";
@@ -20,7 +20,7 @@ export class FileContent {
 		type: { source: string; dest: string }[];
 		value: { source: string; dest: string }[];
 	} = { type: [], value: [] };
-	constructor(public readonly config: Config, file: FileName) {
+	constructor(public readonly config: PostgreSQLTypedCLIConfig, file: FileName) {
 		this.file = file;
 	}
 

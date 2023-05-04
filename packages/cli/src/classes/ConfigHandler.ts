@@ -1,82 +1,38 @@
 /* eslint-disable no-console */
 import { writeFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { join } from "node:path/posix";
 
-import { cosmiconfig } from "cosmiconfig";
-import { Loaders } from "cosmiconfig/dist/types.js";
+import {
+	type Connection,
+	DEFAULT_CONFIG,
+	DEFAULT_CONFIG_FILE,
+	DEFAULT_CONFIG_FILE_RAW,
+	getConfig,
+	type PostgreSQLTypedCLIConfig,
+} from "@postgresql-typed/util";
 import debug from "debug";
 
-import { GenerateArguments } from "../commands/Generate.js";
-import type { Config } from "../types/interfaces/Config.js";
-import { DEFAULT_CONFIG, zConfig } from "../types/interfaces/Config.js";
-import type { Connection } from "../types/interfaces/Connection.js";
-import { g, r, y } from "../util/chalk.js";
-import { GLOBAL_DEBUG_GLOB, LOGGER, MODULE_NAME } from "../util/constants.js";
+import { g, y } from "../util/chalk.js";
+import { GLOBAL_DEBUG_GLOB, LOGGER } from "../util/constants.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
-import { getNewConfigFile } from "../util/functions/getters/getNewConfigFile.js";
-
-const require = createRequire(import.meta.url),
-	loaders: Loaders = {},
-	searchPlaces = [
-		"package.json",
-		`.${MODULE_NAME}rc`,
-		`.${MODULE_NAME}rc.json`,
-		`.${MODULE_NAME}rc.yaml`,
-		`.${MODULE_NAME}rc.yml`,
-		`.${MODULE_NAME}rc.js`,
-		`.${MODULE_NAME}rc.cjs`,
-		`${MODULE_NAME}.config.js`,
-		`${MODULE_NAME}.config.cjs`,
-	];
-
-try {
-	require.resolve("typescript");
-	const cosmiconfigTypescriptLoader = require("cosmiconfig-typescript-loader");
-
-	searchPlaces.push(`.${MODULE_NAME}rc.ts`, `${MODULE_NAME}.config.ts`);
-	loaders[".ts"] = cosmiconfigTypescriptLoader.TypeScriptLoader();
-} catch {}
 
 export class ConfigHandler {
 	filepath: string | null = null;
-	config: Config = DEFAULT_CONFIG;
+	config: PostgreSQLTypedCLIConfig = DEFAULT_CONFIG.cli;
 	private LOGGER = LOGGER?.extend("ConfigHandler");
-	private cosmi = cosmiconfig(MODULE_NAME, {
-		searchPlaces,
-		loaders,
-	});
 
-	public async loadConfig(generatorConfig?: GenerateArguments<boolean>): Promise<this> {
+	public async loadConfig(): Promise<this> {
 		this.LOGGER?.("Loading config file...");
-		const config = await this.cosmi.search();
-		if (!config || config.isEmpty) {
+		//TODO allow passing config file path
+		const result = await getConfig();
+		if (!result.filePath) {
 			this.LOGGER?.("No config file found");
 			return this;
 		}
 
-		const parseResult = zConfig.safeParse(config.config);
-		if (!parseResult.success) {
-			this.LOGGER?.(`Config file is not valid ${JSON.stringify(parseResult.error.errors)}`);
-			const error = parseResult.error.errors[0];
-			if (generatorConfig?.noConsoleLogs !== true) {
-				console.log(
-					getConsoleHeader(
-						r("Could not parse configuration file, please check your syntax!"),
-						`Error message: ${error.message}`,
-						false,
-						`Error location: ${error.path.join(" -> ")}`
-					)
-				);
-			}
-			if (generatorConfig?.throwOnError === true)
-				throw new Error(`Could not parse configuration file, please check your syntax! Error message: ${error.message}`);
-			process.exit(1);
-		}
 		this.LOGGER?.("Config file loaded");
 
-		this.config = parseResult.data;
-		this.filepath = config.filepath;
+		this.config = result.config.cli;
 		if (this.config.types.debug) {
 			debug.enable(GLOBAL_DEBUG_GLOB);
 			this.LOGGER?.("Debug mode enabled at a later point, to enable it earlier, use the --debug flag");
@@ -86,17 +42,17 @@ export class ConfigHandler {
 
 	public async initConfig(): Promise<0 | 1> {
 		this.LOGGER?.("Initializing config file...");
-		const config = await this.cosmi.search();
-		if (config && !config.isEmpty) {
+		const result = await getConfig();
+		if (result?.filePath) {
 			this.LOGGER?.("Config file already exists");
-			console.log(getConsoleHeader(y("A configuration file is already present, skipping initialization..."), `File location: ${config.filepath}`));
+			console.log(getConsoleHeader(y("A configuration file is already present, skipping initialization..."), `File location: ${result.filePath}`));
 			return 0;
 		}
 
 		try {
-			const location = config?.filepath ?? join(process.cwd(), `${MODULE_NAME}.config.cjs`);
+			const location = join(process.cwd(), DEFAULT_CONFIG_FILE);
 			this.LOGGER?.("Writing config file to", location);
-			writeFileSync(location, getNewConfigFile(DEFAULT_CONFIG));
+			writeFileSync(location, DEFAULT_CONFIG_FILE_RAW);
 			console.log(getConsoleHeader(g("Successfully created configuration file!"), `File location: ${location}`));
 			return 0;
 		} catch (error) {

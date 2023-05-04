@@ -1,6 +1,5 @@
 import { OID } from "@postgresql-typed/oids";
-
-import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
+import type { ImportStatement } from "@postgresql-typed/util";
 
 export const DefaultParserMapping = {
 	get(oid: OID, maxLength?: number): string | [string, ImportStatement[]] | undefined {

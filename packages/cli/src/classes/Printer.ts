@@ -3,16 +3,15 @@ import { promises } from "node:fs";
 import { dirname, join } from "node:path/posix";
 
 import { OID } from "@postgresql-typed/oids";
+import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import mkdirp from "mkdirp";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { DebugOnly } from "../commands/DebugOnly.js";
 import { ClassKind } from "../types/enums/ClassKind.js";
 import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
-import type { Config } from "../types/interfaces/Config.js";
 import type { FetchedData } from "../types/interfaces/FetchedData.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
-import type { ImportStatement } from "../types/interfaces/ImportStatement.js";
 import type { DataType } from "../types/types/DataType.js";
 import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
 import { DefaultParserMapping } from "../util/DefaultParserMapping.js";
@@ -28,7 +27,7 @@ export class Printer {
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
 	private LOGGER = LOGGER?.extend("Printer");
-	constructor(public readonly config: Config, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
+	constructor(public readonly config: PostgreSQLTypedCLIConfig, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
 		this.classes = new Map(
 			data
 				.flatMap(d => d.classes.filter(c => d.tables.map(t => `${t.schema_name}.${t.table_name}`).includes(`${c.schema_name}.${c.class_name}`)))

@@ -1,3 +1,4 @@
+import { BundleConfig, setDefaultBundleConfig } from "./BundleConfig.js";
 import { ImportStatement, validateImportStatement } from "./ImportStatement.js";
 
 export interface TypesConfig {
@@ -9,7 +10,15 @@ export interface TypesConfig {
 	directory: string;
 
 	/**
+	 * Whether to bundle the generated code into a single file
+	 *
+	 * @default { "enabled": false }
+	 */
+	bundle: BundleConfig;
+
+	/**
 	 * Whether to add debugging statements to the generated code
+	 *
 	 * @default false
 	 */
 	debug: boolean;
@@ -592,6 +601,7 @@ export interface TypesConfig {
 
 export function setDefaultTypesConfig(config: Record<string, any>): TypesConfig {
 	if (config.directory && typeof config.directory !== "string") delete config.directory;
+	if (config.bundle && (typeof config.bundle !== "object" || Array.isArray(config.bundle))) delete config.bundle;
 	if (config.debug && typeof config.debug !== "boolean") delete config.debug;
 	if (config.debugFileName && typeof config.debugFileName !== "string") delete config.debugFileName;
 	if (config.defaultFormatter && typeof config.defaultFormatter !== "string") delete config.defaultFormatter;
@@ -662,6 +672,7 @@ export function setDefaultTypesConfig(config: Record<string, any>): TypesConfig 
 
 	return {
 		directory: config.directory ?? "__generated__",
+		bundle: setDefaultBundleConfig(config.bundle ?? {}),
 		debug: config.debug ?? false,
 		debugFileName: config.debugFileName ?? "debug_{{ TIMESTAMP }}.json",
 		defaultFormatter: config.defaultFormatter ?? "pascal-case",

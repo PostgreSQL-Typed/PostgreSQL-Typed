@@ -5,9 +5,6 @@ inputs:
     description: The Node.js version to use
     required: false
     default: '16'
-  turbo-prefix:
-    description: A prefix for the turbo cache
-    required: true
 runs:
   using: composite
   steps:
@@ -15,14 +12,6 @@ runs:
       uses: pnpm/action-setup@v2
       with:
         version: 8
-
-    - name: Cache Turbo
-      uses: actions/cache@v3
-      with:
-        path: .turbo
-        key: ${{ inputs.turbo-prefix }}-${{ runner.os }}-turbo-${{ github.sha }}
-        restore-keys: |
-          ${{ inputs.turbo-prefix }}-${{ runner.os }}-turbo-
 
     - name: Install Node
       uses: actions/setup-node@v3

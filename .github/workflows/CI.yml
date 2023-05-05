@@ -6,41 +6,49 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/core'
+    secrets: inherit
   "OIDs":
     name: '@PostgreSQL-Typed/OIDs'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/oids'
+    secrets: inherit
   "Parsers":
     name: '@PostgreSQL-Typed/Parsers'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/parsers'
+    secrets: inherit
   "CLI":
     name: '@PostgreSQL-Typed/CLI'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/cli'
+    secrets: inherit
   "UI":
     name: '@PostgreSQL-Typed/UI'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/ui'
+    secrets: inherit
   "Util":
     name: '@PostgreSQL-Typed/Util'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/util'
+    secrets: inherit
   "pg":
     name: '@PostgreSQL-Typed/pg'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/pg'
+    secrets: inherit
   "postgres":
     name: '@PostgreSQL-Typed/postgres'
     uses: ./.github/workflows/package.yml
     with:
       package: '@postgresql-typed/postgres'
+    secrets: inherit
   coverage:
     name: Coverage
     needs: [Core, OIDs, Parsers, CLI, UI, Util, pg, postgres]

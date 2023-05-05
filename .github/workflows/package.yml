@@ -11,14 +11,17 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     name: Lint
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_API: ${{ secrets.TURBO_API }}
+      TURBO_REMOTE_ONLY: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
-        with:
-          turbo-prefix: lint-${{ inputs.package }}
 
       - name: Run lint
         run: pnpm lint:ci --filter ${{ inputs.package }}
@@ -26,17 +29,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_API: ${{ secrets.TURBO_API }}
+      TURBO_REMOTE_ONLY: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
-        with:
-          turbo-prefix: build-${{ inputs.package }}
 
       - name: Run build
-        run: pnpm build:ci --filter ${{ inputs.package }}
+        run: pnpm build --filter ${{ inputs.package }}
 
   "Test":
     needs: build
@@ -61,6 +67,11 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_API: ${{ secrets.TURBO_API }}
+      TURBO_REMOTE_ONLY: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -69,10 +80,9 @@ jobs:
         uses: ./.github/actions/prepareEnvironment
         with:
           node-version: ${{ matrix.node }}
-          turbo-prefix: test-${{ inputs.package }}-${{matrix.node}}-${{matrix.postgres}}
 
       - name: Run build
-        run: pnpm build:ci --filter ${{ inputs.package }}
+        run: pnpm build --filter ${{ inputs.package }}
 
       - name: Run tests
         run: pnpm test:ci --filter ${{ inputs.package }}

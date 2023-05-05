@@ -3,19 +3,19 @@
 	"pipeline": {
 		"build": {
 			"dependsOn": ["^build"],
-			"outputs": ["lib/**", "dist/**", ".ouput/**", ".nuxt/**"]
+			"outputs": ["lib/**/*", "dist/**/*", ".output/**/*", ".nuxt/**/*"]
 		},
 		"lint": {},
 		"lint:ci": {},
 		"test": {
 			"dependsOn": ["lint:ci"],
-			"outputs": ["coverage/**"]
+			"outputs": ["coverage/**/*"]
 		},
 		"test:watch": {
 			"cache": false
 		},
 		"test:ci": {
-			"outputs": ["coverage/**"]
+			"outputs": ["coverage/**/*"]
 		}
 	},
 	"globalDependencies": ["tsconfig.json", "vitest.config.ts", ".eslintrc"]

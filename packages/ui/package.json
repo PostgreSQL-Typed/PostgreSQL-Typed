@@ -35,7 +35,7 @@
 		"@unocss/nuxt": "^0.50.6",
 		"@unocss/reset": "^0.50.6",
 		"@vueuse/core": "^9.13.0",
-		"@vueuse/nuxt": "^9.13.0",
+		"@vueuse/nuxt": "^10.0.0",
 		"basic-auth": "^2.0.1",
 		"codemirror": "^5.65.11",
 		"codemirror-theme-vars": "^0.1.1",

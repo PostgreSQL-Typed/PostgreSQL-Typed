@@ -58,7 +58,7 @@ jobs:
                   file,
                 ]);
                 for (const change of changes.split("\n")) {
-                  if (!change.startsWith("+ ")) {
+                  if (!change.startsWith("+ ") && !change.startsWith("+\t")) {
                     continue;
                   }
                   const match = change.match(/"(.*?)"/g);

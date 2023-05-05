@@ -33,7 +33,7 @@
 		"@nuxtjs/google-fonts": "^3.0.0",
 		"@postgresql-typed/cli": "workspace:*",
 		"@unocss/nuxt": "^0.50.6",
-		"@unocss/reset": "^0.50.6",
+		"@unocss/reset": "^0.51.0",
 		"@vueuse/core": "^9.13.0",
 		"@vueuse/nuxt": "^9.13.0",
 		"basic-auth": "^2.0.1",

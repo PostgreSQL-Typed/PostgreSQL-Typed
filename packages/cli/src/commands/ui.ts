@@ -45,9 +45,5 @@ export const UI: Command = {
 				);
 			}
 		});
-		uiProcess.stdout?.on("close", () => {
-			// eslint-disable-next-line no-console
-			console.log(getConsoleHeader(g("Successfully closed the UI."), I("You can now close this window.")));
-		});
 	},
 };

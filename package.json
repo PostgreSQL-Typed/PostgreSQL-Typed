@@ -46,7 +46,7 @@
 		"@rushstack/eslint-patch": "^1.2.0",
 		"@typescript-eslint/eslint-plugin": "^5.50.0",
 		"@typescript-eslint/parser": "^5.50.0",
-		"@vitest/coverage-c8": "^0.27.1",
+		"@vitest/coverage-c8": "^0.31.0",
 		"@vitest/ui": "^0.27.1",
 		"commitlint": "^17.4.2",
 		"eslint": "^8.33.0",

@@ -23,6 +23,17 @@ export const UI: Command = {
 		}
 
 		const uiProcess = fork(ui, [], { stdio: "pipe" });
+		uiProcess.stderr?.on("data", (data: Buffer) => {
+			// eslint-disable-next-line no-console
+			console.log(
+				getConsoleHeader(
+					r("An error occurred while starting the UI."),
+					I(data.toString().split("Error: ")[1].trim()),
+					false,
+					I("If the error persists, please open an issue on GitHub.")
+				)
+			);
+		});
 		uiProcess.stdout?.on("data", (data: Buffer) => {
 			if (data.toString().startsWith("Listening")) {
 				// eslint-disable-next-line no-console
@@ -33,6 +44,10 @@ export const UI: Command = {
 					)
 				);
 			}
+		});
+		uiProcess.stdout?.on("close", () => {
+			// eslint-disable-next-line no-console
+			console.log(getConsoleHeader(g("Successfully closed the UI."), I("You can now close this window.")));
 		});
 	},
 };

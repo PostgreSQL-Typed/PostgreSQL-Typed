@@ -4,7 +4,7 @@ import prettyBytes from "pretty-bytes";
 import { defaultCardinality, defaultRelationship, parseColumnComment } from "@/util/functions";
 import { activeDatabase, activeTableId } from "./navigation";
 
-export const data = ref<FetchedData[]>([]);
+export const data = ref<(FetchedData & { id: string })[]>([]);
 const defaultError = "Check your terminal or make a new build with `pgt --ui`";
 export const errorMessage = ref(defaultError);
 
@@ -29,7 +29,7 @@ export const fetchData = async () => {
 	}
 };
 
-export const setData = (newData: FetchedData[]) => {
+export const setData = (newData: (FetchedData & { id: string })[]) => {
 	newData.sort((a, b) => a.database.localeCompare(b.database));
 	for (const database of newData) {
 		database.tables.sort((a, b) => {
@@ -43,11 +43,25 @@ export const setData = (newData: FetchedData[]) => {
 
 export const hasData = computed(() => data.value.length > 0);
 export const hasMultipleDatabases = computed(() => data.value.length > 1);
-export const databases = computed(() => data.value.map(d => d.database));
-export const tables = computed(() => data.value.find(d => d.database === activeDatabase.value)?.tables ?? []);
+export const databases = computed(() =>
+	data.value.map(d => ({
+		database: d.database,
+		hostPort: d.hostPort,
+		id: d.id,
+	}))
+);
+export const database = computed(
+	() =>
+		data.value.find(d => d.id === activeDatabase.value) ?? {
+			database: "postgres",
+			hostPort: "localhost:5432",
+			id: encodeURIComponent("localhost:5432/postgres"),
+		}
+);
+export const tables = computed(() => data.value.find(d => d.id === activeDatabase.value)?.tables ?? []);
 export const tableCount = computed(() => tables.value.length);
 export const schemaCount = computed(() => {
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return 0;
 
 	const schemas = new Set<string>();
@@ -55,7 +69,7 @@ export const schemaCount = computed(() => {
 	return schemas.size;
 });
 export const dbSize = computed(() => {
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return prettyBytes(0);
 
 	let size = 0;
@@ -64,8 +78,14 @@ export const dbSize = computed(() => {
 	return prettyBytes(size);
 });
 
+export const databaseById = (id: string) =>
+	data.value.find(d => d.id === id) ?? {
+		database: "postgres",
+		hostPort: "localhost:5432",
+		id: encodeURIComponent("localhost:5432/postgres"),
+	};
 export const findById = (id: string) => {
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return undefined;
 	for (const table of database.tables) if (table.table_id.toString() === id) return table;
 	return undefined;
@@ -75,13 +95,13 @@ export const activeTableClass = computed(() => {
 	const table = activeTable.value;
 	if (!table) return undefined;
 
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return undefined;
 
 	return database.classes.find(c => c.class_id === table.table_id);
 });
 export const classById = (id: number) => {
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return undefined;
 
 	const found = database.classes.find(c => c.class_id === id);
@@ -90,7 +110,7 @@ export const classById = (id: number) => {
 	return undefined;
 };
 export const classByPath = (path: string) => {
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return undefined;
 
 	const [schema, table, column] = path.split(".");
@@ -150,7 +170,7 @@ export const relations = computed(() => {
 			relationship: string;
 		}[] = [];
 
-	const database = data.value.find(d => d.database === activeDatabase.value);
+	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return { nodes, links };
 
 	for (const cls of database.classes) {

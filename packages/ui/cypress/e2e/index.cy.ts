@@ -72,7 +72,7 @@ describe("functionalities", () => {
 
 			cy.visit("/");
 
-			cy.get('[text-4xl=""] > span').should("have.text", "postgres");
+			cy.get('[text-4xl=""] > span:nth-child(1)').should("have.text", "postgres");
 			cy.get('[text-4xl=""] > span:nth-child(2)').should("have.text", "@localhost:5432");
 
 			cy.get("#schemaCount").should("have.text", "1");

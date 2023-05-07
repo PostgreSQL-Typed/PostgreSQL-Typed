@@ -17,20 +17,20 @@
 							<div p-2 text-center flex>
 								<div grid gap="4">
 									<div v-if="!hasMultipleDatabases" grid text-4xl min-w-2em>
-										<span truncate>{{ database.database }} </span>
-										<span text-xs truncate> @{{ database.hostPort }} </span>
+										<span truncate>{{ database.database }}</span>
+										<span text-xs truncate>@{{ database.hostPort }}</span>
 									</div>
 									<Select v-else v-model="activeDatabase" :options="databases" max-w-75>
 										<template #selected="{ item }">
 											<div grid text-4xl min-w-2em>
-												<span truncate>{{ databaseById(item).database }} </span>
-												<span text-xs truncate> @{{ databaseById(item).hostPort }} </span>
+												<span truncate>{{ databaseById(item).database }}</span>
+												<span text-xs truncate>@{{ databaseById(item).hostPort }}</span>
 											</div>
 										</template>
 										<template #item="{ item }">
 											<div text-md truncate w-75>
-												<span truncate>{{ item.database }} </span>
-												<span text-xs truncate> @{{ item.hostPort }} </span>
+												<span truncate>{{ item.database }}</span>
+												<span text-xs truncate>@{{ item.hostPort }}</span>
 											</div>
 										</template>
 									</Select>

@@ -48,19 +48,10 @@ export class Fetcher {
 			await this.setDatabaseName();
 		} catch {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true) {
-				console.log(
-					getConsoleHeader(
-						r("Could not connect to database!"),
-						"Please check your connection settings.",
-						false,
-						`Used connection string: ${this.formatted_connection_string}`
-					)
-				);
-			}
+			if (this.generatorConfig?.noConsoleLogs !== true)
+				console.log(getConsoleHeader(r("Could not connect to database!"), "Please check your connection settings.", false, `Remote host: ${this.hostPort}`));
 
-			if (this.generatorConfig?.throwOnError === true)
-				throw new Error(`Could not connect to database! Used connection string: ${this.formatted_connection_string}`);
+			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not connect to database! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 	}
@@ -84,6 +75,10 @@ export class Fetcher {
 			: `postgres://${this.connection.user}@${this.connection.host}:${this.connection.port}/${this.connection.database}`;
 	}
 
+	private get hostPort(): string {
+		return this.formatted_connection_string.split("@")[1].split("/")[0];
+	}
+
 	private get schema_names(): string[] {
 		return [...new Set(this.tables.map(({ schema_name: schemaName }) => schemaName))];
 	}
@@ -94,17 +89,10 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d tables", tables.length);
 		if (tables.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true) {
-				console.log(
-					getConsoleHeader(
-						r("Could not fetch any tables!"),
-						"Please check your schemas/tables settings.",
-						false,
-						`Used connection string: ${this.formatted_connection_string}`
-					)
-				);
-			}
-			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any tables!");
+			if (this.generatorConfig?.noConsoleLogs !== true)
+				console.log(getConsoleHeader(r("Could not fetch any tables!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
+
+			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any tables! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.tables = tables;
@@ -119,15 +107,11 @@ export class Fetcher {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
 				console.log(
-					getConsoleHeader(
-						r("Could not fetch any data types!"),
-						"Please check your schemas/tables settings.",
-						false,
-						`Used connection string: ${this.formatted_connection_string}`
-					)
+					getConsoleHeader(r("Could not fetch any data types!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`)
 				);
 			}
-			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any data types!");
+
+			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any data types! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.dataTypes = types;
@@ -143,17 +127,10 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d classes", classes.length);
 		if (classes.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true) {
-				console.log(
-					getConsoleHeader(
-						r("Could not fetch any classes!"),
-						"Please check your schemas/tables settings.",
-						false,
-						`Used connection string: ${this.formatted_connection_string}`
-					)
-				);
-			}
-			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any classes!");
+			if (this.generatorConfig?.noConsoleLogs !== true)
+				console.log(getConsoleHeader(r("Could not fetch any classes!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
+
+			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any classes! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.classes = classes;
@@ -171,15 +148,11 @@ export class Fetcher {
 			this.progressBar.stop();
 			if (this.generatorConfig?.noConsoleLogs !== true) {
 				console.log(
-					getConsoleHeader(
-						r("Could not fetch any attributes!"),
-						"Please check your schemas/tables settings.",
-						false,
-						`Used connection string: ${this.formatted_connection_string}`
-					)
+					getConsoleHeader(r("Could not fetch any attributes!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`)
 				);
 			}
-			if (this.generatorConfig?.throwOnError === true) throw new Error("Could not fetch any attributes!");
+
+			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any attributes! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.attributes = attributes;
@@ -197,6 +170,7 @@ export class Fetcher {
 	public get fetchedData(): FetchedData {
 		return {
 			database: this.dbName,
+			hostPort: this.hostPort,
 			tables: this.tables,
 			types: this.dataTypes,
 			classes: this.classes.map(

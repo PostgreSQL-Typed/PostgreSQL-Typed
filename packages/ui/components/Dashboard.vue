@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { dbSize, tableCount, schemaCount, hasMultipleDatabases, databases } from "@/composables/data";
+	import { dbSize, tableCount, schemaCount, hasMultipleDatabases, databases, database, databaseById } from "@/composables/data";
 	import { activeDatabase } from "@/composables/navigation";
 </script>
 
@@ -12,21 +12,26 @@
 		<div class="scrolls" flex-auto py-1>
 			<div gap-0 flex="~ col gap-4" h-full justify-center items-center>
 				<div bg-header rounded-lg p="y4 x2">
-					<section m="y-4 x-2">
+					<section m="y-4 x-2" w-80>
 						<div flex="~ wrap" justify-evenly relative>
 							<div p-2 text-center flex>
-								<div>
-									<div v-if="!hasMultipleDatabases" text-4xl min-w-2em>
-										{{ activeDatabase }}
+								<div grid gap="4">
+									<div v-if="!hasMultipleDatabases" grid text-4xl min-w-2em>
+										<span truncate>{{ database.database }}</span>
+										<span text-xs truncate>@{{ database.hostPort }}</span>
 									</div>
-									<Select v-else v-model="activeDatabase" :options="databases">
+									<Select v-else v-model="activeDatabase" :options="databases" max-w-75>
 										<template #selected="{ item }">
-											<div text-4xl min-w-2em>
-												{{ item }}
+											<div grid text-4xl min-w-2em>
+												<span truncate>{{ databaseById(item).database }}</span>
+												<span text-xs truncate>@{{ databaseById(item).hostPort }}</span>
 											</div>
 										</template>
 										<template #item="{ item }">
-											<div text-md>{{ item }}</div>
+											<div text-md truncate w-75>
+												<span truncate>{{ item.database }}</span>
+												<span text-xs truncate>@{{ item.hostPort }}</span>
+											</div>
 										</template>
 									</Select>
 									<div text-md>Database Information</div>

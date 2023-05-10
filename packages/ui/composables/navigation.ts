@@ -28,12 +28,12 @@ export function showDashboard(show: boolean) {
 export function initNavigation() {
 	const database = activeDatabase.value;
 	if (database) {
-		const exists = databases.value.includes(database);
+		const exists = databases.value.find(d => d.id === database);
 		if (!exists) {
-			activeDatabase.value = databases.value[0];
+			activeDatabase.value = databases.value[0].id;
 			activeTableId.value = undefined;
 		}
-	} else activeDatabase.value = databases.value[0];
+	} else activeDatabase.value = databases.value[0].id;
 
 	const tableId = activeTableId.value;
 	if (tableId) {

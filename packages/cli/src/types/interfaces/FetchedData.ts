@@ -4,6 +4,7 @@ import type { DataType } from "../types/DataType.js";
 
 export interface FetchedData {
 	database: string;
+	hostPort: string;
 	tables: Table[];
 	types: DataType[];
 	classes: ClassDetails[];

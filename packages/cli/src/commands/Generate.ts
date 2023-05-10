@@ -29,7 +29,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	const log = LOGGER?.extend("Command").extend("Generate");
 	log?.("Running command...");
 	const configHandler = await new ConfigHandler().loadConfig(),
-		{ connections, filepath, config } = configHandler,
+		{ connections, filepath, config, isESM } = configHandler,
 		//fetches * steps in fetcher + steps in printer
 		totalSteps = connections.length * 5 + 1,
 		progressBar = new ProgressBar({
@@ -86,6 +86,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	progressBar.setStep(5);
 	const printer = new Printer(
 		config,
+		isESM,
 		fetchers.map(f => f.fetchedData),
 		arguments_
 	);

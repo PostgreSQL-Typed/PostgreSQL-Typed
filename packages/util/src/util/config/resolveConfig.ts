@@ -15,7 +15,7 @@ const promisifiedRealpath = promisify(realpath);
 export async function resolveConfig(
 	configFile?: string,
 	configRoot: string = process.cwd()
-): Promise<{ config: Record<string, any>; filePath: string } | undefined> {
+): Promise<{ config?: Record<string, any>; filePath?: string; isESM: boolean }> {
 	let resolvedPath: string | undefined;
 
 	if (configFile) resolvedPath = resolve(configFile);
@@ -29,11 +29,9 @@ export async function resolveConfig(
 		}
 	}
 
-	if (!resolvedPath) return undefined;
-
 	let isESM = false;
-	if (/\.m[jt]s$/.test(resolvedPath)) isESM = true;
-	else if (/\.c[jt]s$/.test(resolvedPath)) isESM = false;
+	if (resolvedPath && /\.m[jt]s$/.test(resolvedPath)) isESM = true;
+	else if (resolvedPath && /\.c[jt]s$/.test(resolvedPath)) isESM = false;
 	// If it's not a .js or .ts file, we don't know if it's ESM or CJS, we will just not fetch it.
 	else {
 		// check package.json for type: "module" and set `isESM` to true
@@ -42,6 +40,8 @@ export async function resolveConfig(
 			isESM = !!package_ && JSON.parse(readFileSync(package_, "utf8")).type === "module";
 		} catch {}
 	}
+
+	if (!resolvedPath) return { isESM, config: undefined, filePath: undefined };
 
 	const result = await build({
 			absWorkingDir: process.cwd(),
@@ -90,7 +90,7 @@ export async function resolveConfig(
 
 		try {
 			const imported = await import(fileUrl);
-			return { config: imported.default, filePath: resolvedPath };
+			return { config: imported.default, filePath: resolvedPath, isESM };
 		} finally {
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			unlink(fileNameTemporary, () => {}); // Ignore errors
@@ -113,7 +113,7 @@ export async function resolveConfig(
 		delete _require.cache[_require.resolve(resolvedPath)];
 		const raw = _require(resolvedPath);
 		_require.extensions[loaderExtension] = defaultLoader;
-		return { config: raw.__esModule ? raw.default : raw, filePath: resolvedPath };
+		return { config: raw.__esModule ? raw.default : raw, filePath: resolvedPath, isESM };
 	}
 }
 

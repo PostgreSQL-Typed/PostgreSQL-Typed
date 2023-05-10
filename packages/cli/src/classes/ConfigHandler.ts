@@ -19,12 +19,14 @@ import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js"
 export class ConfigHandler {
 	filepath: string | null = null;
 	config: PostgreSQLTypedCLIConfig = DEFAULT_CONFIG.cli;
+	isESM = false;
 	private LOGGER = LOGGER?.extend("ConfigHandler");
 
 	public async loadConfig(): Promise<this> {
 		this.LOGGER?.("Loading config file...");
 		//TODO allow passing config file path
 		const result = await getConfig();
+		this.isESM = result.isESM;
 		if (!result.filePath) {
 			this.LOGGER?.("No config file found");
 			return this;

@@ -20,7 +20,7 @@ export class FileContent {
 		type: { source: string; dest: string }[];
 		value: { source: string; dest: string }[];
 	} = { type: [], value: [] };
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, file: FileName) {
+	constructor(public readonly config: PostgreSQLTypedCLIConfig, public readonly isESM: boolean, file: FileName) {
 		this.file = file;
 	}
 
@@ -186,9 +186,7 @@ export class FileContent {
 							.map(imp => {
 								const relativePath = relative(dirname(this.file), imp.file);
 								return imp.getImportStatement(
-									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
-										this.config.type === "cjs" ? "" : ".js"
-									}`
+									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${this.isESM ? ".js" : ""}`
 								);
 							})
 							.join("\n"),

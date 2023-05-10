@@ -27,7 +27,12 @@ export class Printer {
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
 	private LOGGER = LOGGER?.extend("Printer");
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
+	constructor(
+		public readonly config: PostgreSQLTypedCLIConfig,
+		public readonly isESM: boolean,
+		readonly data: FetchedData[],
+		readonly arguments_: Record<string, any>
+	) {
 		this.classes = new Map(
 			data
 				.flatMap(d => d.classes.filter(c => d.tables.map(t => `${t.schema_name}.${t.table_name}`).includes(`${c.schema_name}.${c.class_name}`)))
@@ -35,7 +40,7 @@ export class Printer {
 		);
 		this.types = new Map(data.flatMap(d => d.types).map(t => [t.type_id, t]));
 
-		this.context = new PrinterContext(this.config);
+		this.context = new PrinterContext(this.config, this.isESM);
 	}
 
 	public getClass(id: number) {

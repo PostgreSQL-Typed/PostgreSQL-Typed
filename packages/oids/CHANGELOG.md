@@ -1,10 +1,6 @@
-# @postgresql-typed/ui
+# @postgresql-typed/oids
 
-## 0.3.0
-
-### Minor Changes
-
-- [#19](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/19) [`12e0e70`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/12e0e70679c7e980848bebbb6b08240a69106d2d) Thanks [@Bas950](https://github.com/Bas950)! - UI - Make database ids unique
+## 0.1.1
 
 ### Patch Changes
 
@@ -37,24 +33,3 @@
   - Updated dependency `start-server-and-test` to `^2.0.0`.
   - Updated dependency `unocss` to `^0.51.12`.
   - Updated dependency `vue` to `^3.2.47`.
-- Updated dependencies [[`12e0e70`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/12e0e70679c7e980848bebbb6b08240a69106d2d), [`10b663a`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/10b663a1631b81cdfca2a2da61512d8880807cf3), [`1adeb0c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/1adeb0cda9852d193aa4b6807d039808f533affe)]:
-  - @postgresql-typed/cli@0.3.0
-
-## 0.2.1
-
-### Patch Changes
-
-- @postgresql-typed/cli@0.2.1
-
-## 0.2.0
-
-### Minor Changes
-
-- 5989692: bump all the the same version
-
-### Patch Changes
-
-- Updated dependencies [5989692]
-- Updated dependencies [5989692]
-- Updated dependencies [5989692]
-  - @postgresql-typed/cli@0.2.0

@@ -1,7 +1,6 @@
 /* eslint-disable no-undefined */
-import type chalk from "chalk";
-
 import { ETA } from "../classes/ETA.js";
+import type { Chalk } from "../util/chalk.js";
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 import { isDebugEnabled } from "../util/functions/isDebugEnabled.js";
 
@@ -11,13 +10,13 @@ interface WaiterOptions {
 	line3: string;
 	doubleBackslash?: boolean;
 	interval?: number;
-	spinnerColor?: chalk.Chalk;
+	spinnerColor?: Chalk;
 }
 
 interface ProgressOptions {
 	totalSteps: number;
 	line1: string;
-	spinnerColor?: chalk.Chalk;
+	spinnerColor?: Chalk;
 	steps: string[];
 }
 
@@ -46,7 +45,7 @@ export class ProgressBar {
 	private stepIndex = -1;
 	private steps: string[] = [];
 	private progressLine1 = "";
-	private progressSpinnerColor: chalk.Chalk | undefined;
+	private progressSpinnerColor: Chalk | undefined;
 
 	constructor(options: ProgressBarOptions) {
 		const {
@@ -74,7 +73,7 @@ export class ProgressBar {
 		this.setProgressDots();
 	}
 
-	private getSpinners(spinnerColor?: chalk.Chalk) {
+	private getSpinners(spinnerColor?: Chalk) {
 		return [
 			spinnerColor ? spinnerColor(".  ") : ".  ",
 			spinnerColor ? spinnerColor(".. ") : ".. ",

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-	import { activeTable, activeTableClass } from "@/composables/data";
+	import { activeTable, activeTableClass, database } from "@/composables/data";
 	import { getRelationGraph, type RelationGraph } from "@/composables/graph";
 	import { getERD } from "@/composables/diagram";
 	import { activeTableId } from "@/composables/navigation";
-	import { viewMode, type Params, activeDatabase } from "@/composables/navigation";
+	import { viewMode, type Params } from "@/composables/navigation";
 
 	const graph = ref<RelationGraph>({ nodes: [], links: [] });
 	const erd = ref("");
@@ -49,7 +49,7 @@
 		<div>
 			<div p="2" h-10 flex="~ gap-2" items-center bg-header border="b base">
 				<div flex-1 font-light op-50 ws-nowrap truncate text-sm>
-					{{ activeDatabase }} • {{ activeTable.schema_name }}.{{ activeTable.table_name }}{{ comment }}
+					{{ database.database }} • {{ activeTable.schema_name }}.{{ activeTable.table_name }}{{ comment }}
 				</div>
 			</div>
 			<div flex="~" items-center bg-header border="b-2 base" text-sm h-41px>

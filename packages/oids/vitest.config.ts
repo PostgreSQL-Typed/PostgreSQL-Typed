@@ -7,7 +7,7 @@ export default defineConfig({
 		},
 		coverage: {
 			100: true,
-			reporter: ["json-summary", "text"],
+			reporter: ["json-summary", "text", "html"],
 		},
 	},
 });

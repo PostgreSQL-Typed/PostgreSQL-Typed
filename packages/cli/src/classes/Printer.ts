@@ -4,7 +4,7 @@ import { dirname, join } from "node:path/posix";
 
 import { OID } from "@postgresql-typed/oids";
 import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
-import mkdirp from "mkdirp";
+import { sync } from "mkdirp";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { DebugOnly } from "../commands/DebugOnly.js";
@@ -27,7 +27,12 @@ export class Printer {
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
 	private LOGGER = LOGGER?.extend("Printer");
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
+	constructor(
+		public readonly config: PostgreSQLTypedCLIConfig,
+		public readonly isESM: boolean,
+		readonly data: FetchedData[],
+		readonly arguments_: Record<string, any>
+	) {
 		this.classes = new Map(
 			data
 				.flatMap(d => d.classes.filter(c => d.tables.map(t => `${t.schema_name}.${t.table_name}`).includes(`${c.schema_name}.${c.class_name}`)))
@@ -35,7 +40,7 @@ export class Printer {
 		);
 		this.types = new Map(data.flatMap(d => d.types).map(t => [t.type_id, t]));
 
-		this.context = new PrinterContext(this.config);
+		this.context = new PrinterContext(this.config, this.isESM);
 	}
 
 	public getClass(id: number) {
@@ -136,7 +141,7 @@ export class Printer {
 			filenames = new Set(files.map(f => f.filename));
 
 		//* Create directory if it doesn't exist
-		mkdirp.sync(directory);
+		sync(directory);
 
 		if (this.arguments_[DebugOnly.name] !== true) {
 			//* Delete files that would no longer be output
@@ -195,7 +200,7 @@ export class Printer {
 						}
 
 						//* Double check nested folders exist
-						mkdirp.sync(dirname(filename));
+						sync(dirname(filename));
 
 						await promises.writeFile(
 							filename,

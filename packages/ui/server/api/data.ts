@@ -2,7 +2,13 @@ import generate from "@postgresql-typed/cli";
 
 export default defineEventHandler(async () => {
 	try {
-		return await generateData();
+		const result = await generateData();
+		return result.map(r => ({
+			...r,
+			...{
+				id: encodeURIComponent(`${r.hostPort}/${r.database}`),
+			},
+		}));
 	} catch (e) {
 		if (!(e instanceof Error)) return;
 

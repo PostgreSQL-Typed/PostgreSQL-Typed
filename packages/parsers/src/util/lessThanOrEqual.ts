@@ -10,7 +10,7 @@ export const lessThanOrEqual = <
 	value2: DataType
 ) => {
 	if ((Timestamp.isTimestamp(value1) && Timestamp.isTimestamp(value2)) || (TimestampTZ.isTimestampTZ(value1) && TimestampTZ.isTimestampTZ(value2)))
-		return value1.toDateTime("utc").toISO() <= value2.toDateTime("utc").toISO();
+		return value1.toDateTime("utc").toMillis() <= value2.toDateTime("utc").toMillis();
 
 	return value1.toString() <= value2.toString();
 };

@@ -1,8 +1,5 @@
 name: Ecosystem
 on: [push]
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
 jobs:
   "Core":
     name: '@PostgreSQL-Typed/Core'
@@ -62,8 +59,6 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
-        with:
-          turbo-prefix: "coverage"
 
       - name: Download coverage
         uses: actions/download-artifact@v3
@@ -83,8 +78,6 @@ jobs:
 
       - name: Prepare environment
         uses: ./.github/actions/prepareEnvironment
-        with:
-          turbo-prefix: "changesets"
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

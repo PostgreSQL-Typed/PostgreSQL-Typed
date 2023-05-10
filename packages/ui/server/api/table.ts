@@ -7,6 +7,7 @@ export default defineEventHandler(async () => {
 		const schemas = [...new Set(database.tables.map(table => table.schema_id))];
 		return {
 			database_name: database.database,
+			database_url: database.hostPort,
 			schemas: schemas.map(schema => {
 				const tables = database.tables.filter(table => table.schema_id === schema);
 				return {

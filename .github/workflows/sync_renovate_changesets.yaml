@@ -65,7 +65,7 @@ jobs:
                   bumps.set(match[0].replace(/"/g, ""), match[1].replace(/"/g, ""));
                 }
               }
-              return bumps;
+              return new Map([...bumps.entries()].sort());
             }
 
             const branch = await exec.getExecOutput("git branch --show-current");

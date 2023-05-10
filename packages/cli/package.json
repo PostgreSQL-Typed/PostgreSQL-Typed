@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/cli",
-	"version": "0.2.1",
+	"version": "0.3.0",
 	"description": "Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.",
 	"type": "module",
 	"exports": {
@@ -49,31 +49,26 @@
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
-		"camelcase": "6.3.0",
-		"chalk": "4.1.2",
+		"camelcase": "7.0.1",
+		"chalk": "5.2.0",
 		"command-line-args": "^5.2.1",
 		"command-line-commands": "^3.0.2",
-		"command-line-usage": "^6.1.3",
-		"cosmiconfig": "^8.0.0",
-		"cosmiconfig-typescript-loader": "^4.3.0",
+		"command-line-usage": "^7.0.1",
 		"debug": "^4.3.4",
-		"mkdirp": "^1.0.4",
-		"pascalcase": "1.0.0",
-		"pg": "^8.7.3",
+		"mkdirp": "^3.0.1",
+		"pascalcase": "2.0.0",
+		"pg": "^8.10.0",
 		"pluralize": "^8.0.0",
-		"source-map-support": "^0.5.21",
-		"ts-node": "^10.9.1",
-		"zod": "^3.18.0"
+		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
 		"@types/command-line-args": "^5.2.0",
 		"@types/command-line-commands": "^2.0.1",
 		"@types/command-line-usage": "^5.0.2",
 		"@types/debug": "^4.1.7",
-		"@types/mkdirp": "^1.0.2",
-		"@types/node": "^18.6.2",
+		"@types/node": "^20.1.1",
 		"@types/pascalcase": "^1.0.1",
-		"@types/pg": "^8.6.5",
+		"@types/pg": "^8.6.6",
 		"@types/pluralize": "^0.0.29",
 		"typescript": "^4.7.4"
 	},

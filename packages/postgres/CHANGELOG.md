@@ -1,5 +1,14 @@
 # @postgresql-typed/postgres
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [1adeb0c]
+  - @postgresql-typed/util@0.3.0
+  - @postgresql-typed/core@0.2.2
+  - @postgresql-typed/parsers@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

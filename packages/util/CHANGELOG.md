@@ -1,5 +1,11 @@
 # @postgresql-typed/util
 
+## 0.3.0
+
+### Minor Changes
+
+- 1adeb0c: Remove `type` option from config, `isESM` is now returned while fetching
+
 ## 0.2.1
 
 ### Patch Changes

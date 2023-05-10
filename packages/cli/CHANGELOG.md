@@ -1,5 +1,17 @@
 # @postgresql-typed/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- 12e0e70: UI - Make database ids unique
+- 1adeb0c: Remove `type` option from config, `isESM` is now returned while fetching
+
+### Patch Changes
+
+- Updated dependencies [1adeb0c]
+  - @postgresql-typed/util@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # postgresql-type-parsers
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [1adeb0c]
+  - @postgresql-typed/util@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes

@@ -39,8 +39,8 @@
 		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
 	},
 	"devDependencies": {
-		"@types/pg": "^8.6.5",
-		"pg": "^8.9.0"
+		"@types/pg": "^8.6.6",
+		"pg": "^8.10.0"
 	},
 	"packageManager": "pnpm@7.17.0",
 	"engines": {

@@ -4,7 +4,7 @@ import { dirname, join } from "node:path/posix";
 
 import { OID } from "@postgresql-typed/oids";
 import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
-import mkdirp from "mkdirp";
+import { sync } from "mkdirp";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { DebugOnly } from "../commands/DebugOnly.js";
@@ -141,7 +141,7 @@ export class Printer {
 			filenames = new Set(files.map(f => f.filename));
 
 		//* Create directory if it doesn't exist
-		mkdirp.sync(directory);
+		sync(directory);
 
 		if (this.arguments_[DebugOnly.name] !== true) {
 			//* Delete files that would no longer be output
@@ -200,7 +200,7 @@ export class Printer {
 						}
 
 						//* Double check nested folders exist
-						mkdirp.sync(dirname(filename));
+						sync(dirname(filename));
 
 						await promises.writeFile(
 							filename,

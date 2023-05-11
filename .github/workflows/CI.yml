@@ -1,5 +1,5 @@
 name: Ecosystem
-on: [push]
+on: [push, pull_request]
 jobs:
   "Core":
     name: '@PostgreSQL-Typed/Core'

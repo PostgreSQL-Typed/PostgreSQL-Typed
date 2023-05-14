@@ -1,4 +1,4 @@
-import { setDefaultCLIConfig } from "./configs/CLI/index.js";
+import { setDefaultCLIConfig } from "./configs/clii/index.js";
 import { PostgreSQLTypedConfig, PostgreSQLTypedConfigFinal } from "./configs/index.js";
 import { resolveConfig } from "./resolveConfig.js";
 

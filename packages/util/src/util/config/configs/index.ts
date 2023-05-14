@@ -1,4 +1,4 @@
-import type { PostgreSQLTypedCLIConfig } from "./CLI/index.js";
+import type { PostgreSQLTypedCLIConfig } from "./clii/index.js";
 
 export interface PostgreSQLTypedConfig {
 	cli: PostgreSQLTypedCLIConfig;
@@ -13,7 +13,7 @@ type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type { Connection } from "./CLI/Connection.js";
-export type { ImportStatement } from "./CLI/ImportStatement.js";
-export type { PostgreSQLTypedCLIConfig } from "./CLI/index.js";
-export type { TypesConfig } from "./CLI/TypesConfig.js";
+export type { Connection } from "./clii/Connection.js";
+export type { ImportStatement } from "./clii/ImportStatement.js";
+export type { PostgreSQLTypedCLIConfig } from "./clii/index.js";
+export type { TypesConfig } from "./clii/TypesConfig.js";

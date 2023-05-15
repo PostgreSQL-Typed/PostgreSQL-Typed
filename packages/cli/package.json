@@ -3,11 +3,23 @@
 	"version": "0.3.1",
 	"description": "Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.",
 	"type": "module",
+	"types": "./lib/index.d.ts",
+	"bin": {
+		"pgt": "./lib/cli.js"
+	},
 	"exports": {
 		".": "./lib/index.js",
-		"./lib/config": "./lib/config.js"
+		"./config": {
+			"types": "./config.d.ts",
+			"import": "./config.js",
+			"require": "./config.cjs"
+		},
+		"./package.json": "./package.json"
 	},
-	"types": "./lib/index.d.ts",
+	"files": [
+		"lib",
+		"config.*"
+	],
 	"license": "MPL-2.0",
 	"author": {
 		"name": "Bas950",
@@ -21,12 +33,6 @@
 	},
 	"bugs": {
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
-	},
-	"files": [
-		"lib"
-	],
-	"bin": {
-		"pgt": "./lib/cli.js"
 	},
 	"keywords": [
 		"postgresql",
@@ -49,6 +55,7 @@
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
+		"c12": "^1.4.1",
 		"camelcase": "7.0.1",
 		"chalk": "5.2.0",
 		"command-line-args": "^5.2.1",

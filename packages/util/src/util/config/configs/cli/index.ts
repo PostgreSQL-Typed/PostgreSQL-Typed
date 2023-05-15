@@ -69,6 +69,13 @@ export interface PostgreSQLTypedCLIConfig {
 	 * @default {}
 	 */
 	types: TypesConfig;
+
+	/**
+	 * The TypeScript module type you use in your project (if you are using esm it adds the .js import extension)
+	 *
+	 * @default "cjs"
+	 */
+	type: "esm" | "cjs";
 }
 
 export function setDefaultCLIConfig(config: Record<string, any>): PostgreSQLTypedCLIConfig {
@@ -114,11 +121,14 @@ export function setDefaultCLIConfig(config: Record<string, any>): PostgreSQLType
 		if (config.tables && !Array.isArray(config.tables) && typeof config.tables !== "string" && typeof config.tables !== "number") delete config.tables;
 	}
 
+	if (config.type && !["esm", "cjs"].includes(config.type)) delete config.type;
+
 	return {
 		connectionStringEnvironmentVariable: config.connectionStringEnvironmentVariable ?? "DATABASE_URL",
 		connections: config.connections ?? "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
 		schemas: config.schemas ?? "*",
 		tables: config.tables ?? "*",
 		types: setDefaultTypesConfig(config.types ?? {}),
+		type: config.type ?? "cjs",
 	};
 }

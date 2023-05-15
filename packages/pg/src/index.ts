@@ -1,8 +1,17 @@
 import "./types.js";
 
-import { BaseClient, Context, getErrorMap, PGTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
-import { getParsedType, INVALID, isOneOf, OK, ParsedType, ParseReturnType } from "@postgresql-typed/util";
-import { Client as PGClient, ClientConfig, QueryResult } from "pg";
+import {
+	BaseClient,
+	type Context,
+	getErrorMap,
+	PGTError,
+	type PostgresData,
+	type Query,
+	type RawPostgresData,
+	setIssueForContext,
+} from "@postgresql-typed/core";
+import { getParsedType, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
+import { Client as PGClient, type ClientConfig, type QueryResult } from "pg";
 
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: PGClient;
@@ -30,9 +39,13 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		}
 
 		try {
+			await this.callHook("client:pre-connect");
+
 			await this._client.connect();
 
 			await this._client.query("SELECT 1");
+
+			await this.callHook("client:post-connect");
 			this._ready = true;
 
 			return this as Client<InnerPostgresData, true>;
@@ -122,6 +135,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	//* Run the actual query
 	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+		//@ts-expect-error - We can't type this properly for some reason
+		const preQueryResult = await this.callHook("client:pre-query", { query, values }, context);
+
+		if (preQueryResult !== undefined) return OK(preQueryResult as Query<Data>);
+
 		let result: QueryResult;
 		try {
 			result = await this._client.query(query, values);
@@ -133,8 +151,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 			return INVALID;
 		}
-
-		return OK({
+		const finalResult = {
 			rows: result.rows,
 			rowCount: result.rowCount,
 			command: result.command,
@@ -142,7 +159,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 				query,
 				values,
 			},
-		});
+		};
+
+		await this.callHook("client:post-query", finalResult, context);
+
+		return OK(finalResult);
 	}
 
 	get ready(): Ready {

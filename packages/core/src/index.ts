@@ -7,6 +7,7 @@ export * from "./classes/SelectBuilder.js";
 export * from "./classes/Table.js";
 export * from "./functions/isReady.js";
 export * from "./functions/setIssueForContext.js";
+export * from "./types/interfaces/ClientHooks.js";
 export * from "./types/interfaces/FilterOperators.js";
 export * from "./types/interfaces/RootFilterOperators.js";
 export * from "./types/types/ColumnFromPath.js";

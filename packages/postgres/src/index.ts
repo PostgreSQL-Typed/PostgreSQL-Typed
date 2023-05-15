@@ -39,9 +39,13 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
 		}
 
+		await this.callHook("client:pre-connect");
+
 		try {
 			await this._client.unsafe("SELECT 1");
 			this._ready = true;
+
+			await this.callHook("client:post-connect");
 
 			return this as Client<InnerPostgresData, true>;
 		} catch (error) {
@@ -130,6 +134,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	//* Run the actual query
 	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+		//@ts-expect-error - We can't type this properly for some reason
+		const preQueryResult = await this.callHook("client:pre-query", { query, values }, context);
+
+		if (preQueryResult !== undefined) return OK(preQueryResult as Query<Data>);
+
 		let result: Awaited<ReturnType<typeof this._client.unsafe>>;
 		try {
 			result = await this._client.unsafe(query, values);
@@ -142,7 +151,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 
-		return OK({
+		const finalResult = {
 			rows: [...result.values()],
 			rowCount: result.count,
 			command: result.command,
@@ -150,7 +159,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 				query,
 				values,
 			},
-		});
+		};
+
+		await this.callHook("client:post-query", finalResult, context);
+
+		return OK(finalResult);
 	}
 
 	get ready(): Ready {

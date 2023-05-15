@@ -1,5 +1,7 @@
 import { isValid, type ParseReturnType } from "@postgresql-typed/util";
+import { Hookable } from "hookable";
 
+import type { ClientHooks } from "../types/interfaces/ClientHooks.js";
 import type { Context } from "../types/types/Context.js";
 import type { PostgresData } from "../types/types/PostgresData.js";
 import type { Query } from "../types/types/Query.js";
@@ -16,8 +18,10 @@ import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";
 
-export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready extends boolean = false> {
-	constructor(private readonly postgresData: RawPostgresData<InnerPostgresData>) {}
+export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends Hookable<ClientHooks> {
+	constructor(private readonly postgresData: RawPostgresData<InnerPostgresData>) {
+		super();
+	}
 
 	abstract testConnection(): Promise<BaseClient<InnerPostgresData, true> | BaseClient<InnerPostgresData, false>>;
 
@@ -61,14 +65,14 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		return Object.keys(this.postgresData) as (keyof InnerPostgresData)[];
 	}
 
-	database<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
+	database<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName): Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready> {
 		//* Validate the database name exists (Is needed for non-TypeScript users)
 		if (!this.databaseNames.includes(database)) throw new Error(`Database "${database.toString()}" does not exist`);
 
 		return new Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready>(this, this.postgresData[database]);
 	}
 
-	db<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
+	db<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName): Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready> {
 		return this.database<DatabaseName>(database);
 	}
 
@@ -165,7 +169,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		SchemaLocation extends SchemaLocations<InnerPostgresData> = TemporarySchemaLocation extends SchemaLocations<InnerPostgresData>
 			? TemporarySchemaLocation
 			: never
-	>(table: TableLocation) {
+	>(table: TableLocation): Table<InnerPostgresData, InnerPostgresData[DatabaseName], Ready, SchemaLocation, TableLocation> {
 		return this.table<TableLocation, DatabaseName, TemporarySchemaLocation, SchemaLocation>(table);
 	}
 

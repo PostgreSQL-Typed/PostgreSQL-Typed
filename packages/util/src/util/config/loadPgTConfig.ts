@@ -15,7 +15,7 @@ export async function loadPGTConfig(options?: LoadPgTConfigOptions): Promise<{ c
 		...options,
 	});
 
-	if (!result.configFile) {
+	if (!result.config || Object.keys(result.config).length === 0) {
 		result = await loadConfig<PgTConfig>({
 			name: "postgresql-typed",
 			configFile: "postgresql-typed.config",
@@ -28,7 +28,7 @@ export async function loadPGTConfig(options?: LoadPgTConfigOptions): Promise<{ c
 
 	return {
 		config: setDefaultConfig(result.config ?? {}),
-		configFile: result.configFile,
-		cwd: result.cwd,
+		configFile: !result.config || Object.keys(result.config).length === 0 ? undefined : result.configFile,
+		cwd: !result.config || Object.keys(result.config).length === 0 ? undefined : result.cwd,
 	};
 }

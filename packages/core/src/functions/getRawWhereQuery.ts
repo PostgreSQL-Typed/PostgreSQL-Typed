@@ -1,14 +1,10 @@
 import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
 import { isRootFilterOperator } from "./isRootFilterOperator.js";

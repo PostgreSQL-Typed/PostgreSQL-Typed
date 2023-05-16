@@ -1,8 +1,8 @@
 import type { SchemaData } from "./SchemaData.js";
 
-export type DatabaseData = {
+export interface DatabaseData {
 	name: string;
 	schemas: {
 		[schema_name: string]: SchemaData;
 	};
-};
+}

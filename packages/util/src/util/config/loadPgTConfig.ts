@@ -5,8 +5,8 @@ import { setDefaultConfig } from "./setDefaultConfig.js";
 
 export type LoadPgTConfigOptions = LoadConfigOptions<PgTConfig>;
 
-export async function loadPGTConfig(options: LoadPgTConfigOptions): Promise<{ config: PgTConfigSchema; configFile?: string; cwd?: string }> {
-	const result = await loadConfig<PgTConfig>({
+export async function loadPGTConfig(options?: LoadPgTConfigOptions): Promise<{ config: PgTConfigSchema; configFile?: string; cwd?: string }> {
+	let result = await loadConfig<PgTConfig>({
 		name: "pgt",
 		configFile: "pgt.config",
 		rcFile: ".pgtrc",
@@ -14,6 +14,17 @@ export async function loadPGTConfig(options: LoadPgTConfigOptions): Promise<{ co
 		globalRc: true,
 		...options,
 	});
+
+	if (!result.configFile) {
+		result = await loadConfig<PgTConfig>({
+			name: "postgresql-typed",
+			configFile: "postgresql-typed.config",
+			rcFile: ".postgresql-typedrc",
+			dotenv: true,
+			globalRc: true,
+			...options,
+		});
+	}
 
 	return {
 		config: setDefaultConfig(result.config ?? {}),

@@ -1,8 +1,6 @@
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
 
 import type { Fetch } from "../types/types/Fetch.js";
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 
 export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {

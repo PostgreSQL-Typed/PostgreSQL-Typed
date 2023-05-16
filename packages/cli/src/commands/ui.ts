@@ -1,6 +1,7 @@
 import { fork } from "node:child_process";
 import { existsSync } from "node:fs";
-import { resolve } from "node:path/posix";
+
+import { resolve } from "pathe";
 
 import type { Command } from "../types/interfaces/Command.js";
 import { g, I, r } from "../util/chalk.js";

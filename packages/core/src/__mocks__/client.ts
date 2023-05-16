@@ -1,13 +1,10 @@
 import { OID } from "@postgresql-typed/oids";
 import { CharacterVarying, parser, UUID } from "@postgresql-typed/parsers";
-import { INVALID, OK, ParseReturnType } from "@postgresql-typed/util";
+import { type Context, INVALID, OK, ParseReturnType, type PostgresData, type Query } from "@postgresql-typed/util";
 import { Client as PGClient, type ClientConfig, type QueryResult, types } from "pg";
 
 import { BaseClient } from "../classes/BaseClient.js";
 import { setIssueForContext } from "../functions/setIssueForContext.js";
-import type { Context } from "../types/types/Context.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
 
 types.setTypeParser(OID.varchar as any, parser<CharacterVarying<number>>(CharacterVarying));

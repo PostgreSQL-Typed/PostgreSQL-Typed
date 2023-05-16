@@ -1,5 +1,5 @@
 import type { DatabaseData } from "./DatabaseData.js";
 
-export type PostgresData = {
+export interface PostgresData {
 	[databaseName: string]: DatabaseData;
-};
+}

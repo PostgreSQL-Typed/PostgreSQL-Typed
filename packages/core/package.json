@@ -41,6 +41,9 @@
 	"dependencies": {
 		"@postgresql-typed/util": "workspace:*",
 		"hookable": "^5.5.3",
+		"jiti": "^1.18.2",
+		"mlly": "^1.2.1",
+		"pathe": "^1.1.0",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {

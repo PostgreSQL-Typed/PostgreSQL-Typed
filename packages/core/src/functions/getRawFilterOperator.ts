@@ -1,12 +1,10 @@
 import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
 import { isBox } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
 
 import { Database } from "../classes/Database.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { filterOperators, isFilterOperator } from "./isFilterOperator.js";
 

@@ -1,6 +1,5 @@
-import { dirname, relative } from "node:path/posix";
-
 import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+import { dirname, relative } from "pathe";
 
 import { ImportState } from "../classes/ImportState.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
@@ -20,7 +19,7 @@ export class FileContent {
 		type: { source: string; dest: string }[];
 		value: { source: string; dest: string }[];
 	} = { type: [], value: [] };
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, public readonly isESM: boolean, file: FileName) {
+	constructor(public readonly config: PostgreSQLTypedCLIConfig, file: FileName) {
 		this.file = file;
 	}
 
@@ -186,7 +185,9 @@ export class FileContent {
 							.map(imp => {
 								const relativePath = relative(dirname(this.file), imp.file);
 								return imp.getImportStatement(
-									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${this.isESM ? ".js" : ""}`
+									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
+										this.config.type === "esm" ? ".js" : ""
+									}`
 								);
 							})
 							.join("\n"),

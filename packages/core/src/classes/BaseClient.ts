@@ -1,19 +1,24 @@
-import { isValid, type ParseReturnType } from "@postgresql-typed/util";
+import {
+	type ClientHooks,
+	type Context,
+	isValid,
+	loadPGTConfig,
+	type ParseReturnType,
+	PGTError,
+	type PostgresData,
+	type Query,
+	type Safe,
+} from "@postgresql-typed/util";
 import { Hookable } from "hookable";
 
-import type { ClientHooks } from "../types/interfaces/ClientHooks.js";
-import type { Context } from "../types/types/Context.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
+import { installExtension } from "../functions/installExtension.js";
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import { getErrorMap } from "../util/errorMap.js";
-import { PGTError } from "../util/PGTError.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";
@@ -225,5 +230,16 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 				schema.tables.map(table => `${databaseName}.${schema.name.toString()}.${table.name}` as TableLocations<InnerPostgresData>)
 			)
 		);
+	}
+
+	async initExtensions(): Promise<void> {
+		const { config } = await loadPGTConfig(),
+			{ extensions } = config.core;
+
+		if (extensions.length === 0) return;
+		for (const extension of extensions) {
+			if (!extension) continue;
+			await (Array.isArray(extension) ? installExtension(config, this, extension[0], extension[1]) : installExtension(config, this, extension, {}));
+		}
 	}
 }

@@ -41,7 +41,9 @@
 	"dependencies": {
 		"bignumber.js": "^9.1.1",
 		"c12": "^1.4.1",
-		"luxon": "^3.3.0"
+		"hookable": "^5.5.3",
+		"luxon": "^3.3.0",
+		"pathe": "^1.1.0"
 	},
 	"devDependencies": {
 		"@types/luxon": "^3.3.0",

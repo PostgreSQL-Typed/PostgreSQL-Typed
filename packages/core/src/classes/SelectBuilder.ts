@@ -1,5 +1,15 @@
 import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import {
+	type DatabaseData,
+	getParsedType,
+	hasKeys,
+	isOneOf,
+	ParsedType,
+	type PGTError,
+	type PostgresData,
+	type Query,
+	type Safe,
+} from "@postgresql-typed/util";
 
 import { getPGTError } from "../functions/getPGTError.js";
 import { getRawFetch } from "../functions/getRawFetch.js";
@@ -10,15 +20,11 @@ import { getRawOrderBy } from "../functions/getRawOrderBy.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
 import { getTableIdentifier } from "../functions/getTableIdentifier.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { Fetch } from "../types/types/Fetch.js";
 import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
 import type { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
 import type { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
@@ -26,7 +32,6 @@ import type { SelectRawQuery } from "../types/types/SelectRawQuery.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import type { BaseClient } from "./BaseClient.js";
 import { Table } from "./Table.js";
 

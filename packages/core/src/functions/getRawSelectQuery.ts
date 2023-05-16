@@ -1,10 +1,8 @@
 import { ConstructorFromParser, Parsers, PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { CountParser } from "./getRawJoinQuery.js";
 

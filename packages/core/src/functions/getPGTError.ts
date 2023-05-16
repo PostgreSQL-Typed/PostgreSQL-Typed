@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/filename-case */
+import { type IssueWithoutMessage, PGTError } from "@postgresql-typed/util";
+
 import { getErrorMap } from "../util/errorMap.js";
-import { type IssueWithoutMessage, PGTError } from "../util/PGTError.js";
 
 export function getPGTError(issueData: IssueWithoutMessage): PGTError {
 	return new PGTError({

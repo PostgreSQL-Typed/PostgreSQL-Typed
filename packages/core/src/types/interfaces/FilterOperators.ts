@@ -1,9 +1,6 @@
 import type { PGTPError } from "@postgresql-typed/parsers";
+import type { DatabaseData, PGTError, PostgresData, Safe } from "@postgresql-typed/util";
 
-import type { PGTError } from "../../util/PGTError.js";
-import type { DatabaseData } from "../types/DatabaseData.js";
-import type { PostgresData } from "../types/PostgresData.js";
-import type { Safe } from "../types/Safe.js";
 import type { SelectSubQuery } from "../types/SelectSubQuery.js";
 
 export interface FilterOperators<TValue, InnerPostgresData extends PostgresData, InnerDatabaseData extends DatabaseData> {

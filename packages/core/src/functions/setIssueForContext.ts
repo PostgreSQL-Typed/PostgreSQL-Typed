@@ -1,5 +1,4 @@
-import type { Context } from "../types/types/Context.js";
-import type { IssueWithoutMessage } from "../util/PGTError.js";
+import type { Context, IssueWithoutMessage } from "@postgresql-typed/util";
 
 export function setIssueForContext(context: Context, issueData: IssueWithoutMessage): void {
 	context.issue = {

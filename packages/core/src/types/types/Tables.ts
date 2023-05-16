@@ -1,4 +1,5 @@
-import type { DatabaseData } from "./DatabaseData.js";
+import type { DatabaseData } from "@postgresql-typed/util";
+
 import type { LastPath } from "./LastPath.js";
 import type { NestedPaths } from "./NestedPaths.js";
 

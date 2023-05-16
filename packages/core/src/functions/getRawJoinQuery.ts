@@ -1,13 +1,9 @@
 import { Int4, type Int4Constructor, type Parsers, type PGTPError, PGTPParser, type PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
 import { isJoinType, joinTypes } from "./isJoinType.js";

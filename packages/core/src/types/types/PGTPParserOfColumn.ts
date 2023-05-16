@@ -1,8 +1,8 @@
 /* eslint-disable unicorn/filename-case */
 import type { ConstructorFromParser, Parsers, PGTPParserClass } from "@postgresql-typed/parsers";
+import type { PostgresData } from "@postgresql-typed/util";
 
 import type { ColumnsOfTable } from "./ColumnsOfTable.js";
-import type { PostgresData } from "./PostgresData.js";
 import type { TableLocations } from "./TableLocations.js";
 
 export type PGTPParserOfColumn<

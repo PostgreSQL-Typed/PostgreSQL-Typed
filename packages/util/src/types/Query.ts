@@ -1,4 +1,4 @@
-export type Query<Data> = {
+export interface Query<Data> {
 	rows: Data[];
 	rowCount: number;
 	command: string;
@@ -6,4 +6,4 @@ export type Query<Data> = {
 		query: string;
 		values: string[];
 	};
-};
+}

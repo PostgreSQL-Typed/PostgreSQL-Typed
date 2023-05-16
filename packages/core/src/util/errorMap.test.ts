@@ -1,7 +1,7 @@
+import type { ErrorMap } from "@postgresql-typed/util";
 import { describe, expect, it } from "vitest";
 
 import { defaultErrorMap, getErrorMap, setErrorMap } from "./errorMap.js";
-import type { ErrorMap } from "./PGTError.js";
 
 describe("errorMap", () => {
 	it("should return the default errorMap", () => {

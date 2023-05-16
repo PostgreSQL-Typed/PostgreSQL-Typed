@@ -1,7 +1,5 @@
-import { getParsedType, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
 
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 
 export function getRawLimit(limit: number, offset?: number): Safe<string, PGTError> {

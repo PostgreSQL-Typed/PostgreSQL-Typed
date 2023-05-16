@@ -1,7 +1,7 @@
+import type { DatabaseData, PostgresData } from "@postgresql-typed/util";
+
 import type { ColumnsOfTable } from "../types/types/ColumnsOfTable.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { PGTPParserOfColumn } from "../types/types/PGTPParserOfColumn.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocations } from "../types/types/TableLocations.js";

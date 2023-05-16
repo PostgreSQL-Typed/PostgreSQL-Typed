@@ -1,11 +1,7 @@
-import { getParsedType, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, isOneOf, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { GroupBy as GroupByQuery } from "../types/types/GroupBy.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
 import { getPGTError } from "./getPGTError.js";
 
 export function getRawGroupBy<

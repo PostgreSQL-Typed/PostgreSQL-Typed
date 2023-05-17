@@ -15,5 +15,5 @@ export * from "./util/getParsedType.js";
 export * from "./util/hasKeys.js";
 export * from "./util/isOneOf.js";
 export * from "./util/joinValues.js";
-export * from "./util/PGTError.js";
+export * from "./util/PgTErrorr.js";
 export * from "./util/validation.js";

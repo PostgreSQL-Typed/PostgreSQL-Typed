@@ -8,8 +8,8 @@ import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 import { TimestampTZ } from "./TimestampTZ.js";
 
 interface DateObject {
@@ -68,7 +68,7 @@ interface DateConstructor {
 	isDate(object: any): object is Date;
 }
 
-class DateConstructorClass extends PGTPConstructorBase<Date> implements DateConstructor {
+class DateConstructorClass extends PgTPConstructorBasee<Date> implements DateConstructor {
 	constructor() {
 		super();
 	}
@@ -301,7 +301,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 	set year(year: number) {
 		const parsedType = getParsedType(year);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -309,13 +309,13 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (year % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "not_whole",
 			});
 		}
 
 		if (year < 1) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -324,7 +324,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (year > 9999) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_big",
 				type: "number",
 				maximum: 9999,
@@ -342,7 +342,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 	set month(month: number) {
 		const parsedType = getParsedType(month);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -350,13 +350,13 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (month % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "not_whole",
 			});
 		}
 
 		if (month < 1) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -365,7 +365,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (month > 12) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_big",
 				type: "number",
 				maximum: 12,
@@ -383,7 +383,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 	set day(day: number) {
 		const parsedType = getParsedType(day);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -391,13 +391,13 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (day % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "not_whole",
 			});
 		}
 
 		if (day < 1) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -406,7 +406,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		}
 
 		if (day > 31) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_big",
 				type: "number",
 				maximum: 31,

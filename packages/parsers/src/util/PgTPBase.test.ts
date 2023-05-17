@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import type { ParseContext } from "../types/ParseContext.js";
 import { PGTPBase } from "./PGTPBase.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { PGTPConstructorBase } from "./PgTPConstructorBasee.js";
 
 class TestConstructorClass extends PGTPConstructorBase<TestClass> {
 	constructor() {

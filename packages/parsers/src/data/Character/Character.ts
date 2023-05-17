@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 
 interface CharacterObject {
 	value: string;
@@ -57,7 +57,7 @@ interface CharacterConstructor<N extends number> {
 	get n(): N;
 }
 
-class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Character<N>> implements CharacterConstructor<N> {
+class CharacterConstructorClass<N extends number> extends PgTPConstructorBasee<Character<N>> implements CharacterConstructor<N> {
 	constructor(private _n: N = 1 as N) {
 		super();
 
@@ -65,7 +65,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: allowedTypes,
 				received: parsedType,
@@ -73,7 +73,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 		}
 
 		if (_n < 1) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -82,7 +82,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 		}
 
 		if (_n > 10_485_760 && _n !== Number.POSITIVE_INFINITY) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_big",
 				type: "number",
 				maximum: 10_485_760,
@@ -92,7 +92,7 @@ class CharacterConstructorClass<N extends number> extends PGTPConstructorBase<Ch
 
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
 			//If limit is not a whole number
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "not_whole",
 			});
 		}

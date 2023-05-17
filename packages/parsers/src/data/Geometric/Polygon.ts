@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 import { Point, PointObject } from "./Point.js";
 
 interface PolygonObject {
@@ -54,7 +54,7 @@ interface PolygonConstructor {
 	isPolygon(object: any): object is Polygon;
 }
 
-class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements PolygonConstructor {
+class PolygonConstructorClass extends PgTPConstructorBasee<Polygon> implements PolygonConstructor {
 	constructor() {
 		super();
 	}
@@ -304,7 +304,7 @@ class PolygonClass extends PgTPBase<Polygon> implements Polygon {
 	set points(points: Point[]) {
 		const parsedType = getParsedType(points);
 		if (parsedType !== "array") {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: "array",
 				received: parsedType,
@@ -312,7 +312,7 @@ class PolygonClass extends PgTPBase<Polygon> implements Polygon {
 		}
 
 		if (points.length === 0) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -323,7 +323,7 @@ class PolygonClass extends PgTPBase<Polygon> implements Polygon {
 		const finalPoints = points.map(point => Point.safeFrom(point)),
 			invalidPoint = finalPoints.find(point => !point.success);
 
-		if (invalidPoint?.success === false) throwPGTPError(invalidPoint.error.issue);
+		if (invalidPoint?.success === false) throwPgTPErrorr(invalidPoint.error.issue);
 
 		//@ts-expect-error - They are all valid at this point
 		this._points = finalPoints.map(point => point.data);

@@ -4,7 +4,7 @@ import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeEquals } from "../types/SafeEquals.js";
 import { getErrorMap } from "./errorMap.js";
-import { IssueWithoutMessage, PGTPError } from "./PGTPError.js";
+import { IssueWithoutMessage, PgTPErrorr } from "./PgTPErrorr.js";
 
 export abstract class PgTPBase<DataType> {
 	constructor() {
@@ -52,7 +52,7 @@ export abstract class PgTPBase<DataType> {
 			};
 		}
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTPError(context.issue);
+		const error = new PgTPErrorr(context.issue);
 		return { success: false, error };
 	}
 

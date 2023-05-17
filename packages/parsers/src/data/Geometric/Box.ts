@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 
 interface BoxObject {
 	x1: number;
@@ -47,7 +47,7 @@ interface BoxConstructor {
 	isBox(object: any): object is Box;
 }
 
-class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstructor {
+class BoxConstructorClass extends PgTPConstructorBasee<Box> implements BoxConstructor {
 	constructor() {
 		super();
 	}
@@ -233,7 +233,7 @@ class BoxClass extends PgTPBase<Box> implements Box {
 	set x1(x1: number) {
 		const parsedType = getParsedType(x1);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -249,7 +249,7 @@ class BoxClass extends PgTPBase<Box> implements Box {
 	set y1(y1: number) {
 		const parsedType = getParsedType(y1);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -265,7 +265,7 @@ class BoxClass extends PgTPBase<Box> implements Box {
 	set x2(x2: number) {
 		const parsedType = getParsedType(x2);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -281,7 +281,7 @@ class BoxClass extends PgTPBase<Box> implements Box {
 	set y2(y2: number) {
 		const parsedType = getParsedType(y2);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

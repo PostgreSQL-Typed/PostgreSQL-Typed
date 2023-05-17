@@ -5,9 +5,9 @@ import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeEquals } from "../types/SafeEquals.js";
 import type { SafeFrom } from "../types/SafeFrom.js";
 import { PgTPBase } from "./PgTPBase.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { PgTPConstructorBasee } from "./PgTPConstructorBasee.js";
 import { Range, RawRangeObject } from "./Range.js";
-import { throwPGTPError } from "./throwPGTPError.js";
+import { throwPgTPErrorr } from "./throwPgTPErrorr.js";
 
 interface MultiRangeObject<DataType, DataTypeObject> {
 	ranges: Range<DataType, DataTypeObject>[];
@@ -71,7 +71,7 @@ const getMultiRange = <
 
 	/* eslint-disable brace-style*/
 	class MultiRangeConstructorClass
-		extends PGTPConstructorBase<MultiRange<DataType, DataTypeObject>>
+		extends PgTPConstructorBasee<MultiRange<DataType, DataTypeObject>>
 		implements MultiRangeConstructor<DataType, DataTypeObject>
 	{
 		/* eslint-enable brace-style*/
@@ -308,7 +308,7 @@ const getMultiRange = <
 
 		set ranges(ranges: Range<DataType, DataTypeObject>[]) {
 			if (!Array.isArray(ranges)) {
-				throwPGTPError({
+				throwPgTPErrorr({
 					code: "invalid_type",
 					expected: "array",
 					received: typeof ranges,
@@ -318,7 +318,7 @@ const getMultiRange = <
 			const values = ranges.map(v => Object.safeFrom(v)),
 				invalidValue = values.find(v => !v.success);
 
-			if (invalidValue?.success === false) throwPGTPError(invalidValue.error.issue);
+			if (invalidValue?.success === false) throwPgTPErrorr(invalidValue.error.issue);
 
 			//@ts-expect-error - They are all valid at this point
 			this._ranges = values.map(v => v.data);

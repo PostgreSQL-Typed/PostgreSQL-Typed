@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 
 interface LineObject {
 	a: number;
@@ -45,7 +45,7 @@ interface LineConstructor {
 	isLine(object: any): object is Line;
 }
 
-class LineConstructorClass extends PGTPConstructorBase<Line> implements LineConstructor {
+class LineConstructorClass extends PgTPConstructorBasee<Line> implements LineConstructor {
 	constructor() {
 		super();
 	}
@@ -241,7 +241,7 @@ class LineClass extends PgTPBase<Line> implements Line {
 	set a(a: number) {
 		const parsedType = getParsedType(a);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -257,7 +257,7 @@ class LineClass extends PgTPBase<Line> implements Line {
 	set b(b: number) {
 		const parsedType = getParsedType(b);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -273,7 +273,7 @@ class LineClass extends PgTPBase<Line> implements Line {
 	set c(c: number) {
 		const parsedType = getParsedType(c);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

@@ -4,7 +4,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
 
 interface NameObject {
 	value: string;
@@ -36,7 +36,7 @@ interface NameConstructor {
 	isName(object: any): object is Name;
 }
 
-class NameConstructorClass extends PGTPConstructorBase<Name> implements NameConstructor {
+class NameConstructorClass extends PgTPConstructorBasee<Name> implements NameConstructor {
 	constructor() {
 		super();
 	}

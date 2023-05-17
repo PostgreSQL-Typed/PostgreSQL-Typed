@@ -9,9 +9,9 @@ import { greaterThan } from "./greaterThan.js";
 import { greaterThanOrEqual } from "./greaterThanOrEqual.js";
 import { lessThan } from "./lessThan.js";
 import { lessThanOrEqual } from "./lessThanOrEqual.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
-import { PGTPRangeBase } from "./PGTPRangeBase.js";
-import { throwPGTPError } from "./throwPGTPError.js";
+import { PgTPConstructorBasee } from "./PgTPConstructorBasee.js";
+import { PgTPRangeBasee } from "./PgTPRangeBasee.js";
+import { throwPgTPErrorr } from "./throwPgTPErrorr.js";
 
 enum LowerRange {
 	include = "[",
@@ -102,7 +102,7 @@ const getRange = <
 ) => {
 	const Object = object as ObjectFunction<DataType, DataType | DataTypeObject | string>;
 
-	class RangeConstructorClass extends PGTPConstructorBase<Range<DataType, DataTypeObject>> implements RangeConstructor<DataType, DataTypeObject> {
+	class RangeConstructorClass extends PgTPConstructorBasee<Range<DataType, DataTypeObject>> implements RangeConstructor<DataType, DataTypeObject> {
 		constructor() {
 			super();
 		}
@@ -451,7 +451,7 @@ const getRange = <
 
 	const Range: RangeConstructor<DataType, DataTypeObject> = new RangeConstructorClass();
 
-	class RangeClass extends PGTPRangeBase<Range<DataType, DataTypeObject>, DataType> implements Range<DataType, DataTypeObject> {
+	class RangeClass extends PgTPRangeBasee<Range<DataType, DataTypeObject>, DataType> implements Range<DataType, DataTypeObject> {
 		private _identifier = identifier;
 		private _lower: LowerRange | LowerRangeType;
 		private _upper: UpperRange | UpperRangeType;
@@ -535,7 +535,7 @@ const getRange = <
 
 		set lower(value: LowerRange | LowerRangeType) {
 			if (!lowerRange.includes(value)) {
-				throwPGTPError({
+				throwPgTPErrorr({
 					code: "invalid_string",
 					expected: lowerRange,
 					received: value,
@@ -552,7 +552,7 @@ const getRange = <
 
 		set upper(value: UpperRange | UpperRangeType) {
 			if (!upperRange.includes(value)) {
-				throwPGTPError({
+				throwPgTPErrorr({
 					code: "invalid_string",
 					expected: upperRange,
 					received: value,
@@ -575,7 +575,7 @@ const getRange = <
 
 			const parsedType = getParsedType(value);
 			if (parsedType !== "array") {
-				throwPGTPError({
+				throwPgTPErrorr({
 					code: "invalid_type",
 					expected: "array",
 					received: parsedType,
@@ -583,7 +583,7 @@ const getRange = <
 			}
 
 			if (value.length !== 2) {
-				throwPGTPError(
+				throwPgTPErrorr(
 					value.length > 2
 						? {
 								code: "too_big",
@@ -602,8 +602,8 @@ const getRange = <
 
 			const [lower, upper] = value.map(v => Object.safeFrom(v));
 
-			if (!lower.success) throwPGTPError(lower.error.issue);
-			if (!upper.success) throwPGTPError(upper.error.issue);
+			if (!lower.success) throwPgTPErrorr(lower.error.issue);
+			if (!upper.success) throwPgTPErrorr(upper.error.issue);
 
 			this._values = [lower.data, upper.data];
 			this._checkEmpty();

@@ -4,7 +4,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
 
 interface TextObject {
 	value: string;
@@ -36,7 +36,7 @@ interface TextConstructor {
 	isText(object: any): object is Text;
 }
 
-class TextConstructorClass extends PGTPConstructorBase<Text> implements TextConstructor {
+class TextConstructorClass extends PgTPConstructorBasee<Text> implements TextConstructor {
 	constructor() {
 		super();
 	}

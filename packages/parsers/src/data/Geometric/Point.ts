@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
 
 interface PointObject {
 	x: number;
@@ -43,7 +43,7 @@ interface PointConstructor {
 	isPoint(object: any): object is Point;
 }
 
-class PointConstructorClass extends PGTPConstructorBase<Point> implements PointConstructor {
+class PointConstructorClass extends PgTPConstructorBasee<Point> implements PointConstructor {
 	constructor() {
 		super();
 	}
@@ -227,7 +227,7 @@ class PointClass extends PgTPBase<Point> implements Point {
 	set x(x: number) {
 		const parsedType = getParsedType(x);
 		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -243,7 +243,7 @@ class PointClass extends PgTPBase<Point> implements Point {
 	set y(y: number) {
 		const parsedType = getParsedType(y);
 		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan) {
-			throwPGTPError({
+			throwPgTPErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

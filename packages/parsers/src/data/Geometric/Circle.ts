@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 
@@ -206,7 +206,7 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 
 const Circle: CircleConstructor = new CircleConstructorClass();
 
-class CircleClass extends PGTPBase<Circle> implements Circle {
+class CircleClass extends PgTPBasee<Circle> implements Circle {
 	constructor(private _x: number, private _y: number, private _radius: number) {
 		super();
 	}

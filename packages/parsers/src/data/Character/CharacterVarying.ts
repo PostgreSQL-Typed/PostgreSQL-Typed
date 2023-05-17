@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 
@@ -217,7 +217,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 
 const CharacterVarying: CharacterVaryingConstructor<number> = new CharacterVaryingConstructorClass(Number.POSITIVE_INFINITY);
 
-class CharacterVaryingClass<N extends number> extends PGTPBase<CharacterVarying<N>> implements CharacterVarying<N> {
+class CharacterVaryingClass<N extends number> extends PgTPBasee<CharacterVarying<N>> implements CharacterVarying<N> {
 	constructor(private _character: string, private _n: N = Number.POSITIVE_INFINITY as N) {
 		super();
 	}

@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
 interface NameObject {
@@ -135,7 +135,7 @@ class NameConstructorClass extends PGTPConstructorBase<Name> implements NameCons
 
 const Name: NameConstructor = new NameConstructorClass();
 
-class NameClass extends PGTPBase<Name> implements Name {
+class NameClass extends PgTPBasee<Name> implements Name {
 	constructor(private _name: string) {
 		super();
 	}

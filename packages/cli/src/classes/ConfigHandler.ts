@@ -6,7 +6,7 @@ import {
 	DEFAULT_CONFIG,
 	DEFAULT_CONFIG_FILE,
 	DEFAULT_CONFIG_FILE_RAW,
-	loadPGTConfig,
+	loadPgTConfig,
 	type PostgreSQLTypedCLIConfig,
 } from "@postgresql-typed/util";
 import debug from "debug";
@@ -24,7 +24,7 @@ export class ConfigHandler {
 	public async loadConfig(): Promise<this> {
 		this.LOGGER?.("Loading config file...");
 		//TODO allow passing config file path
-		const result = await loadPGTConfig();
+		const result = await loadPgTConfig();
 		if (!result.configFile) {
 			this.LOGGER?.("No config file found");
 			return this;
@@ -42,7 +42,7 @@ export class ConfigHandler {
 
 	public async initConfig(): Promise<0 | 1> {
 		this.LOGGER?.("Initializing config file...");
-		const result = await loadPGTConfig();
+		const result = await loadPgTConfig();
 		if (result?.configFile && result?.cwd) {
 			this.LOGGER?.("Config file already exists");
 			console.log(

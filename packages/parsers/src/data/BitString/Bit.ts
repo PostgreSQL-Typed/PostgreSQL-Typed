@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 
@@ -253,7 +253,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 
 const Bit: BitConstructor<1> = new BitConstructorClass(1);
 
-class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
+class BitClass<N extends number> extends PgTPBasee<Bit<N>> implements Bit<N> {
 	constructor(private _bit: string, private _n: N = 1 as N) {
 		super();
 	}

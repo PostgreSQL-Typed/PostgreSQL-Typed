@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { Point, PointObject } from "./Point.js";
@@ -320,7 +320,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 
 const Path: PathConstructor = new PathConstructorClass();
 
-class PathClass extends PGTPBase<Path> implements Path {
+class PathClass extends PgTPBasee<Path> implements Path {
 	constructor(private _points: Point[], private _connection: Connection | ConnectionType) {
 		super();
 	}

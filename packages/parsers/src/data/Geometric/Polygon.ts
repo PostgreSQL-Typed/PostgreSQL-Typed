@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { Point, PointObject } from "./Point.js";
@@ -269,7 +269,7 @@ class PolygonConstructorClass extends PGTPConstructorBase<Polygon> implements Po
 
 const Polygon: PolygonConstructor = new PolygonConstructorClass();
 
-class PolygonClass extends PGTPBase<Polygon> implements Polygon {
+class PolygonClass extends PgTPBasee<Polygon> implements Polygon {
 	constructor(private _points: Point[]) {
 		super();
 	}

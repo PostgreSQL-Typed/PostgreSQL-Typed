@@ -4,10 +4,10 @@ import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeIsWithinRange } from "../types/SafeIsWithinRange.js";
 import { getErrorMap } from "./errorMap.js";
-import { PGTPBase } from "./PGTPBase.js";
+import { PgTPBasee } from "./PgTPBasee.js";
 import { PGTPError } from "./PGTPError.js";
 
-export abstract class PGTPRangeBase<RangeDataType, DataType> extends PGTPBase<RangeDataType> {
+export abstract class PGTPRangeBase<RangeDataType, DataType> extends PgTPBasee<RangeDataType> {
 	constructor() {
 		super();
 		this.isWithinRange = this.isWithinRange.bind(this);

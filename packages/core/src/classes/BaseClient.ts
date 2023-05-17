@@ -2,7 +2,7 @@ import {
 	type ClientHooks,
 	type Context,
 	isValid,
-	loadPGTConfig,
+	loadPgTConfig,
 	type ParseReturnType,
 	PGTError,
 	type PostgresData,
@@ -233,7 +233,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	}
 
 	async initExtensions(): Promise<void> {
-		const { config } = await loadPGTConfig(),
+		const { config } = await loadPgTConfig(),
 			{ extensions } = config.core;
 
 		if (extensions.length === 0) return;

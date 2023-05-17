@@ -5,7 +5,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
 const bigNumber = getBigNumber("-92233720368547758.08", "92233720368547758.07");
@@ -142,7 +142,7 @@ class MoneyConstructorClass extends PGTPConstructorBase<Money> implements MoneyC
 
 const Money: MoneyConstructor = new MoneyConstructorClass();
 
-class MoneyClass extends PGTPBase<Money> implements Money {
+class MoneyClass extends PgTPBasee<Money> implements Money {
 	constructor(private _money: BigNumber) {
 		super();
 	}

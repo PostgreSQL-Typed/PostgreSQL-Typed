@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { Point, type PointObject } from "./Point.js";
@@ -254,7 +254,7 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 
 const LineSegment: LineSegmentConstructor = new LineSegmentConstructorClass();
 
-class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
+class LineSegmentClass extends PgTPBasee<LineSegment> implements LineSegment {
 	constructor(private _a: Point, private _b: Point) {
 		super();
 	}

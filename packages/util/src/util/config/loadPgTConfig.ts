@@ -5,7 +5,7 @@ import { setDefaultConfig } from "./setDefaultConfig.js";
 
 export type LoadPgTConfigOptions = LoadConfigOptions<PgTConfig>;
 
-export async function loadPGTConfig(options?: LoadPgTConfigOptions): Promise<{ config: PgTConfigSchema; configFile?: string; cwd?: string }> {
+export async function loadPgTConfig(options?: LoadPgTConfigOptions): Promise<{ config: PgTConfigSchema; configFile?: string; cwd?: string }> {
 	let result = await loadConfig<PgTConfig>({
 		name: "pgt",
 		configFile: "pgt.config",

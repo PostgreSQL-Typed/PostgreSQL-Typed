@@ -4,7 +4,7 @@ import type { ObjectFunction } from "../types/ObjectFunction.js";
 import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeEquals } from "../types/SafeEquals.js";
 import type { SafeFrom } from "../types/SafeFrom.js";
-import { PGTPBase } from "./PGTPBase.js";
+import { PgTPBasee } from "./PgTPBasee.js";
 import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
 import { Range, RawRangeObject } from "./Range.js";
 import { throwPGTPError } from "./throwPGTPError.js";
@@ -270,7 +270,7 @@ const getMultiRange = <
 
 	const MultiRange: MultiRangeConstructor<DataType, DataTypeObject> = new MultiRangeConstructorClass();
 
-	class MultiRangeClass extends PGTPBase<MultiRange<DataType, DataTypeObject>> implements MultiRange<DataType, DataTypeObject> {
+	class MultiRangeClass extends PgTPBasee<MultiRange<DataType, DataTypeObject>> implements MultiRange<DataType, DataTypeObject> {
 		private _identifier = identifier;
 		constructor(private _ranges: Range<DataType, DataTypeObject>[]) {
 			super();

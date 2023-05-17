@@ -11,7 +11,7 @@ import { formatOffset } from "../../util/formatOffset.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { Time } from "./Time.js";
@@ -448,7 +448,7 @@ class TimeTZConstructorClass extends PGTPConstructorBase<TimeTZ> implements Time
 
 const TimeTZ: TimeTZConstructor = new TimeTZConstructorClass();
 
-class TimeTZClass extends PGTPBase<TimeTZ> implements TimeTZ {
+class TimeTZClass extends PgTPBasee<TimeTZ> implements TimeTZ {
 	constructor(private _hour: number, private _minute: number, private _second: number, private _offset: Offset) {
 		super();
 	}

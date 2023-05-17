@@ -4,7 +4,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { pad } from "../../util/pad.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { REGEXES } from "../../util/regexes.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
@@ -444,7 +444,7 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 
 const Interval: IntervalConstructor = new IntervalConstructorClass();
 
-class IntervalClass extends PGTPBase<Interval> implements Interval {
+class IntervalClass extends PgTPBasee<Interval> implements Interval {
 	constructor(
 		private _years: number,
 		private _months: number,

@@ -12,10 +12,9 @@ export async function installExtension(
 	moduleToInstall: string | PgTExtension,
 	_inlineOptions?: PgTExtensionOptions
 ) {
-	const { extension, inlineOptions } = await normalizeModule(config, moduleToInstall, _inlineOptions),
-		// Call extension
-		result = await extension(inlineOptions, pgt);
-	if (result === false /* setup aborted */) return;
+	const { extension, inlineOptions } = await normalizeModule(config, moduleToInstall, _inlineOptions);
+	// Call extension
+	await extension(inlineOptions, pgt);
 }
 
 async function normalizeModule(
@@ -32,6 +31,7 @@ async function normalizeModule(
 				// eslint-disable-next-line unicorn/no-useless-undefined
 				(await importExtension(source, config.core.modulesDir).catch(() => undefined)) ?? requireExtension(source, { paths: config.core.modulesDir });
 		} catch (error: unknown) {
+			// eslint-disable-next-line no-console
 			console.error(`Error while requiring module \`${pgtExtension}\`: ${error}`);
 			throw error;
 		}

@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 
@@ -204,7 +204,7 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 
 const Line: LineConstructor = new LineConstructorClass();
 
-class LineClass extends PGTPBase<Line> implements Line {
+class LineClass extends PgTPBasee<Line> implements Line {
 	constructor(private _a: number, private _b: number, private _c: number) {
 		super();
 	}

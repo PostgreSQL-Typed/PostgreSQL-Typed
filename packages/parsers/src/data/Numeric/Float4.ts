@@ -5,7 +5,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
 const bigNumber = getBigNumber("-99999999999999999999999999999999999999", "99999999999999999999999999999999999999", {
@@ -145,7 +145,7 @@ class Float4ConstructorClass extends PGTPConstructorBase<Float4> implements Floa
 
 const Float4: Float4Constructor = new Float4ConstructorClass();
 
-class Float4Class extends PGTPBase<Float4> implements Float4 {
+class Float4Class extends PgTPBasee<Float4> implements Float4 {
 	constructor(private _float4: BigNumber) {
 		super();
 	}

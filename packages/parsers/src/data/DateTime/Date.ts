@@ -7,7 +7,7 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
+import { PgTPBasee } from "../../util/PgTPBasee.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { TimestampTZ } from "./TimestampTZ.js";
@@ -245,7 +245,7 @@ class DateConstructorClass extends PGTPConstructorBase<Date> implements DateCons
 
 const Date: DateConstructor = new DateConstructorClass();
 
-class DateClass extends PGTPBase<Date> implements Date {
+class DateClass extends PgTPBasee<Date> implements Date {
 	constructor(private _year: number, private _month: number, private _day: number) {
 		super();
 	}

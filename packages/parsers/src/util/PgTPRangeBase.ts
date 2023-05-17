@@ -5,9 +5,9 @@ import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeIsWithinRange } from "../types/SafeIsWithinRange.js";
 import { getErrorMap } from "./errorMap.js";
 import { PgTPBase } from "./PgTPBase.js";
-import { PgTPErrorr } from "./PgTPErrorr.js";
+import { PgTPError } from "./PgTPError.js";
 
-export abstract class PgTPRangeBasee<RangeDataType, DataType> extends PgTPBase<RangeDataType> {
+export abstract class PgTPRangeBase<RangeDataType, DataType> extends PgTPBase<RangeDataType> {
 	constructor() {
 		super();
 		this.isWithinRange = this.isWithinRange.bind(this);
@@ -51,7 +51,7 @@ export abstract class PgTPRangeBasee<RangeDataType, DataType> extends PgTPBase<R
 			};
 		}
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PgTPErrorr(context.issue);
+		const error = new PgTPError(context.issue);
 		return { success: false, error };
 	}
 }

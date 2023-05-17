@@ -5,7 +5,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface BooleanObject {
 	value: boolean;
@@ -47,7 +47,7 @@ interface BooleanConstructor {
 	isBoolean(object: any): object is Boolean;
 }
 
-class BooleanConstructorClass extends PgTPConstructorBasee<Boolean> implements BooleanConstructor {
+class BooleanConstructorClass extends PgTPConstructorBase<Boolean> implements BooleanConstructor {
 	constructor() {
 		super();
 	}

@@ -8,8 +8,8 @@ import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
-import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { TimestampTZ } from "./TimestampTZ.js";
 
 interface TimeObject {
@@ -69,7 +69,7 @@ interface TimeConstructor {
 	isTime(object: any): object is Time;
 }
 
-class TimeConstructorClass extends PgTPConstructorBasee<Time> implements TimeConstructor {
+class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeConstructor {
 	constructor() {
 		super();
 	}
@@ -378,7 +378,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 	set hour(hour: number) {
 		const parsedType = getParsedType(hour);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -386,13 +386,13 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (hour % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (hour < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -401,7 +401,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (hour > 23) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 23,
 				type: "number",
@@ -419,7 +419,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 	set minute(minute: number) {
 		const parsedType = getParsedType(minute);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -427,13 +427,13 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (minute % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (minute < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -442,7 +442,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (minute > 59) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",
@@ -460,7 +460,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 	set second(second: number) {
 		const parsedType = getParsedType(second);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -468,7 +468,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (second < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -477,7 +477,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		}
 
 		if (second >= 60) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",

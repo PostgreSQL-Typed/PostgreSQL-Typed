@@ -6,7 +6,7 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 const bigNumber = getBigNumber("-10e307", "10e307", {
 	allowInfinity: true,
@@ -56,7 +56,7 @@ interface Float8Constructor {
 	isFloat8(object: any): object is Float8;
 }
 
-class Float8ConstructorClass extends PgTPConstructorBasee<Float8> implements Float8Constructor {
+class Float8ConstructorClass extends PgTPConstructorBase<Float8> implements Float8Constructor {
 	constructor() {
 		super();
 	}

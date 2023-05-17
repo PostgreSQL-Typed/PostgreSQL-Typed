@@ -1,3 +1,3 @@
-import type { PgTPErrorr } from "../util/PgTPErrorr.js";
+import type { PgTPError } from "../util/PgTPError.js";
 
-export type SafeFrom<DataType, Error = PgTPErrorr> = { success: true; data: DataType } | { success: false; error: Error };
+export type SafeFrom<DataType, Error = PgTPError> = { success: true; data: DataType } | { success: false; error: Error };

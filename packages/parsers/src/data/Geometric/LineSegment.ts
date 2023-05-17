@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
-import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { Point, type PointObject } from "./Point.js";
 
 interface LineSegmentObject {
@@ -57,7 +57,7 @@ interface LineSegmentConstructor {
 	isLineSegment(object: any): object is LineSegment;
 }
 
-class LineSegmentConstructorClass extends PgTPConstructorBasee<LineSegment> implements LineSegmentConstructor {
+class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> implements LineSegmentConstructor {
 	constructor() {
 		super();
 	}
@@ -289,7 +289,7 @@ class LineSegmentClass extends PgTPBase<LineSegment> implements LineSegment {
 
 	set a(a: Point) {
 		const parsed = Point.safeFrom(a);
-		if (!parsed.success) throwPgTPErrorr(parsed.error.issue);
+		if (!parsed.success) throwPgTPError(parsed.error.issue);
 		this._a = parsed.data;
 	}
 
@@ -299,7 +299,7 @@ class LineSegmentClass extends PgTPBase<LineSegment> implements LineSegment {
 
 	set b(b: Point) {
 		const parsed = Point.safeFrom(b);
-		if (!parsed.success) throwPgTPErrorr(parsed.error.issue);
+		if (!parsed.success) throwPgTPError(parsed.error.issue);
 		this._b = parsed.data;
 	}
 

@@ -1,5 +1,5 @@
 import defaultErrorMap from "../locales/en.js";
-import type { ErrorMap } from "./PgTPErrorr.js";
+import type { ErrorMap } from "./PgTPError.js";
 
 let overrideErrorMap = defaultErrorMap;
 

@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
-import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface BitObject {
 	value: string;
@@ -62,7 +62,7 @@ interface BitConstructor<N extends number> {
 	get n(): N;
 }
 
-class BitConstructorClass<N extends number> extends PgTPConstructorBasee<Bit<N>> implements BitConstructor<N> {
+class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> implements BitConstructor<N> {
 	constructor(private _n: N = 1 as N) {
 		super();
 
@@ -70,7 +70,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBasee<Bit<N>>
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: allowedTypes,
 				received: parsedType,
@@ -78,7 +78,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBasee<Bit<N>>
 		}
 
 		if (_n < 1) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -88,7 +88,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBasee<Bit<N>>
 
 		//If limit is not a whole number
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}

@@ -6,7 +6,7 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 const bigNumber = getBigNumber("-92233720368547758.08", "92233720368547758.07");
 
@@ -53,7 +53,7 @@ interface MoneyConstructor {
 	isMoney(object: any): object is Money;
 }
 
-class MoneyConstructorClass extends PgTPConstructorBasee<Money> implements MoneyConstructor {
+class MoneyConstructorClass extends PgTPConstructorBase<Money> implements MoneyConstructor {
 	constructor() {
 		super();
 	}

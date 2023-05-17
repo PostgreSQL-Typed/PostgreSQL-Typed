@@ -5,7 +5,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface OIDObject {
 	value: number;
@@ -42,7 +42,7 @@ interface OIDConstructor {
 	isOID(object: any): object is OID;
 }
 
-class OIDConstructorClass extends PgTPConstructorBasee<OID> implements OIDConstructor {
+class OIDConstructorClass extends PgTPConstructorBase<OID> implements OIDConstructor {
 	constructor() {
 		super();
 	}

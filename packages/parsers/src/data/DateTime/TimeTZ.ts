@@ -12,8 +12,8 @@ import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
-import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { Time } from "./Time.js";
 import { TimestampTZ } from "./TimestampTZ.js";
 
@@ -99,7 +99,7 @@ interface TimeTZConstructor {
 	isTimeTZ(object: any): object is TimeTZ;
 }
 
-class TimeTZConstructorClass extends PgTPConstructorBasee<TimeTZ> implements TimeTZConstructor {
+class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements TimeTZConstructor {
 	constructor() {
 		super();
 	}
@@ -391,13 +391,13 @@ class TimeTZConstructorClass extends PgTPConstructorBasee<TimeTZ> implements Tim
 		}
 
 		if (parsedOffset.obj.hour % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (parsedOffset.obj.hour < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -406,7 +406,7 @@ class TimeTZConstructorClass extends PgTPConstructorBasee<TimeTZ> implements Tim
 		}
 
 		if (parsedOffset.obj.hour > 23) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 23,
 				type: "number",
@@ -415,13 +415,13 @@ class TimeTZConstructorClass extends PgTPConstructorBasee<TimeTZ> implements Tim
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (parsedOffset.obj.minute < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -430,7 +430,7 @@ class TimeTZConstructorClass extends PgTPConstructorBasee<TimeTZ> implements Tim
 		}
 
 		if (parsedOffset.obj.minute > 59) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",
@@ -513,7 +513,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 	set hour(hour: number) {
 		const parsedType = getParsedType(hour);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -521,13 +521,13 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (hour % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (hour < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -536,7 +536,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (hour > 23) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 23,
 				type: "number",
@@ -554,7 +554,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 	set minute(minute: number) {
 		const parsedType = getParsedType(minute);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -562,13 +562,13 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (minute % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (minute < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -577,7 +577,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (minute > 59) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",
@@ -595,7 +595,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 	set second(second: number) {
 		const parsedType = getParsedType(second);
 		if (parsedType !== ParsedType.number) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -603,7 +603,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (second < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -612,7 +612,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (second >= 60) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",
@@ -630,7 +630,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 	set offset(offset: Offset) {
 		const parsedType = getParsedType(offset);
 		if (parsedType !== ParsedType.object) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.object],
 				received: parsedType,
@@ -645,19 +645,19 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (!parsedOffset.success) {
 			switch (true) {
 				case parsedOffset.otherKeys.length > 0:
-					throwPgTPErrorr({
+					throwPgTPError({
 						code: "unrecognized_keys",
 						keys: parsedOffset.otherKeys,
 					});
 					break;
 				case parsedOffset.missingKeys.length > 0:
-					throwPgTPErrorr({
+					throwPgTPError({
 						code: "missing_keys",
 						keys: parsedOffset.missingKeys,
 					});
 					break;
 				case parsedOffset.invalidKeys.length > 0:
-					throwPgTPErrorr({
+					throwPgTPError({
 						code: "invalid_key_type",
 						...parsedOffset.invalidKeys[0],
 					});
@@ -666,7 +666,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				// Assert never
 			}
 
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.object],
 				received: parsedType,
@@ -675,7 +675,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 
 		// Validate the offset
 		if (parsedOffset.obj.direction !== OffsetDirection.minus && parsedOffset.obj.direction !== OffsetDirection.plus) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_string",
 				expected: [OffsetDirection.minus, OffsetDirection.plus],
 				received: parsedOffset.obj.direction,
@@ -683,13 +683,13 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (parsedOffset.obj.hour % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (parsedOffset.obj.hour < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -698,7 +698,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (parsedOffset.obj.hour > 23) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 23,
 				type: "number",
@@ -707,13 +707,13 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (parsedOffset.obj.minute < 0) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -722,7 +722,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		}
 
 		if (parsedOffset.obj.minute > 59) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",

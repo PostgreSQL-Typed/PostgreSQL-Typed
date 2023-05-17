@@ -4,7 +4,7 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface Int4Object {
 	value: number;
@@ -41,7 +41,7 @@ interface Int4Constructor {
 	isInt4(object: any): object is Int4;
 }
 
-class Int4ConstructorClass extends PgTPConstructorBasee<Int4> implements Int4Constructor {
+class Int4ConstructorClass extends PgTPConstructorBase<Int4> implements Int4Constructor {
 	constructor() {
 		super();
 	}

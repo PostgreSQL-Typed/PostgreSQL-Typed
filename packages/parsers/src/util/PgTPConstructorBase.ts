@@ -4,9 +4,9 @@ import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 import type { ParseContext } from "../types/ParseContext.js";
 import type { SafeFrom } from "../types/SafeFrom.js";
 import { getErrorMap } from "./errorMap.js";
-import { IssueWithoutMessage, PgTPErrorr } from "./PgTPErrorr.js";
+import { IssueWithoutMessage, PgTPError } from "./PgTPError.js";
 
-export abstract class PgTPConstructorBasee<DataType> {
+export abstract class PgTPConstructorBase<DataType> {
 	constructor() {
 		this.from = this.from.bind(this);
 		this.safeFrom = this.safeFrom.bind(this);
@@ -34,7 +34,7 @@ export abstract class PgTPConstructorBasee<DataType> {
 	private _handleResult(context: ParseContext, result: ParseReturnType<DataType>): SafeFrom<DataType> {
 		if (isValid(result)) return { success: true, data: result.value };
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PgTPErrorr(context.issue);
+		const error = new PgTPError(context.issue);
 		return { success: false, error };
 	}
 

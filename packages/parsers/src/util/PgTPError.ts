@@ -117,7 +117,7 @@ export type Issue = IssueWithoutMessage & {
 	message: string;
 };
 
-export class PgTPErrorr extends Error {
+export class PgTPError extends Error {
 	get error() {
 		return this.issue;
 	}

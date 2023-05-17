@@ -1,4 +1,4 @@
-import type { IssueWithoutMessage } from "../util/PgTPErrorr.js";
+import type { IssueWithoutMessage } from "../util/PgTPError.js";
 
 export type IsValid<Type> =
 	| { isOfSameType: true; isValid: true; data: Type }

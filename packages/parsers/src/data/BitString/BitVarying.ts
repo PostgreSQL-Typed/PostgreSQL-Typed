@@ -4,8 +4,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
-import { PgTPConstructorBasee } from "../../util/PgTPConstructorBasee.js";
-import { throwPgTPErrorr } from "../../util/throwPgTPErrorr.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface BitVaryingObject {
 	value: string;
@@ -62,7 +62,7 @@ interface BitVaryingConstructor<N extends number> {
 	get n(): N;
 }
 
-class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBasee<BitVarying<N>> implements BitVaryingConstructor<N> {
+class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<BitVarying<N>> implements BitVaryingConstructor<N> {
 	constructor(private _n: N = Number.POSITIVE_INFINITY as N) {
 		super();
 
@@ -70,7 +70,7 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBasee<
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: allowedTypes,
 				received: parsedType,
@@ -78,7 +78,7 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBasee<
 		}
 
 		if (_n < 1) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -88,7 +88,7 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBasee<
 
 		//If limit is not a whole number
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
-			throwPgTPErrorr({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}

@@ -3,23 +3,23 @@ import type { Constructors } from "../types/Constructors.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 import type { ParserFromConstructor } from "../types/ParserFromConstructor.js";
 import type { SafeFrom } from "../types/SafeFrom.js";
-import { getPgTPErrorr } from "./throwPgTPErrorr.js";
+import { getPgTPError } from "./throwPgTPError.js";
 
 type Parsers = Constructors | ObjectFunction<any>;
 
-export const PgTPParserr = <Parser extends Parsers | "unknown">(parser: Parser, isArray = false) => new PgTPParserClasss(parser, isArray);
+export const PgTPParser = <Parser extends Parsers | "unknown">(parser: Parser, isArray = false) => new PgTPParserClass(parser, isArray);
 
-export class PgTPParserClasss<Parser extends Parsers | "unknown"> {
+export class PgTPParserClass<Parser extends Parsers | "unknown"> {
 	_nullable = false;
 	_optional = false;
 	constructor(public parser: Parser, public isArray: boolean) {}
 
-	nullable(): PgTPParserClasss<Parser> {
+	nullable(): PgTPParserClass<Parser> {
 		this._nullable = true;
 		return this;
 	}
 
-	optional(): PgTPParserClasss<Parser> {
+	optional(): PgTPParserClass<Parser> {
 		this._optional = true;
 		return this;
 	}
@@ -33,7 +33,7 @@ export class PgTPParserClasss<Parser extends Parsers | "unknown"> {
 				  }
 				: {
 						success: false,
-						error: getPgTPErrorr({
+						error: getPgTPError({
 							code: "invalid_type",
 							expected: "not null",
 							received: "null",
@@ -48,7 +48,7 @@ export class PgTPParserClasss<Parser extends Parsers | "unknown"> {
 				  }
 				: {
 						success: false,
-						error: getPgTPErrorr({
+						error: getPgTPError({
 							code: "invalid_type",
 							expected: "not undefined",
 							received: "undefined",
@@ -59,7 +59,7 @@ export class PgTPParserClasss<Parser extends Parsers | "unknown"> {
 			if (!Array.isArray(data)) {
 				return {
 					success: false,
-					error: getPgTPErrorr({
+					error: getPgTPError({
 						code: "invalid_type",
 						expected: "array",
 						received: typeof data,

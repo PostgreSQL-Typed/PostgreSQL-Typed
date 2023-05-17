@@ -5,7 +5,7 @@ import type { PostgresData } from "@postgresql-typed/util";
 import type { ColumnsOfTable } from "./ColumnsOfTable.js";
 import type { TableLocations } from "./TableLocations.js";
 
-export type PgTPParserOfColumnn<
+export type PgTPParserOfColumn<
 	InnerPostgresData extends PostgresData,
 	Location extends TableLocations<InnerPostgresData>,
 	Column extends ColumnsOfTable<InnerPostgresData, Location>

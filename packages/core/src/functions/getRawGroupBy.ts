@@ -1,4 +1,4 @@
-import { type DatabaseData, getParsedType, isOneOf, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, isOneOf, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { GroupBy as GroupByQuery } from "../types/types/GroupBy.js";
@@ -15,7 +15,7 @@ export function getRawGroupBy<
 		Ready,
 		JoinedTables
 	>
->(groupBy: GroupBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PGTError> {
+>(groupBy: GroupBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PgTError> {
 	const availableColumns = tables.flatMap(table => table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`)),
 		parsedType = getParsedType(groupBy);
 

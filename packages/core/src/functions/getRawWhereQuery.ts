@@ -1,5 +1,5 @@
-import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
-import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
+import type { ConstructorFromParser, Parsers, PgTPError, PgTPParserClass } from "@postgresql-typed/parsers";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
@@ -20,7 +20,7 @@ export function getRawWhereQuery<
 	where: Where,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[],
 	depth = 0
-): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PgTError | PgTPError> {
 	//* Make sure the depth is less than 10
 	//TODO make the depth limit a config option
 	if (depth > 10) {
@@ -123,7 +123,7 @@ export function getRawWhereQuery<
 			[...joinedColumns].map(column => [column, [ParsedType.object, ParsedType.string, ParsedType.undefined]])
 		);
 	if (!parsedObject.success) {
-		let error: PGTError;
+		let error: PgTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
 				error = getPgTError({
@@ -206,7 +206,7 @@ export function getRawWhereQuery<
 	//* Get the raw filter operator
 	const result = getRawFilterOperator(
 		whereKey,
-		table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>,
+		table.getParserOfColumn(columnName as any) as PgTPParserClass<ConstructorFromParser<Parsers>>,
 		table.database,
 		depth * 2 + 2
 	);

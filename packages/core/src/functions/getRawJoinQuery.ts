@@ -1,5 +1,5 @@
-import { Int4, type Int4Constructor, type Parsers, type PGTPError, PGTPParser, type PGTPParserClass } from "@postgresql-typed/parsers";
-import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
+import { Int4, type Int4Constructor, type Parsers, type PgTPError, PgTPParser, type PgTPParserClass } from "@postgresql-typed/parsers";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
@@ -10,7 +10,7 @@ import { isJoinType, joinTypes } from "./isJoinType.js";
 
 //* This is a custom type for the count function
 export type Count = Int4;
-export const CountParser: PGTPParserClass<Int4Constructor> = PGTPParser(Int4);
+export const CountParser: PgTPParserClass<Int4Constructor> = PgTPParser(Int4);
 
 export function getRawJoinQuery<
 	InnerPostgresData extends PostgresData,
@@ -23,7 +23,7 @@ export function getRawJoinQuery<
 	filter: Filter,
 	table: JoinedTable,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]
-): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string; subqueries: SelectSubQuery<any, any, boolean>[] }, PgTError | PgTPError> {
 	//* Table.location is in the format of "database.schema.table" but we only want "schema.table"
 	const tableLocation: string = table.location.split(".").slice(1).join("."),
 		//* Make sure the filter is an object
@@ -45,7 +45,7 @@ export function getRawJoinQuery<
 		["$TYPE", [ParsedType.string, ParsedType.undefined]],
 	]);
 	if (!parsedObject.success) {
-		let error: PGTError;
+		let error: PgTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
 				error = getPgTError({
@@ -97,7 +97,7 @@ export function getRawJoinQuery<
 
 			//* Make sure the ON filter is set and is an object
 			if (!parsedObject.success) {
-				let error: PGTError;
+				let error: PgTError;
 				switch (true) {
 					/* c8 ignore next 6 */
 					case parsedObject.otherKeys.length > 0:

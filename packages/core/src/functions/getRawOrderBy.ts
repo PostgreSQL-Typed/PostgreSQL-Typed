@@ -1,4 +1,4 @@
-import { type DatabaseData, getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type PostgresData, type Safe } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { OrderBy as OrderByQuery } from "../types/types/OrderBy.js";
@@ -15,7 +15,7 @@ export function getRawOrderBy<
 		Ready,
 		JoinedTables
 	>
->(orderBy: OrderBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PGTError> {
+>(orderBy: OrderBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PgTError> {
 	//* Make sure the orderBy is an object
 	const parsedType = getParsedType(orderBy);
 	if (parsedType !== ParsedType.object) {

@@ -1,6 +1,6 @@
-import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
+import type { ConstructorFromParser, Parsers, PgTPError, PgTPParserClass } from "@postgresql-typed/parsers";
 import { isBox } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
 import { Database } from "../classes/Database.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
@@ -10,10 +10,10 @@ import { filterOperators, isFilterOperator } from "./isFilterOperator.js";
 
 export function getRawFilterOperator(
 	filter: FilterOperators<unknown, any, any>,
-	parser: PGTPParserClass<ConstructorFromParser<Parsers>>,
+	parser: PgTPParserClass<ConstructorFromParser<Parsers>>,
 	database: Database<any, any, boolean>,
 	spaces: number
-): Safe<{ result: [string, ...(Parsers | string)[]]; subquery?: SelectSubQuery<any, any, boolean> }, PGTError | PGTPError> {
+): Safe<{ result: [string, ...(Parsers | string)[]]; subquery?: SelectSubQuery<any, any, boolean> }, PgTError | PgTPError> {
 	const keys = Object.keys(filter),
 		delimiter = isBox(parser.parser) ? ";" : ",";
 

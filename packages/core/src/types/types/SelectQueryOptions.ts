@@ -1,5 +1,5 @@
-import type { PGTPError } from "@postgresql-typed/parsers";
-import type { DatabaseData, PGTError, PostgresData, Safe } from "@postgresql-typed/util";
+import type { PgTPError } from "@postgresql-typed/parsers";
+import type { DatabaseData, PgTError, PostgresData, Safe } from "@postgresql-typed/util";
 
 import type { SelectSubQuery } from "./SelectSubQuery.js";
 
@@ -27,5 +27,5 @@ export type SelectQueryOptions<InnerPostgresData extends PostgresData, InnerData
 	 *
 	 * @default undefined
 	 */
-	previousSubquery?: Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
+	previousSubquery?: Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PgTError | PgTPError>;
 };

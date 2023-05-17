@@ -1,4 +1,4 @@
-import { BaseClient, Context, getErrorMap, PGTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
+import { BaseClient, Context, getErrorMap, PgTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
 import { getParsedType, INVALID, isOneOf, OK, ParsedType, ParseReturnType } from "@postgresql-typed/util";
 import postgres from "postgres";
 
@@ -7,7 +7,7 @@ import { types } from "./types.js";
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: postgres.Sql<Record<string, any>>;
 	private _ready = false;
-	private _connectionError?: PGTError;
+	private _connectionError?: PgTError;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, url: string, options?: postgres.Options<Record<string, postgres.PostgresType>>);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, options?: postgres.Options<Record<string, postgres.PostgresType>>);
@@ -49,7 +49,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 			return this as Client<InnerPostgresData, true>;
 		} catch (error) {
-			this._connectionError = new PGTError({
+			this._connectionError = new PgTError({
 				code: "query_error",
 				errorMessage: (error as Error).message,
 				message: getErrorMap()({
@@ -170,7 +170,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		return this._ready as Ready;
 	}
 
-	get connectionError(): PGTError | undefined {
+	get connectionError(): PgTError | undefined {
 		return this._connectionError;
 	}
 

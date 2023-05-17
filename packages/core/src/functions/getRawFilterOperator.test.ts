@@ -1,4 +1,4 @@
-import { Box, Int2, PGTPParser, Text } from "@postgresql-typed/parsers";
+import { Box, Int2, PgTPParser, Text } from "@postgresql-typed/parsers";
 import { describe, expect, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
@@ -6,7 +6,7 @@ import { TestData, testData } from "../__mocks__/testData";
 import { getRawFilterOperator } from "./getRawFilterOperator";
 
 describe("getRawFilterOperator", () => {
-	const parser = PGTPParser(Int2);
+	const parser = PgTPParser(Int2);
 
 	test("too many operators", () => {
 		const tooManyOperators = getRawFilterOperator(
@@ -60,17 +60,17 @@ describe("getRawFilterOperator", () => {
 		expect(undefinedValue.success).toBe(false);
 		if (undefinedValue.success) expect.fail();
 
-		const arrayValue = getRawFilterOperator({ $EQUAL: [1, 2, 3] }, PGTPParser(Int2, true), {} as any, 0);
+		const arrayValue = getRawFilterOperator({ $EQUAL: [1, 2, 3] }, PgTPParser(Int2, true), {} as any, 0);
 		expect(arrayValue.success).toBe(true);
 		if (!arrayValue.success) expect.fail();
 		expect(arrayValue.data.result.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual(["= %?%", "{1,2,3}"]);
 
-		const stringArrayValue = getRawFilterOperator({ $EQUAL: ["a", "b", "c"] }, PGTPParser(Text, true), {} as any, 0);
+		const stringArrayValue = getRawFilterOperator({ $EQUAL: ["a", "b", "c"] }, PgTPParser(Text, true), {} as any, 0);
 		expect(stringArrayValue.success).toBe(true);
 		if (!stringArrayValue.success) expect.fail();
 		expect(stringArrayValue.data.result.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual(["= %?%", "{a,b,c}"]);
 
-		const boxArrayValue = getRawFilterOperator({ $EQUAL: ["(1,2),(3,4)", "(5,6),(7,8)"] }, PGTPParser(Box, true), {} as any, 0);
+		const boxArrayValue = getRawFilterOperator({ $EQUAL: ["(1,2),(3,4)", "(5,6),(7,8)"] }, PgTPParser(Box, true), {} as any, 0);
 		expect(boxArrayValue.success).toBe(true);
 		if (!boxArrayValue.success) expect.fail();
 		expect(boxArrayValue.data.result.map(variable => (typeof variable === "string" ? variable : variable.value))).toEqual([
@@ -209,7 +209,7 @@ describe("getRawFilterOperator", () => {
 					[3, 4],
 				],
 			},
-			PGTPParser(Int2, true),
+			PgTPParser(Int2, true),
 			{} as any,
 			0
 		);
@@ -273,7 +273,7 @@ describe("getRawFilterOperator", () => {
 					[3, 4],
 				],
 			},
-			PGTPParser(Int2, true),
+			PgTPParser(Int2, true),
 			{} as any,
 			0
 		);

@@ -1,5 +1,5 @@
-import { ConstructorFromParser, Parsers, PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
+import { ConstructorFromParser, Parsers, PgTPParserClass } from "@postgresql-typed/parsers";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
@@ -12,9 +12,9 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 ): Safe<
 	{
 		query: string;
-		mappings: Record<string, PGTPParserClass<ConstructorFromParser<Parsers>>>;
+		mappings: Record<string, PgTPParserClass<ConstructorFromParser<Parsers>>>;
 	},
-	PGTError
+	PgTError
 > {
 	//* Make sure the select is a string, array, or object
 	const parsedType = getParsedType(select);
@@ -158,7 +158,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	}
 
 	const rows = new Set<string>(),
-		mappings: Record<string, PGTPParserClass<ConstructorFromParser<Parsers>>> = {};
+		mappings: Record<string, PgTPParserClass<ConstructorFromParser<Parsers>>> = {};
 
 	//* Loop through the select object and add the columns to the rows and mappings
 	for (const [key, value] of Object.entries(select).filter(([, v]) => Boolean(v)) as [
@@ -334,7 +334,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 function getParserOfColumnPath(
 	path: string,
 	tables: Table<any, any, any, any, any>[]
-): [string, PGTPParserClass<ConstructorFromParser<Parsers>>, string, string] {
+): [string, PgTPParserClass<ConstructorFromParser<Parsers>>, string, string] {
 	const [schemaName, tableName, columnName] = path.split("."),
 		table = tables.find(table => table.schema.name === schemaName && table.name === tableName);
 
@@ -342,5 +342,5 @@ function getParserOfColumnPath(
 	/* c8 ignore next */
 	if (!table) throw new Error("Internal error: table does not exist");
 
-	return [columnName, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>, schemaName, tableName];
+	return [columnName, table.getParserOfColumn(columnName as any) as PgTPParserClass<ConstructorFromParser<Parsers>>, schemaName, tableName];
 }

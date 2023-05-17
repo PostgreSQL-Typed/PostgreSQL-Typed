@@ -1,9 +1,9 @@
-import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
 import type { Fetch } from "../types/types/Fetch.js";
 import { getPgTError } from "./getPgTError.js";
 
-export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
+export function getRawFetch(fetch: Fetch): Safe<string, PgTError> {
 	//* Make sure the fetch is an object
 	const parsedType = getParsedType(fetch);
 	if (parsedType !== ParsedType.object) {

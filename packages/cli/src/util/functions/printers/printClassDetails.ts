@@ -247,12 +247,12 @@ function optionalOnInsert(attribute: Attribute): string {
 function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
 	file.addImportStatement({
 		module: "@postgresql-typed/parsers",
-		name: "PGTPParser",
+		name: "PgTPParser",
 		type: "named",
 	});
 	file.addImportStatement({
 		module: "@postgresql-typed/parsers",
-		name: "PGTPParserClass",
+		name: "PgTPParserClass",
 		type: "named",
 		isType: true,
 	});

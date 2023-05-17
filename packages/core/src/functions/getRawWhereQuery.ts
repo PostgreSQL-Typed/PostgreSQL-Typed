@@ -5,7 +5,7 @@ import type { Table } from "../classes/Table.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTErrorr } from "./getPgTErrorr.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
 import { isRootFilterOperator } from "./isRootFilterOperator.js";
 
@@ -26,7 +26,7 @@ export function getRawWhereQuery<
 	if (depth > 10) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "too_big",
 				type: "depth",
 				maximum: 10,
@@ -40,7 +40,7 @@ export function getRawWhereQuery<
 	if (keys.length !== 1) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTErrorr(
 				keys.length > 1
 					? {
 							code: "too_big",
@@ -68,7 +68,7 @@ export function getRawWhereQuery<
 		if (parsedType !== ParsedType.array) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_type",
 					expected: ParsedType.array,
 					received: parsedType,
@@ -80,7 +80,7 @@ export function getRawWhereQuery<
 		if ((where[key] as Where[]).length === 0) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "too_small",
 					type: "array",
 					minimum: 1,
@@ -126,27 +126,27 @@ export function getRawWhereQuery<
 		let error: PGTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			/* c8 ignore next 6 */
 			case parsedObject.missingKeys.length > 0:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
 				break;
 			/* c8 ignore next 6 */
 			default:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "unrecognized_keys",
 					keys: [],
 				});
@@ -159,7 +159,7 @@ export function getRawWhereQuery<
 	if (parsedType === ParsedType.undefined) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_type",
 				expected: [ParsedType.object, ParsedType.string],
 				received: parsedType,
@@ -177,7 +177,7 @@ export function getRawWhereQuery<
 		if (!columnsWithoutSelf.includes(whereKey)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_string",
 					expected: columnsWithoutSelf,
 					received: whereKey,

@@ -5,7 +5,7 @@ import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe }
 import { Database } from "../classes/Database.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTErrorr } from "./getPgTErrorr.js";
 import { filterOperators, isFilterOperator } from "./isFilterOperator.js";
 
 export function getRawFilterOperator(
@@ -21,7 +21,7 @@ export function getRawFilterOperator(
 	if (keys.length !== 1) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTErrorr(
 				keys.length > 1
 					? {
 							code: "too_big",
@@ -43,7 +43,7 @@ export function getRawFilterOperator(
 	if (!isFilterOperator(key)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_join_type",
 				expected: filterOperators,
 				received: key,
@@ -98,7 +98,7 @@ export function getRawFilterOperator(
 				if (!parsedData.success) {
 					return {
 						success: false,
-						error: getPGTError(
+						error: getPgTErrorr(
 							parsedData.otherKeys.length > 0
 								? {
 										code: "unrecognized_keys",
@@ -120,7 +120,7 @@ export function getRawFilterOperator(
 				if (!(parsedData.obj.database instanceof Database)) {
 					return {
 						success: false,
-						error: getPGTError({
+						error: getPgTErrorr({
 							code: "invalid_type",
 							expected: ParsedType.object,
 							received: getParsedType(parsedData.obj.database),
@@ -131,7 +131,7 @@ export function getRawFilterOperator(
 				if (parsedData.obj.database.name !== database.name) {
 					return {
 						success: false,
-						error: getPGTError({
+						error: getPgTErrorr({
 							code: "invalid_join",
 							type: "database",
 						}),
@@ -143,7 +143,7 @@ export function getRawFilterOperator(
 					if (usedTableType !== ParsedType.string) {
 						return {
 							success: false,
-							error: getPGTError({
+							error: getPgTErrorr({
 								code: "invalid_type",
 								expected: ParsedType.string,
 								received: usedTableType,
@@ -157,7 +157,7 @@ export function getRawFilterOperator(
 					if (!isOneOf([ParsedType.string], variableType)) {
 						return {
 							success: false,
-							error: getPGTError({
+							error: getPgTErrorr({
 								code: "invalid_type",
 								expected: [ParsedType.string],
 								received: variableType,
@@ -180,7 +180,7 @@ export function getRawFilterOperator(
 			if (isOneOf(["null", "undefined"], parsedType)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: parsedType === "null" ? "not null" : "not undefined",
 						received: parsedType,
@@ -202,7 +202,7 @@ export function getRawFilterOperator(
 			if (parsedType !== "string") {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: "string",
 						received: parsedType,
@@ -223,7 +223,7 @@ export function getRawFilterOperator(
 			if (!Array.isArray(filterKey)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: "array",
 						received: getParsedType(filterKey),
@@ -235,7 +235,7 @@ export function getRawFilterOperator(
 			if (filterKey.length === 0) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "too_small",
 						type: "array",
 						minimum: 1,
@@ -253,7 +253,7 @@ export function getRawFilterOperator(
 				if (isOneOf(["null", "undefined"], parsedType)) {
 					return {
 						success: false,
-						error: getPGTError({
+						error: getPgTErrorr({
 							code: "invalid_type",
 							expected: parsedType === "null" ? "not null" : "not undefined",
 							received: parsedType,
@@ -278,7 +278,7 @@ export function getRawFilterOperator(
 			if (!Array.isArray(filterKey)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: "array",
 						received: getParsedType(filterKey),
@@ -291,7 +291,7 @@ export function getRawFilterOperator(
 				return filterKey.length < 2
 					? {
 							success: false,
-							error: getPGTError({
+							error: getPgTErrorr({
 								code: "too_small",
 								type: "array",
 								minimum: 2,
@@ -300,7 +300,7 @@ export function getRawFilterOperator(
 					  }
 					: {
 							success: false,
-							error: getPGTError({
+							error: getPgTErrorr({
 								code: "too_big",
 								type: "array",
 								maximum: 2,
@@ -321,7 +321,7 @@ export function getRawFilterOperator(
 			if (isOneOf(["null", "undefined"], valueAType)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: valueAType === "null" ? "not null" : "not undefined",
 						received: valueAType,
@@ -332,7 +332,7 @@ export function getRawFilterOperator(
 			if (isOneOf(["null", "undefined"], valueBType)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: valueBType === "null" ? "not null" : "not undefined",
 						received: valueBType,
@@ -357,7 +357,7 @@ export function getRawFilterOperator(
 			if (filter[key] !== true) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_type",
 						expected: "boolean",
 						received: getParsedType(filter[key]),

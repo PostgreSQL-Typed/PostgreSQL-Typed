@@ -2,7 +2,7 @@ import { type DatabaseData, getParsedType, hasKeys, isOneOf, ParsedType, type PG
 
 import type { Table } from "../classes/Table.js";
 import type { OrderBy as OrderByQuery } from "../types/types/OrderBy.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTErrorr } from "./getPgTErrorr.js";
 
 export function getRawOrderBy<
 	InnerPostgresData extends PostgresData,
@@ -21,7 +21,7 @@ export function getRawOrderBy<
 	if (parsedType !== ParsedType.object) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_type",
 				expected: ParsedType.object,
 				received: parsedType,
@@ -37,7 +37,7 @@ export function getRawOrderBy<
 	if (!parsedObject.success) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTErrorr(
 				parsedObject.otherKeys.length > 0
 					? {
 							code: "unrecognized_keys",
@@ -62,7 +62,7 @@ export function getRawOrderBy<
 	if (!columns && !nulls) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "too_small",
 				type: "keys",
 				minimum: 1,
@@ -75,7 +75,7 @@ export function getRawOrderBy<
 	if (nulls && !isOneOf(["NULLS FIRST", "NULLS LAST"], nulls)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_string",
 				expected: ["NULLS FIRST", "NULLS LAST"],
 				received: nulls,
@@ -95,7 +95,7 @@ export function getRawOrderBy<
 		if (!parsedColumns.success) {
 			return {
 				success: false,
-				error: getPGTError(
+				error: getPgTErrorr(
 					parsedColumns.otherKeys.length > 0
 						? {
 								code: "unrecognized_keys",
@@ -118,7 +118,7 @@ export function getRawOrderBy<
 		if (!Object.values(parsedColumns.obj).some(Boolean)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "too_small",
 					type: "keys",
 					minimum: 1,
@@ -134,7 +134,7 @@ export function getRawOrderBy<
 			if (!isOneOf(["ASC", "DESC"], direction)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTErrorr({
 						code: "invalid_string",
 						expected: ["ASC", "DESC"],
 						received: direction,

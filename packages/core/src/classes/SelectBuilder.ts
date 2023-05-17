@@ -11,7 +11,7 @@ import {
 	type Safe,
 } from "@postgresql-typed/util";
 
-import { getPGTError } from "../functions/getPGTError.js";
+import { getPgTErrorr } from "../functions/getPgTErrorr.js";
 import { getRawFetch } from "../functions/getRawFetch.js";
 import { getRawGroupBy } from "../functions/getRawGroupBy.js";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
@@ -82,7 +82,7 @@ export class SelectBuilder<
 		if (!(table instanceof Table)) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_join",
 					type: "class",
 				}),
@@ -94,7 +94,7 @@ export class SelectBuilder<
 		if (table.database.name !== this.databaseData.name) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_join",
 					type: "database",
 				}),
@@ -106,7 +106,7 @@ export class SelectBuilder<
 		if (this.tables.some(t => t.location === table.location)) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_join",
 					type: "duplicate",
 				}),
@@ -196,7 +196,7 @@ export class SelectBuilder<
 		if (!isOneOf([ParsedType.object, ParsedType.undefined], parsedOptionsType)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTErrorr({
 					code: "invalid_type",
 					expected: [ParsedType.object, ParsedType.undefined],
 					received: parsedOptionsType,
@@ -216,7 +216,7 @@ export class SelectBuilder<
 			if (!parsedObject.success) {
 				return {
 					success: false,
-					error: getPGTError(
+					error: getPgTErrorr(
 						parsedObject.otherKeys.length > 0
 							? {
 									code: "unrecognized_keys",

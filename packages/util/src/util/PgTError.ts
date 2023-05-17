@@ -96,7 +96,7 @@ export type Issue = IssueWithoutMessage & {
 	message: string;
 };
 
-export class PgTErrorr extends Error {
+export class PgTError extends Error {
 	get error() {
 		return this.issue;
 	}

@@ -1,4 +1,4 @@
-import type { ErrorMap, Issue } from "../util/PgTErrorr.js";
+import type { ErrorMap, Issue } from "../util/PgTError.js";
 
 export interface Context {
 	issue: Issue | undefined;

@@ -4,7 +4,7 @@ import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PGTError, t
 import type { Table } from "../classes/Table.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTErrorr } from "./getPgTErrorr.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
 import { isJoinType, joinTypes } from "./isJoinType.js";
 
@@ -31,7 +31,7 @@ export function getRawJoinQuery<
 	if (parsedType !== ParsedType.object) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_type",
 				expected: ParsedType.object,
 				received: parsedType,
@@ -48,19 +48,19 @@ export function getRawJoinQuery<
 		let error: PGTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			default:
-				error = getPGTError({
+				error = getPgTErrorr({
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -73,7 +73,7 @@ export function getRawJoinQuery<
 	if (filter.$TYPE && !isJoinType(filter.$TYPE)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTErrorr({
 				code: "invalid_join_type",
 				expected: joinTypes,
 				received: filter.$TYPE,
@@ -101,19 +101,19 @@ export function getRawJoinQuery<
 				switch (true) {
 					/* c8 ignore next 6 */
 					case parsedObject.otherKeys.length > 0:
-						error = getPGTError({
+						error = getPgTErrorr({
 							code: "unrecognized_keys",
 							keys: parsedObject.otherKeys,
 						});
 						break;
 					case parsedObject.missingKeys.length > 0:
-						error = getPGTError({
+						error = getPgTErrorr({
 							code: "missing_keys",
 							keys: parsedObject.missingKeys,
 						});
 						break;
 					default:
-						error = getPGTError({
+						error = getPgTErrorr({
 							code: "invalid_key_type",
 							...parsedObject.invalidKeys[0],
 						});

@@ -4,7 +4,7 @@ import {
 	isValid,
 	loadPgTConfig,
 	type ParseReturnType,
-	PGTError,
+	PgTError,
 	type PostgresData,
 	type Query,
 	type Safe,
@@ -36,7 +36,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	abstract _query<Data>(context: Context): Promise<ParseReturnType<Query<Data>>>;
 
 	abstract get ready(): Ready;
-	abstract get connectionError(): PGTError | undefined;
+	abstract get connectionError(): PgTError | undefined;
 
 	async query<Data>(query: string, variables: string[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>>;
@@ -62,7 +62,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	private _handleResult<Data>(context: Context, result: ParseReturnType<Query<Data>>): Safe<Query<Data>> {
 		if (isValid(result)) return { success: true, data: result.value };
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTError(context.issue);
+		const error = new PgTError(context.issue);
 		return { success: false, error };
 	}
 

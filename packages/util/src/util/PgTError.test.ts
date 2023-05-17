@@ -1,10 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { describe, expect, it } from "vitest";
 
-import { IssueCode, PgTErrorr } from "./PgTErrorr.js";
+import { IssueCode, PgTError } from "./PgTError.js";
 
-describe("PGTPError", () => {
-	const error = new PgTErrorr({
+describe("PgTPError", () => {
+	const error = new PgTError({
 		code: "invalid_type",
 		expected: "string",
 		received: "number",

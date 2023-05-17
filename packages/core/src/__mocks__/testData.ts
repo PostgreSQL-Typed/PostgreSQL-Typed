@@ -1,8 +1,8 @@
 import {
 	CharacterVarying,
 	CharacterVaryingConstructor,
-	PGTPParser,
-	PGTPParserClass,
+	PgTPParser,
+	PgTPParserClass,
 	Text,
 	TextConstructor,
 	UUID,
@@ -102,20 +102,20 @@ export const testData = {
 						name: "table1" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID) as PgTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID).optional() as PgTPParserClass<UUIDConstructor>,
 						},
 					},
 					{
 						name: "table2" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID) as PgTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID).optional() as PgTPParserClass<UUIDConstructor>,
 						},
 					},
 				],
@@ -127,10 +127,10 @@ export const testData = {
 						name: "table3" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID) as PgTPParserClass<UUIDConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
+							id: PgTPParser(UUID).optional() as PgTPParserClass<UUIDConstructor>,
 						},
 					},
 				],
@@ -147,24 +147,24 @@ export const testData = {
 						name: "table4" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
-							text: PGTPParser(Text) as PGTPParserClass<TextConstructor>,
+							id: PgTPParser(UUID) as PgTPParserClass<UUIDConstructor>,
+							text: PgTPParser(Text) as PgTPParserClass<TextConstructor>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
-							text: PGTPParser(Text).optional() as PGTPParserClass<TextConstructor>,
+							id: PgTPParser(UUID).optional() as PgTPParserClass<UUIDConstructor>,
+							text: PgTPParser(Text).optional() as PgTPParserClass<TextConstructor>,
 						},
 					},
 					{
 						name: "table5" as const,
 						primary_key: "id" as const,
 						columns: {
-							id: PGTPParser(UUID) as PGTPParserClass<UUIDConstructor>,
-							not_uuid: PGTPParser(CharacterVarying.setN(36)) as PGTPParserClass<CharacterVaryingConstructor<36>>,
+							id: PgTPParser(UUID) as PgTPParserClass<UUIDConstructor>,
+							not_uuid: PgTPParser(CharacterVarying.setN(36)) as PgTPParserClass<CharacterVaryingConstructor<36>>,
 						},
 						insert_parameters: {
-							id: PGTPParser(UUID).optional() as PGTPParserClass<UUIDConstructor>,
-							not_uuid: PGTPParser(CharacterVarying.setN(36)).optional() as PGTPParserClass<CharacterVaryingConstructor<36>>,
+							id: PgTPParser(UUID).optional() as PgTPParserClass<UUIDConstructor>,
+							not_uuid: PgTPParser(CharacterVarying.setN(36)).optional() as PgTPParserClass<CharacterVaryingConstructor<36>>,
 						},
 					},
 				],

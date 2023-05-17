@@ -3,9 +3,9 @@ import { applyDefaults } from "untyped";
 
 import type { PgTBaseClient } from "../types/PgTBaseClient.js";
 import type { PgTExtension, PgTExtensionModuleDefinition, PgTExtensionOptions } from "../types/PgTExtension.js";
-import type { PgTConfigSchema } from "../util/config/configs/index.js";
+import type { PgTConfigSchema } from "./config/configs/index.js";
 
-export function defineExtension<OptionsT extends PgTExtensionOptions>(definition: PgTExtensionModuleDefinition<OptionsT>): PgTExtension<OptionsT> {
+export function definePgTExtension<OptionsT extends PgTExtensionOptions>(definition: PgTExtensionModuleDefinition<OptionsT>): PgTExtension<OptionsT> {
 	// Normalize definition and meta
 	if (!definition.meta) definition.meta = {};
 

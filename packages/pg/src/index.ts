@@ -146,9 +146,16 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	//* Run the actual query
 	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
-		const preQueryResult = await this.callHook("client:pre-query", { query, values }, context);
+		const data = {
+			input: {
+				query,
+				values,
+			},
+			output: undefined as Query<unknown> | undefined,
+		};
+		await this.callHook("client:pre-query", data, context);
 
-		if (preQueryResult !== undefined) return OK(preQueryResult as Query<Data>);
+		if (data.output) return OK(data.output as Query<Data>);
 
 		let result: QueryResult;
 		try {
@@ -162,16 +169,22 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 		const finalResult = {
-			rows: result.rows,
-			rowCount: result.rowCount,
-			command: result.command,
-			input: {
-				query,
-				values,
+				rows: result.rows,
+				rowCount: result.rowCount,
+				command: result.command,
+				input: {
+					query,
+					values,
+				},
 			},
-		};
-
-		await this.callHook("client:post-query", finalResult, context);
+			hookData = {
+				input: {
+					query,
+					values,
+				},
+				output: finalResult,
+			};
+		await this.callHook("client:post-query", hookData, context);
 
 		return OK(finalResult);
 	}

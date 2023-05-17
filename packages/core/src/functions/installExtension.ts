@@ -29,7 +29,7 @@ async function normalizeModule(
 			// Prefer ESM resolution if possible
 			pgtExtension =
 				// eslint-disable-next-line unicorn/no-useless-undefined
-				(await importExtension(source, config.core.modulesDir).catch(() => undefined)) ?? requireExtension(source, { paths: config.core.modulesDir });
+				(await importExtension(source, config.modulesDir).catch(() => undefined)) ?? requireExtension(source, { paths: config.modulesDir });
 		} catch (error: unknown) {
 			// eslint-disable-next-line no-console
 			console.error(`Error while requiring module \`${pgtExtension}\`: ${error}`);
@@ -44,6 +44,6 @@ async function normalizeModule(
 }
 
 function resolveAlias(config: PgTConfigSchema, path: string, alias?: Record<string, string>): string {
-	if (!alias) alias = config.core.alias || {};
+	if (!alias) alias = config.alias || {};
 	return _resolveAlias(path, alias);
 }

@@ -1,15 +1,11 @@
 import type { PostgreSQLTypedCLIConfig } from "./cli/index.js";
 import type { PostgreSQLTypedCoreConfig } from "./core/index.js";
 
-export interface PgTConfigSchema {
+export interface PgTConfigSchema extends PostgreSQLTypedCoreConfig {
 	cli: PostgreSQLTypedCLIConfig;
-	core: PostgreSQLTypedCoreConfig;
 }
 
 export type PgTConfig = DeepPartial<PgTConfigSchema>;
-export type PgTConfigSchemaFunction = () => PgTConfig | Promise<PgTConfig>;
-export type PgTConfigSchemaExport = PgTConfig | PgTConfigSchemaFunction;
-export type PgTConfigSchemaFinal = PgTConfigSchema;
 
 type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P];

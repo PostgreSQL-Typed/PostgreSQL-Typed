@@ -1,4 +1,5 @@
 import { resolve } from "pathe";
+import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
 import { PgTExtension } from "../../../../types/PgTExtension.js";
 
@@ -76,30 +77,32 @@ export interface PostgreSQLTypedCoreConfig {
 	alias: Record<string, string>;
 }
 
-export function setDefaultCoreConfig(config: Record<string, any>): PostgreSQLTypedCoreConfig {
-	if (config.rootDir && typeof config.rootDir !== "string") delete config.host;
-	if (config.srcDir && typeof config.srcDir !== "string") delete config.port;
-	if (config.modulesDir && !Array.isArray(config.modulesDir)) delete config.modulesDir;
-	if (config.extensions && !Array.isArray(config.extensions)) delete config.extensions;
-	if (config.alias && (typeof config.alias !== "object" || Array.isArray(config.alias))) delete config.alias;
-
-	const rootDirectory = config.rootDir ? resolve(config.rootDir) : process.cwd(),
-		sourceDirectory = config.srcDir ? resolve(rootDirectory, config.srcDir) : resolve(rootDirectory, "src/"),
-		modulesDirectory = config.modulesDir
-			? [...config.modulesDir.map((directory: string) => resolve(rootDirectory, directory)), resolve(process.cwd(), "node_modules")]
-			: [resolve(process.cwd(), "node_modules")],
-		extensions = [...(config.extensions ?? [])].flat().filter(Boolean),
-		alias = {
-			"~": sourceDirectory,
-			"@": sourceDirectory,
-			...config.alias,
-		};
-
-	return {
-		rootDir: rootDirectory,
-		srcDir: sourceDirectory,
-		modulesDir: modulesDirectory,
-		extensions,
-		alias,
-	};
-}
+const schema: SchemaDefinition = defineUntypedSchema({
+	rootDir: {
+		$default: process.cwd(),
+		$resolve: value => (typeof value === "string" ? resolve(value) : process.cwd()),
+	},
+	srcDir: {
+		$default: "src/",
+		$resolve: async (value, get) => resolve(await get("rootDir"), value || "."),
+	},
+	modulesDir: {
+		$default: ["node_modules"],
+		$resolve: async (values, get) => [
+			...(await Promise.all(values.map(async (directory: string) => resolve(await get("rootDir"), directory)))),
+			resolve(process.cwd(), "node_modules"),
+		],
+	},
+	extensions: {
+		$resolve: values => (Array.isArray(values) ? values.filter(Boolean) : []),
+	},
+	alias: {
+		$default: {},
+		$resolve: async (value, get) => ({
+			"~": await get("srcDir"),
+			"@": await get("srcDir"),
+			...value,
+		}),
+	},
+});
+export default schema;

@@ -4,6 +4,7 @@ import {
 	isValid,
 	loadPgTConfig,
 	type ParseReturnType,
+	type PgTConfigSchema,
 	PgTError,
 	type PostgresData,
 	type Query,
@@ -37,6 +38,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 
 	abstract get ready(): Ready;
 	abstract get connectionError(): PgTError | undefined;
+	abstract get PgTConfig(): PgTConfigSchema;
 
 	async query<Data>(query: string, variables: string[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>>;

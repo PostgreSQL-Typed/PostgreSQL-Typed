@@ -1,5 +1,5 @@
 import { BaseClient, Context, getErrorMap, PgTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
-import { getParsedType, INVALID, isOneOf, OK, ParsedType, ParseReturnType } from "@postgresql-typed/util";
+import { getParsedType, INVALID, isOneOf, loadPgTConfig, OK, ParsedType, ParseReturnType, type PgTConfigSchema } from "@postgresql-typed/util";
 import postgres from "postgres";
 
 import { types } from "./types.js";
@@ -8,6 +8,8 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	private _client: postgres.Sql<Record<string, any>>;
 	private _ready = false;
 	private _connectionError?: PgTError;
+	private _extensionsInstalled = false;
+	private _config = {} as PgTConfigSchema;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, url: string, options?: postgres.Options<Record<string, postgres.PostgresType>>);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, options?: postgres.Options<Record<string, postgres.PostgresType>>);
@@ -19,6 +21,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		super(postgresData);
 
 		this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
+
+		loadPgTConfig().then(config => {
+			this._config = config.config;
+		});
 	}
 
 	async testConnection(
@@ -37,6 +43,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		if (urlOrOptions !== undefined) {
 			await this._client.end();
 			this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
+		}
+
+		if (!this._extensionsInstalled) {
+			await this.initExtensions();
+			this._extensionsInstalled = true;
 		}
 
 		await this.callHook("client:pre-connect");
@@ -175,6 +186,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	get client(): postgres.Sql<Record<string, any>> {
 		return this._client;
+	}
+
+	get PgTConfig(): PgTConfigSchema {
+		return this._config;
 	}
 }
 

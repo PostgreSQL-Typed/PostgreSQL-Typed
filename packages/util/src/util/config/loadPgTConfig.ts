@@ -27,7 +27,7 @@ export async function loadPgTConfig(options?: LoadPgTConfigOptions): Promise<{ c
 	}
 
 	return {
-		config: setDefaultConfig(result.config ?? {}),
+		config: await setDefaultConfig(result.config ?? {}),
 		configFile: !result.config || Object.keys(result.config).length === 0 ? undefined : result.configFile,
 		cwd: !result.config || Object.keys(result.config).length === 0 ? undefined : result.cwd,
 	};

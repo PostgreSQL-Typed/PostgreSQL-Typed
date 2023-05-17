@@ -1,19 +1,9 @@
-import { type Connection, setDefaultConnection } from "./Connection.js";
-import { setDefaultTypesConfig, type TypesConfig } from "./TypesConfig.js";
+import { defineUntypedSchema, SchemaDefinition } from "untyped";
+
+import { type Connection } from "./Connection.js";
+import typesSchema, { type TypesConfig } from "./TypesConfig.js";
 
 export interface PostgreSQLTypedCLIConfig {
-	/**
-	 * The environment variable containing the
-	 * connection string to the postgres database
-	 *
-	 * Note that if the enviroment variable is set, the `connections` option is ignored.
-	 *
-	 * If you want to connect to multiple databases, you can use the same environment variable with a "_1" suffix for the second database, "_2" for the third database, etc.
-	 *
-	 * @default "DATABASE_URL"
-	 */
-	connectionStringEnvironmentVariable: string;
-
 	/**
 	 * The connection string to the postgres database
 	 * or a connection object with the following properties:
@@ -78,57 +68,22 @@ export interface PostgreSQLTypedCLIConfig {
 	type: "esm" | "cjs";
 }
 
-export function setDefaultCLIConfig(config: Record<string, any>): PostgreSQLTypedCLIConfig {
-	if (config.connectionStringEnvironmentVariable && typeof config.connectionStringEnvironmentVariable !== "string")
-		delete config.connectionStringEnvironmentVariable;
-
-	if (config.connections) {
-		if (Array.isArray(config.connections)) {
-			if (config.connections.length === 0) delete config.connections;
-			else if (config.connections.length === 1) config.connections = config.connections[0];
-			else {
-				for (let index = 0; index < config.connections.length; index++) {
-					const connection = config.connections[index];
-					if (typeof connection !== "string" && typeof connection !== "object") {
-						delete config.connections;
-						break;
-					}
-
-					if (typeof connection === "object") config.connections[index] = setDefaultConnection(connection);
-				}
-			}
-		}
-		if (config.connections && typeof config.connections !== "string" && typeof config.connections !== "object") delete config.connections;
-		else if (config.connections && typeof config.connections === "object" && !Array.isArray(config.connections))
-			config.connections = setDefaultConnection(config.connections);
-	}
-
-	if (config.schemas) {
-		if (Array.isArray(config.schemas)) {
-			if (config.schemas.length === 0) delete config.schemas;
-			else if (config.schemas.length === 1) config.schemas = config.schemas[0];
-			else for (const schema of config.schemas) if (typeof schema !== "string" && typeof schema !== "number") delete config.schemas;
-		}
-		if (config.schemas && !Array.isArray(config.schemas) && typeof config.schemas !== "string" && typeof config.schemas !== "number") delete config.schemas;
-	}
-
-	if (config.tables) {
-		if (Array.isArray(config.tables)) {
-			if (config.tables.length === 0) delete config.tables;
-			else if (config.tables.length === 1) config.tables = config.tables[0];
-			else for (const table of config.tables) if (typeof table !== "string" && typeof table !== "number") delete config.tables;
-		}
-		if (config.tables && !Array.isArray(config.tables) && typeof config.tables !== "string" && typeof config.tables !== "number") delete config.tables;
-	}
-
-	if (config.type && !["esm", "cjs"].includes(config.type)) delete config.type;
-
-	return {
-		connectionStringEnvironmentVariable: config.connectionStringEnvironmentVariable ?? "DATABASE_URL",
-		connections: config.connections ?? "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
-		schemas: config.schemas ?? "*",
-		tables: config.tables ?? "*",
-		types: setDefaultTypesConfig(config.types ?? {}),
-		type: config.type ?? "cjs",
-	};
-}
+const schema: SchemaDefinition = defineUntypedSchema({
+	connections: {
+		$default: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
+	},
+	schemas: {
+		$default: "*",
+		$resolve: value => (typeof value === "string" ? value : "*"),
+	},
+	tables: {
+		$default: "*",
+		$resolve: value => (typeof value === "string" ? value : "*"),
+	},
+	types: typesSchema,
+	type: {
+		$default: "cjs",
+		$resolve: value => (value === "esm" ? "esm" : "cjs"),
+	},
+});
+export default schema;

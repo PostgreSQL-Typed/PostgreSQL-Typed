@@ -1,3 +1,5 @@
+import { defineUntypedSchema, SchemaDefinition } from "untyped";
+
 export interface BundleConfig {
 	/**
 	 * Whether to bundle the generated code into a single file
@@ -260,42 +262,72 @@ export interface BundleConfig {
 	fullExportDataTypeName: string;
 }
 
-export function setDefaultBundleConfig(config: Record<string, any>): BundleConfig {
-	if (config.enabled && typeof config.enabled !== "boolean") delete config.enabled;
-	if (config.bundleFileName && typeof config.bundleFileName !== "string") delete config.bundleFileName;
-	if (config.domainTypeName && typeof config.domainTypeName !== "string") delete config.domainTypeName;
-	if (config.domainDataTypeName && typeof config.domainDataTypeName !== "string") delete config.domainDataTypeName;
-	if (config.enumTypeName && typeof config.enumTypeName !== "string") delete config.enumTypeName;
-	if (config.primaryKeyTypeName && typeof config.primaryKeyTypeName !== "string") delete config.primaryKeyTypeName;
-	if (config.tableTypeName && typeof config.tableTypeName !== "string") delete config.tableTypeName;
-	if (config.tableDataTypeName && typeof config.tableDataTypeName !== "string") delete config.tableDataTypeName;
-	if (config.tableInsertParametersTypeName && typeof config.tableInsertParametersTypeName !== "string") delete config.tableInsertParametersTypeName;
-	if (config.tableInsertParametersDataTypeName && typeof config.tableInsertParametersDataTypeName !== "string") delete config.tableInsertParametersDataTypeName;
-	if (config.schemaTypeName && typeof config.schemaTypeName !== "string") delete config.schemaTypeName;
-	if (config.schemaDataTypeName && typeof config.schemaDataTypeName !== "string") delete config.schemaDataTypeName;
-	if (config.databaseTypeName && typeof config.databaseTypeName !== "string") delete config.databaseTypeName;
-	if (config.databaseDataTypeName && typeof config.databaseDataTypeName !== "string") delete config.databaseDataTypeName;
-	if (config.fullExportTypeName && typeof config.fullExportTypeName !== "string") delete config.fullExportTypeName;
-	if (config.fullExportDataTypeName && typeof config.fullExportDataTypeName !== "string") delete config.fullExportDataTypeName;
-
-	return {
-		enabled: config.enabled ?? false,
-		bundleFileName: config.bundleFileName ?? "index.ts",
-		domainTypeName: config.domainTypeName ?? "{{ TYPE_NAME | default }}",
-		domainDataTypeName: config.domainDataTypeName ?? "{{ TYPE_NAME | default }}Data",
-		enumTypeName: config.enumTypeName ?? "{{ DATABASE_NAME | default }}{{ TYPE_NAME | default }}",
-		primaryKeyTypeName: config.primaryKeyTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}PrimaryKey",
-		tableTypeName: config.tableTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}",
-		tableDataTypeName: config.tableDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}Data",
-		tableInsertParametersTypeName:
-			config.tableInsertParametersTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParameters",
-		tableInsertParametersDataTypeName:
-			config.tableInsertParametersDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParametersData",
-		schemaTypeName: config.schemaTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}",
-		schemaDataTypeName: config.schemaDataTypeName ?? "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}Data",
-		databaseTypeName: config.databaseTypeName ?? "{{ DATABASE_NAME | default }}",
-		databaseDataTypeName: config.databaseDataTypeName ?? "{{ DATABASE_NAME | default }}Data",
-		fullExportTypeName: config.fullExportTypeName ?? "Databases",
-		fullExportDataTypeName: config.fullExportDataTypeName ?? "DatabasesData",
-	};
-}
+const schema: SchemaDefinition = defineUntypedSchema({
+	enabled: {
+		$default: false,
+		$resolve: Boolean,
+	},
+	bundleFileName: {
+		$default: "index.ts",
+		$resolve: value => (typeof value === "string" ? value : "index.ts"),
+	},
+	domainTypeName: {
+		$default: "{{ TYPE_NAME | default }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ TYPE_NAME | default }}"),
+	},
+	domainDataTypeName: {
+		$default: "{{ TYPE_NAME | default }}Data",
+		$resolve: value => (typeof value === "string" ? value : "{{ TYPE_NAME | default }}Data"),
+	},
+	enumTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ TYPE_NAME | default }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ TYPE_NAME | default }}"),
+	},
+	primaryKeyTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}PrimaryKey",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}PrimaryKey"),
+	},
+	tableTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}"),
+	},
+	tableDataTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}Data",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}Data"),
+	},
+	tableInsertParametersTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParameters",
+		$resolve: value =>
+			typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParameters",
+	},
+	tableInsertParametersDataTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParametersData",
+		$resolve: value =>
+			typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}{{ TABLE_NAME | default }}InsertParametersData",
+	},
+	schemaTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}"),
+	},
+	schemaDataTypeName: {
+		$default: "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}Data",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}{{ SCHEMA_NAME | default }}Data"),
+	},
+	databaseTypeName: {
+		$default: "{{ DATABASE_NAME | default }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}"),
+	},
+	databaseDataTypeName: {
+		$default: "{{ DATABASE_NAME | default }}Data",
+		$resolve: value => (typeof value === "string" ? value : "{{ DATABASE_NAME | default }}Data"),
+	},
+	fullExportTypeName: {
+		$default: "Databases",
+		$resolve: value => (typeof value === "string" ? value : "Databases"),
+	},
+	fullExportDataTypeName: {
+		$default: "DatabasesData",
+		$resolve: value => (typeof value === "string" ? value : "DatabasesData"),
+	},
+});
+export default schema;

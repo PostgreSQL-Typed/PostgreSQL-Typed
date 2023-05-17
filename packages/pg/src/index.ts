@@ -10,13 +10,15 @@ import {
 	type RawPostgresData,
 	setIssueForContext,
 } from "@postgresql-typed/core";
-import { getParsedType, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
+import { getParsedType, INVALID, isOneOf, loadPgTConfig, OK, ParsedType, type ParseReturnType, type PgTConfigSchema } from "@postgresql-typed/util";
 import { Client as PGClient, type ClientConfig, type QueryResult } from "pg";
 
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: PGClient;
 	private _ready = false;
 	private _connectionError?: PgTError;
+	private _extensionsInstalled = false;
+	private _config = {} as PgTConfigSchema;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, connectionString: string);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, config: ClientConfig);
@@ -25,6 +27,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		super(postgresData);
 
 		this._client = new PGClient(pgConfig);
+
+		loadPgTConfig().then(config => {
+			this._config = config.config;
+		});
 	}
 
 	async testConnection(connectionString: string): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
@@ -36,6 +42,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		if (pgConfig) {
 			await this._client.end();
 			this._client = new PGClient(pgConfig);
+		}
+
+		if (!this._extensionsInstalled) {
+			await this.initExtensions();
+			this._extensionsInstalled = true;
 		}
 
 		try {
@@ -175,6 +186,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	get client(): PGClient {
 		return this._client;
+	}
+
+	get PgTConfig(): PgTConfigSchema {
+		return this._config;
 	}
 }
 

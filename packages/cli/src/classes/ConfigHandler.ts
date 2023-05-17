@@ -1,14 +1,7 @@
 /* eslint-disable no-console */
 import { writeFileSync } from "node:fs";
 
-import {
-	type Connection,
-	DEFAULT_CONFIG,
-	DEFAULT_CONFIG_FILE,
-	DEFAULT_CONFIG_FILE_RAW,
-	loadPgTConfig,
-	type PostgreSQLTypedCLIConfig,
-} from "@postgresql-typed/util";
+import { type Connection, DEFAULT_CONFIG_FILE, DEFAULT_CONFIG_FILE_RAW, loadPgTConfig, type PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import debug from "debug";
 import { join, resolve } from "pathe";
 
@@ -18,7 +11,7 @@ import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js"
 
 export class ConfigHandler {
 	filepath: string | null = null;
-	config: PostgreSQLTypedCLIConfig = DEFAULT_CONFIG.cli;
+	config: PostgreSQLTypedCLIConfig = {} as PostgreSQLTypedCLIConfig;
 	private LOGGER = LOGGER?.extend("ConfigHandler");
 
 	public async loadConfig(): Promise<this> {
@@ -64,15 +57,6 @@ export class ConfigHandler {
 	}
 
 	get connections(): (string | Connection)[] {
-		const environmentVariable = Object.keys(process.env)
-			.filter(key => {
-				if (key === this.config.connectionStringEnvironmentVariable) return true;
-				const regex = new RegExp(`^${this.config.connectionStringEnvironmentVariable}_\\d+$`);
-				return regex.test(key);
-			})
-			.map(key => process.env[key])
-			.filter((value): value is string => typeof value === "string");
-		if (environmentVariable.length > 0) return environmentVariable;
 		if (Array.isArray(this.config.connections)) return this.config.connections;
 		return [this.config.connections];
 	}

@@ -6,7 +6,7 @@ import type { SafeEquals } from "../types/SafeEquals.js";
 import { getErrorMap } from "./errorMap.js";
 import { IssueWithoutMessage, PGTPError } from "./PGTPError.js";
 
-export abstract class PgTPBasee<DataType> {
+export abstract class PgTPBase<DataType> {
 	constructor() {
 		this.equals = this.equals.bind(this);
 		this.safeEquals = this.safeEquals.bind(this);

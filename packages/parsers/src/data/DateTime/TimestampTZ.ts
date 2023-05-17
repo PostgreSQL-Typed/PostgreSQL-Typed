@@ -11,7 +11,7 @@ import { formatOffset } from "../../util/formatOffset.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { PgTPBasee } from "../../util/PgTPBasee.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { REGEXES } from "../../util/regexes.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
@@ -907,7 +907,7 @@ class TimestampTZConstructorClass extends PGTPConstructorBase<TimestampTZ> imple
 
 const TimestampTZ: TimestampTZConstructor = new TimestampTZConstructorClass();
 
-class TimestampTZClass extends PgTPBasee<TimestampTZ> implements TimestampTZ {
+class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 	constructor(
 		private _year: number,
 		private _month: number,

@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PgTPBasee } from "../../util/PgTPBasee.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
 interface Int8Object {
@@ -176,7 +176,7 @@ class Int8ConstructorClass extends PGTPConstructorBase<Int8> implements Int8Cons
 
 const Int8: Int8Constructor = new Int8ConstructorClass();
 
-class Int8Class extends PgTPBasee<Int8> implements Int8 {
+class Int8Class extends PgTPBase<Int8> implements Int8 {
 	constructor(private _int8: bigint) {
 		super();
 	}

@@ -1,10 +1,10 @@
 import type { Constructors } from "../types/Constructors.js";
 import type { FromParameters } from "../types/FromParameters.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
-import type { PgTPBasee } from "./PgTPBasee.js";
+import type { PgTPBase } from "./PgTPBase.js";
 
 export const arraySerializer =
-	<DataType>(constructor: Constructors | ObjectFunction<PgTPBasee<DataType>>, delimiter = '","') =>
+	<DataType>(constructor: Constructors | ObjectFunction<PgTPBase<DataType>>, delimiter = '","') =>
 	(value: string | FromParameters<Constructors>[] | null): string => {
 		if (value === null) return "NULL";
 

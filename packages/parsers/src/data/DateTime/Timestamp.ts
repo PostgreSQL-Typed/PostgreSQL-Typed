@@ -8,7 +8,7 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { PgTPBasee } from "../../util/PgTPBasee.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 import { throwPGTPError } from "../../util/throwPGTPError.js";
 import { Date } from "./Date.js";
@@ -437,7 +437,7 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 
 const Timestamp: TimestampConstructor = new TimestampConstructorClass();
 
-class TimestampClass extends PgTPBasee<Timestamp> implements Timestamp {
+class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 	constructor(private _year: number, private _month: number, private _day: number, private _hour: number, private _minute: number, private _second: number) {
 		super();
 	}

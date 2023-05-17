@@ -6,7 +6,7 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PgTPBasee } from "../../util/PgTPBasee.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
 import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
 
 interface UUIDObject {
@@ -143,7 +143,7 @@ class UUIDConstructorClass extends PGTPConstructorBase<UUID> implements UUIDCons
 
 const UUID: UUIDConstructor = new UUIDConstructorClass();
 
-class UUIDClass extends PgTPBasee<UUID> implements UUID {
+class UUIDClass extends PgTPBase<UUID> implements UUID {
 	constructor(private _uuid: string) {
 		super();
 		this._uuid = _uuid.toLowerCase();

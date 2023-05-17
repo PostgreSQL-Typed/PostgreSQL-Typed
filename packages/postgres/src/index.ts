@@ -134,7 +134,6 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	//* Run the actual query
 	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
-		//@ts-expect-error - We can't type this properly for some reason
 		const preQueryResult = await this.callHook("client:pre-query", { query, values }, context);
 
 		if (preQueryResult !== undefined) return OK(preQueryResult as Query<Data>);

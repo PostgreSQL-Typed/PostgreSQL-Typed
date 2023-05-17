@@ -39,4 +39,4 @@ export * from "./types/types/Tables.js";
 export * from "./types/types/UnionObjects.js";
 export * from "./types/types/WhereQuery.js";
 export * from "./util/errorMap.js";
-export type { ClientHooks, Context, DatabaseData, PgTError, PostgresData, Query, Safe, SchemaData, TableData } from "@postgresql-typed/util";
+export { ClientHooks, Context, DatabaseData, PgTError, PostgresData, Query, Safe, SchemaData, TableData } from "@postgresql-typed/util";

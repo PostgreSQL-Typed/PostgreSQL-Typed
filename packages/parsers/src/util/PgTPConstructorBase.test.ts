@@ -3,9 +3,9 @@ import { getParsedType, INVALID, OK, type ParseReturnType } from "@postgresql-ty
 import { describe, expect, it } from "vitest";
 
 import type { ParseContext } from "../types/ParseContext.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { PgTPConstructorBase } from "./PgTPConstructorBase.js";
 
-class TestClass extends PGTPConstructorBase<string> {
+class TestClass extends PgTPConstructorBase<string> {
 	constructor() {
 		super();
 	}
@@ -30,7 +30,7 @@ class TestClass extends PGTPConstructorBase<string> {
 
 const test = new TestClass();
 
-describe("PGTPConstructorBase", () => {
+describe("PgTPConstructorBase", () => {
 	it("should parse without errors", () => {
 		expect(test.from("test")).toBe("test");
 		expect(test.from(123)).toBe("123");

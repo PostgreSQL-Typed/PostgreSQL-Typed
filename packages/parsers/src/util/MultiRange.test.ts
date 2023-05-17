@@ -5,8 +5,8 @@ import type { ParseContext } from "../types/ParseContext.js";
 import { SafeEquals } from "../types/SafeEquals.js";
 import { SafeFrom } from "../types/SafeFrom.js";
 import { getMultiRange, MultiRangeConstructor } from "./MultiRange.js";
-import { PGTPBase } from "./PGTPBase.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
+import { PgTPBase } from "./PgTPBase.js";
+import { PgTPConstructorBase } from "./PgTPConstructorBase.js";
 import { getRange, RangeConstructor } from "./Range.js";
 
 interface TestObject {
@@ -33,7 +33,7 @@ interface TestConstructor {
 	isTest(object: any): object is Test;
 }
 
-class TestConstructorClass extends PGTPConstructorBase<TestClass> implements TestConstructor {
+class TestConstructorClass extends PgTPConstructorBase<TestClass> implements TestConstructor {
 	constructor() {
 		super();
 	}
@@ -73,7 +73,7 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> implements Tes
 
 const testClass = new TestConstructorClass();
 
-class TestClass extends PGTPBase<TestClass> {
+class TestClass extends PgTPBase<TestClass> {
 	constructor(private _data: string) {
 		super();
 	}

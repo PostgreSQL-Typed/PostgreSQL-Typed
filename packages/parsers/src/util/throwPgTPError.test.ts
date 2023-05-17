@@ -1,12 +1,12 @@
 /* eslint-disable unicorn/filename-case */
 import { describe, expect, test } from "vitest";
 
-import { throwPGTPError } from "./throwPGTPError.js";
+import { throwPgTPError } from "./throwPgTPError.js";
 
-describe("throwPGTPError", () => {
+describe("throwPgTPError", () => {
 	test("should throw an error", () => {
 		expect(() => {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_string",
 				expected: "test1",
 				received: "test2",

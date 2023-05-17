@@ -3,10 +3,10 @@ import { getParsedType, INVALID, OK, type ParseReturnType } from "@postgresql-ty
 import { describe, expect, it } from "vitest";
 
 import type { ParseContext } from "../types/ParseContext.js";
-import { PGTPConstructorBase } from "./PGTPConstructorBase.js";
-import { PGTPRangeBase } from "./PGTPRangeBase.js";
+import { PgTPConstructorBase } from "./PgTPConstructorBase.js";
+import { PgTPRangeBase } from "./PgTPRangeBase.js";
 
-class TestConstructorClass extends PGTPConstructorBase<TestClass> {
+class TestConstructorClass extends PgTPConstructorBase<TestClass> {
 	constructor() {
 		super();
 	}
@@ -31,7 +31,7 @@ class TestConstructorClass extends PGTPConstructorBase<TestClass> {
 
 const test = new TestConstructorClass();
 
-class TestClass extends PGTPRangeBase<TestClass, TestClass> {
+class TestClass extends PgTPRangeBase<TestClass, TestClass> {
 	constructor(private _data: string) {
 		super();
 	}
@@ -73,7 +73,7 @@ class TestClass extends PGTPRangeBase<TestClass, TestClass> {
 	}
 }
 
-describe("PGTPRangeBase", () => {
+describe("PgTPRangeBase", () => {
 	const result1 = test.from("test");
 
 	it("should parse input without errors, and run _isWithinRange", () => {

@@ -1,12 +1,12 @@
 /* eslint-disable unicorn/filename-case */
 import { describe, expect, test } from "vitest";
 
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 
-describe("getPGTError", () => {
+describe("getPgTError", () => {
 	test("should throw an error", () => {
 		expect(
-			getPGTError({
+			getPgTError({
 				code: "invalid_type",
 				expected: "boolean",
 				received: "number",

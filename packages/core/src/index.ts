@@ -21,7 +21,7 @@ export * from "./types/types/NestedPaths.js";
 export * from "./types/types/OnQuery.js";
 export * from "./types/types/OrderBy.js";
 export * from "./types/types/ParserFromColumn.js";
-export * from "./types/types/PGTPParserOfColumn.js";
+export * from "./types/types/PgTPParserOfColumnn.js";
 export * from "./types/types/RawDatabaseData.js";
 export * from "./types/types/RawPostgresData.js";
 export * from "./types/types/SchemaLocationByPath.js";

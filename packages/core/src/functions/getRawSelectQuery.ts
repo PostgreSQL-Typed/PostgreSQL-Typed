@@ -3,7 +3,7 @@ import { getParsedType, hasKeys, isOneOf, ParsedType, type PGTError, type Safe }
 
 import type { Table } from "../classes/Table.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
-import { getPgTErrorr } from "./getPgTErrorr.js";
+import { getPgTError } from "./getPgTError.js";
 import { CountParser } from "./getRawJoinQuery.js";
 
 export function getRawSelectQuery<TableColumns extends string, Select extends SelectQuery<TableColumns> = SelectQuery<TableColumns>>(
@@ -21,7 +21,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	if (!isOneOf([ParsedType.array, ParsedType.object, ParsedType.string], parsedType)) {
 		return {
 			success: false,
-			error: getPgTErrorr({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: [ParsedType.array, ParsedType.object, ParsedType.string],
 				received: parsedType,
@@ -40,7 +40,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		if (!isOneOf<string, string>([...allowedStrings], select)) {
 			return {
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_string",
 					expected: [...allowedStrings],
 					received: select,
@@ -91,7 +91,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (!isOneOf<string, string>([...allColumns], column)) {
 				return {
 					success: false,
-					error: getPgTErrorr({
+					error: getPgTError({
 						code: "invalid_string",
 						expected: [...allColumns],
 						received: column,
@@ -125,7 +125,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	if (!parsedObject.success) {
 		return {
 			success: false,
-			error: getPgTErrorr(
+			error: getPgTError(
 				parsedObject.otherKeys.length > 0
 					? {
 							code: "unrecognized_keys",
@@ -148,7 +148,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	if (Object.values(select).filter(Boolean).length === 0) {
 		return {
 			success: false,
-			error: getPgTErrorr({
+			error: getPgTError({
 				code: "too_small",
 				type: "keys",
 				minimum: 1,
@@ -198,7 +198,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 				if (!parsedObject.success) {
 					return {
 						success: false,
-						error: getPgTErrorr(
+						error: getPgTError(
 							parsedObject.otherKeys.length > 0
 								? {
 										code: "unrecognized_keys",
@@ -248,7 +248,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (!parsedObject.success) {
 				return {
 					success: false,
-					error: getPgTErrorr(
+					error: getPgTError(
 						parsedObject.otherKeys.length > 0
 							? {
 									code: "unrecognized_keys",
@@ -272,7 +272,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (totalKeys === 0) {
 				return {
 					success: false,
-					error: getPgTErrorr({
+					error: getPgTError({
 						code: "too_small",
 						type: "keys",
 						minimum: 1,
@@ -286,7 +286,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 				if (typeof value.distinct === "string" && value.distinct !== "ON") {
 					return {
 						success: false,
-						error: getPgTErrorr({
+						error: getPgTError({
 							code: "invalid_string",
 							expected: ["ON"],
 							received: value.distinct,

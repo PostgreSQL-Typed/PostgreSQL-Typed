@@ -1,17 +1,17 @@
-import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
+import type { Parsers, PgTPError } from "@postgresql-typed/parsers";
 import {
 	type DatabaseData,
 	getParsedType,
 	hasKeys,
 	isOneOf,
 	ParsedType,
-	type PGTError,
+	type PgTError,
 	type PostgresData,
 	type Query,
 	type Safe,
 } from "@postgresql-typed/util";
 
-import { getPgTErrorr } from "../functions/getPgTErrorr.js";
+import { getPgTError } from "../functions/getPgTError.js";
 import { getRawFetch } from "../functions/getRawFetch.js";
 import { getRawGroupBy } from "../functions/getRawGroupBy.js";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
@@ -50,7 +50,7 @@ export class SelectBuilder<
 			tableLocation: string;
 			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
-		PGTError | PGTPError
+		PgTError | PgTPError
 	>[] = [];
 	private _where?: Safe<
 		{
@@ -58,7 +58,7 @@ export class SelectBuilder<
 			variables: (Parsers | string)[];
 			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
-		PGTError | PGTPError
+		PgTError | PgTPError
 	>;
 	private _groupBy?: Safe<string>;
 	private _orderBy?: Safe<string>;
@@ -82,7 +82,7 @@ export class SelectBuilder<
 		if (!(table instanceof Table)) {
 			this._joins.push({
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "class",
 				}),
@@ -94,7 +94,7 @@ export class SelectBuilder<
 		if (table.database.name !== this.databaseData.name) {
 			this._joins.push({
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "database",
 				}),
@@ -106,7 +106,7 @@ export class SelectBuilder<
 		if (this.tables.some(t => t.location === table.location)) {
 			this._joins.push({
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "duplicate",
 				}),
@@ -153,32 +153,32 @@ export class SelectBuilder<
 		select?: Select
 	): // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore - Not sure where it is circular //TODO find out where it is circular
-	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
+	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
-	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PGTError | PGTPError>;
+	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PgTError | PgTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery: true }
-	): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
+	): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PgTError | PgTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery?: false; valuesOnly: true }
-	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PGTError | PGTPError>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery?: false; valuesOnly?: false }
-	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
@@ -196,7 +196,7 @@ export class SelectBuilder<
 		if (!isOneOf([ParsedType.object, ParsedType.undefined], parsedOptionsType)) {
 			return {
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_type",
 					expected: [ParsedType.object, ParsedType.undefined],
 					received: parsedOptionsType,
@@ -216,7 +216,7 @@ export class SelectBuilder<
 			if (!parsedObject.success) {
 				return {
 					success: false,
-					error: getPgTErrorr(
+					error: getPgTError(
 						parsedObject.otherKeys.length > 0
 							? {
 									code: "unrecognized_keys",
@@ -240,7 +240,7 @@ export class SelectBuilder<
 		let joins = this._joins as
 			| {
 					success: false;
-					error: PGTError;
+					error: PgTError;
 			  }[]
 			| {
 					success: true;
@@ -349,7 +349,7 @@ export class SelectBuilder<
 		);
 
 		//* Return a new promise since we cannot use async/await in this function
-		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PGTError | PGTPError>>(
+		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PgTError | PgTPError>>(
 			(resolve, reject) => {
 				runningQuery
 					.then(result => {

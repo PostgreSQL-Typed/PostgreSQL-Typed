@@ -2,7 +2,7 @@ import { type DatabaseData, getParsedType, isOneOf, ParsedType, type PGTError, t
 
 import type { Table } from "../classes/Table.js";
 import type { GroupBy as GroupByQuery } from "../types/types/GroupBy.js";
-import { getPgTErrorr } from "./getPgTErrorr.js";
+import { getPgTError } from "./getPgTError.js";
 
 export function getRawGroupBy<
 	InnerPostgresData extends PostgresData,
@@ -23,7 +23,7 @@ export function getRawGroupBy<
 	if (!isOneOf([ParsedType.array, ParsedType.string], parsedType)) {
 		return {
 			success: false,
-			error: getPgTErrorr({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: [ParsedType.array, ParsedType.string],
 				received: parsedType,
@@ -38,7 +38,7 @@ export function getRawGroupBy<
 			if (columnType !== ParsedType.string) {
 				return {
 					success: false,
-					error: getPgTErrorr({
+					error: getPgTError({
 						code: "invalid_type",
 						expected: ParsedType.string,
 						received: columnType,
@@ -50,7 +50,7 @@ export function getRawGroupBy<
 			if (!availableColumns.includes(column)) {
 				return {
 					success: false,
-					error: getPgTErrorr({
+					error: getPgTError({
 						code: "invalid_string",
 						expected: availableColumns,
 						received: column,
@@ -76,7 +76,7 @@ export function getRawGroupBy<
 		if (!availableColumns.includes(groupBy)) {
 			return {
 				success: false,
-				error: getPgTErrorr({
+				error: getPgTError({
 					code: "invalid_string",
 					expected: availableColumns,
 					received: groupBy,

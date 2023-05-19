@@ -1361,12 +1361,32 @@ export const DefaultParserMapping = {
 							name: "TimeTZ",
 							type: "named",
 						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimeTZConstructor",
+							type: "named",
+						},
 					],
 				],
 				[OID.tinterval]: "'unknown'",
 				[OID.trigger]: "'unknown'",
 				[OID.tsm_handler]: "'unknown'",
-				[OID.tsmultirange]: "'unknown'",
+				[OID.tsmultirange]: [
+					"PgTPParser(TimestampMultiRange)%others% as PgTPParserClass<TimestampMultiRangeConstructor>",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampMultiRange",
+							type: "named",
+						},
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampMultiRangeConstructor",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.tsquery]: "'unknown'",
 				[OID.tsrange]: [
 					"PgTPParser(TimestampRange)%others% as PgTPParserClass<TimestampRangeConstructor>",

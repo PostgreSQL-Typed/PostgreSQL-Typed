@@ -84,12 +84,12 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	},
 	srcDir: {
 		$default: "src/",
-		$resolve: async (value, get) => resolve(await get("rootDir"), value || "."),
+		$resolve: async (value, get) => resolve(await get("core.rootDir"), value || "."),
 	},
 	modulesDir: {
 		$default: ["node_modules"],
 		$resolve: async (values, get) => [
-			...(await Promise.all(values.map(async (directory: string) => resolve(await get("rootDir"), directory)))),
+			...(await Promise.all(values.map(async (directory: string) => resolve(await get("core.rootDir"), directory)))),
 			resolve(process.cwd(), "node_modules"),
 		],
 	},
@@ -99,8 +99,8 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	alias: {
 		$default: {},
 		$resolve: async (value, get) => ({
-			"~": await get("srcDir"),
-			"@": await get("srcDir"),
+			"~": await get("core.srcDir"),
+			"@": await get("core.srcDir"),
 			...value,
 		}),
 	},

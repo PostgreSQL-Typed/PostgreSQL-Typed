@@ -1,8 +1,9 @@
 import type { PostgreSQLTypedCLIConfig } from "./cli/index.js";
 import type { PostgreSQLTypedCoreConfig } from "./core/index.js";
 
-export interface PgTConfigSchema extends PostgreSQLTypedCoreConfig {
+export interface PgTConfigSchema {
 	cli: PostgreSQLTypedCLIConfig;
+	core: PostgreSQLTypedCoreConfig;
 }
 
 export type PgTConfig = DeepPartial<PgTConfigSchema>;

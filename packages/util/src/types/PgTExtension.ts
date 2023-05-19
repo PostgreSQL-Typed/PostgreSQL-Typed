@@ -1,3 +1,5 @@
+import type { SchemaDefinition } from "untyped";
+
 import type { Awaitable } from "./Awaitable.js";
 import type { PgTBaseClient } from "./PgTBaseClient.js";
 
@@ -28,6 +30,6 @@ export interface PgTExtensionModuleMeta {
 export interface PgTExtensionModuleDefinition<T extends PgTExtensionOptions = PgTExtensionOptions> {
 	meta?: PgTExtensionModuleMeta;
 	defaults?: T | ((pgt: PgTBaseClient<any, boolean>) => T);
-	schema?: T;
+	schema?: T | SchemaDefinition;
 	setup?: (this: void, resolvedOptions: T, pgt: PgTBaseClient<any, boolean>) => Awaitable<void>;
 }

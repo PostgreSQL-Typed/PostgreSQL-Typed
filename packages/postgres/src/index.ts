@@ -89,13 +89,13 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 					? {
 							code: "too_big",
 							type: "arguments",
-							maximum: 1,
+							maximum: 2,
 							exact: true,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
-							minimum: 1,
+							minimum: 2,
 							exact: true,
 					  }
 			);
@@ -105,7 +105,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		const [query, values] = context.data,
 			allowedQueryTypes = [ParsedType.string],
 			allowedValueTypes = [ParsedType.array],
-			allowedInnerValueTypes = [ParsedType.string],
+			allowedInnerValueTypes = [ParsedType.string, ParsedType.array],
 			parsedQueryType = getParsedType(query),
 			parsedValueType = getParsedType(values);
 
@@ -145,16 +145,34 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	//* Run the actual query
 	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
-		const data = {
+		const data:
+			| {
+					input: {
+						query: string;
+						values: string[];
+					};
+					output: Query<unknown>;
+			  }
+			| {
+					input: {
+						query: string;
+						values: string[];
+					};
+					output: undefined;
+			  } = {
 			input: {
 				query,
 				values,
 			},
 			output: undefined as Query<unknown> | undefined,
 		};
+
 		await this.callHook("client:pre-query", data, context);
 
-		if (data.output) return OK(data.output as Query<Data>);
+		if (data.output) {
+			this.callHook("client:pre-query-override", data, context);
+			return OK(data.output as Query<Data>);
+		}
 
 		let result: Awaited<ReturnType<typeof this._client.unsafe>>;
 		try {
@@ -169,6 +187,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		}
 
 		const finalResult = {
+			input: {
+				query,
+				values,
+			},
+			output: {
 				rows: [...result.values()],
 				rowCount: result.count,
 				command: result.command,
@@ -177,16 +200,11 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 					values,
 				},
 			},
-			hookData = {
-				input: {
-					query,
-					values,
-				},
-				output: finalResult,
-			};
-		await this.callHook("client:post-query", hookData, context);
+		};
 
-		return OK(finalResult);
+		await this.callHook("client:post-query", finalResult, context);
+
+		return OK(finalResult.output);
 	}
 
 	get ready(): Ready {

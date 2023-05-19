@@ -70,6 +70,9 @@ importers:
       '@postgresql-typed/util':
         specifier: workspace:*
         version: link:../util
+      json-buffer:
+        specifier: ^3.0.1
+        version: 3.0.1
       keyv:
         specifier: ^4.5.2
         version: 4.5.2
@@ -80,6 +83,15 @@ importers:
         specifier: ^0.5.21
         version: 0.5.21
     devDependencies:
+      '@postgresql-typed/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@postgresql-typed/postgres':
+        specifier: workspace:*
+        version: link:../postgres
+      '@types/json-buffer':
+        specifier: ^3.0.0
+        version: 3.0.0
       '@types/node':
         specifier: ^20.1.2
         version: 20.1.2
@@ -2303,6 +2315,10 @@ packages:
 
   /@types/istanbul-lib-coverage@2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
+    dev: true
+
+  /@types/json-buffer@3.0.0:
+    resolution: {integrity: sha512-3YP80IxxFJB4b5tYC2SUPwkg0XQLiu0nWvhRgEatgjf+29IcWO9X1k8xRv5DGssJ/lCrjYTjQPcobJr2yWIVuQ==}
     dev: true
 
   /@types/json-schema@7.0.11:

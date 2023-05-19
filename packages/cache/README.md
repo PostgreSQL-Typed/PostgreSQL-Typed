@@ -13,5 +13,5 @@
 	</a>
 </div>
 <p align="center">
-  A caching extension for PostgreSQL-Typed
+  A caching extension for PostgreSQL-Typed using <a href="https://www.npmjs.com/package/keyv">Keyv</a>.
 <p>

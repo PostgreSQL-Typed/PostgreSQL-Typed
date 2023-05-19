@@ -69,7 +69,7 @@
 <!-- @PostgreSQL-Typed/Core -->
 <h2 align="center">
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Typed">
-		PostgreSQL-Typed
+		@PostgreSQL-Typed/Core
 	</a>
 </h2>
 <div align="center">
@@ -81,6 +81,24 @@
 </div>
 <p align="center">
   A type-safe PostgreSQL client for Node.js (Core, Shared between @PostgreSQL-Typed/pg and @PostgreSQL-Typed/postgres)
+<p>
+
+<br/>
+<!-- @PostgreSQL-Typed/Cache -->
+<h2 align="center">
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Typed">
+		@PostgreSQL-Typed/Cache
+	</a>
+</h2>
+<div align="center">
+	<!-- badges -->
+	<a href="https://www.npmjs.com/package/@postgresql-typed/cache">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/cache.svg?logo=npm" alt="@PostgreSQL-Typed/Cache Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/cache&logo=vitest&style=flat" alt="@PostgreSQL-Typed/Cache Coverage"/>
+	</a>
+</div>
+<p align="center">
+  A caching extension for PostgreSQL-Typed using <a href="https://www.npmjs.com/package/keyv">Keyv</a>.
 <p>
 
 <br/>

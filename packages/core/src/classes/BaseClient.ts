@@ -236,7 +236,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 
 	async initExtensions(): Promise<void> {
 		const { config } = await loadPgTConfig(),
-			{ extensions } = config;
+			{ extensions } = config.core;
 
 		if (extensions.length === 0) return;
 		for (const extension of extensions) {

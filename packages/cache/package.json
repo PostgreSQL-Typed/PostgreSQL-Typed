@@ -1,7 +1,7 @@
 {
 	"name": "@postgresql-typed/cache",
 	"version": "0.1.0",
-	"description": "A caching extension for PostgreSQL-Typed",
+	"description": "A caching extension for PostgreSQL-Typed using Keyv",
 	"type": "module",
 	"exports": "./lib/index.js",
 	"types": "./lib/index.d.ts",
@@ -41,11 +41,15 @@
 	"dependencies": {
 		"@postgresql-typed/parsers": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
+		"json-buffer": "^3.0.1",
 		"keyv": "^4.5.2",
 		"ohash": "^1.1.2",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
+		"@postgresql-typed/cli": "workspace:*",
+		"@postgresql-typed/postgres": "workspace:*",
+		"@types/json-buffer": "^3.0.0",
 		"@types/node": "^20.1.2",
 		"typescript": "^4.9.5"
 	},

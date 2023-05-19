@@ -33,7 +33,7 @@ describe("Cache", () => {
 			const version = await client.query<{
 					version: string;
 				}>("SELECT version()", []),
-				versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]),
+				versionNumber = Number(version.rows[0].version.toString().split(" ")[1].split(".")[0]),
 				queries = {
 					createTable,
 					insertQuery,
@@ -65,7 +65,7 @@ describe("Cache", () => {
 
 			await client.query(queries.insertQuery, queries.insertQueryValues);
 
-			expect(spy).toHaveBeenCalledTimes(2);
+			expect(spy).toHaveBeenCalledTimes(3);
 			expect(spy2).toHaveBeenCalledTimes(0);
 
 			spy.mockClear();

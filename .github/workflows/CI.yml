@@ -49,9 +49,15 @@ jobs:
     with:
       package: '@postgresql-typed/postgres'
     secrets: inherit
+  "Cache":
+    name: '@PostgreSQL-Typed/Cache'
+    uses: ./.github/workflows/package.yml
+    with:
+      package: '@postgresql-typed/cache'
+    secrets: inherit
   coverage:
     name: Coverage
-    needs: [Core, OIDs, Parsers, CLI, UI, Util, pg, postgres]
+    needs: [Core, OIDs, Parsers, CLI, UI, Util, pg, postgres, Cache]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

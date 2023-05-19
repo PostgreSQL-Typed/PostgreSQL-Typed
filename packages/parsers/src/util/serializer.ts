@@ -10,9 +10,7 @@ export const serializer =
 		try {
 			if ("setN" in constructor) constructor = constructor.setN(Number.POSITIVE_INFINITY);
 			return constructor.from(value as string).postgres;
-		} catch (error) {
-			console.log("value", value);
-			console.log(error);
+		} catch {
 			return "NULL";
 		}
 	};

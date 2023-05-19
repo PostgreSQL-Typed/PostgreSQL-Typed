@@ -1,5 +1,5 @@
 <h1 align="center">
-	@PostgreSQL-Typed/cache
+	@PostgreSQL-Typed/Cache
 </h1>
 <div align="center">
 	<a href="https://www.npmjs.com/package/@postgresql-typed/cache">

@@ -30,9 +30,40 @@ describe("Cache", () => {
 
 		let error: Error | undefined;
 		try {
-			await client.query(createTable, []);
+			const version = await client.query<{
+					version: string;
+				}>("SELECT version()"),
+				versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]),
+				queries = {
+					createTable,
+					insertQuery,
+					insertQueryValues,
+				};
+			// Multirange types were introduced in PostgreSQL 14
+			if (versionNumber < 14) {
+				queries.createTable = createTable
+					.split("\n")
+					.filter(line => !line.includes("multi"))
+					.join("\n")
+					.replace(/,\n\)/, "\n)");
+				queries.insertQuery = insertQuery
+					.split("\n")
+					.filter(line => !line.includes("multi"))
+					.filter(line => {
+						if (/^\$\d+$/.test(line)) {
+							const index = Number(line.slice(1));
+							if (index > 66) return false;
+						}
+						return true;
+					})
+					.join("\n")
+					.replace(/,\n\)/, "\n)");
+				queries.insertQueryValues = insertQueryValues.slice(0, -10);
+			}
 
-			await client.query(insertQuery, insertQueryValues);
+			await client.query(queries.createTable, []);
+
+			await client.query(queries.insertQuery, queries.insertQueryValues);
 
 			expect(spy).toHaveBeenCalledTimes(2);
 			expect(spy2).toHaveBeenCalledTimes(0);

@@ -32,7 +32,7 @@ describe("Cache", () => {
 		try {
 			const version = await client.query<{
 					version: string;
-				}>("SELECT version()"),
+				}>("SELECT version()", []),
 				versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]),
 				queries = {
 					createTable,

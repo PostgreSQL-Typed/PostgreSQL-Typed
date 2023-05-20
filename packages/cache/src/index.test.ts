@@ -50,14 +50,16 @@ describe("Cache", () => {
 					.split("\n")
 					.filter(line => !line.includes("multi"))
 					.filter(line => {
-						if (/^\$\d+$/.test(line)) {
-							const index = Number(line.slice(1));
+						line = line.trim();
+						if (/^\$\d+,?$/.test(line)) {
+							const index = Number.parseInt(line.slice(1));
 							if (index > 66) return false;
 						}
 						return true;
 					})
 					.join("\n")
-					.replace(/,\n\)/, "\n)");
+					// eslint-disable-next-line unicorn/prefer-string-replace-all
+					.replace(/,\n\)/g, "\n)");
 				queries.insertQueryValues = insertQueryValues.slice(0, -10);
 			}
 

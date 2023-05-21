@@ -26,7 +26,7 @@ describe("Cache", () => {
 		client.hook("client:post-query", spiedOn.useless);
 		client.hook("client:pre-query-override", spiedOn.useless2);
 
-		if (!isReady(client)) expect.fail();
+		if (!isReady(client)) expect.fail("Client is not ready");
 
 		let error: Error | undefined;
 		try {

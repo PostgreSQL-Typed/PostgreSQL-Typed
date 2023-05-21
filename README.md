@@ -30,39 +30,39 @@
 	It currently contains the following packages:
 </p>
 
-<!-- @PostgreSQL-Typed/postgres -->
+<!-- @PostgreSQL-Typed/Cache -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/postgres">
-		@PostgreSQL-Typed/postgres
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Typed">
+		@PostgreSQL-Typed/Cache
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/postgres">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/postgres.svg?logo=npm" alt="@PostgreSQL-Typed/postgres Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/postgres&logo=vitest&style=flat" alt="@PostgreSQL-Typed/postgres Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/cache">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/cache.svg?logo=npm" alt="@PostgreSQL-Typed/Cache Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/cache&logo=vitest&style=flat" alt="@PostgreSQL-Typed/Cache Coverage"/>
 	</a>
 </div>
 <p align="center">
-  A type-safe PostgreSQL client for Node.js (Using the postgres module)
+  A <a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">PostgreSQL-Typed</a> extension to cache queries using <a href="https://www.npmjs.com/package/keyv">Keyv</a>
 <p>
 
 <br/>
-<!-- @PostgreSQL-Typed/pg -->
+<!-- @PostgreSQL-Typed/CLI -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/pg">
-		@PostgreSQL-Typed/pg
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/cli">
+		@PostgreSQL-Typed/CLI
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/pg">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/pg.svg?logo=npm" alt="@PostgreSQL-Typed/pg Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/pg&logo=vitest&style=flat" alt="@PostgreSQL-Typed/pg Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/cli">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/cli.svg?logo=npm" alt="@PostgreSQL-Typed/CLI Version"/>
+		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/cli&logo=vitest&style=flat" alt="@PostgreSQL-Typed/CLI Coverage"/>
 	</a>
 </div>
 <p align="center">
-  A type-safe PostgreSQL client for Node.js (Using the pg module)
+  Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.
 <p>
 
 <br/>
@@ -81,24 +81,6 @@
 </div>
 <p align="center">
   A type-safe PostgreSQL client for Node.js (Core, Shared between @PostgreSQL-Typed/pg and @PostgreSQL-Typed/postgres)
-<p>
-
-<br/>
-<!-- @PostgreSQL-Typed/Cache -->
-<h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/PostgreSQL-Typed">
-		@PostgreSQL-Typed/Cache
-	</a>
-</h2>
-<div align="center">
-	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/cache">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/cache.svg?logo=npm" alt="@PostgreSQL-Typed/Cache Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/cache&logo=vitest&style=flat" alt="@PostgreSQL-Typed/Cache Coverage"/>
-	</a>
-</div>
-<p align="center">
-  A caching extension for PostgreSQL-Typed using <a href="https://www.npmjs.com/package/keyv">Keyv</a>.
 <p>
 
 <br/>
@@ -138,21 +120,57 @@
 <p>
 
 <br/>
-<!-- @PostgreSQL-Typed/CLI -->
+<!-- @PostgreSQL-Typed/pg -->
 <h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/cli">
-		@PostgreSQL-Typed/CLI
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/pg">
+		@PostgreSQL-Typed/pg
 	</a>
 </h2>
 <div align="center">
 	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/cli">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/cli.svg?logo=npm" alt="@PostgreSQL-Typed/CLI Version"/>
-		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/cli&logo=vitest&style=flat" alt="@PostgreSQL-Typed/CLI Coverage"/>
+	<a href="https://www.npmjs.com/package/@postgresql-typed/pg">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/pg.svg?logo=npm" alt="@PostgreSQL-Typed/pg Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/pg&logo=vitest&style=flat" alt="@PostgreSQL-Typed/pg Coverage"/>
 	</a>
 </div>
 <p align="center">
-  Generate TypeScript types to be used with the @postgresql-typed ecosystem from your PostgreSQL database.
+  A type-safe PostgreSQL client for Node.js (Using the pg module)
+<p>
+
+<br/>
+<!-- @PostgreSQL-Typed/postgres -->
+<h2 align="center">
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/postgres">
+		@PostgreSQL-Typed/postgres
+	</a>
+</h2>
+<div align="center">
+	<!-- badges -->
+	<a href="https://www.npmjs.com/package/@postgresql-typed/postgres">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/postgres.svg?logo=npm" alt="@PostgreSQL-Typed/postgres Version"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/postgres&logo=vitest&style=flat" alt="@PostgreSQL-Typed/postgres Coverage"/>
+	</a>
+</div>
+<p align="center">
+  A type-safe PostgreSQL client for Node.js (Using the postgres module)
+<p>
+
+<br/>
+<!-- @PostgreSQL-Typed/TzSwitcher -->
+<h2 align="center">
+	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/tzswitcher">
+		@PostgreSQL-Typed/TzSwitcher
+	</a>
+</h2>
+<div align="center">
+	<!-- badges -->
+	<a href="https://www.npmjs.com/package/@postgresql-typed/tzswitcher">
+		<img src="https://img.shields.io/npm/v/@postgresql-typed/tzswitcher.svg?logo=npm" alt="@PostgreSQL-Typed/TzSwitcher Version"/>
+		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/tzswitcher&logo=vitest&style=flat" alt="@PostgreSQL-Typed/TzSwitcher Coverage"/>
+	</a>
+</div>
+<p align="center">
+  A <a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed">PostgreSQL-Typed</a> extension to switch the timezone of a column from one to another
 <p>
 
 <br/>

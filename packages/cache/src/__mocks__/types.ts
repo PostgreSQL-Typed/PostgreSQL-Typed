@@ -74,7 +74,7 @@ import {
 	TimestampTZRange,
 	type TimestampTZRangeConstructor,
 	TimeTZ,
-	TimeTZConstructor,
+	type TimeTZConstructor,
 	UUID,
 	type UUIDConstructor,
 } from "@postgresql-typed/parsers";

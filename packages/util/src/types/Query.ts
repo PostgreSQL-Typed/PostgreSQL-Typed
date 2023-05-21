@@ -4,6 +4,6 @@ export interface Query<Data> {
 	command: string;
 	input: {
 		query: string;
-		values: string[];
+		values: unknown[];
 	};
 }

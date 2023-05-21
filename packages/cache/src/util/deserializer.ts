@@ -40,7 +40,7 @@ import {
 } from "@postgresql-typed/parsers";
 
 export function deserializer<T>(object: Record<string, any> | Record<string, any>[]): T {
-	if (typeof object !== "object") return object;
+	if (typeof object !== "object" || object === null) return object;
 
 	if (Array.isArray(object)) return object.map(element => deserializer(element)) as T;
 

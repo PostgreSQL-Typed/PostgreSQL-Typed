@@ -299,20 +299,12 @@ export class SelectBuilder<
 		let variablesIndex = options?.previousSubquery?.data.variablesIndex ?? 1;
 		for (; variablesIndex <= count; variablesIndex++) query = query.replace("%?%", `$${variablesIndex}`);
 
-		//* Get all the variables and map them to the correct postgres type, the ones from subqueries are already mapped
-		const variables: string[] = [
+		//* Get all the variables
+		const variables: (Parsers | string)[] = [
 			...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.variables)),
-			...joins.flatMap(join =>
-				join.data.variables.map(variable => {
-					if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
-					return variable;
-				})
-			),
+			...joins.flatMap(join => join.data.variables),
 			...(this._where?.data.subqueries.flatMap(subquery => subquery.variables) ?? []),
-			...(this._where?.data.variables.map(variable => {
-				if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
-				return variable;
-			}) ?? []),
+			...(this._where?.data.variables ?? []),
 		];
 
 		//* If the query is raw, return it

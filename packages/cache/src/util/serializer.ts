@@ -41,7 +41,7 @@ import {
 } from "@postgresql-typed/parsers";
 
 export function serializer(object: any): Record<string, any> | Record<string, any>[] {
-	if (typeof object !== "object") return object;
+	if (typeof object !== "object" || object === null) return object;
 
 	if (Array.isArray(object)) return object.map(element => serializer(element));
 

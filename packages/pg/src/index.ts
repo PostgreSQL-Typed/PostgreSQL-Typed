@@ -106,7 +106,6 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		const [query, values] = context.data,
 			allowedQueryTypes = [ParsedType.string],
 			allowedValueTypes = [ParsedType.array],
-			allowedInnerValueTypes = [ParsedType.string],
 			parsedQueryType = getParsedType(query),
 			parsedValueType = getParsedType(values);
 
@@ -128,36 +127,23 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 
-		const parsedInnerValueTypes = (values as unknown[]).map(value => getParsedType(value));
-
-		for (const parsedInnerValueType of parsedInnerValueTypes) {
-			if (!isOneOf(allowedInnerValueTypes, parsedInnerValueType)) {
-				setIssueForContext(context, {
-					code: "invalid_type",
-					expected: allowedInnerValueTypes,
-					received: parsedInnerValueType,
-				});
-				return INVALID;
-			}
-		}
-
-		return this._runQuery<Data>(context, query as string, values as string[]);
+		return this._runQuery<Data>(context, query as string, values as unknown[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: unknown[]): Promise<ParseReturnType<Query<Data>>> {
 		const data:
 			| {
 					input: {
 						query: string;
-						values: string[];
+						values: unknown[];
 					};
 					output: Query<unknown>;
 			  }
 			| {
 					input: {
 						query: string;
-						values: string[];
+						values: unknown[];
 					};
 					output: undefined;
 			  } = {
@@ -177,7 +163,7 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 		let result: QueryResult;
 		try {
-			result = await this._client.query(query, values);
+			result = await this._client.query(data.input.query, data.input.values);
 		} catch (error) {
 			setIssueForContext(context, {
 				code: "query_error",
@@ -188,18 +174,12 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		}
 
 		const finalResult = {
-			input: {
-				query,
-				values,
-			},
+			input: data.input,
 			output: {
 				rows: result.rows,
 				rowCount: result.rowCount,
 				command: result.command,
-				input: {
-					query,
-					values,
-				},
+				input: data.input,
 			},
 		};
 

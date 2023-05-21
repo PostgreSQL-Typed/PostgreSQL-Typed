@@ -323,6 +323,37 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
+  packages/tzswitcher:
+    dependencies:
+      '@postgresql-typed/parsers':
+        specifier: workspace:*
+        version: link:../parsers
+      '@postgresql-typed/util':
+        specifier: workspace:*
+        version: link:../util
+      luxon:
+        specifier: ^3.3.0
+        version: 3.3.0
+      source-map-support:
+        specifier: ^0.5.21
+        version: 0.5.21
+    devDependencies:
+      '@postgresql-typed/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@postgresql-typed/postgres':
+        specifier: workspace:*
+        version: link:../postgres
+      '@types/luxon':
+        specifier: ^3.3.0
+        version: 3.3.0
+      '@types/node':
+        specifier: ^20.1.2
+        version: 20.1.2
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
   packages/ui:
     devDependencies:
       '@iconify-json/carbon':

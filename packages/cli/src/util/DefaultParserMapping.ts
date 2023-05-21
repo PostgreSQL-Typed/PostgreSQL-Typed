@@ -1365,6 +1365,7 @@ export const DefaultParserMapping = {
 							module: "@postgresql-typed/parsers",
 							name: "TimeTZConstructor",
 							type: "named",
+							isType: true,
 						},
 					],
 				],

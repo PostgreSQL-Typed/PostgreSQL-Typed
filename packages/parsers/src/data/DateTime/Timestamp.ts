@@ -504,7 +504,17 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
-		return DateTime.fromISO(this.toString()).setZone(zone);
+		return DateTime.fromObject(
+			{
+				year: this._year,
+				month: this._month,
+				day: this._day,
+				hour: this._hour,
+				minute: this._minute,
+				second: this._second,
+			},
+			{ zone }
+		);
 	}
 
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date {

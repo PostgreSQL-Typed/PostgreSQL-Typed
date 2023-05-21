@@ -18,3 +18,4 @@ export * from "./util/isOneOf.js";
 export * from "./util/joinValues.js";
 export * from "./util/PgTError.js";
 export * from "./util/validation.js";
+export { SchemaDefinition } from "untyped";

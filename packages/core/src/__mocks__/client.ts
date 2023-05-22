@@ -50,13 +50,17 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 		const [query, values] = context.data;
 
-		return this._runQuery<Data>(context, query as string, values as string[]);
+		return this._runQuery<Data>(context, query as string, values as unknown[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: unknown[]): Promise<ParseReturnType<Query<Data>>> {
 		let result: QueryResult;
 		try {
+			values = (values ?? []).map(value => {
+				if (typeof value === "object" && value !== null && "postgres" in value) return value.postgres;
+				return value;
+			});
 			result = await this._client.query(query, values);
 		} catch {
 			//* Don't set an issue here to test the error handling

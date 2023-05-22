@@ -152,20 +152,6 @@ export function getRawFilterOperator(
 					}
 				}
 
-				for (const variable of parsedData.obj.variables) {
-					const variableType = getParsedType(variable);
-					if (!isOneOf([ParsedType.string], variableType)) {
-						return {
-							success: false,
-							error: getPgTError({
-								code: "invalid_type",
-								expected: [ParsedType.string],
-								received: variableType,
-							}),
-						};
-					}
-				}
-
 				const spacesString = " ".repeat(spaces);
 				return {
 					success: true,

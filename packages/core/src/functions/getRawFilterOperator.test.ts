@@ -426,9 +426,9 @@ describe("getRawFilterOperator", () => {
 					success: true,
 					data: {
 						query: "",
-						variables: [1],
-						variablesIndex: 0,
-						usedTableLocations: [],
+						variables: [],
+						variablesIndex: 1,
+						usedTableLocations: [1],
 						database: database1,
 					},
 				},
@@ -447,27 +447,6 @@ describe("getRawFilterOperator", () => {
 					success: true,
 					data: {
 						query: "",
-						variables: [],
-						variablesIndex: 1,
-						usedTableLocations: [1],
-						database: database1,
-					},
-				},
-			},
-			parser,
-			database1,
-			0
-		);
-
-		expect(result7.success).toBe(false);
-		if (result7.success) expect.fail();
-
-		const result8 = getRawFilterOperator(
-			{
-				$EQUAL: {
-					success: true,
-					data: {
-						query: "",
 						variables: ["foo"],
 
 						variablesIndex: 0,
@@ -481,6 +460,6 @@ describe("getRawFilterOperator", () => {
 			0
 		);
 
-		expect(result8.success).toBe(true);
+		expect(result7.success).toBe(true);
 	});
 });

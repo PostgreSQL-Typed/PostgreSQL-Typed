@@ -12,6 +12,7 @@ const SCHEMA: SchemaDefinition = {
 		},
 		required: ["from", "to"],
 	},
+	/* c8 ignore next 1 */
 	$resolve: (value: unknown) => (typeof value === "object" ? value : false),
 };
 
@@ -22,6 +23,8 @@ export default definePgTExtension<PgTTzSwitcherOptions>({
 	},
 	setup(resolvedOptions, pgt) {
 		const { timestamp, timestamptz, time, timetz } = resolvedOptions;
+
+		/* c8 ignore next 1 */
 		if (!timestamp && !timestamptz && !time && !timetz) return;
 
 		pgt.hook("client:pre-query", data => {

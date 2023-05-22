@@ -1,6 +1,8 @@
 import {
 	PgTPParser,
 	type PgTPParserClass,
+	Text,
+	type TextConstructor,
 	Time,
 	type TimeConstructor,
 	Timestamp,
@@ -54,6 +56,15 @@ export type TestData = {
 							 * @kind time with time zone
 							 */
 							timetz: TimeTZ;
+							/**
+							 * @kind text
+							 */
+							not_a_time: Text;
+							/**
+							 * @kind time without time zone
+							 * @nullable
+							 */
+							nullable_time: Time | null;
 						};
 						insert_parameters: {
 							/**
@@ -88,6 +99,15 @@ export type TestData = {
 							 * @kind time with time zone
 							 */
 							timetz: TimeTZ;
+							/**
+							 * @kind text
+							 */
+							not_a_time: Text;
+							/**
+							 * @kind time without time zone
+							 * @nullable
+							 */
+							nullable_time: Time | null;
 						};
 					};
 				};
@@ -139,6 +159,15 @@ export const testData = {
 							 * @kind time with time zone
 							 */
 							timetz: PgTPParser(TimeTZ) as PgTPParserClass<TimeTZConstructor>,
+							/**
+							 * @kind text
+							 */
+							not_a_time: PgTPParser(Text) as PgTPParserClass<TextConstructor>,
+							/**
+							 * @kind time without time zone
+							 * @nullable
+							 */
+							nullable_time: PgTPParser(Time).nullable().optional() as PgTPParserClass<TimeConstructor>,
 						},
 						insert_parameters: {
 							/**
@@ -173,6 +202,15 @@ export const testData = {
 							 * @kind time with time zone
 							 */
 							timetz: PgTPParser(TimeTZ) as PgTPParserClass<TimeTZConstructor>,
+							/**
+							 * @kind text
+							 */
+							not_a_time: PgTPParser(Text) as PgTPParserClass<TextConstructor>,
+							/**
+							 * @kind time without time zone
+							 * @nullable
+							 */
+							nullable_time: PgTPParser(Time).nullable().optional() as PgTPParserClass<TimeConstructor>,
 						},
 					},
 				],

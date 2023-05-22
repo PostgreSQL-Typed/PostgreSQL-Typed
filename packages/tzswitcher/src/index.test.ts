@@ -46,6 +46,9 @@ describe("TzSwitcher", () => {
 			expect(row._timetz).toHaveLength(2);
 			expect(row._timetz[0].equals(valuesInSeoul._timetz[0])).toBe(true);
 			expect(row._timetz[1].equals(valuesInSeoul._timetz[1])).toBe(true);
+
+			expect(row.not_a_time.equals(valuesInSeoul.not_a_time)).toBe(true);
+			expect(row.nullable_time).toBeNull();
 		} catch (error_) {
 			error = error_;
 

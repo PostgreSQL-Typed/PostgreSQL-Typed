@@ -1,4 +1,4 @@
-import { Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
+import { Text, Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
 
 export const createTable = `
 CREATE TABLE IF NOT EXISTS tzswitcher_testing (
@@ -9,7 +9,9 @@ CREATE TABLE IF NOT EXISTS tzswitcher_testing (
   timestamptz TIMESTAMPTZ NOT NULL,
   _timestamptz TIMESTAMPTZ[] NOT NULL,
   timetz TIMETZ NOT NULL,
-  _timetz TIMETZ[] NOT NULL
+  _timetz TIMETZ[] NOT NULL,
+  not_a_time TEXT NOT NULL,
+  nullable_time TIME
 );`;
 
 export const dropTable = `
@@ -25,7 +27,9 @@ INSERT INTO tzswitcher_testing (
   timestamptz,
   _timestamptz,
   timetz,
-  _timetz
+  _timetz,
+  not_a_time,
+  nullable_time
 ) VALUES (
   $1,
   $2,
@@ -34,19 +38,24 @@ INSERT INTO tzswitcher_testing (
   $5,
   $6,
   $7,
-  $8
+  $8,
+  $9,
+  $10
 );
 `;
 
 export const insertQueryValues = [
-	Time.from("12:34:56").postgres,
-	[Time.from("12:34:56").postgres, Time.from("12:56:12").postgres],
+	Time.from("12:34:56"),
+	[Time.from("12:34:56"), Time.from("12:56:12")],
 	Timestamp.from("2021-01-01 12:34:56").postgres,
 	[Timestamp.from("2021-01-01 12:34:56"), Timestamp.from("2021-01-01 12:56:12")],
 	TimestampTZ.from("2021-01-01 12:34:56 UTC"),
 	[TimestampTZ.from("2021-01-01 12:34:56 UTC"), TimestampTZ.from("2021-01-01 12:56:12 UTC")],
 	TimeTZ.from("12:34:56 UTC"),
 	[TimeTZ.from("12:34:56 UTC"), TimeTZ.from("12:56:12 UTC")],
+	Text.from("not a time"),
+	// eslint-disable-next-line unicorn/no-null
+	null,
 ];
 
 export const valuesInSeoul = {
@@ -58,6 +67,9 @@ export const valuesInSeoul = {
 	_timestamptz: [TimestampTZ.from("2021-01-01 21:34:56 Asia/Seoul"), TimestampTZ.from("2021-01-01 21:56:12 Asia/Seoul")],
 	timetz: TimeTZ.from("21:34:56 Asia/Seoul"),
 	_timetz: [TimeTZ.from("21:34:56 Asia/Seoul"), TimeTZ.from("21:56:12 Asia/Seoul")],
+	not_a_time: Text.from("not a time"),
+	// eslint-disable-next-line unicorn/no-null
+	nullable_time: null,
 };
 
 export const selectQuery = `

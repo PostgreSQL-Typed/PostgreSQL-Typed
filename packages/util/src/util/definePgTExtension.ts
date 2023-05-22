@@ -28,9 +28,6 @@ export function definePgTExtension<OptionsT extends PgTExtensionOptions>(definit
 
 		// eslint-disable-next-line unicorn/no-null
 		await definition.setup?.call(null as any, _options, pgt);
-
-		// Return module install result
-		return;
 	}
 
 	// Define getters for options and meta

@@ -1,6 +1,6 @@
 import { OID } from "@postgresql-typed/oids";
 import { CharacterVarying, parser, UUID } from "@postgresql-typed/parsers";
-import { type Context, INVALID, OK, ParseReturnType, type PostgresData, type Query } from "@postgresql-typed/util";
+import { type Context, INVALID, loadPgTConfig, OK, ParseReturnType, type PgTConfigSchema, type PostgresData, type Query } from "@postgresql-typed/util";
 import { Client as PGClient, type ClientConfig, type QueryResult, types } from "pg";
 
 import { BaseClient } from "../classes/BaseClient.js";
@@ -13,6 +13,8 @@ types.setTypeParser(OID.uuid as any, parser<UUID>(UUID));
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: PGClient;
 	private _ready = false;
+	private _extensionsInstalled = false;
+	private _config = {} as PgTConfigSchema;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, connectionString: string);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, config: ClientConfig);
@@ -21,6 +23,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		super(postgresData);
 
 		this._client = new PGClient(pgConfig);
+
+		loadPgTConfig().then(config => {
+			this._config = config.config;
+		});
 	}
 
 	async testConnection(connectionString: string): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
@@ -29,6 +35,12 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
 		if (pgConfig) this._client = new PGClient(pgConfig);
+
+		if (!this._extensionsInstalled) {
+			await this.initExtensions();
+			this._extensionsInstalled = true;
+		}
+
 		try {
 			await this._client.connect();
 			await this._client.query("SELECT 1");
@@ -88,5 +100,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	get client(): PGClient {
 		return this._client;
+	}
+
+	/* c8 ignore next 3 */
+	get PgTConfig(): PgTConfigSchema {
+		return this._config;
 	}
 }

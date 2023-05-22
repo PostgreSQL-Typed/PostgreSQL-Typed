@@ -3,8 +3,11 @@ import { normalize } from "pathe";
 import { resolveAlias as _resolveAlias } from "pathe/utils";
 
 import type { BaseClient } from "../classes/BaseClient.js";
-import { importExtension } from "./importExtension.js";
-import { requireExtension } from "./requireExtension.js";
+import { importModule } from "./importModule.js";
+import { requireModule } from "./requireModule.js";
+
+/* c8 ignore start */
+// This is being tested by the extensions packages
 
 export async function installExtension(
 	config: PgTConfigSchema,
@@ -29,7 +32,7 @@ async function normalizeModule(
 			// Prefer ESM resolution if possible
 			pgtExtension =
 				// eslint-disable-next-line unicorn/no-useless-undefined
-				(await importExtension(source, config.core.modulesDir).catch(() => undefined)) ?? requireExtension(source, { paths: config.core.modulesDir });
+				(await importModule(source, config.core.modulesDir).catch(() => undefined)) ?? requireModule(source, { paths: config.core.modulesDir });
 		} catch (error: unknown) {
 			// eslint-disable-next-line no-console
 			console.error(`Error while requiring module \`${pgtExtension}\`: ${error}`);

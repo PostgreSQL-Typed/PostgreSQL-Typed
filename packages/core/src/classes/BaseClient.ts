@@ -234,6 +234,8 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		);
 	}
 
+	/* c8 ignore start */
+	// This is being tested in the individual extension tests
 	async initExtensions(): Promise<void> {
 		const { config } = await loadPgTConfig(),
 			{ extensions } = config.core;
@@ -244,4 +246,5 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 			await (Array.isArray(extension) ? installExtension(config, this, extension[0], extension[1]) : installExtension(config, this, extension, {}));
 		}
 	}
+	/* c8 ignore stop */
 }

@@ -1,6 +1,13 @@
 <h1 align="center">
 	@PostgreSQL-Typed/OIDs
+	<!-- TODO Uncomment these <br/> when using an image -->
+	<!-- <br/> -->
+	<!-- <br/> -->
 </h1>
+<blockquote align="center">
+  A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.
+</blockquote>
+<br/>
 <div align="center">
 	<a href="https://www.npmjs.com/package/@postgresql-typed/oids">
 		<img src="https://img.shields.io/npm/v/@postgresql-typed/oids.svg?logo=npm" alt="NPM Version"/>
@@ -12,9 +19,6 @@
 		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Coverage"/>
 	</a>
 </div>
-<p align="center">
-  A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.
-<p>
 <details align="center">
 	<summary>Table of Contents</summary>
 	<a href="#installation">Installation</a><br/>
@@ -29,18 +33,11 @@
 	Installation
 </h2>
 <p align="center">
-	Install it with your package manager of choice (npm, yarn, pnpm)
+	Install @postgresql-typed/oids
 </p>
 
 ```bash
-# npm
-npm install @postgresql-typed/oids
-
-# yarn
-yarn add @postgresql-typed/oids
-
-# pnpm
-pnpm i @postgresql-typed/oids
+npm install --save @postgresql-typed/oids
 ```
 
 <!-- Usage -->

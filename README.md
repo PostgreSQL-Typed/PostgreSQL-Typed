@@ -166,7 +166,7 @@
 	<!-- badges -->
 	<a href="https://www.npmjs.com/package/@postgresql-typed/tzswitcher">
 		<img src="https://img.shields.io/npm/v/@postgresql-typed/tzswitcher.svg?logo=npm" alt="@PostgreSQL-Typed/TzSwitcher Version"/>
-		<img src="https://img.shields.io/badge/coverage-unknown-informational.svg?placeholder=$coverage-url$/packages/tzswitcher&logo=vitest&style=flat" alt="@PostgreSQL-Typed/TzSwitcher Coverage"/>
+		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/tzswitcher&logo=vitest&style=flat" alt="@PostgreSQL-Typed/TzSwitcher Coverage"/>
 	</a>
 </div>
 <p align="center">

@@ -1,11 +1,9 @@
-import { ConstructorFromParser, Parsers, PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { ConstructorFromParser, Parsers, PgTPParserClass } from "@postgresql-typed/parsers";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 import { CountParser } from "./getRawJoinQuery.js";
 
 export function getRawSelectQuery<TableColumns extends string, Select extends SelectQuery<TableColumns> = SelectQuery<TableColumns>>(
@@ -14,16 +12,16 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 ): Safe<
 	{
 		query: string;
-		mappings: Record<string, PGTPParserClass<ConstructorFromParser<Parsers>>>;
+		mappings: Record<string, PgTPParserClass<ConstructorFromParser<Parsers>>>;
 	},
-	PGTError
+	PgTError
 > {
 	//* Make sure the select is a string, array, or object
 	const parsedType = getParsedType(select);
 	if (!isOneOf([ParsedType.array, ParsedType.object, ParsedType.string], parsedType)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: [ParsedType.array, ParsedType.object, ParsedType.string],
 				received: parsedType,
@@ -42,7 +40,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 		if (!isOneOf<string, string>([...allowedStrings], select)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_string",
 					expected: [...allowedStrings],
 					received: select,
@@ -93,7 +91,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (!isOneOf<string, string>([...allColumns], column)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTError({
 						code: "invalid_string",
 						expected: [...allColumns],
 						received: column,
@@ -127,7 +125,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	if (!parsedObject.success) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTError(
 				parsedObject.otherKeys.length > 0
 					? {
 							code: "unrecognized_keys",
@@ -150,7 +148,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	if (Object.values(select).filter(Boolean).length === 0) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "keys",
 				minimum: 1,
@@ -160,7 +158,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 	}
 
 	const rows = new Set<string>(),
-		mappings: Record<string, PGTPParserClass<ConstructorFromParser<Parsers>>> = {};
+		mappings: Record<string, PgTPParserClass<ConstructorFromParser<Parsers>>> = {};
 
 	//* Loop through the select object and add the columns to the rows and mappings
 	for (const [key, value] of Object.entries(select).filter(([, v]) => Boolean(v)) as [
@@ -200,7 +198,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 				if (!parsedObject.success) {
 					return {
 						success: false,
-						error: getPGTError(
+						error: getPgTError(
 							parsedObject.otherKeys.length > 0
 								? {
 										code: "unrecognized_keys",
@@ -250,7 +248,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (!parsedObject.success) {
 				return {
 					success: false,
-					error: getPGTError(
+					error: getPgTError(
 						parsedObject.otherKeys.length > 0
 							? {
 									code: "unrecognized_keys",
@@ -274,7 +272,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 			if (totalKeys === 0) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTError({
 						code: "too_small",
 						type: "keys",
 						minimum: 1,
@@ -288,7 +286,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 				if (typeof value.distinct === "string" && value.distinct !== "ON") {
 					return {
 						success: false,
-						error: getPGTError({
+						error: getPgTError({
 							code: "invalid_string",
 							expected: ["ON"],
 							received: value.distinct,
@@ -336,7 +334,7 @@ export function getRawSelectQuery<TableColumns extends string, Select extends Se
 function getParserOfColumnPath(
 	path: string,
 	tables: Table<any, any, any, any, any>[]
-): [string, PGTPParserClass<ConstructorFromParser<Parsers>>, string, string] {
+): [string, PgTPParserClass<ConstructorFromParser<Parsers>>, string, string] {
 	const [schemaName, tableName, columnName] = path.split("."),
 		table = tables.find(table => table.schema.name === schemaName && table.name === tableName);
 
@@ -344,5 +342,5 @@ function getParserOfColumnPath(
 	/* c8 ignore next */
 	if (!table) throw new Error("Internal error: table does not exist");
 
-	return [columnName, table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>, schemaName, tableName];
+	return [columnName, table.getParserOfColumn(columnName as any) as PgTPParserClass<ConstructorFromParser<Parsers>>, schemaName, tableName];
 }

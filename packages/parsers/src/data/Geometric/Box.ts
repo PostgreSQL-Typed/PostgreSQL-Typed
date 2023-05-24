@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface BoxObject {
 	x1: number;
@@ -47,7 +47,7 @@ interface BoxConstructor {
 	isBox(object: any): object is Box;
 }
 
-class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstructor {
+class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstructor {
 	constructor() {
 		super();
 	}
@@ -195,7 +195,7 @@ class BoxConstructorClass extends PGTPConstructorBase<Box> implements BoxConstru
 
 const Box: BoxConstructor = new BoxConstructorClass();
 
-class BoxClass extends PGTPBase<Box> implements Box {
+class BoxClass extends PgTPBase<Box> implements Box {
 	constructor(private _x1: number, private _y1: number, private _x2: number, private _y2: number) {
 		super();
 	}
@@ -233,7 +233,7 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	set x1(x1: number) {
 		const parsedType = getParsedType(x1);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -249,7 +249,7 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	set y1(y1: number) {
 		const parsedType = getParsedType(y1);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -265,7 +265,7 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	set x2(x2: number) {
 		const parsedType = getParsedType(x2);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -281,7 +281,7 @@ class BoxClass extends PGTPBase<Box> implements Box {
 	set y2(y2: number) {
 		const parsedType = getParsedType(y2);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

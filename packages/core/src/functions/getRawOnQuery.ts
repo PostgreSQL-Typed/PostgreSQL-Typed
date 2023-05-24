@@ -1,15 +1,11 @@
-import type { ConstructorFromParser, Parsers, PGTPError, PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
+import type { ConstructorFromParser, Parsers, PgTPError, PgTPParserClass } from "@postgresql-typed/parsers";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
 import type { FilterOperators } from "../types/interfaces/FilterOperators.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { OnQuery } from "../types/types/OnQuery.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 import { getRawFilterOperator } from "./getRawFilterOperator.js";
 import { isRootFilterOperator } from "./isRootFilterOperator.js";
 
@@ -25,13 +21,13 @@ export function getRawOnQuery<
 	table: JoinedTable,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[],
 	depth = 0
-): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; subqueries: SelectSubQuery<any, any, boolean>[] }, PgTError | PgTPError> {
 	//* Make sure the depth is less than 10
 	//TODO make the depth limit a config option
 	if (depth > 10) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_big",
 				type: "depth",
 				maximum: 10,
@@ -45,7 +41,7 @@ export function getRawOnQuery<
 	if (keys.length !== 1) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTError(
 				keys.length > 1
 					? {
 							code: "too_big",
@@ -73,7 +69,7 @@ export function getRawOnQuery<
 		if (parsedType !== ParsedType.array) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_type",
 					expected: ParsedType.array,
 					received: parsedType,
@@ -85,7 +81,7 @@ export function getRawOnQuery<
 		if ((on[key] as On[]).length === 0) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "too_small",
 					type: "array",
 					minimum: 1,
@@ -126,30 +122,30 @@ export function getRawOnQuery<
 			tableColumns.map(column => [column, [ParsedType.object, ParsedType.string, ParsedType.undefined]])
 		);
 	if (!parsedObject.success) {
-		let error: PGTError;
+		let error: PgTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				error = getPGTError({
+				error = getPgTError({
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			/* c8 ignore next 6 */
 			case parsedObject.missingKeys.length > 0:
-				error = getPGTError({
+				error = getPgTError({
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			case parsedObject.invalidKeys.length > 0:
-				error = getPGTError({
+				error = getPgTError({
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
 				break;
 			/* c8 ignore next 6 */
 			default:
-				error = getPGTError({
+				error = getPgTError({
 					code: "unrecognized_keys",
 					keys: [],
 				});
@@ -162,7 +158,7 @@ export function getRawOnQuery<
 	if (parsedType === ParsedType.undefined) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: [ParsedType.object, ParsedType.string],
 				received: parsedType,
@@ -182,7 +178,7 @@ export function getRawOnQuery<
 		if (!joinedColumns.includes(onKey)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_string",
 					expected: joinedColumns,
 					received: onKey,
@@ -205,7 +201,7 @@ export function getRawOnQuery<
 	const columnName = key.toString().split(".")[2],
 		result = getRawFilterOperator(
 			onKey,
-			table.getParserOfColumn(columnName as any) as PGTPParserClass<ConstructorFromParser<Parsers>>,
+			table.getParserOfColumn(columnName as any) as PgTPParserClass<ConstructorFromParser<Parsers>>,
 			table.database,
 			depth * 2 + 2
 		);

@@ -1,4 +1,4 @@
-import { PGTPParserClass, UUIDConstructor } from "@postgresql-typed/parsers";
+import { PgTPParserClass, UUIDConstructor } from "@postgresql-typed/parsers";
 import { describe, expect, expectTypeOf, test } from "vitest";
 
 import { Client } from "../__mocks__/client";
@@ -88,8 +88,8 @@ describe("Table", () => {
 	test("getParserOfColumn(...)", () => {
 		const table = new Client<TestData>(testData).table("db1.schema1.table1");
 
-		expectTypeOf(table.getParserOfColumn("id")).toEqualTypeOf<PGTPParserClass<UUIDConstructor>>();
-		expect(table.getParserOfColumn("id")).toBeInstanceOf(PGTPParserClass);
+		expectTypeOf(table.getParserOfColumn("id")).toEqualTypeOf<PgTPParserClass<UUIDConstructor>>();
+		expect(table.getParserOfColumn("id")).toBeInstanceOf(PgTPParserClass);
 
 		expect(() => table.getParserOfColumn("nonexistent" as any)).toThrowError();
 	});

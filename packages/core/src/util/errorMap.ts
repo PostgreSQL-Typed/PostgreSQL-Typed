@@ -1,13 +1,14 @@
+import type { ErrorMap } from "@postgresql-typed/util";
+
 import defaultErrorMap from "../locales/en.js";
-import type { ErrorMap } from "./PGTError.js";
 
-let overrideErrorMap = defaultErrorMap;
+let overrideErrorMap: ErrorMap = defaultErrorMap;
 
-export const setErrorMap = (map: ErrorMap) => {
+export const setErrorMap = (map: ErrorMap): void => {
 	overrideErrorMap = map;
 };
 
-export const getErrorMap = () => {
+export const getErrorMap = (): ErrorMap => {
 	return overrideErrorMap;
 };
 

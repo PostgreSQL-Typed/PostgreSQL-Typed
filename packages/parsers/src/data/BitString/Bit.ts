@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface BitObject {
 	value: string;
@@ -62,7 +62,7 @@ interface BitConstructor<N extends number> {
 	get n(): N;
 }
 
-class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> implements BitConstructor<N> {
+class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> implements BitConstructor<N> {
 	constructor(private _n: N = 1 as N) {
 		super();
 
@@ -70,7 +70,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: allowedTypes,
 				received: parsedType,
@@ -78,7 +78,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 		}
 
 		if (_n < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -88,7 +88,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 
 		//If limit is not a whole number
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -253,7 +253,7 @@ class BitConstructorClass<N extends number> extends PGTPConstructorBase<Bit<N>> 
 
 const Bit: BitConstructor<1> = new BitConstructorClass(1);
 
-class BitClass<N extends number> extends PGTPBase<Bit<N>> implements Bit<N> {
+class BitClass<N extends number> extends PgTPBase<Bit<N>> implements Bit<N> {
 	constructor(private _bit: string, private _n: N = 1 as N) {
 		super();
 	}

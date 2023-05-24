@@ -3,8 +3,8 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface NameObject {
 	value: string;
@@ -36,7 +36,7 @@ interface NameConstructor {
 	isName(object: any): object is Name;
 }
 
-class NameConstructorClass extends PGTPConstructorBase<Name> implements NameConstructor {
+class NameConstructorClass extends PgTPConstructorBase<Name> implements NameConstructor {
 	constructor() {
 		super();
 	}
@@ -135,7 +135,7 @@ class NameConstructorClass extends PGTPConstructorBase<Name> implements NameCons
 
 const Name: NameConstructor = new NameConstructorClass();
 
-class NameClass extends PGTPBase<Name> implements Name {
+class NameClass extends PgTPBase<Name> implements Name {
 	constructor(private _name: string) {
 		super();
 	}

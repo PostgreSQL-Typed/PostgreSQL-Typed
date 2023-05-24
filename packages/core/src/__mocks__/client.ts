@@ -1,13 +1,10 @@
 import { OID } from "@postgresql-typed/oids";
 import { CharacterVarying, parser, UUID } from "@postgresql-typed/parsers";
-import { INVALID, OK, ParseReturnType } from "@postgresql-typed/util";
+import { type Context, INVALID, loadPgTConfig, OK, ParseReturnType, type PgTConfigSchema, type PostgresData, type Query } from "@postgresql-typed/util";
 import { Client as PGClient, type ClientConfig, type QueryResult, types } from "pg";
 
 import { BaseClient } from "../classes/BaseClient.js";
 import { setIssueForContext } from "../functions/setIssueForContext.js";
-import type { Context } from "../types/types/Context.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
 
 types.setTypeParser(OID.varchar as any, parser<CharacterVarying<number>>(CharacterVarying));
@@ -16,6 +13,8 @@ types.setTypeParser(OID.uuid as any, parser<UUID>(UUID));
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: PGClient;
 	private _ready = false;
+	private _extensionsInstalled = false;
+	private _config = {} as PgTConfigSchema;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, connectionString: string);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, config: ClientConfig);
@@ -24,6 +23,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		super(postgresData);
 
 		this._client = new PGClient(pgConfig);
+
+		loadPgTConfig().then(config => {
+			this._config = config.config;
+		});
 	}
 
 	async testConnection(connectionString: string): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>>;
@@ -32,6 +35,12 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 	async testConnection(pgConfig?: string | ClientConfig): Promise<Client<InnerPostgresData, true> | Client<InnerPostgresData, false>> {
 		this._ready = false;
 		if (pgConfig) this._client = new PGClient(pgConfig);
+
+		if (!this._extensionsInstalled) {
+			await this.initExtensions();
+			this._extensionsInstalled = true;
+		}
+
 		try {
 			await this._client.connect();
 			await this._client.query("SELECT 1");
@@ -53,13 +62,17 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 		const [query, values] = context.data;
 
-		return this._runQuery<Data>(context, query as string, values as string[]);
+		return this._runQuery<Data>(context, query as string, values as unknown[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: unknown[]): Promise<ParseReturnType<Query<Data>>> {
 		let result: QueryResult;
 		try {
+			values = (values ?? []).map(value => {
+				if (typeof value === "object" && value !== null && "postgres" in value) return value.postgres;
+				return value;
+			});
 			result = await this._client.query(query, values);
 		} catch {
 			//* Don't set an issue here to test the error handling
@@ -87,5 +100,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 
 	get client(): PGClient {
 		return this._client;
+	}
+
+	/* c8 ignore next 3 */
+	get PgTConfig(): PgTConfigSchema {
+		return this._config;
 	}
 }

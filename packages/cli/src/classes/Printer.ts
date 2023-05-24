@@ -1,10 +1,10 @@
 import { createHash } from "node:crypto";
 import { promises } from "node:fs";
-import { dirname, join } from "node:path/posix";
 
 import { OID } from "@postgresql-typed/oids";
 import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import { sync } from "mkdirp";
+import { dirname, join } from "pathe";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { DebugOnly } from "../commands/DebugOnly.js";
@@ -27,12 +27,7 @@ export class Printer {
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
 	private LOGGER = LOGGER?.extend("Printer");
-	constructor(
-		public readonly config: PostgreSQLTypedCLIConfig,
-		public readonly isESM: boolean,
-		readonly data: FetchedData[],
-		readonly arguments_: Record<string, any>
-	) {
+	constructor(public readonly config: PostgreSQLTypedCLIConfig, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
 		this.classes = new Map(
 			data
 				.flatMap(d => d.classes.filter(c => d.tables.map(t => `${t.schema_name}.${t.table_name}`).includes(`${c.schema_name}.${c.class_name}`)))
@@ -40,7 +35,7 @@ export class Printer {
 		);
 		this.types = new Map(data.flatMap(d => d.types).map(t => [t.type_id, t]));
 
-		this.context = new PrinterContext(this.config, this.isESM);
+		this.context = new PrinterContext(this.config);
 	}
 
 	public getClass(id: number) {

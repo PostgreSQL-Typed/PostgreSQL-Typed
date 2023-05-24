@@ -1,19 +1,18 @@
-import type { PostgreSQLTypedCLIConfig } from "./CLI/index.js";
+import type { PostgreSQLTypedCLIConfig } from "./cli/index.js";
+import type { PostgreSQLTypedCoreConfig } from "./core/index.js";
 
-export interface PostgreSQLTypedConfig {
+export interface PgTConfigSchema {
 	cli: PostgreSQLTypedCLIConfig;
+	core: PostgreSQLTypedCoreConfig;
 }
 
-export type PostgreSQLTypedConfigPartial = DeepPartial<PostgreSQLTypedConfig>;
-export type PostgreSQLTypedConfigFunction = () => PostgreSQLTypedConfigPartial | Promise<PostgreSQLTypedConfigPartial>;
-export type PostgreSQLTypedConfigExport = PostgreSQLTypedConfigPartial | PostgreSQLTypedConfigFunction;
-export type PostgreSQLTypedConfigFinal = PostgreSQLTypedConfig;
+export type PgTConfig = DeepPartial<PgTConfigSchema>;
 
 type DeepPartial<T> = {
 	[P in keyof T]?: T[P] extends (infer U)[] ? DeepPartial<U>[] : T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type { Connection } from "./CLI/Connection.js";
-export type { ImportStatement } from "./CLI/ImportStatement.js";
-export type { PostgreSQLTypedCLIConfig } from "./CLI/index.js";
-export type { TypesConfig } from "./CLI/TypesConfig.js";
+export type { Connection } from "./cli/Connection.js";
+export type { ImportStatement } from "./cli/ImportStatement.js";
+export type { PostgreSQLTypedCLIConfig } from "./cli/index.js";
+export type { TypesConfig } from "./cli/TypesConfig.js";

@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { Point, PointObject } from "./Point.js";
 
 enum Connection {
@@ -66,7 +66,7 @@ interface PathConstructor {
 	isPath(object: any): object is Path;
 }
 
-class PathConstructorClass extends PGTPConstructorBase<Path> implements PathConstructor {
+class PathConstructorClass extends PgTPConstructorBase<Path> implements PathConstructor {
 	constructor() {
 		super();
 	}
@@ -320,7 +320,7 @@ class PathConstructorClass extends PGTPConstructorBase<Path> implements PathCons
 
 const Path: PathConstructor = new PathConstructorClass();
 
-class PathClass extends PGTPBase<Path> implements Path {
+class PathClass extends PgTPBase<Path> implements Path {
 	constructor(private _points: Point[], private _connection: Connection | ConnectionType) {
 		super();
 	}
@@ -356,7 +356,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 	set points(points: Point[]) {
 		const parsedType = getParsedType(points);
 		if (parsedType !== "array") {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: "array",
 				received: parsedType,
@@ -364,7 +364,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 		}
 
 		if (points.length === 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				type: "array",
 				minimum: 1,
@@ -375,7 +375,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 		const finalPoints = points.map(point => Point.safeFrom(point)),
 			invalidPoint = finalPoints.find(point => !point.success);
 
-		if (invalidPoint?.success === false) throwPGTPError(invalidPoint.error.issue);
+		if (invalidPoint?.success === false) throwPgTPError(invalidPoint.error.issue);
 
 		//@ts-expect-error - They are all valid at this point
 		this._points = finalPoints.map(point => point.data);
@@ -388,7 +388,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 	set connection(connection: Connection | ConnectionType) {
 		const parsedType = getParsedType(connection);
 		if (parsedType !== "string") {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: "string",
 				received: parsedType,
@@ -396,7 +396,7 @@ class PathClass extends PGTPBase<Path> implements Path {
 		}
 
 		if (!connections.includes(connection)) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_string",
 				expected: connections,
 				received: connection,

@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["16", "lts/*", "current"]
+        node: ["16", "lts/*"]
         postgres: ["11", "12", "13", "14", "latest"]
     services:
       postgres:

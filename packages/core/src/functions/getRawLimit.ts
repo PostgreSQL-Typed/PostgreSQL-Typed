@@ -1,16 +1,14 @@
-import { getParsedType, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 
-export function getRawLimit(limit: number, offset?: number): Safe<string, PGTError> {
+export function getRawLimit(limit: number, offset?: number): Safe<string, PgTError> {
 	//* Make sure the limit is a number
 	const parsedType = getParsedType(limit);
 	if (parsedType !== ParsedType.number) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: ParsedType.number,
 				received: parsedType,
@@ -22,7 +20,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 	if (limit < 0) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "number",
 				minimum: 0,
@@ -44,7 +42,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 	if (parsedOffsetType !== ParsedType.number) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: ParsedType.number,
 				received: parsedOffsetType,
@@ -56,7 +54,7 @@ export function getRawLimit(limit: number, offset?: number): Safe<string, PGTErr
 	if (offset < 0) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "number",
 				minimum: 0,

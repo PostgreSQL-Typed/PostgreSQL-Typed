@@ -1,6 +1,10 @@
 <h1 align="center">
 	@PostgreSQL-Typed/Parsers
 </h1>
+<blockquote align="center">
+  Parsers to convert PostgreSQL data types to TypeScript classes
+</blockquote>
+<br/>
 <div align="center">
 	<a href="https://www.npmjs.com/package/@postgresql-typed/parsers">
 		<img src="https://img.shields.io/npm/v/@postgresql-typed/parsers.svg?logo=npm" alt="NPM Version"/>
@@ -12,9 +16,6 @@
 		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$&logo=vitest&style=flat" alt="Coverage"/>
 	</a>
 </div>
-<p align="center">
-  Parsers to convert PostgreSQL data types to TypeScript classes
-<p>
 <details align="center">
 	<summary>Table of Contents</summary>
 	<a href="#installation">Installation</a><br/>
@@ -29,18 +30,11 @@
 	Installation
 </h2>
 <p align="center">
-	Install it with your package manager of choice (npm, yarn, pnpm)
+	Install @postgresql-typed/parsers
 </p>
 
 ```bash
-# npm
-npm install @postgresql-typed/parsers
-
-# yarn
-yarn add @postgresql-typed/parsers
-
-# pnpm
-pnpm i @postgresql-typed/parsers
+npm install --save @postgresql-typed/parsers
 ```
 
 <!-- Usage -->

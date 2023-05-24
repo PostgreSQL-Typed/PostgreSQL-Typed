@@ -4,8 +4,8 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface BooleanObject {
 	value: boolean;
@@ -47,7 +47,7 @@ interface BooleanConstructor {
 	isBoolean(object: any): object is Boolean;
 }
 
-class BooleanConstructorClass extends PGTPConstructorBase<Boolean> implements BooleanConstructor {
+class BooleanConstructorClass extends PgTPConstructorBase<Boolean> implements BooleanConstructor {
 	constructor() {
 		super();
 	}
@@ -145,7 +145,7 @@ class BooleanConstructorClass extends PGTPConstructorBase<Boolean> implements Bo
 
 const Boolean: BooleanConstructor = new BooleanConstructorClass();
 
-class BooleanClass extends PGTPBase<Boolean> implements Boolean {
+class BooleanClass extends PgTPBase<Boolean> implements Boolean {
 	constructor(private _boolean: boolean) {
 		super();
 	}

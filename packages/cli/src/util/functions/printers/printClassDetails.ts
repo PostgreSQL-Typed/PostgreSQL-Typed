@@ -235,7 +235,13 @@ function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Pri
 		}
 	}
 
-	return printer.getTypeScriptType(attribute.type_id, file, attribute.max_length ?? undefined);
+	let maxLength = attribute.max_length ?? undefined;
+	if (maxLength === undefined) {
+		const matchResult = attribute.type_name.match(/\((\d+)\)(\[])?$/);
+		if (matchResult) maxLength = Number.parseInt(matchResult[1]);
+	}
+
+	return printer.getTypeScriptType(attribute.type_id, file, maxLength);
 }
 
 function optionalOnInsert(attribute: Attribute): string {
@@ -247,12 +253,12 @@ function optionalOnInsert(attribute: Attribute): string {
 function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
 	file.addImportStatement({
 		module: "@postgresql-typed/parsers",
-		name: "PGTPParser",
+		name: "PgTPParser",
 		type: "named",
 	});
 	file.addImportStatement({
 		module: "@postgresql-typed/parsers",
-		name: "PGTPParserClass",
+		name: "PgTPParserClass",
 		type: "named",
 		isType: true,
 	});
@@ -287,7 +293,13 @@ function getAttributeValue(type: ClassDetails, attribute: Attribute, printer: Pr
 		}
 	}
 
-	return printer.getParserType(attribute.type_id, file, attribute.max_length ?? undefined);
+	let maxLength = attribute.max_length ?? undefined;
+	if (maxLength === undefined) {
+		const matchResult = attribute.type_name.match(/\((\d+)\)(\[])?$/);
+		if (matchResult) maxLength = Number.parseInt(matchResult[1]);
+	}
+
+	return printer.getParserType(attribute.type_id, file, maxLength);
 }
 
 function nullable(attribute: Attribute): string {

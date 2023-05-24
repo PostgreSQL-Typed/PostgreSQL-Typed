@@ -1,8 +1,8 @@
 import type { ConstructorFromParser, Parsers, ValueFromConstructor } from "@postgresql-typed/parsers";
+import type { DatabaseData } from "@postgresql-typed/util";
 
 import type { Count } from "../../functions/getRawJoinQuery.js";
 import type { ColumnFromPath } from "./ColumnFromPath.js";
-import type { DatabaseData } from "./DatabaseData.js";
 import type { ParserFromColumn } from "./ParserFromColumn.js";
 import type { SelectQuery, SelectQueryObject } from "./SelectQuery.js";
 import type { InnerObjectsToUnion, MergeUnionOfObjects } from "./UnionObjects.js";

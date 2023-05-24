@@ -8,9 +8,9 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { isValidDate } from "../../util/isValidDate.js";
 import { isValidDateTime } from "../../util/isValidDateTime.js";
 import { pad } from "../../util/pad.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { Date } from "./Date.js";
 import { Time } from "./Time.js";
 import { TimestampStyle, TimestampStyleType, TimestampTZ } from "./TimestampTZ.js";
@@ -103,7 +103,7 @@ interface TimestampConstructor {
 	isTimestamp(object: any): object is Timestamp;
 }
 
-class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implements TimestampConstructor {
+class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implements TimestampConstructor {
 	constructor() {
 		super();
 	}
@@ -300,19 +300,19 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 		const { year, month, day, hour, minute, second } = parsedObject.obj;
 
 		if (year % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (month % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (month < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 1,
 				type: "number",
@@ -321,7 +321,7 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 		}
 
 		if (month > 12) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 12,
 				type: "number",
@@ -330,13 +330,13 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 		}
 
 		if (day % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (day < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 1,
 				type: "number",
@@ -345,7 +345,7 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 		}
 
 		if (day > 31) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 31,
 				type: "number",
@@ -437,7 +437,7 @@ class TimestampConstructorClass extends PGTPConstructorBase<Timestamp> implement
 
 const Timestamp: TimestampConstructor = new TimestampConstructorClass();
 
-class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
+class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 	constructor(private _year: number, private _month: number, private _day: number, private _hour: number, private _minute: number, private _second: number) {
 		super();
 	}
@@ -504,7 +504,17 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
-		return DateTime.fromISO(this.toString()).setZone(zone);
+		return DateTime.fromObject(
+			{
+				year: this._year,
+				month: this._month,
+				day: this._day,
+				hour: this._hour,
+				minute: this._minute,
+				second: this._second,
+			},
+			{ zone }
+		);
 	}
 
 	toJSDate(zone?: string | Zone | undefined): globalThis.Date {
@@ -518,7 +528,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set year(year: number) {
 		const parsedType = getParsedType(year);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -526,7 +536,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (year % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -541,7 +551,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set month(month: number) {
 		const parsedType = getParsedType(month);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -549,13 +559,13 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (month % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (month < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 1,
 				type: "number",
@@ -564,7 +574,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (month > 12) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 12,
 				type: "number",
@@ -582,7 +592,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set day(day: number) {
 		const parsedType = getParsedType(day);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -590,13 +600,13 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (day % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (day < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 1,
 				type: "number",
@@ -605,7 +615,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (day > 31) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 31,
 				type: "number",
@@ -623,7 +633,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set hour(hour: number) {
 		const parsedType = getParsedType(hour);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -631,13 +641,13 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (hour % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (hour < 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -646,7 +656,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (hour > 23) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 23,
 				type: "number",
@@ -664,7 +674,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set minute(minute: number) {
 		const parsedType = getParsedType(minute);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -672,13 +682,13 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (minute % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
 
 		if (minute < 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -687,7 +697,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (minute > 59) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",
@@ -705,7 +715,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 	set second(second: number) {
 		const parsedType = getParsedType(second);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -713,7 +723,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (second < 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				minimum: 0,
 				type: "number",
@@ -722,7 +732,7 @@ class TimestampClass extends PGTPBase<Timestamp> implements Timestamp {
 		}
 
 		if (second >= 60) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				maximum: 59,
 				type: "number",

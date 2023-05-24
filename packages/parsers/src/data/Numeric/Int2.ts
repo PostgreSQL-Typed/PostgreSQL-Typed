@@ -3,8 +3,8 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 interface Int2Object {
 	value: number;
@@ -41,7 +41,7 @@ interface Int2Constructor {
 	isInt2(object: any): object is Int2;
 }
 
-class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Constructor {
+class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Constructor {
 	constructor() {
 		super();
 	}
@@ -172,7 +172,7 @@ class Int2ConstructorClass extends PGTPConstructorBase<Int2> implements Int2Cons
 
 const Int2: Int2Constructor = new Int2ConstructorClass();
 
-class Int2Class extends PGTPBase<Int2> implements Int2 {
+class Int2Class extends PgTPBase<Int2> implements Int2 {
 	constructor(private _int2: number) {
 		super();
 	}

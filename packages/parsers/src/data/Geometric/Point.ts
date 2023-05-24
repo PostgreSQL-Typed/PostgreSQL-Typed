@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface PointObject {
 	x: number;
@@ -43,7 +43,7 @@ interface PointConstructor {
 	isPoint(object: any): object is Point;
 }
 
-class PointConstructorClass extends PGTPConstructorBase<Point> implements PointConstructor {
+class PointConstructorClass extends PgTPConstructorBase<Point> implements PointConstructor {
 	constructor() {
 		super();
 	}
@@ -191,7 +191,7 @@ class PointConstructorClass extends PGTPConstructorBase<Point> implements PointC
 
 const Point: PointConstructor = new PointConstructorClass();
 
-class PointClass extends PGTPBase<Point> implements Point {
+class PointClass extends PgTPBase<Point> implements Point {
 	constructor(private _x: number, private _y: number) {
 		super();
 	}
@@ -227,7 +227,7 @@ class PointClass extends PGTPBase<Point> implements Point {
 	set x(x: number) {
 		const parsedType = getParsedType(x);
 		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -243,7 +243,7 @@ class PointClass extends PGTPBase<Point> implements Point {
 	set y(y: number) {
 		const parsedType = getParsedType(y);
 		if (parsedType !== ParsedType.number && parsedType !== ParsedType.nan) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

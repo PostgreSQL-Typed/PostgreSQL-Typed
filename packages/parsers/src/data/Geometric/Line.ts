@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface LineObject {
 	a: number;
@@ -45,7 +45,7 @@ interface LineConstructor {
 	isLine(object: any): object is Line;
 }
 
-class LineConstructorClass extends PGTPConstructorBase<Line> implements LineConstructor {
+class LineConstructorClass extends PgTPConstructorBase<Line> implements LineConstructor {
 	constructor() {
 		super();
 	}
@@ -204,7 +204,7 @@ class LineConstructorClass extends PGTPConstructorBase<Line> implements LineCons
 
 const Line: LineConstructor = new LineConstructorClass();
 
-class LineClass extends PGTPBase<Line> implements Line {
+class LineClass extends PgTPBase<Line> implements Line {
 	constructor(private _a: number, private _b: number, private _c: number) {
 		super();
 	}
@@ -241,7 +241,7 @@ class LineClass extends PGTPBase<Line> implements Line {
 	set a(a: number) {
 		const parsedType = getParsedType(a);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -257,7 +257,7 @@ class LineClass extends PGTPBase<Line> implements Line {
 	set b(b: number) {
 		const parsedType = getParsedType(b);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -273,7 +273,7 @@ class LineClass extends PGTPBase<Line> implements Line {
 	set c(c: number) {
 		const parsedType = getParsedType(c);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

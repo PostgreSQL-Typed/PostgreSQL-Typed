@@ -1,6 +1,6 @@
+import type { DatabaseData, PostgresData } from "@postgresql-typed/util";
+
 import type { Table } from "../../classes/Table.js";
-import type { DatabaseData } from "./DatabaseData.js";
-import type { PostgresData } from "./PostgresData.js";
 import type { TableColumnsFromSchemaOnwards } from "./TableColumnsFromSchemaOnwards.js";
 
 export type OrderByDirection = "ASC" | "DESC";

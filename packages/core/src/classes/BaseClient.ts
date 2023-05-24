@@ -1,23 +1,33 @@
-import { isValid, type ParseReturnType } from "@postgresql-typed/util";
+import {
+	type ClientHooks,
+	type Context,
+	isValid,
+	loadPgTConfig,
+	type ParseReturnType,
+	type PgTConfigSchema,
+	PgTError,
+	type PostgresData,
+	type Query,
+	type Safe,
+} from "@postgresql-typed/util";
+import { Hookable } from "hookable";
 
-import type { Context } from "../types/types/Context.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
+import { installExtension } from "../functions/installExtension.js";
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { RawPostgresData } from "../types/types/RawPostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SchemaLocationByPath } from "../types/types/SchemaLocationByPath.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";
 import type { TableLocations } from "../types/types/TableLocations.js";
 import { getErrorMap } from "../util/errorMap.js";
-import { PGTError } from "../util/PGTError.js";
 import { Database } from "./Database.js";
 import { Schema } from "./Schema.js";
 import { Table } from "./Table.js";
 
-export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready extends boolean = false> {
-	constructor(private readonly postgresData: RawPostgresData<InnerPostgresData>) {}
+export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends Hookable<ClientHooks> {
+	constructor(private readonly postgresData: RawPostgresData<InnerPostgresData>) {
+		super();
+	}
 
 	abstract testConnection(): Promise<BaseClient<InnerPostgresData, true> | BaseClient<InnerPostgresData, false>>;
 
@@ -27,9 +37,10 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	abstract _query<Data>(context: Context): Promise<ParseReturnType<Query<Data>>>;
 
 	abstract get ready(): Ready;
-	abstract get connectionError(): PGTError | undefined;
+	abstract get connectionError(): PgTError | undefined;
+	abstract get PgTConfig(): PgTConfigSchema;
 
-	async query<Data>(query: string, variables: string[]): Promise<Query<Data>>;
+	async query<Data>(query: string, variables: unknown[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>>;
 	async query<Data>(...data: unknown[]): Promise<Query<Data>> {
 		const result = await this.safeQuery<Data>(...data);
@@ -37,7 +48,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		throw result.error;
 	}
 
-	async safeQuery<Data>(query: string, variables: string[]): Promise<Safe<Query<Data>>>;
+	async safeQuery<Data>(query: string, variables: unknown[]): Promise<Safe<Query<Data>>>;
 	async safeQuery<Data>(...data: unknown[]): Promise<Safe<Query<Data>>>;
 	async safeQuery<Data>(...data: unknown[]): Promise<Safe<Query<Data>>> {
 		const context: Context = {
@@ -53,7 +64,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 	private _handleResult<Data>(context: Context, result: ParseReturnType<Query<Data>>): Safe<Query<Data>> {
 		if (isValid(result)) return { success: true, data: result.value };
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
-		const error = new PGTError(context.issue);
+		const error = new PgTError(context.issue);
 		return { success: false, error };
 	}
 
@@ -61,14 +72,14 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		return Object.keys(this.postgresData) as (keyof InnerPostgresData)[];
 	}
 
-	database<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
+	database<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName): Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready> {
 		//* Validate the database name exists (Is needed for non-TypeScript users)
 		if (!this.databaseNames.includes(database)) throw new Error(`Database "${database.toString()}" does not exist`);
 
 		return new Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready>(this, this.postgresData[database]);
 	}
 
-	db<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName) {
+	db<DatabaseName extends keyof InnerPostgresData>(database: DatabaseName): Database<InnerPostgresData, InnerPostgresData[DatabaseName], Ready> {
 		return this.database<DatabaseName>(database);
 	}
 
@@ -165,7 +176,7 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 		SchemaLocation extends SchemaLocations<InnerPostgresData> = TemporarySchemaLocation extends SchemaLocations<InnerPostgresData>
 			? TemporarySchemaLocation
 			: never
-	>(table: TableLocation) {
+	>(table: TableLocation): Table<InnerPostgresData, InnerPostgresData[DatabaseName], Ready, SchemaLocation, TableLocation> {
 		return this.table<TableLocation, DatabaseName, TemporarySchemaLocation, SchemaLocation>(table);
 	}
 
@@ -222,4 +233,18 @@ export abstract class BaseClient<InnerPostgresData extends PostgresData, Ready e
 			)
 		);
 	}
+
+	/* c8 ignore start */
+	// This is being tested in the individual extension tests
+	async initExtensions(): Promise<void> {
+		const { config } = await loadPgTConfig(),
+			{ extensions } = config.core;
+
+		if (extensions.length === 0) return;
+		for (const extension of extensions) {
+			if (!extension) continue;
+			await (Array.isArray(extension) ? installExtension(config, this, extension[0], extension[1]) : installExtension(config, this, extension, {}));
+		}
+	}
+	/* c8 ignore stop */
 }

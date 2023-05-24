@@ -1,7 +1,17 @@
-import type { Parsers, PGTPError } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import type { Parsers, PgTPError } from "@postgresql-typed/parsers";
+import {
+	type DatabaseData,
+	getParsedType,
+	hasKeys,
+	isOneOf,
+	ParsedType,
+	type PgTError,
+	type PostgresData,
+	type Query,
+	type Safe,
+} from "@postgresql-typed/util";
 
-import { getPGTError } from "../functions/getPGTError.js";
+import { getPgTError } from "../functions/getPgTError.js";
 import { getRawFetch } from "../functions/getRawFetch.js";
 import { getRawGroupBy } from "../functions/getRawGroupBy.js";
 import { getRawJoinQuery } from "../functions/getRawJoinQuery.js";
@@ -10,15 +20,11 @@ import { getRawOrderBy } from "../functions/getRawOrderBy.js";
 import { getRawSelectQuery } from "../functions/getRawSelectQuery.js";
 import { getRawWhereQuery } from "../functions/getRawWhereQuery.js";
 import { getTableIdentifier } from "../functions/getTableIdentifier.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { Fetch } from "../types/types/Fetch.js";
 import type { GroupBy } from "../types/types/GroupBy.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
 import type { OrderBy } from "../types/types/OrderBy.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Query } from "../types/types/Query.js";
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectQuery } from "../types/types/SelectQuery.js";
 import type { SelectQueryOptions } from "../types/types/SelectQueryOptions.js";
 import type { SelectQueryResponse } from "../types/types/SelectQueryResponse.js";
@@ -26,7 +32,6 @@ import type { SelectRawQuery } from "../types/types/SelectRawQuery.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
 import type { TableColumnsFromSchemaOnwards } from "../types/types/TableColumnsFromSchemaOnwards.js";
 import type { WhereQuery } from "../types/types/WhereQuery.js";
-import type { PGTError } from "../util/PGTError.js";
 import type { BaseClient } from "./BaseClient.js";
 import { Table } from "./Table.js";
 
@@ -45,7 +50,7 @@ export class SelectBuilder<
 			tableLocation: string;
 			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
-		PGTError | PGTPError
+		PgTError | PgTPError
 	>[] = [];
 	private _where?: Safe<
 		{
@@ -53,7 +58,7 @@ export class SelectBuilder<
 			variables: (Parsers | string)[];
 			subqueries: SelectSubQuery<any, any, boolean>[];
 		},
-		PGTError | PGTPError
+		PgTError | PgTPError
 	>;
 	private _groupBy?: Safe<string>;
 	private _orderBy?: Safe<string>;
@@ -77,7 +82,7 @@ export class SelectBuilder<
 		if (!(table instanceof Table)) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "class",
 				}),
@@ -89,7 +94,7 @@ export class SelectBuilder<
 		if (table.database.name !== this.databaseData.name) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "database",
 				}),
@@ -101,7 +106,7 @@ export class SelectBuilder<
 		if (this.tables.some(t => t.location === table.location)) {
 			this._joins.push({
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_join",
 					type: "duplicate",
 				}),
@@ -148,32 +153,32 @@ export class SelectBuilder<
 		select?: Select
 	): // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	//@ts-ignore - Not sure where it is circular //TODO find out where it is circular
-	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
+	Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
-	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PGTError | PGTPError>;
+	>(select: Select, options?: Options & { raw: true }): Safe<SelectRawQuery, PgTError | PgTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery: true }
-	): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PGTError | PGTPError>;
+	): Safe<SelectSubQuery<InnerPostgresData, InnerDatabaseData, Ready>, PgTError | PgTPError>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery?: false; valuesOnly: true }
-	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PGTError | PGTPError>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, true>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
 	>(
 		select: Select,
 		options?: Options & { raw?: false; subquery?: false; valuesOnly?: false }
-	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PGTError | PGTPError>>;
+	): Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, false>>, PgTError | PgTPError>>;
 	execute<
 		Select extends SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>> = SelectQuery<TableColumnsFromSchemaOnwards<JoinedTables>>,
 		Options extends SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready> = SelectQueryOptions<InnerPostgresData, InnerDatabaseData, Ready>
@@ -191,7 +196,7 @@ export class SelectBuilder<
 		if (!isOneOf([ParsedType.object, ParsedType.undefined], parsedOptionsType)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_type",
 					expected: [ParsedType.object, ParsedType.undefined],
 					received: parsedOptionsType,
@@ -211,7 +216,7 @@ export class SelectBuilder<
 			if (!parsedObject.success) {
 				return {
 					success: false,
-					error: getPGTError(
+					error: getPgTError(
 						parsedObject.otherKeys.length > 0
 							? {
 									code: "unrecognized_keys",
@@ -235,7 +240,7 @@ export class SelectBuilder<
 		let joins = this._joins as
 			| {
 					success: false;
-					error: PGTError;
+					error: PgTError;
 			  }[]
 			| {
 					success: true;
@@ -294,20 +299,12 @@ export class SelectBuilder<
 		let variablesIndex = options?.previousSubquery?.data.variablesIndex ?? 1;
 		for (; variablesIndex <= count; variablesIndex++) query = query.replace("%?%", `$${variablesIndex}`);
 
-		//* Get all the variables and map them to the correct postgres type, the ones from subqueries are already mapped
-		const variables: string[] = [
+		//* Get all the variables
+		const variables: (Parsers | string)[] = [
 			...joins.flatMap(join => join.data.subqueries.flatMap(subquery => subquery.variables)),
-			...joins.flatMap(join =>
-				join.data.variables.map(variable => {
-					if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
-					return variable;
-				})
-			),
+			...joins.flatMap(join => join.data.variables),
 			...(this._where?.data.subqueries.flatMap(subquery => subquery.variables) ?? []),
-			...(this._where?.data.variables.map(variable => {
-				if (typeof variable !== "string" && "postgres" in variable) return variable.postgres;
-				return variable;
-			}) ?? []),
+			...(this._where?.data.variables ?? []),
 		];
 
 		//* If the query is raw, return it
@@ -344,7 +341,7 @@ export class SelectBuilder<
 		);
 
 		//* Return a new promise since we cannot use async/await in this function
-		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PGTError | PGTPError>>(
+		return new Promise<Safe<Query<SelectQueryResponse<InnerDatabaseData, TableColumnsFromSchemaOnwards<JoinedTables>, Select, boolean>>, PgTError | PgTPError>>(
 			(resolve, reject) => {
 				runningQuery
 					.then(result => {

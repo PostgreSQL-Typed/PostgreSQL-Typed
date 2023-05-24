@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface CircleObject {
 	x: number;
@@ -45,7 +45,7 @@ interface CircleConstructor {
 	isCircle(object: any): object is Circle;
 }
 
-class CircleConstructorClass extends PGTPConstructorBase<Circle> implements CircleConstructor {
+class CircleConstructorClass extends PgTPConstructorBase<Circle> implements CircleConstructor {
 	constructor() {
 		super();
 	}
@@ -206,7 +206,7 @@ class CircleConstructorClass extends PGTPConstructorBase<Circle> implements Circ
 
 const Circle: CircleConstructor = new CircleConstructorClass();
 
-class CircleClass extends PGTPBase<Circle> implements Circle {
+class CircleClass extends PgTPBase<Circle> implements Circle {
 	constructor(private _x: number, private _y: number, private _radius: number) {
 		super();
 	}
@@ -243,7 +243,7 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 	set x(x: number) {
 		const parsedType = getParsedType(x);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -259,7 +259,7 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 	set y(y: number) {
 		const parsedType = getParsedType(y);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -275,7 +275,7 @@ class CircleClass extends PGTPBase<Circle> implements Circle {
 	set radius(radius: number) {
 		const parsedType = getParsedType(radius);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

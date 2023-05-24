@@ -1,5 +1,6 @@
+import type { DatabaseData } from "@postgresql-typed/util";
+
 import type { Table } from "../../classes/Table.js";
-import type { DatabaseData } from "./DatabaseData.js";
 import type { Join } from "./Join.js";
 import type { NestedPaths } from "./NestedPaths.js";
 import type { TableLocations } from "./TableLocations.js";

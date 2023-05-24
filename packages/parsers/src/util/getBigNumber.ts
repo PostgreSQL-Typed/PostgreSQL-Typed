@@ -1,7 +1,7 @@
 import { BigNumber } from "bignumber.js";
 
 import type { SafeFrom } from "../types/SafeFrom.js";
-import type { IssueWithoutMessage } from "./PGTPError.js";
+import type { IssueWithoutMessage } from "./PgTPError.js";
 
 export const getBigNumber = (
 	min: string,

@@ -1,12 +1,8 @@
-import { getParsedType, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, isOneOf, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { GroupBy as GroupByQuery } from "../types/types/GroupBy.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 
 export function getRawGroupBy<
 	InnerPostgresData extends PostgresData,
@@ -19,7 +15,7 @@ export function getRawGroupBy<
 		Ready,
 		JoinedTables
 	>
->(groupBy: GroupBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PGTError> {
+>(groupBy: GroupBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PgTError> {
 	const availableColumns = tables.flatMap(table => table.columns.map(column => `${table.schema.name}.${table.name}.${column.toString()}`)),
 		parsedType = getParsedType(groupBy);
 
@@ -27,7 +23,7 @@ export function getRawGroupBy<
 	if (!isOneOf([ParsedType.array, ParsedType.string], parsedType)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: [ParsedType.array, ParsedType.string],
 				received: parsedType,
@@ -42,7 +38,7 @@ export function getRawGroupBy<
 			if (columnType !== ParsedType.string) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTError({
 						code: "invalid_type",
 						expected: ParsedType.string,
 						received: columnType,
@@ -54,7 +50,7 @@ export function getRawGroupBy<
 			if (!availableColumns.includes(column)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTError({
 						code: "invalid_string",
 						expected: availableColumns,
 						received: column,
@@ -80,7 +76,7 @@ export function getRawGroupBy<
 		if (!availableColumns.includes(groupBy)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "invalid_string",
 					expected: availableColumns,
 					received: groupBy,

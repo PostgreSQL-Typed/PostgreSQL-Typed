@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 interface CharacterVaryingObject {
 	value: string;
@@ -57,7 +57,7 @@ interface CharacterVaryingConstructor<N extends number> {
 	get n(): N;
 }
 
-class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructorBase<CharacterVarying<N>> implements CharacterVaryingConstructor<N> {
+class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructorBase<CharacterVarying<N>> implements CharacterVaryingConstructor<N> {
 	constructor(private _n: N = Number.POSITIVE_INFINITY as N) {
 		super();
 
@@ -65,7 +65,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 			parsedType = getParsedType(_n);
 
 		if (!isOneOf(allowedTypes, parsedType)) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: allowedTypes,
 				received: parsedType,
@@ -73,7 +73,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 		}
 
 		if (_n < 1) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_small",
 				type: "number",
 				minimum: 1,
@@ -82,7 +82,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 		}
 
 		if (_n > 10_485_760 && _n !== Number.POSITIVE_INFINITY) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "too_big",
 				type: "number",
 				maximum: 10_485_760,
@@ -92,7 +92,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 
 		//If limit is not a whole number
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -217,7 +217,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PGTPConstructor
 
 const CharacterVarying: CharacterVaryingConstructor<number> = new CharacterVaryingConstructorClass(Number.POSITIVE_INFINITY);
 
-class CharacterVaryingClass<N extends number> extends PGTPBase<CharacterVarying<N>> implements CharacterVarying<N> {
+class CharacterVaryingClass<N extends number> extends PgTPBase<CharacterVarying<N>> implements CharacterVarying<N> {
 	constructor(private _character: string, private _n: N = Number.POSITIVE_INFINITY as N) {
 		super();
 	}

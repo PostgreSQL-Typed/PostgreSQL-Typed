@@ -4,10 +4,10 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { pad } from "../../util/pad.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 import { REGEXES } from "../../util/regexes.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 
 enum IntervalStyle {
 	PostgreSQL = "PostgreSQL",
@@ -104,7 +104,7 @@ interface IntervalConstructor {
 	isInterval(object: any): object is Interval;
 }
 
-class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements IntervalConstructor {
+class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements IntervalConstructor {
 	constructor() {
 		super();
 	}
@@ -444,7 +444,7 @@ class IntervalConstructorClass extends PGTPConstructorBase<Interval> implements 
 
 const Interval: IntervalConstructor = new IntervalConstructorClass();
 
-class IntervalClass extends PGTPBase<Interval> implements Interval {
+class IntervalClass extends PgTPBase<Interval> implements Interval {
 	constructor(
 		private _years: number,
 		private _months: number,
@@ -485,7 +485,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 			case IntervalStyle.PostgreSQLTimeShort:
 				return this._toStringPostgreSQL(style);
 			default:
-				throwPGTPError({
+				throwPgTPError({
 					code: "invalid_string",
 					expected: intervalStyles,
 					received: style,
@@ -723,7 +723,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set years(years: number) {
 		const parsedType = getParsedType(years);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -731,7 +731,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (years % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -746,7 +746,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set months(months: number) {
 		const parsedType = getParsedType(months);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -754,7 +754,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (months % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -769,7 +769,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set days(days: number) {
 		const parsedType = getParsedType(days);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -777,7 +777,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (days % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -792,7 +792,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set hours(hours: number) {
 		const parsedType = getParsedType(hours);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -800,7 +800,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (hours % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -815,7 +815,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set minutes(minutes: number) {
 		const parsedType = getParsedType(minutes);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -823,7 +823,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (minutes % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -838,7 +838,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set seconds(seconds: number) {
 		const parsedType = getParsedType(seconds);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,
@@ -846,7 +846,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 		}
 
 		if (seconds % 1 !== 0) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "not_whole",
 			});
 		}
@@ -861,7 +861,7 @@ class IntervalClass extends PGTPBase<Interval> implements Interval {
 	set milliseconds(milliseconds: number) {
 		const parsedType = getParsedType(milliseconds);
 		if (parsedType !== ParsedType.number) {
-			throwPGTPError({
+			throwPgTPError({
 				code: "invalid_type",
 				expected: [ParsedType.number],
 				received: parsedType,

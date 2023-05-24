@@ -1,5 +1,13 @@
 {
-	"exclude": ["**/*.test.ts", "**/*/lib/**/*", "**/vitest.config.ts", "**/postgresql-typed.config.ts", "**/*/__tests__/**/*", "**/*/__mocks__/*/**"],
+	"exclude": [
+		"**/*.test.ts",
+		"**/*/lib/**/*",
+		"**/vitest.config.ts",
+		"**/postgresql-typed.config.ts",
+		"**/pgt.config.ts",
+		"**/*/__tests__/**/*",
+		"**/*/__mocks__/*/**"
+	],
 	"compilerOptions": {
 		/* Visit https://aka.ms/tsconfig to read more about this file */
 

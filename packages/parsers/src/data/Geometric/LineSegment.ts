@@ -3,9 +3,9 @@ import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseRet
 import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
-import { throwPGTPError } from "../../util/throwPGTPError.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { throwPgTPError } from "../../util/throwPgTPError.js";
 import { Point, type PointObject } from "./Point.js";
 
 interface LineSegmentObject {
@@ -57,7 +57,7 @@ interface LineSegmentConstructor {
 	isLineSegment(object: any): object is LineSegment;
 }
 
-class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> implements LineSegmentConstructor {
+class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> implements LineSegmentConstructor {
 	constructor() {
 		super();
 	}
@@ -254,7 +254,7 @@ class LineSegmentConstructorClass extends PGTPConstructorBase<LineSegment> imple
 
 const LineSegment: LineSegmentConstructor = new LineSegmentConstructorClass();
 
-class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
+class LineSegmentClass extends PgTPBase<LineSegment> implements LineSegment {
 	constructor(private _a: Point, private _b: Point) {
 		super();
 	}
@@ -289,7 +289,7 @@ class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
 
 	set a(a: Point) {
 		const parsed = Point.safeFrom(a);
-		if (!parsed.success) throwPGTPError(parsed.error.issue);
+		if (!parsed.success) throwPgTPError(parsed.error.issue);
 		this._a = parsed.data;
 	}
 
@@ -299,7 +299,7 @@ class LineSegmentClass extends PGTPBase<LineSegment> implements LineSegment {
 
 	set b(b: Point) {
 		const parsed = Point.safeFrom(b);
-		if (!parsed.success) throwPGTPError(parsed.error.issue);
+		if (!parsed.success) throwPgTPError(parsed.error.issue);
 		this._b = parsed.data;
 	}
 

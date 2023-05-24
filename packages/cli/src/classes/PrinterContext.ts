@@ -13,11 +13,11 @@ export class PrinterContext {
 	private readonly _files = new Map<FileName, FileContent>();
 	private readonly _rawFiles = new Map<FileName, string>();
 
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, public readonly isESM: boolean) {}
+	constructor(public readonly config: PostgreSQLTypedCLIConfig) {}
 
 	private _pushDeclaration(id: TypeId, mode: "type" | "value", declaration: (identifier: IdentifierName, imp: FileContext) => string[]): FileExport {
 		const file = resolveFilename(this.config, id),
-			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, this.isESM, file));
+			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, file));
 
 		return fileContent.pushDeclaration(id, mode, declaration);
 	}
@@ -27,7 +27,7 @@ export class PrinterContext {
 	}
 	public pushReExport(id: TypeId, from: FileExport): void {
 		const file = resolveFilename(this.config, id),
-			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, this.isESM, file));
+			fileContent = mapGetOrSet(this._files, file, () => new FileContent(this.config, file));
 
 		fileContent.pushReExport(id, from);
 	}

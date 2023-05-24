@@ -1,20 +1,16 @@
-import { Int4, type Int4Constructor, type Parsers, type PGTPError, PGTPParser, type PGTPParserClass } from "@postgresql-typed/parsers";
-import { getParsedType, hasKeys, ParsedType } from "@postgresql-typed/util";
+import { Int4, type Int4Constructor, type Parsers, type PgTPError, PgTPParser, type PgTPParserClass } from "@postgresql-typed/parsers";
+import { type DatabaseData, getParsedType, hasKeys, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { JoinQuery } from "../types/types/JoinQuery.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
 import type { SelectSubQuery } from "../types/types/SelectSubQuery.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 import { getRawOnQuery } from "./getRawOnQuery.js";
 import { isJoinType, joinTypes } from "./isJoinType.js";
 
 //* This is a custom type for the count function
 export type Count = Int4;
-export const CountParser: PGTPParserClass<Int4Constructor> = PGTPParser(Int4);
+export const CountParser: PgTPParserClass<Int4Constructor> = PgTPParser(Int4);
 
 export function getRawJoinQuery<
 	InnerPostgresData extends PostgresData,
@@ -27,7 +23,7 @@ export function getRawJoinQuery<
 	filter: Filter,
 	table: JoinedTable,
 	joinedTables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]
-): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string; subqueries: SelectSubQuery<any, any, boolean>[] }, PGTError | PGTPError> {
+): Safe<{ query: string; variables: (Parsers | string)[]; tableLocation: string; subqueries: SelectSubQuery<any, any, boolean>[] }, PgTError | PgTPError> {
 	//* Table.location is in the format of "database.schema.table" but we only want "schema.table"
 	const tableLocation: string = table.location.split(".").slice(1).join("."),
 		//* Make sure the filter is an object
@@ -35,7 +31,7 @@ export function getRawJoinQuery<
 	if (parsedType !== ParsedType.object) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: ParsedType.object,
 				received: parsedType,
@@ -49,22 +45,22 @@ export function getRawJoinQuery<
 		["$TYPE", [ParsedType.string, ParsedType.undefined]],
 	]);
 	if (!parsedObject.success) {
-		let error: PGTError;
+		let error: PgTError;
 		switch (true) {
 			case parsedObject.otherKeys.length > 0:
-				error = getPGTError({
+				error = getPgTError({
 					code: "unrecognized_keys",
 					keys: parsedObject.otherKeys,
 				});
 				break;
 			case parsedObject.missingKeys.length > 0:
-				error = getPGTError({
+				error = getPgTError({
 					code: "missing_keys",
 					keys: parsedObject.missingKeys,
 				});
 				break;
 			default:
-				error = getPGTError({
+				error = getPgTError({
 					code: "invalid_key_type",
 					...parsedObject.invalidKeys[0],
 				});
@@ -77,7 +73,7 @@ export function getRawJoinQuery<
 	if (filter.$TYPE && !isJoinType(filter.$TYPE)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_join_type",
 				expected: joinTypes,
 				received: filter.$TYPE,
@@ -101,23 +97,23 @@ export function getRawJoinQuery<
 
 			//* Make sure the ON filter is set and is an object
 			if (!parsedObject.success) {
-				let error: PGTError;
+				let error: PgTError;
 				switch (true) {
 					/* c8 ignore next 6 */
 					case parsedObject.otherKeys.length > 0:
-						error = getPGTError({
+						error = getPgTError({
 							code: "unrecognized_keys",
 							keys: parsedObject.otherKeys,
 						});
 						break;
 					case parsedObject.missingKeys.length > 0:
-						error = getPGTError({
+						error = getPgTError({
 							code: "missing_keys",
 							keys: parsedObject.missingKeys,
 						});
 						break;
 					default:
-						error = getPGTError({
+						error = getPgTError({
 							code: "invalid_key_type",
 							...parsedObject.invalidKeys[0],
 						});

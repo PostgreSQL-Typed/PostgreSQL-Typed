@@ -5,8 +5,8 @@ import type { ParseContext } from "../../types/ParseContext.js";
 import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { getBigNumber } from "../../util/getBigNumber.js";
-import { PGTPBase } from "../../util/PGTPBase.js";
-import { PGTPConstructorBase } from "../../util/PGTPConstructorBase.js";
+import { PgTPBase } from "../../util/PgTPBase.js";
+import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 
 const bigNumber = getBigNumber("-10e307", "10e307", {
 	allowInfinity: true,
@@ -56,7 +56,7 @@ interface Float8Constructor {
 	isFloat8(object: any): object is Float8;
 }
 
-class Float8ConstructorClass extends PGTPConstructorBase<Float8> implements Float8Constructor {
+class Float8ConstructorClass extends PgTPConstructorBase<Float8> implements Float8Constructor {
 	constructor() {
 		super();
 	}
@@ -145,7 +145,7 @@ class Float8ConstructorClass extends PGTPConstructorBase<Float8> implements Floa
 
 const Float8: Float8Constructor = new Float8ConstructorClass();
 
-class Float8Class extends PGTPBase<Float8> implements Float8 {
+class Float8Class extends PgTPBase<Float8> implements Float8 {
 	constructor(private _float8: BigNumber) {
 		super();
 	}

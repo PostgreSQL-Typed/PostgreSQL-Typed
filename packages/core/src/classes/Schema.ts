@@ -1,5 +1,5 @@
-import type { DatabaseData } from "../types/types/DatabaseData.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
+import type { DatabaseData, PostgresData } from "@postgresql-typed/util";
+
 import type { RawDatabaseData } from "../types/types/RawDatabaseData.js";
 import type { SchemaLocations } from "../types/types/SchemaLocations.js";
 import type { TableLocationByPath } from "../types/types/TableLocationByPath.js";

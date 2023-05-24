@@ -1,5 +1,5 @@
-import { BaseClient, Context, getErrorMap, PGTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
-import { getParsedType, INVALID, isOneOf, OK, ParsedType, ParseReturnType } from "@postgresql-typed/util";
+import { BaseClient, Context, getErrorMap, PgTError, PostgresData, Query, RawPostgresData, setIssueForContext } from "@postgresql-typed/core";
+import { getParsedType, INVALID, isOneOf, loadPgTConfig, OK, ParsedType, ParseReturnType, type PgTConfigSchema } from "@postgresql-typed/util";
 import postgres from "postgres";
 
 import { types } from "./types.js";
@@ -7,7 +7,9 @@ import { types } from "./types.js";
 export class Client<InnerPostgresData extends PostgresData, Ready extends boolean = false> extends BaseClient<InnerPostgresData, Ready> {
 	private _client: postgres.Sql<Record<string, any>>;
 	private _ready = false;
-	private _connectionError?: PGTError;
+	private _connectionError?: PgTError;
+	private _extensionsInstalled = false;
+	private _config = {} as PgTConfigSchema;
 
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, url: string, options?: postgres.Options<Record<string, postgres.PostgresType>>);
 	constructor(postgresData: RawPostgresData<InnerPostgresData>, options?: postgres.Options<Record<string, postgres.PostgresType>>);
@@ -19,6 +21,10 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		super(postgresData);
 
 		this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
+
+		loadPgTConfig().then(config => {
+			this._config = config.config;
+		});
 	}
 
 	async testConnection(
@@ -39,13 +45,22 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			this._client = typeof urlOrOptions === "string" ? postgres(urlOrOptions, { ...options, types }) : postgres({ ...urlOrOptions, types });
 		}
 
+		if (!this._extensionsInstalled) {
+			await this.initExtensions();
+			this._extensionsInstalled = true;
+		}
+
+		await this.callHook("client:pre-connect");
+
 		try {
 			await this._client.unsafe("SELECT 1");
 			this._ready = true;
 
+			await this.callHook("client:post-connect");
+
 			return this as Client<InnerPostgresData, true>;
 		} catch (error) {
-			this._connectionError = new PGTError({
+			this._connectionError = new PgTError({
 				code: "query_error",
 				errorMessage: (error as Error).message,
 				message: getErrorMap()({
@@ -74,13 +89,13 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 					? {
 							code: "too_big",
 							type: "arguments",
-							maximum: 1,
+							maximum: 2,
 							exact: true,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
-							minimum: 1,
+							minimum: 2,
 							exact: true,
 					  }
 			);
@@ -90,7 +105,6 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 		const [query, values] = context.data,
 			allowedQueryTypes = [ParsedType.string],
 			allowedValueTypes = [ParsedType.array],
-			allowedInnerValueTypes = [ParsedType.string],
 			parsedQueryType = getParsedType(query),
 			parsedValueType = getParsedType(values);
 
@@ -112,27 +126,43 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 
-		const parsedInnerValueTypes = (values as unknown[]).map(value => getParsedType(value));
-
-		for (const parsedInnerValueType of parsedInnerValueTypes) {
-			if (!isOneOf(allowedInnerValueTypes, parsedInnerValueType)) {
-				setIssueForContext(context, {
-					code: "invalid_type",
-					expected: allowedInnerValueTypes,
-					received: parsedInnerValueType,
-				});
-				return INVALID;
-			}
-		}
-
-		return this._runQuery<Data>(context, query as string, values as string[]);
+		return this._runQuery<Data>(context, query as string, values as unknown[]);
 	}
 
 	//* Run the actual query
-	private async _runQuery<Data>(context: Context, query: string, values: string[]): Promise<ParseReturnType<Query<Data>>> {
+	private async _runQuery<Data>(context: Context, query: string, values: unknown[]): Promise<ParseReturnType<Query<Data>>> {
+		const data:
+			| {
+					input: {
+						query: string;
+						values: unknown[];
+					};
+					output: Query<unknown>;
+			  }
+			| {
+					input: {
+						query: string;
+						values: unknown[];
+					};
+					output: undefined;
+			  } = {
+			input: {
+				query,
+				values,
+			},
+			output: undefined as Query<unknown> | undefined,
+		};
+
+		await this.callHook("client:pre-query", data, context);
+
+		if (data.output) {
+			this.callHook("client:pre-query-override", data, context);
+			return OK(data.output as Query<Data>);
+		}
+
 		let result: Awaited<ReturnType<typeof this._client.unsafe>>;
 		try {
-			result = await this._client.unsafe(query, values);
+			result = await this._client.unsafe(data.input.query, data.input.values);
 		} catch (error) {
 			setIssueForContext(context, {
 				code: "query_error",
@@ -142,27 +172,35 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			return INVALID;
 		}
 
-		return OK({
-			rows: [...result.values()],
-			rowCount: result.count,
-			command: result.command,
-			input: {
-				query,
-				values,
+		const finalResult = {
+			input: data.input,
+			output: {
+				rows: [...result.values()],
+				rowCount: result.count,
+				command: result.command,
+				input: data.input,
 			},
-		});
+		};
+
+		await this.callHook("client:post-query", finalResult, context);
+
+		return OK(finalResult.output);
 	}
 
 	get ready(): Ready {
 		return this._ready as Ready;
 	}
 
-	get connectionError(): PGTError | undefined {
+	get connectionError(): PgTError | undefined {
 		return this._connectionError;
 	}
 
 	get client(): postgres.Sql<Record<string, any>> {
 		return this._client;
+	}
+
+	get PgTConfig(): PgTConfigSchema {
+		return this._config;
 	}
 }
 

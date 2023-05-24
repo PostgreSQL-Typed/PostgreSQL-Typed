@@ -133,7 +133,17 @@ export const DefaultTypeScriptMapping = {
 						},
 					],
 				],
-				[OID._float8]: "number[]",
+				[OID._float8]: [
+					"Float8[]",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "Float8",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID._gtsvector]: "unknown[]",
 				[OID._inet]: [
 					"IPAddress[]",
@@ -967,7 +977,17 @@ export const DefaultTypeScriptMapping = {
 				[OID.tinterval]: "unknown",
 				[OID.trigger]: "unknown",
 				[OID.tsm_handler]: "unknown",
-				[OID.tsmultirange]: "unknown",
+				[OID.tsmultirange]: [
+					"TimestampMultiRange",
+					[
+						{
+							module: "@postgresql-typed/parsers",
+							name: "TimestampMultiRange",
+							type: "named",
+							isType: true,
+						},
+					],
+				],
 				[OID.tsquery]: "unknown",
 				[OID.tsrange]: [
 					"TimestampRange",

@@ -1,6 +1,6 @@
 import { joinValues, ParsedType } from "@postgresql-typed/util";
 
-import { ErrorMap, IssueCode } from "../util/PGTPError.js";
+import { ErrorMap, IssueCode } from "../util/PgTPError.js";
 
 const errorMap: ErrorMap = issue => {
 	let message: string;

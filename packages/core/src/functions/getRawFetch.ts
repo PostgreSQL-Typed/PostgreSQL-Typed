@@ -1,17 +1,15 @@
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type Safe } from "@postgresql-typed/util";
 
 import type { Fetch } from "../types/types/Fetch.js";
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 
-export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
+export function getRawFetch(fetch: Fetch): Safe<string, PgTError> {
 	//* Make sure the fetch is an object
 	const parsedType = getParsedType(fetch);
 	if (parsedType !== ParsedType.object) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: ParsedType.object,
 				received: parsedType,
@@ -29,7 +27,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 	if (!parsedObject.success) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTError(
 				parsedObject.otherKeys.length > 0
 					? {
 							code: "unrecognized_keys",
@@ -55,7 +53,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 	if (!isOneOf(["FIRST", "NEXT"], fetchObject.type)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_string",
 				expected: ["FIRST", "NEXT"],
 				received: fetchObject.type,
@@ -69,7 +67,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 	if (fetchAmount < 0) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "number",
 				minimum: 0,
@@ -90,7 +88,7 @@ export function getRawFetch(fetch: Fetch): Safe<string, PGTError> {
 	if (offset < 0) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "number",
 				minimum: 0,

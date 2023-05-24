@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { defaultErrorMap, getErrorMap, setErrorMap } from "./errorMap.js";
-import type { ErrorMap } from "./PGTPError.js";
+import type { ErrorMap } from "./PgTPError.js";
 
 describe("errorMap", () => {
 	it("should return the default errorMap", () => {

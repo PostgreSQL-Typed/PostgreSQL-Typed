@@ -1,12 +1,8 @@
-import { getParsedType, hasKeys, isOneOf, ParsedType } from "@postgresql-typed/util";
+import { type DatabaseData, getParsedType, hasKeys, isOneOf, ParsedType, type PgTError, type PostgresData, type Safe } from "@postgresql-typed/util";
 
 import type { Table } from "../classes/Table.js";
-import type { DatabaseData } from "../types/types/DatabaseData.js";
 import type { OrderBy as OrderByQuery } from "../types/types/OrderBy.js";
-import type { PostgresData } from "../types/types/PostgresData.js";
-import type { Safe } from "../types/types/Safe.js";
-import type { PGTError } from "../util/PGTError.js";
-import { getPGTError } from "./getPGTError.js";
+import { getPgTError } from "./getPgTError.js";
 
 export function getRawOrderBy<
 	InnerPostgresData extends PostgresData,
@@ -19,13 +15,13 @@ export function getRawOrderBy<
 		Ready,
 		JoinedTables
 	>
->(orderBy: OrderBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PGTError> {
+>(orderBy: OrderBy, tables: Table<InnerPostgresData, InnerDatabaseData, Ready, any, any>[]): Safe<string, PgTError> {
 	//* Make sure the orderBy is an object
 	const parsedType = getParsedType(orderBy);
 	if (parsedType !== ParsedType.object) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_type",
 				expected: ParsedType.object,
 				received: parsedType,
@@ -41,7 +37,7 @@ export function getRawOrderBy<
 	if (!parsedObject.success) {
 		return {
 			success: false,
-			error: getPGTError(
+			error: getPgTError(
 				parsedObject.otherKeys.length > 0
 					? {
 							code: "unrecognized_keys",
@@ -66,7 +62,7 @@ export function getRawOrderBy<
 	if (!columns && !nulls) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "too_small",
 				type: "keys",
 				minimum: 1,
@@ -79,7 +75,7 @@ export function getRawOrderBy<
 	if (nulls && !isOneOf(["NULLS FIRST", "NULLS LAST"], nulls)) {
 		return {
 			success: false,
-			error: getPGTError({
+			error: getPgTError({
 				code: "invalid_string",
 				expected: ["NULLS FIRST", "NULLS LAST"],
 				received: nulls,
@@ -99,7 +95,7 @@ export function getRawOrderBy<
 		if (!parsedColumns.success) {
 			return {
 				success: false,
-				error: getPGTError(
+				error: getPgTError(
 					parsedColumns.otherKeys.length > 0
 						? {
 								code: "unrecognized_keys",
@@ -122,7 +118,7 @@ export function getRawOrderBy<
 		if (!Object.values(parsedColumns.obj).some(Boolean)) {
 			return {
 				success: false,
-				error: getPGTError({
+				error: getPgTError({
 					code: "too_small",
 					type: "keys",
 					minimum: 1,
@@ -138,7 +134,7 @@ export function getRawOrderBy<
 			if (!isOneOf(["ASC", "DESC"], direction)) {
 				return {
 					success: false,
-					error: getPGTError({
+					error: getPgTError({
 						code: "invalid_string",
 						expected: ["ASC", "DESC"],
 						received: direction,

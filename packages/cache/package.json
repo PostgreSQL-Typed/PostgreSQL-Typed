@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/cache",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A PostgreSQL-Typed extension to cache queries using Keyv",
 	"type": "module",
 	"exports": "./lib/index.js",

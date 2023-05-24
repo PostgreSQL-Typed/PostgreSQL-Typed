@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/tzswitcher",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "A PostgreSQL-Typed extension to switch the timezone of a column from one to another",
 	"type": "module",
 	"exports": "./lib/index.js",

@@ -87,9 +87,3 @@ export interface TzSwitcher {
 	 */
 	to: string;
 }
-
-declare module "@postgresql-typed/util" {
-	interface PgTConfigSchema {
-		tzswitcher?: PgTTzSwitcherOptions;
-	}
-}

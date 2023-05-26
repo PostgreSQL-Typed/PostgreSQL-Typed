@@ -99,9 +99,3 @@ export interface PgTCacheOptions {
 	 */
 	types?: ("select" | "insert" | "update" | "delete")[];
 }
-
-declare module "@postgresql-typed/util" {
-	interface PgTConfigSchema {
-		cache?: PgTCacheOptions;
-	}
-}

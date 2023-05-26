@@ -58,6 +58,8 @@ npm install --save @postgresql-typed/tzswitcher
 
 import { defineConfig } from "@postgresql-typed/cli/config";
 
+import "@postgresql-typed/tzswitcher/register";
+
 export default defineConfig({
 	core: {
 		extensions: [

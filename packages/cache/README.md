@@ -68,6 +68,8 @@ npm install --save @keyv/etcd
 
 import { defineConfig } from "@postgresql-typed/cli/config";
 
+import "@postgresql-typed/cache/register"
+
 export default defineConfig({
 	core: {
 		extensions: [

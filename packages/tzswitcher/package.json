@@ -3,7 +3,15 @@
 	"version": "0.1.0",
 	"description": "A PostgreSQL-Typed extension to switch the timezone of a column from one to another",
 	"type": "module",
-	"exports": "./lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./register": {
+			"types": "./register.d.ts",
+			"import": "./register.js",
+			"require": "./register.cjs"
+		},
+		"./package.json": "./package.json"
+	},
 	"types": "./lib/index.d.ts",
 	"license": "MPL-2.0",
 	"author": {
@@ -20,7 +28,8 @@
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
 	},
 	"files": [
-		"lib"
+		"lib",
+		"register.*"
 	],
 	"keywords": [
 		"postgresql",

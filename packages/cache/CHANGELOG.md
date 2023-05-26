@@ -1,5 +1,11 @@
 # @postgresql-typed/cache
 
+## 0.1.1
+
+### Patch Changes
+
+- [#32](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/32) [`81b269d`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/81b269d47dcf81b666fdc5099eb55b8581ccc4b0) Thanks [@Bas950](https://github.com/Bas950)! - Add register types
+
 ## 0.1.0
 
 ### Minor Changes

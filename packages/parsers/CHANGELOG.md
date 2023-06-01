@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.5.1
+
+### Patch Changes
+
+- [`a225819`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/a225819fd7b9ff2760d24c85eba4476bb3fe8eda) Thanks [@Bas950](https://github.com/Bas950)! - fix(Parsers): milliseconds in DateTime should now fully work
+
 ## 0.5.0
 
 ### Minor Changes

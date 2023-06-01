@@ -504,6 +504,10 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
+		const [second, millisecond] = this._second
+			.toString()
+			.split(".")
+			.map(element => Number.parseInt(element));
 		return DateTime.fromObject(
 			{
 				year: this._year,
@@ -511,8 +515,9 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				day: this._day,
 				hour: this._hour,
 				minute: this._minute,
-				second: Math.floor(this._second),
-				millisecond: Math.round((this._second % 1) * 1000),
+				/* c8 ignore next 3 */
+				second: Number.isNaN(second) ? 0 : second ?? 0,
+				millisecond: Number.isNaN(millisecond) ? 0 : millisecond ?? 0,
 			},
 			{ zone }
 		);

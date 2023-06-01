@@ -165,6 +165,10 @@ describe("Time", () => {
 	test("toDateTime()", () => {
 		const time = Time.from("22:10:09");
 		expect(time.toDateTime().isValid).toBe(true);
+
+		const time2 = Time.from("22:10:09.123");
+		expect(time2.toDateTime().isValid).toBe(true);
+		expect(time2.toDateTime().millisecond).toBe(123);
 	});
 
 	test("toJSDate()", () => {

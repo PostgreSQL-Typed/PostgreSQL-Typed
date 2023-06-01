@@ -1,4 +1,4 @@
-import { Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
+import { isAnyParser, Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
 
 import type { PgTTzSwitcherOptions, TzSwitcher } from "../index.js";
 
@@ -18,6 +18,8 @@ export function checkValue<T>(value: T, options: PgTTzSwitcherOptions, target: k
 	if (time && Time.isTime(value)) return Time.from(value.toDateTime(time[current]).setZone(time[target]).toFormat("HH:mm:ss")) as unknown as T;
 
 	if (timetz && TimeTZ.isTimeTZ(value)) return TimeTZ.from(value.toDateTime(timetz[target]).toFormat("HH:mm:ssZZ")) as unknown as T;
+
+	if (isAnyParser(value)) return value;
 
 	return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, checkValue(value, options, target, current)])) as T;
 }

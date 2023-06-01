@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.6.0
+
+### Minor Changes
+
+- [`2e46ed2`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2e46ed22c33c71b23de5550bd2b23a5dee4dece8) Thanks [@Bas950](https://github.com/Bas950)! - feat(Parsers): accept more parsers in certain other parser
+
 ## 0.5.1
 
 ### Patch Changes

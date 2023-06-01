@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.5.0
+
+### Minor Changes
+
+- [`f164e9e`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f164e9e4550f8c1f7f6d0ddd4228c28e781a1e9d) Thanks [@Bas950](https://github.com/Bas950)! - feat(Parsers): add isAnyParser
+
 ## 0.4.1
 
 ### Patch Changes

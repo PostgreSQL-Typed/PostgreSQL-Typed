@@ -1,5 +1,16 @@
 # @postgresql-typed/tzswitcher
 
+## 0.2.0
+
+### Minor Changes
+
+- [`c0568b7`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/c0568b770550cb94f0cfe7f945aa81c7d04c76de) Thanks [@Bas950](https://github.com/Bas950)! - fix(TzSwitcher): check if object is not a parser
+
+### Patch Changes
+
+- Updated dependencies [[`f164e9e`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f164e9e4550f8c1f7f6d0ddd4228c28e781a1e9d)]:
+  - @postgresql-typed/parsers@0.5.0
+
 ## 0.1.3
 
 ### Patch Changes

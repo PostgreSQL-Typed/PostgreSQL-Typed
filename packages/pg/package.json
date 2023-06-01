@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/pg",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"description": "A type-safe PostgreSQL client for Node.js (Using the pg module)",
 	"type": "module",
 	"exports": "./lib/index.js",

@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.4.1
+
+### Patch Changes
+
+- [`ca90948`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ca9094818108fa12d5b306e1851d71b609abfcd3) Thanks [@Bas950](https://github.com/Bas950)! - fix(Parsers): round milliseconds so they don't have a decimal
+
 ## 0.4.0
 
 ### Minor Changes

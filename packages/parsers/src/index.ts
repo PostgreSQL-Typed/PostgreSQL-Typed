@@ -67,6 +67,7 @@ export * from "./util/arrayParser.js";
 export * from "./util/arraySerializer.js";
 export * from "./util/defaultParserMappings.js";
 export * from "./util/errorMap.js";
+export * from "./util/isAnyParser.js";
 export * from "./util/parser.js";
 export * from "./util/PgTPError.js";
 export * from "./util/PgTPParser.js";

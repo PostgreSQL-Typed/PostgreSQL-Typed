@@ -5,7 +5,17 @@ import { arrayParser } from "../../util/arrayParser.js";
 import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { serializer } from "../../util/serializer.js";
+import { Bit } from "../BitString/Bit.js";
+import { BitVarying } from "../BitString/BitVarying.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
+import { UUID } from "../UUID/UUID.js";
+import { Character } from "./Character.js";
 import { CharacterVarying } from "./CharacterVarying.js";
+import { Name } from "./Name.js";
+import { Text } from "./Text.js";
 
 describe("CharacterVaryingConstructor", () => {
 	test("_parse(...)", () => {
@@ -23,6 +33,16 @@ describe("CharacterVaryingConstructor", () => {
 		expect(CharacterVarying2.safeFrom("abc").success).toBe(true);
 		expect(CharacterVarying2.safeFrom("abc").success).toBe(true);
 		expect(CharacterVarying2.safeFrom(CharacterVarying2.from("abc")).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Bit.from(1)).success).toBe(true);
+		expect(CharacterVarying.safeFrom(BitVarying.from(1)).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Character.from("a")).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Name.from("a")).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Text.from("a")).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Int2.from(1)).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Int4.from(1)).success).toBe(true);
+		expect(CharacterVarying.safeFrom(Int8.from(1)).success).toBe(true);
+		expect(CharacterVarying.safeFrom(OID.from(1)).success).toBe(true);
+		expect(CharacterVarying.setN(36).safeFrom(UUID.generate()).success).toBe(true);
 		expect(
 			CharacterVarying2.safeFrom({
 				value: "abc",

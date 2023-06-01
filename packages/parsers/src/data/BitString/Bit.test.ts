@@ -5,7 +5,16 @@ import { arrayParser } from "../../util/arrayParser.js";
 import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { serializer } from "../../util/serializer.js";
+import { Character } from "../Character/Character.js";
+import { CharacterVarying } from "../Character/CharacterVarying.js";
+import { Name } from "../Character/Name.js";
+import { Text } from "../Character/Text.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
 import { Bit } from "./Bit.js";
+import { BitVarying } from "./BitVarying.js";
 
 describe("BitConstructor", () => {
 	test("_parse(...)", () => {
@@ -24,6 +33,15 @@ describe("BitConstructor", () => {
 		expect(Bit2.safeFrom("101").success).toBe(true);
 		expect(Bit2.safeFrom(5).success).toBe(true);
 		expect(Bit2.safeFrom(Bit2.from(5)).success).toBe(true);
+		expect(Bit.safeFrom(BitVarying.from(1)).success).toBe(true);
+		expect(Bit.safeFrom(Character.from("1")).success).toBe(true);
+		expect(Bit.safeFrom(CharacterVarying.from("1")).success).toBe(true);
+		expect(Bit.safeFrom(Name.from("1")).success).toBe(true);
+		expect(Bit.safeFrom(Text.from("1")).success).toBe(true);
+		expect(Bit.safeFrom(Int2.from(1)).success).toBe(true);
+		expect(Bit.safeFrom(Int4.from(1)).success).toBe(true);
+		expect(Bit.safeFrom(Int8.from(1)).success).toBe(true);
+		expect(Bit.safeFrom(OID.from(1)).success).toBe(true);
 		expect(
 			Bit2.safeFrom({
 				value: "101",

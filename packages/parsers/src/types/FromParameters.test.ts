@@ -70,24 +70,42 @@ import type { FromParameters } from "./FromParameters.js";
 describe("FromParameters", () => {
 	test("FromParameters<BitConstructor<...>>", () => {
 		let a: FromParameters<BitConstructor<1>> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | number | BitObject | Bit<1> | undefined>();
-
-		let b: FromParameters<BitConstructor<8>> | undefined;
-		expectTypeOf(b).toEqualTypeOf<string | number | BitObject | Bit<8> | undefined>();
-
-		let c: FromParameters<BitConstructor<number>> | undefined;
-		expectTypeOf(c).toEqualTypeOf<string | number | BitObject | Bit<number> | undefined>();
+		expectTypeOf(a).toEqualTypeOf<
+			| string
+			| number
+			| BitObject
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| undefined
+		>();
 	});
 
 	test("FromParameters<BitVaryingConstructor<...>>", () => {
 		let a: FromParameters<BitVaryingConstructor<1>> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | number | BitVaryingObject | BitVarying<1> | undefined>();
-
-		let b: FromParameters<BitVaryingConstructor<8>> | undefined;
-		expectTypeOf(b).toEqualTypeOf<string | number | BitVaryingObject | BitVarying<8> | undefined>();
-
-		let c: FromParameters<BitVaryingConstructor<number>> | undefined;
-		expectTypeOf(c).toEqualTypeOf<string | number | BitVaryingObject | BitVarying<number> | undefined>();
+		expectTypeOf(a).toEqualTypeOf<
+			| string
+			| number
+			| BitVaryingObject
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| undefined
+		>();
 	});
 
 	test("FromParameters<BooleanConstructor>", () => {
@@ -98,34 +116,52 @@ describe("FromParameters", () => {
 
 	test("FromParameters<CharacterConstructor<...>>", () => {
 		let a: FromParameters<CharacterConstructor<1>> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | CharacterObject | Character<1> | undefined>();
-
-		let b: FromParameters<CharacterConstructor<8>> | undefined;
-		expectTypeOf(b).toEqualTypeOf<string | CharacterObject | Character<8> | undefined>();
-
-		let c: FromParameters<CharacterConstructor<number>> | undefined;
-		expectTypeOf(c).toEqualTypeOf<string | CharacterObject | Character<number> | undefined>();
+		expectTypeOf(a).toEqualTypeOf<
+			| string
+			| CharacterObject
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| undefined
+		>();
 	});
 
 	test("FromParameters<CharacterVaryingConstructor<...>>", () => {
 		let a: FromParameters<CharacterVaryingConstructor<1>> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | CharacterVaryingObject | CharacterVarying<1> | undefined>();
-
-		let b: FromParameters<CharacterVaryingConstructor<8>> | undefined;
-		expectTypeOf(b).toEqualTypeOf<string | CharacterVaryingObject | CharacterVarying<8> | undefined>();
-
-		let c: FromParameters<CharacterVaryingConstructor<number>> | undefined;
-		expectTypeOf(c).toEqualTypeOf<string | CharacterVaryingObject | CharacterVarying<number> | undefined>();
+		expectTypeOf(a).toEqualTypeOf<
+			| string
+			| CharacterVaryingObject
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| undefined
+		>();
 	});
 
 	test("FromParameters<NameConstructor>", () => {
 		let a: FromParameters<NameConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | Name | NameObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject | undefined>();
 	});
 
 	test("FromParameters<TextConstructor>", () => {
 		let a: FromParameters<TextConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | Text | TextObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject | undefined>();
 	});
 
 	test("FromParameters<DateConstructor>", () => {
@@ -282,7 +318,7 @@ describe("FromParameters", () => {
 
 	test("FromParameters<UUIDConstructor>", () => {
 		let a: FromParameters<UUIDConstructor> | undefined;
-		expectTypeOf(a).toEqualTypeOf<string | UUID | UUIDObject | undefined>();
+		expectTypeOf(a).toEqualTypeOf<string | Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject | undefined>();
 	});
 
 	test("FromParameters<null>", () => {

@@ -6,6 +6,10 @@ import { arrayParser } from "../../util/arrayParser.js";
 import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { serializer } from "../../util/serializer.js";
+import { Character } from "../Character/Character.js";
+import { CharacterVarying } from "../Character/CharacterVarying.js";
+import { Name } from "../Character/Name.js";
+import { Text } from "../Character/Text.js";
 import { UUID } from "./UUID.js";
 
 describe("UUIDConstructor", () => {
@@ -19,6 +23,10 @@ describe("UUIDConstructor", () => {
 		expect(UUID.safeFrom("a0eebc999c0b4ef8bb6d6bb9bd380a11").success).toBe(true);
 		expect(UUID.safeFrom(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")).success).toBe(true);
 		expect(UUID.safeFrom(UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11")).success).toBe(true);
+		expect(UUID.safeFrom(Character.setN(36).from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")).success).toBe(true);
+		expect(UUID.safeFrom(CharacterVarying.setN(36).from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")).success).toBe(true);
+		expect(UUID.safeFrom(Name.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")).success).toBe(true);
+		expect(UUID.safeFrom(Text.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11")).success).toBe(true);
 		expect(
 			UUID.safeFrom({
 				value: "A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11",

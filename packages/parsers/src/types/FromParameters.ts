@@ -67,22 +67,48 @@ import type { Constructors } from "./Constructors.js";
 
 export type FromParameters<T extends Constructors | null> =
 	//* BitString
-	T extends BitConstructor<infer N>
-		? string | number | Bit<N> | BitObject
-		: T extends BitVaryingConstructor<infer N>
-		? string | number | BitVarying<N> | BitVaryingObject
+	T extends BitConstructor<number>
+		? string | number | Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject
+		: T extends BitVaryingConstructor<number>
+		?
+				| string
+				| number
+				| Bit<number>
+				| BitVarying<number>
+				| Character<number>
+				| CharacterVarying<number>
+				| Name
+				| Text
+				| Int2
+				| Int4
+				| Int8
+				| OID
+				| BitVaryingObject
 		: //* Boolean
 		T extends BooleanConstructor
 		? string | number | boolean | Boolean | BooleanObject
 		: //* Character
-		T extends CharacterConstructor<infer N>
-		? string | Character<N> | CharacterObject
-		: T extends CharacterVaryingConstructor<infer N>
-		? string | CharacterVarying<N> | CharacterVaryingObject
+		T extends CharacterConstructor<number>
+		? string | Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | UUID | CharacterObject
+		: T extends CharacterVaryingConstructor<number>
+		?
+				| string
+				| Bit<number>
+				| BitVarying<number>
+				| Character<number>
+				| CharacterVarying<number>
+				| Name
+				| Text
+				| Int2
+				| Int4
+				| Int8
+				| OID
+				| UUID
+				| CharacterVaryingObject
 		: T extends NameConstructor
-		? string | Name | NameObject
+		? string | Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject
 		: T extends TextConstructor
-		? string | Text | TextObject
+		? string | Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject
 		: //* DateTime
 		T extends DateConstructor
 		? string | number | Date | globalThis.Date | DateTime | DateObject
@@ -154,7 +180,7 @@ export type FromParameters<T extends Constructors | null> =
 		? string | number | OID | OIDObject
 		: //* UUID
 		T extends UUIDConstructor
-		? string | UUID | UUIDObject
+		? string | Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject
 		: T extends null
 		? null
 		: never;

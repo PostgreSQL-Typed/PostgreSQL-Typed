@@ -8,6 +8,10 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { Character } from "../Character/Character.js";
+import { CharacterVarying } from "../Character/CharacterVarying.js";
+import { Name } from "../Character/Name.js";
+import { Text } from "../Character/Text.js";
 
 interface UUIDObject {
 	value: string;
@@ -23,16 +27,16 @@ interface UUID {
 	toJSON(): UUIDObject;
 
 	equals(string: string): boolean;
-	equals(object: UUID | UUIDObject): boolean;
+	equals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject): boolean;
 	safeEquals(string: string): SafeEquals<UUID>;
-	safeEquals(object: UUID | UUIDObject): SafeEquals<UUID>;
+	safeEquals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject): SafeEquals<UUID>;
 }
 
 interface UUIDConstructor {
 	from(string: string): UUID;
-	from(object: UUID | UUIDObject): UUID;
+	from(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject): UUID;
 	safeFrom(string: string): SafeFrom<UUID>;
-	safeFrom(object: UUID | UUIDObject): SafeFrom<UUID>;
+	safeFrom(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | UUIDObject): SafeFrom<UUID>;
 	/**
 	 * Generates a random [RFC 4122](https://www.rfc-editor.org/rfc/rfc4122.txt) version 4 UUID. The UUID is generated using a
 	 * cryptographic pseudorandom number generator.
@@ -106,6 +110,10 @@ class UUIDConstructorClass extends PgTPConstructorBase<UUID> implements UUIDCons
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<UUID> {
 		if (this.isUUID(argument)) return OK(new UUIDClass(argument.value));
+		if (Character.isAnyCharacter(argument)) return this._parseString(context, argument.value);
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return this._parseString(context, argument.value);
+		if (Name.isName(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
 		const parsedObject = hasKeys<UUIDObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 

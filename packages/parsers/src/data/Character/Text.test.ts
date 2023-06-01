@@ -6,6 +6,10 @@ import { arrayParser } from "../../util/arrayParser.js";
 import { arraySerializer } from "../../util/arraySerializer.js";
 import { parser } from "../../util/parser.js";
 import { serializer } from "../../util/serializer.js";
+import { UUID } from "../UUID/UUID.js";
+import { Character } from "./Character.js";
+import { CharacterVarying } from "./CharacterVarying.js";
+import { Name } from "./Name.js";
 import { Text } from "./Text.js";
 
 describe("TextConstructor", () => {
@@ -18,6 +22,10 @@ describe("TextConstructor", () => {
 				value: "abc",
 			}).success
 		).toBe(true);
+		expect(Text.safeFrom(Character.from("a")).success).toBe(true);
+		expect(Text.safeFrom(CharacterVarying.from("a")).success).toBe(true);
+		expect(Text.safeFrom(Name.from("a")).success).toBe(true);
+		expect(Text.safeFrom(UUID.generate()).success).toBe(true);
 		//#endregion
 
 		//#region //* should return INVALID when parsing fails

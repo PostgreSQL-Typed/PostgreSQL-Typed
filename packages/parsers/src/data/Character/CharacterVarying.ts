@@ -6,6 +6,16 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 import { throwPgTPError } from "../../util/throwPgTPError.js";
+import { Bit } from "../BitString/Bit.js";
+import { BitVarying } from "../BitString/BitVarying.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
+import { UUID } from "../UUID/UUID.js";
+import { Character } from "./Character.js";
+import { Name } from "./Name.js";
+import { Text } from "./Text.js";
 
 interface CharacterVaryingObject {
 	value: string;
@@ -23,16 +33,72 @@ interface CharacterVarying<N extends number> {
 	toJSON(): CharacterVaryingObject;
 
 	equals(string: string): boolean;
-	equals(object: CharacterVarying<N> | CharacterVaryingObject): boolean;
+	equals(
+		object:
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| CharacterVaryingObject
+	): boolean;
 	safeEquals(string: string): SafeEquals<CharacterVarying<N>>;
-	safeEquals(object: CharacterVarying<N> | CharacterVaryingObject): SafeEquals<CharacterVarying<N>>;
+	safeEquals(
+		object:
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| CharacterVaryingObject
+	): SafeEquals<CharacterVarying<N>>;
 }
 
 interface CharacterVaryingConstructor<N extends number> {
 	from(string: string): CharacterVarying<N>;
-	from(object: CharacterVarying<N> | CharacterVaryingObject): CharacterVarying<N>;
+	from(
+		object:
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| CharacterVaryingObject
+	): CharacterVarying<N>;
 	safeFrom(string: string): SafeFrom<CharacterVarying<N>>;
-	safeFrom(object: CharacterVarying<N> | CharacterVaryingObject): SafeFrom<CharacterVarying<N>>;
+	safeFrom(
+		object:
+			| Bit<number>
+			| BitVarying<number>
+			| Character<number>
+			| CharacterVarying<number>
+			| Name
+			| Text
+			| Int2
+			| Int4
+			| Int8
+			| OID
+			| UUID
+			| CharacterVaryingObject
+	): SafeFrom<CharacterVarying<N>>;
 	/**
 	 * Returns `true` if `object` is a `CharacterVarying`, `false` otherwise.
 	 */
@@ -168,6 +234,16 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 
 			return OK(new CharacterVaryingClass(argument.value, this._n));
 		}
+		if (Bit.isAnyBit(argument)) return this._parseString(context, argument.value);
+		if (BitVarying.isAnyBitVarying(argument)) return this._parseString(context, argument.value);
+		if (Character.isAnyCharacter(argument)) return this._parseString(context, argument.value);
+		if (Name.isName(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
+		if (Int2.isInt2(argument)) return this._parseString(context, argument.toString());
+		if (Int4.isInt4(argument)) return this._parseString(context, argument.toString());
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (OID.isOID(argument)) return this._parseString(context, argument.toString());
+		if (UUID.isUUID(argument)) return this._parseString(context, argument.value);
 
 		const parsedObject = hasKeys<CharacterVaryingObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);

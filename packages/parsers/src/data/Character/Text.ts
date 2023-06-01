@@ -5,6 +5,10 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { UUID } from "../UUID/UUID.js";
+import { Character } from "./Character.js";
+import { CharacterVarying } from "./CharacterVarying.js";
+import { Name } from "./Name.js";
 
 interface TextObject {
 	value: string;
@@ -20,16 +24,16 @@ interface Text {
 	toJSON(): TextObject;
 
 	equals(string: string): boolean;
-	equals(object: Text | TextObject): boolean;
+	equals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject): boolean;
 	safeEquals(string: string): SafeEquals<Text>;
-	safeEquals(object: Text | TextObject): SafeEquals<Text>;
+	safeEquals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject): SafeEquals<Text>;
 }
 
 interface TextConstructor {
 	from(string: string): Text;
-	from(object: Text | TextObject): Text;
+	from(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject): Text;
 	safeFrom(string: string): SafeFrom<Text>;
-	safeFrom(object: Text | TextObject): SafeFrom<Text>;
+	safeFrom(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | TextObject): SafeFrom<Text>;
 	/**
 	 * Returns `true` if `object` is a `Text`, `false` otherwise.
 	 */
@@ -85,6 +89,10 @@ class TextConstructorClass extends PgTPConstructorBase<Text> implements TextCons
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Text> {
 		if (this.isText(argument)) return OK(new TextClass(argument.value));
+		if (Character.isAnyCharacter(argument)) return OK(new TextClass(argument.value));
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return OK(new TextClass(argument.value));
+		if (Name.isName(argument)) return OK(new TextClass(argument.value));
+		if (UUID.isUUID(argument)) return OK(new TextClass(argument.value));
 		const parsedObject = hasKeys<TextObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return OK(new TextClass(parsedObject.obj.value));
 

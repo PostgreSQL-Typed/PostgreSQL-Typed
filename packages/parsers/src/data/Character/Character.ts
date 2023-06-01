@@ -6,6 +6,16 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 import { throwPgTPError } from "../../util/throwPgTPError.js";
+import { Bit } from "../BitString/Bit.js";
+import { BitVarying } from "../BitString/BitVarying.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
+import { UUID } from "../UUID/UUID.js";
+import { CharacterVarying } from "./CharacterVarying.js";
+import { Name } from "./Name.js";
+import { Text } from "./Text.js";
 
 interface CharacterObject {
 	value: string;
@@ -23,16 +33,24 @@ interface Character<N extends number> {
 	toJSON(): CharacterObject;
 
 	equals(string: string): boolean;
-	equals(object: Character<N> | CharacterObject): boolean;
+	equals(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | UUID | CharacterObject
+	): boolean;
 	safeEquals(string: string): SafeEquals<Character<N>>;
-	safeEquals(object: Character<N> | CharacterObject): SafeEquals<Character<N>>;
+	safeEquals(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | UUID | CharacterObject
+	): SafeEquals<Character<N>>;
 }
 
 interface CharacterConstructor<N extends number> {
 	from(string: string): Character<N>;
-	from(object: Character<N> | CharacterObject): Character<N>;
+	from(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | UUID | CharacterObject
+	): Character<N>;
 	safeFrom(string: string): SafeFrom<Character<N>>;
-	safeFrom(object: Character<N> | CharacterObject): SafeFrom<Character<N>>;
+	safeFrom(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | UUID | CharacterObject
+	): SafeFrom<Character<N>>;
 	/**
 	 * Returns `true` if `object` is a `Character`, `false` otherwise.
 	 */
@@ -171,6 +189,16 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 
 			return OK(new CharacterClass(argument.value, this._n));
 		}
+		if (Bit.isAnyBit(argument)) return this._parseString(context, argument.value);
+		if (BitVarying.isAnyBitVarying(argument)) return this._parseString(context, argument.value);
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return this._parseString(context, argument.value);
+		if (Name.isName(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
+		if (Int2.isInt2(argument)) return this._parseString(context, argument.toString());
+		if (Int4.isInt4(argument)) return this._parseString(context, argument.toString());
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (OID.isOID(argument)) return this._parseString(context, argument.toString());
+		if (UUID.isUUID(argument)) return this._parseString(context, argument.value);
 
 		const parsedObject = hasKeys<CharacterObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);

@@ -5,6 +5,10 @@ import type { SafeEquals } from "../../types/SafeEquals.js";
 import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
+import { UUID } from "../UUID/UUID.js";
+import { Character } from "./Character.js";
+import { CharacterVarying } from "./CharacterVarying.js";
+import { Text } from "./Text.js";
 
 interface NameObject {
 	value: string;
@@ -20,16 +24,16 @@ interface Name {
 	toJSON(): NameObject;
 
 	equals(string: string): boolean;
-	equals(object: Name | NameObject): boolean;
+	equals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject): boolean;
 	safeEquals(string: string): SafeEquals<Name>;
-	safeEquals(object: Name | NameObject): SafeEquals<Name>;
+	safeEquals(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject): SafeEquals<Name>;
 }
 
 interface NameConstructor {
 	from(string: string): Name;
-	from(object: Name | NameObject): Name;
+	from(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject): Name;
 	safeFrom(string: string): SafeFrom<Name>;
-	safeFrom(object: Name | NameObject): SafeFrom<Name>;
+	safeFrom(object: Character<number> | CharacterVarying<number> | Name | Text | UUID | NameObject): SafeFrom<Name>;
 	/**
 	 * Returns `true` if `object` is a `Name`, `false` otherwise.
 	 */
@@ -102,6 +106,10 @@ class NameConstructorClass extends PgTPConstructorBase<Name> implements NameCons
 
 	private _parseObject(context: ParseContext, argument: object): ParseReturnType<Name> {
 		if (this.isName(argument)) return OK(new NameClass(argument.value));
+		if (Character.isAnyCharacter(argument)) return this._parseString(context, argument.value);
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
+		if (UUID.isUUID(argument)) return this._parseString(context, argument.value);
 		const parsedObject = hasKeys<NameObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);
 

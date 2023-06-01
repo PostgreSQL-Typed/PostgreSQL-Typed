@@ -6,6 +6,15 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 import { throwPgTPError } from "../../util/throwPgTPError.js";
+import { Character } from "../Character/Character.js";
+import { CharacterVarying } from "../Character/CharacterVarying.js";
+import { Name } from "../Character/Name.js";
+import { Text } from "../Character/Text.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
+import { BitVarying } from "./BitVarying.js";
 
 interface BitObject {
 	value: string;
@@ -25,19 +34,23 @@ interface Bit<N extends number> {
 
 	equals(string: string): boolean;
 	equals(number: number): boolean;
-	equals(object: Bit<N> | BitObject): boolean;
+	equals(object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject): boolean;
 	safeEquals(string: string): SafeEquals<Bit<N>>;
 	safeEquals(number: number): SafeEquals<Bit<N>>;
-	safeEquals(object: Bit<N> | BitObject): SafeEquals<Bit<N>>;
+	safeEquals(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject
+	): SafeEquals<Bit<N>>;
 }
 
 interface BitConstructor<N extends number> {
 	from(string: string): Bit<N>;
 	from(number: number): Bit<N>;
-	from(object: Bit<N> | BitObject): Bit<N>;
+	from(object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject): Bit<N>;
 	safeFrom(string: string): SafeFrom<Bit<N>>;
 	safeFrom(number: number): SafeFrom<Bit<N>>;
-	safeFrom(object: Bit<N> | BitObject): SafeFrom<Bit<N>>;
+	safeFrom(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject
+	): SafeFrom<Bit<N>>;
 	/**
 	 * Returns `true` if `object` is a `Bit`, `false` otherwise.
 	 */
@@ -204,6 +217,15 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 
 			return OK(new BitClass(argument.value, this._n));
 		}
+		if (BitVarying.isAnyBitVarying(argument)) return this._parseString(context, argument.value);
+		if (Character.isAnyCharacter(argument)) return this._parseString(context, argument.value);
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return this._parseString(context, argument.value);
+		if (Name.isName(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
+		if (Int2.isInt2(argument)) return this._parseNumber(context, argument.value);
+		if (Int4.isInt4(argument)) return this._parseNumber(context, argument.value);
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (OID.isOID(argument)) return this._parseNumber(context, argument.value);
 
 		const parsedObject = hasKeys<BitObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);

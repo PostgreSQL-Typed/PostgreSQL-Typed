@@ -6,6 +6,15 @@ import type { SafeFrom } from "../../types/SafeFrom.js";
 import { PgTPBase } from "../../util/PgTPBase.js";
 import { PgTPConstructorBase } from "../../util/PgTPConstructorBase.js";
 import { throwPgTPError } from "../../util/throwPgTPError.js";
+import { Character } from "../Character/Character.js";
+import { CharacterVarying } from "../Character/CharacterVarying.js";
+import { Name } from "../Character/Name.js";
+import { Text } from "../Character/Text.js";
+import { Int2 } from "../Numeric/Int2.js";
+import { Int4 } from "../Numeric/Int4.js";
+import { Int8 } from "../Numeric/Int8.js";
+import { OID } from "../ObjectIdentifier/OID.js";
+import { Bit } from "./Bit.js";
 
 interface BitVaryingObject {
 	value: string;
@@ -25,19 +34,27 @@ interface BitVarying<N extends number> {
 
 	equals(string: string): boolean;
 	equals(number: number): boolean;
-	equals(object: BitVarying<N> | BitVaryingObject): boolean;
+	equals(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitVaryingObject
+	): boolean;
 	safeEquals(string: string): SafeEquals<BitVarying<N>>;
 	safeEquals(number: number): SafeEquals<BitVarying<N>>;
-	safeEquals(object: BitVarying<N> | BitVaryingObject): SafeEquals<BitVarying<N>>;
+	safeEquals(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitVaryingObject
+	): SafeEquals<BitVarying<N>>;
 }
 
 interface BitVaryingConstructor<N extends number> {
 	from(string: string): BitVarying<N>;
 	from(number: number): BitVarying<N>;
-	from(object: BitVarying<N> | BitVaryingObject): BitVarying<N>;
+	from(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitVaryingObject
+	): BitVarying<N>;
 	safeFrom(string: string): SafeFrom<BitVarying<N>>;
 	safeFrom(number: number): SafeFrom<BitVarying<N>>;
-	safeFrom(object: BitVarying<N> | BitVaryingObject): SafeFrom<BitVarying<N>>;
+	safeFrom(
+		object: Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitVaryingObject
+	): SafeFrom<BitVarying<N>>;
 	/**
 	 * Returns `true` if `object` is a `BitVarying`, `false` otherwise.
 	 */
@@ -201,6 +218,15 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 
 			return OK(new BitVaryingClass(argument.value, this._n));
 		}
+		if (Bit.isAnyBit(argument)) return this._parseString(context, argument.value);
+		if (Character.isAnyCharacter(argument)) return this._parseString(context, argument.value);
+		if (CharacterVarying.isAnyCharacterVarying(argument)) return this._parseString(context, argument.value);
+		if (Name.isName(argument)) return this._parseString(context, argument.value);
+		if (Text.isText(argument)) return this._parseString(context, argument.value);
+		if (Int2.isInt2(argument)) return this._parseNumber(context, argument.value);
+		if (Int4.isInt4(argument)) return this._parseNumber(context, argument.value);
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (OID.isOID(argument)) return this._parseNumber(context, argument.value);
 
 		const parsedObject = hasKeys<BitVaryingObject>(argument, [["value", "string"]]);
 		if (parsedObject.success) return this._parseString(context, parsedObject.obj.value);

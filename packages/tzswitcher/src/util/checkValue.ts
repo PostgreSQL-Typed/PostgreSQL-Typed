@@ -10,14 +10,14 @@ export function checkValue<T>(value: T, options: PgTTzSwitcherOptions, target: k
 	const { timestamp, timestamptz, time, timetz } = options;
 
 	if (timestamp && Timestamp.isTimestamp(value))
-		return Timestamp.from(value.toDateTime(timestamp[current]).setZone(timestamp[target]).toFormat("yyyy-MM-dd HH:mm:ss")) as unknown as T;
+		return Timestamp.from(value.toDateTime(timestamp[current]).setZone(timestamp[target]).toFormat("yyyy-MM-dd HH:mm:ss.SSS")) as unknown as T;
 
 	if (timestamptz && TimestampTZ.isTimestampTZ(value))
-		return TimestampTZ.from(value.toDateTime(timestamptz[target]).toFormat("yyyy-MM-dd HH:mm:ssZZ")) as unknown as T;
+		return TimestampTZ.from(value.toDateTime(timestamptz[target]).toFormat("yyyy-MM-dd HH:mm:ss.SSSZZ")) as unknown as T;
 
-	if (time && Time.isTime(value)) return Time.from(value.toDateTime(time[current]).setZone(time[target]).toFormat("HH:mm:ss")) as unknown as T;
+	if (time && Time.isTime(value)) return Time.from(value.toDateTime(time[current]).setZone(time[target]).toFormat("HH:mm:ss.SSS")) as unknown as T;
 
-	if (timetz && TimeTZ.isTimeTZ(value)) return TimeTZ.from(value.toDateTime(timetz[target]).toFormat("HH:mm:ssZZ")) as unknown as T;
+	if (timetz && TimeTZ.isTimeTZ(value)) return TimeTZ.from(value.toDateTime(timetz[target]).toFormat("HH:mm:ss.SSSZZ")) as unknown as T;
 
 	if (isAnyParser(value)) return value;
 

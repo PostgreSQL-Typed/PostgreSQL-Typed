@@ -1,5 +1,13 @@
 # @postgresql-typed/pg
 
+## 0.3.3
+
+### Patch Changes
+
+- Updated dependencies [[`f164e9e`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f164e9e4550f8c1f7f6d0ddd4228c28e781a1e9d)]:
+  - @postgresql-typed/parsers@0.5.0
+  - @postgresql-typed/core@0.3.0
+
 ## 0.3.2
 
 ### Patch Changes

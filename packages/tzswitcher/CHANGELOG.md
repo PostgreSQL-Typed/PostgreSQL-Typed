@@ -1,5 +1,14 @@
 # @postgresql-typed/tzswitcher
 
+## 0.2.2
+
+### Patch Changes
+
+- [`7e43013`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/7e43013b4fb6d6d0b9bc7beb7c3b21ebb23ac70b) Thanks [@Bas950](https://github.com/Bas950)! - fix(TzSwitcher): return milliseconds too
+
+- Updated dependencies [[`2e46ed2`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2e46ed22c33c71b23de5550bd2b23a5dee4dece8)]:
+  - @postgresql-typed/parsers@0.6.0
+
 ## 0.2.1
 
 ### Patch Changes

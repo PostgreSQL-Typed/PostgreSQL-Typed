@@ -1,5 +1,12 @@
 # @postgresql-typed/cache
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [[`2e46ed2`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2e46ed22c33c71b23de5550bd2b23a5dee4dece8)]:
+  - @postgresql-typed/parsers@0.6.0
+
 ## 0.1.5
 
 ### Patch Changes

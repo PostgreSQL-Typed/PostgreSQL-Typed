@@ -361,7 +361,8 @@ class TimeClass extends PgTPBase<Time> implements Time {
 			{
 				hour: this._hour,
 				minute: this._minute,
-				second: this._second,
+				second: Math.floor(this._second),
+				millisecond: (this._second % 1) * 1000,
 			},
 			{ zone }
 		);

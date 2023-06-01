@@ -512,7 +512,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				hour: this._hour,
 				minute: this._minute,
 				second: Math.floor(this._second),
-				millisecond: (this._second % 1) * 1000,
+				millisecond: Math.round((this._second % 1) * 1000),
 			},
 			{ zone }
 		);

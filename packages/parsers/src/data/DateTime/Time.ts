@@ -357,17 +357,12 @@ class TimeClass extends PgTPBase<Time> implements Time {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
-		const [second, millisecond] = this._second
-			.toString()
-			.split(".")
-			.map(element => Number.parseInt(element));
 		return DateTime.fromObject(
 			{
 				hour: this._hour,
 				minute: this._minute,
-				/* c8 ignore next 3 */
-				second: Number.isNaN(second) ? 0 : second ?? 0,
-				millisecond: Number.isNaN(millisecond) ? 0 : millisecond ?? 0,
+				second: Math.trunc(this._second),
+				millisecond: Math.round((this._second % 1) * 1000),
 			},
 			{ zone }
 		);

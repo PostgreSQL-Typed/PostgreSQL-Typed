@@ -1,5 +1,15 @@
 # @postgresql-typed/pg
 
+## 0.3.6
+
+### Patch Changes
+
+- [`66a066f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/66a066ff3288b1a3c5245536dab084bf44515292) Thanks [@Bas950](https://github.com/Bas950)! - fix: try and catch callHook
+
+- Updated dependencies [[`97005a5`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/97005a544288814b7529fccfa4f6372289f24d57), [`41f13d1`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/41f13d1322d005854346a6922a945f4cf74ee08c)]:
+  - @postgresql-typed/core@0.4.0
+  - @postgresql-typed/parsers@0.6.1
+
 ## 0.3.5
 
 ### Patch Changes

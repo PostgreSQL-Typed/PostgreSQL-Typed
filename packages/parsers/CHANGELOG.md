@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.6.1
+
+### Patch Changes
+
+- [`41f13d1`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/41f13d1322d005854346a6922a945f4cf74ee08c) Thanks [@Bas950](https://github.com/Bas950)! - fix(Parsers): timestamp and time should now really pass milliseconds correctly...
+
 ## 0.6.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @postgresql-typed/core
 
+## 0.4.0
+
+### Minor Changes
+
+- [`97005a5`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/97005a544288814b7529fccfa4f6372289f24d57) Thanks [@Bas950](https://github.com/Bas950)! - fix(Core): move dev dep to normal dep
+
+### Patch Changes
+
+- Updated dependencies [[`41f13d1`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/41f13d1322d005854346a6922a945f4cf74ee08c)]:
+  - @postgresql-typed/parsers@0.6.1
+
 ## 0.3.0
 
 ### Minor Changes

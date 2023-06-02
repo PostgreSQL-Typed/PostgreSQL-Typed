@@ -39,6 +39,7 @@
 		"test:ci": "vitest --run --coverage"
 	},
 	"dependencies": {
+		"@postgresql-typed/parsers": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
 		"hookable": "^5.5.3",
 		"jiti": "^1.18.2",
@@ -49,7 +50,6 @@
 	"devDependencies": {
 		"@postgresql-typed/cli": "workspace:*",
 		"@postgresql-typed/oids": "workspace:*",
-		"@postgresql-typed/parsers": "workspace:*",
 		"@types/node": "^20.1.2",
 		"@types/pg": "^8.6.6",
 		"pg": "^8.10.0",

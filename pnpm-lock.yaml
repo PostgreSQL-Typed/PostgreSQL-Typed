@@ -177,6 +177,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@postgresql-typed/parsers':
+        specifier: workspace:*
+        version: link:../parsers
       '@postgresql-typed/util':
         specifier: workspace:*
         version: link:../util
@@ -202,9 +205,6 @@ importers:
       '@postgresql-typed/oids':
         specifier: workspace:*
         version: link:../oids
-      '@postgresql-typed/parsers':
-        specifier: workspace:*
-        version: link:../parsers
       '@types/node':
         specifier: ^20.1.2
         version: 20.1.2

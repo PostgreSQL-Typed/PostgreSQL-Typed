@@ -50,13 +50,23 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			this._extensionsInstalled = true;
 		}
 
-		await this.callHook("client:pre-connect");
+		try {
+			await this.callHook("client:pre-connect");
+		} catch {
+			// eslint-disable-next-line no-console
+			console.error("Error in client:pre-connect hook, continuing...");
+		}
 
 		try {
 			await this._client.unsafe("SELECT 1");
 			this._ready = true;
 
-			await this.callHook("client:post-connect");
+			try {
+				await this.callHook("client:post-connect");
+			} catch {
+				// eslint-disable-next-line no-console
+				console.error("Error in client:post-connect hook, continuing...");
+			}
 
 			return this as Client<InnerPostgresData, true>;
 		} catch (error) {
@@ -153,10 +163,20 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			output: undefined as Query<unknown> | undefined,
 		};
 
-		await this.callHook("client:pre-query", data, context);
+		try {
+			await this.callHook("client:pre-query", data, context);
+		} catch {
+			// eslint-disable-next-line no-console
+			console.error("Error in client:pre-query hook, continuing...");
+		}
 
 		if (data.output) {
-			this.callHook("client:pre-query-override", data, context);
+			try {
+				await this.callHook("client:pre-query-override", data, context);
+			} catch {
+				// eslint-disable-next-line no-console
+				console.error("Error in client:pre-query-override hook, continuing...");
+			}
 			return OK(data.output as Query<Data>);
 		}
 
@@ -182,7 +202,12 @@ export class Client<InnerPostgresData extends PostgresData, Ready extends boolea
 			},
 		};
 
-		await this.callHook("client:post-query", finalResult, context);
+		try {
+			await this.callHook("client:post-query", finalResult, context);
+		} catch {
+			// eslint-disable-next-line no-console
+			console.error("Error in client:post-query hook, continuing...");
+		}
 
 		return OK(finalResult.output);
 	}

@@ -42,7 +42,7 @@
 		"@types/pg": "^8.6.6",
 		"pg": "^8.10.0"
 	},
-	"packageManager": "pnpm@7.17.0",
+	"packageManager": "pnpm@7.33.0",
 	"engines": {
 		"node": ">=16",
 		"pnpm": ">=7.17.0"

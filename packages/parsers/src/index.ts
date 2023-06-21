@@ -73,3 +73,4 @@ export * from "./util/PgTPError.js";
 export * from "./util/PgTPParser.js";
 export { LowerRange, LowerRangeType, UpperRange, UpperRangeType } from "./util/Range.js";
 export * from "./util/serializer.js";
+export * from "bignumber.js";

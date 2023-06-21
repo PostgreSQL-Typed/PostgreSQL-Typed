@@ -24,6 +24,7 @@ interface Float8 {
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toBigNumber(): BigNumber;
 	toJSON(): Float8Object;
 
@@ -165,6 +166,10 @@ class Float8Class extends PgTPBase<Float8> implements Float8 {
 
 	toString(): string {
 		return this._float8.toString();
+	}
+
+	toNumber(): number {
+		return this._float8.toNumber();
 	}
 
 	toBigNumber(): BigNumber {

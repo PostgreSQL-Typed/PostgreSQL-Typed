@@ -24,6 +24,7 @@ interface Float4 {
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toBigNumber(): BigNumber;
 	toJSON(): Float4Object;
 
@@ -165,6 +166,10 @@ class Float4Class extends PgTPBase<Float4> implements Float4 {
 
 	toString(): string {
 		return this._float4.toString();
+	}
+
+	toNumber(): number {
+		return this._float4.toNumber();
 	}
 
 	toBigNumber(): BigNumber {

@@ -17,6 +17,7 @@ interface Int8 {
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toBigint(): bigint;
 	toJSON(): Int8Object;
 
@@ -196,6 +197,10 @@ class Int8Class extends PgTPBase<Int8> implements Int8 {
 
 	toString(): string {
 		return this._int8.toString();
+	}
+
+	toNumber(): number {
+		return Number(this._int8);
 	}
 
 	toBigint(): bigint {

@@ -1,4 +1,8 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
 
 overrides:
   '@nuxt/kit': ^3.3.2
@@ -218,6 +222,52 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
+  packages/core2:
+    dependencies:
+      '@postgresql-typed/parsers':
+        specifier: workspace:*
+        version: link:../parsers
+      '@postgresql-typed/util':
+        specifier: workspace:*
+        version: link:../util
+      drizzle-orm:
+        specifier: ^0.27.0
+        version: 0.27.0(@types/pg@8.6.6)(pg@8.10.0)
+      hookable:
+        specifier: ^5.5.3
+        version: 5.5.3
+      jiti:
+        specifier: ^1.18.2
+        version: 1.18.2
+      mlly:
+        specifier: ^1.2.1
+        version: 1.2.1
+      pathe:
+        specifier: ^1.1.0
+        version: 1.1.0
+      source-map-support:
+        specifier: ^0.5.21
+        version: 0.5.21
+    devDependencies:
+      '@postgresql-typed/cli':
+        specifier: workspace:*
+        version: link:../cli
+      '@postgresql-typed/oids':
+        specifier: workspace:*
+        version: link:../oids
+      '@types/node':
+        specifier: ^20.1.2
+        version: 20.1.2
+      '@types/pg':
+        specifier: ^8.6.6
+        version: 8.6.6
+      pg:
+        specifier: ^8.10.0
+        version: 8.10.0
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
   packages/oids:
     devDependencies:
       '@types/pg':
@@ -268,7 +318,7 @@ importers:
     dependencies:
       '@postgresql-typed/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../core2
       '@postgresql-typed/oids':
         specifier: workspace:*
         version: link:../oids
@@ -299,7 +349,7 @@ importers:
     dependencies:
       '@postgresql-typed/core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../core2
       '@postgresql-typed/oids':
         specifier: workspace:*
         version: link:../oids
@@ -2386,7 +2436,6 @@ packages:
 
   /@types/node@20.1.2:
     resolution: {integrity: sha512-CTO/wa8x+rZU626cL2BlbCDzydgnFNgc19h4YvizpTO88MFQxab8wqisxaofQJ/9bLGugRdWIuX/TbIs6VVF6g==}
-    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -2402,7 +2451,6 @@ packages:
       '@types/node': 20.1.2
       pg-protocol: 1.6.0
       pg-types: 2.2.0
-    dev: true
 
   /@types/pluralize@0.0.29:
     resolution: {integrity: sha512-BYOID+l2Aco2nBik+iYS4SZX0Lf20KPILP5RGmM1IgzdwNdTs0eebiFriOPcej1sX9mLnSoiNte5zcFxssgpGA==}
@@ -5062,6 +5110,72 @@ packages:
     resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
     engines: {node: '>=10'}
     dev: true
+
+  /drizzle-orm@0.27.0(@types/pg@8.6.6)(pg@8.10.0):
+    resolution: {integrity: sha512-LGiJ0icB+wQwgbSCOvAjONY8Ec6G/EDzQQP5PmUaQYeI9OqgpVKHC2T1fFIbvk5dabWsbokJ5NOciVAxriStig==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@libsql/client': '*'
+      '@neondatabase/serverless': '>=0.1'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/sql.js': '*'
+      '@vercel/postgres': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      '@types/pg': 8.6.6
+      pg: 8.10.0
+    dev: false
 
   /duplexer@0.1.2:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}

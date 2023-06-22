@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { DateRange } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTDateRangeConfig<TMode extends "DateRange" | "string" = "DateRange" | "string"> {
 	mode?: TMode;
 }
+export interface PgTDateRangeBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTDateRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTDateRangeHKT;
+}
+export interface PgTDateRangeHKT extends ColumnHKTBase {
+	_type: PgTDateRange<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers DateRange
-export type PgTDateRangeBuilderInitial<TName extends string> = PgTDateRangeBuilder<{
-	name: TName;
+export type PgTDateRangeBuilderInitial<TDateRange extends string> = PgTDateRangeBuilder<{
+	name: TDateRange;
 	data: DateRange;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTDateRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTDateRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateRangeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateRange<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateRange<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableDateRange extends string>(table: AnyPgTable<{ name: TTableDateRange }>): PgTDateRange<MakeColumnConfig<T, TTableDateRange>> {
+		return new PgTDateRange<MakeColumnConfig<T, TTableDateRange>>(table, this.config);
 	}
 }
 
-export class PgTDateRange<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTDateRange<T extends ColumnBaseConfig> extends PgColumn<PgTDateRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTDateRange";
+
+	getSQLType(): string {
+		return "daterange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return DateRange.from(value as string);
@@ -39,25 +57,28 @@ export class PgTDateRange<T extends ColumnBaseConfig> extends PgText<T & WithEnu
 //#endregion
 
 //#region @postgresql-typed/parsers DateRange as string
-export type PgTDateRangeStringBuilderInitial<TName extends string> = PgTDateRangeStringBuilder<{
-	name: TName;
+export type PgTDateRangeStringBuilderInitial<TDateRange extends string> = PgTDateRangeStringBuilder<{
+	name: TDateRange;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTDateRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTDateRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateRangeStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateRangeString<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateRangeString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableDateRange extends string>(table: AnyPgTable<{ name: TTableDateRange }>): PgTDateRangeString<MakeColumnConfig<T, TTableDateRange>> {
+		return new PgTDateRangeString<MakeColumnConfig<T, TTableDateRange>>(table, this.config);
 	}
 }
 
-export class PgTDateRangeString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTDateRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTDateRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTDateRangeString";
+
+	getSQLType(): string {
+		return "daterange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return DateRange.from(value as string).postgres;
@@ -70,11 +91,11 @@ export class PgTDateRangeString<T extends ColumnBaseConfig> extends PgText<T & W
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineDateRange<TName extends string, TMode extends PgTDateRangeConfig["mode"] & {}>(
-	name: TName,
+export function defineDateRange<TDateRange extends string, TMode extends PgTDateRangeConfig["mode"] & {}>(
+	name: TDateRange,
 	config?: PgTDateRangeConfig<TMode>
-): Equal<TMode, "DateRange"> extends true ? PgTDateRangeBuilderInitial<TName> : PgTDateRangeStringBuilderInitial<TName>;
+): Equal<TMode, "DateRange"> extends true ? PgTDateRangeBuilderInitial<TDateRange> : PgTDateRangeStringBuilderInitial<TDateRange>;
 export function defineDateRange(name: string, config: PgTDateRangeConfig = {}) {
-	if (config.mode === "DateRange") return new PgTDateRangeBuilder(name, {});
-	return new PgTDateRangeStringBuilder(name, {});
+	if (config.mode === "DateRange") return new PgTDateRangeBuilder(name);
+	return new PgTDateRangeStringBuilder(name);
 }

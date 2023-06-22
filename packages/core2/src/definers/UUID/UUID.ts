@@ -1,32 +1,60 @@
 /* eslint-disable unicorn/filename-case */
 import { UUID } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgUUID, PgUUIDBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+	sql,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTUUIDConfig<TMode extends "UUID" | "string" = "UUID" | "string"> {
 	mode?: TMode;
 }
+export interface PgTUUIDBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTUUIDBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTUUIDHKT;
+}
+export interface PgTUUIDHKT extends ColumnHKTBase {
+	_type: PgTUUID<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers UUID
-export type PgTUUIDBuilderInitial<TName extends string> = PgTUUIDBuilder<{
-	name: TName;
+export type PgTUUIDBuilderInitial<TUUID extends string> = PgTUUIDBuilder<{
+	name: TUUID;
 	data: UUID;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTUUIDBuilder<T extends ColumnBuilderBaseConfig> extends PgUUIDBuilder<T> {
+export class PgTUUIDBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTUUIDBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTUUIDBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTUUID<MakeColumnConfig<T, TTableName>> {
-		return new PgTUUID<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableUUID extends string>(table: AnyPgTable<{ name: TTableUUID }>): PgTUUID<MakeColumnConfig<T, TTableUUID>> {
+		return new PgTUUID<MakeColumnConfig<T, TTableUUID>>(table, this.config);
+	}
+
+	/**
+	 * Adds `default gen_random_uuid()` to the column definition.
+	 */
+	/* c8 ignore next 3 */
+	defaultRandom(): ReturnType<this["default"]> {
+		return this.default(sql`gen_random_uuid()`) as ReturnType<this["default"]>;
 	}
 }
 
-export class PgTUUID<T extends ColumnBaseConfig> extends PgUUID<T> {
+export class PgTUUID<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDHKT, T> {
 	static readonly [entityKind]: string = "PgTUUID";
+
+	getSQLType(): string {
+		return "uuid";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return UUID.from(value as string);
@@ -39,25 +67,36 @@ export class PgTUUID<T extends ColumnBaseConfig> extends PgUUID<T> {
 //#endregion
 
 //#region @postgresql-typed/parsers UUID as string
-export type PgTUUIDStringBuilderInitial<TName extends string> = PgTUUIDStringBuilder<{
-	name: TName;
+export type PgTUUIDStringBuilderInitial<TUUID extends string> = PgTUUIDStringBuilder<{
+	name: TUUID;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTUUIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgUUIDBuilder<T> {
+export class PgTUUIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTUUIDBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTUUIDStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTUUIDString<MakeColumnConfig<T, TTableName>> {
-		return new PgTUUIDString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableUUID extends string>(table: AnyPgTable<{ name: TTableUUID }>): PgTUUIDString<MakeColumnConfig<T, TTableUUID>> {
+		return new PgTUUIDString<MakeColumnConfig<T, TTableUUID>>(table, this.config);
+	}
+
+	/**
+	 * Adds `default gen_random_uuid()` to the column definition.
+	 */
+	/* c8 ignore next 3 */
+	defaultRandom(): ReturnType<this["default"]> {
+		return this.default(sql`gen_random_uuid()`) as ReturnType<this["default"]>;
 	}
 }
 
-export class PgTUUIDString<T extends ColumnBaseConfig> extends PgUUID<T> {
+export class PgTUUIDString<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDHKT, T> {
 	static readonly [entityKind]: string = "PgTUUIDString";
+
+	getSQLType(): string {
+		return "uuid";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return UUID.from(value as string).postgres;
@@ -70,10 +109,10 @@ export class PgTUUIDString<T extends ColumnBaseConfig> extends PgUUID<T> {
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineUUID<TName extends string, TMode extends PgTUUIDConfig["mode"] & {}>(
-	name: TName,
+export function defineUUID<TUUID extends string, TMode extends PgTUUIDConfig["mode"] & {}>(
+	name: TUUID,
 	config?: PgTUUIDConfig<TMode>
-): Equal<TMode, "UUID"> extends true ? PgTUUIDBuilderInitial<TName> : PgTUUIDStringBuilderInitial<TName>;
+): Equal<TMode, "UUID"> extends true ? PgTUUIDBuilderInitial<TUUID> : PgTUUIDStringBuilderInitial<TUUID>;
 export function defineUUID(name: string, config: PgTUUIDConfig = {}) {
 	if (config.mode === "UUID") return new PgTUUIDBuilder(name);
 	return new PgTUUIDStringBuilder(name);

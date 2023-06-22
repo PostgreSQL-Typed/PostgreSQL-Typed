@@ -3,7 +3,18 @@
 	"version": "0.4.0",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
-	"exports": "./lib/index.js",
+	"exports": {
+		".": "./lib/index.js",
+		"./definers": {
+			"types": "./definers.d.ts",
+			"import": "./definers.js"
+		},
+		"./operators": {
+			"types": "./operators.d.ts",
+			"import": "./operators.js"
+		},
+		"./package.json": "./package.json"
+	},
 	"types": "./lib/index.d.ts",
 	"license": "MPL-2.0",
 	"author": {
@@ -20,7 +31,9 @@
 		"url": "https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/issues"
 	},
 	"files": [
-		"lib"
+		"lib",
+		"definers.*",
+		"operators.*"
 	],
 	"keywords": [
 		"postgresql",
@@ -34,9 +47,9 @@
 		"build": "tsc",
 		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
 		"lint:ci": "eslint --ext .ts ./ && prettier --check .",
-		"test": "vitest --run",
-		"test:watch": "vitest --ui --coverage",
-		"test:ci": "vitest --run --coverage"
+		"test": "TZ=UTC vitest --run",
+		"test:watch": "TZ=UTC vitest --ui --coverage",
+		"test:ci": "TZ=UTC vitest --run --coverage"
 	},
 	"dependencies": {
 		"@postgresql-typed/parsers": "workspace:*",

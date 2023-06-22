@@ -1,11 +1,26 @@
-/* eslint-disable unicorn/filename-case */
 import { CharacterVarying } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgVarchar, PgVarcharBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTCharacterVaryingConfig<TMode extends "CharacterVarying" | "string" = "CharacterVarying" | "string"> {
 	mode?: TMode;
 	length?: number;
+}
+export interface PgTCharacterVaryingBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTCharacterVaryingBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTCharacterVaryingHKT;
+}
+export interface PgTCharacterVaryingHKT extends ColumnHKTBase {
+	_type: PgTCharacterVarying<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers CharacterVarying
@@ -17,17 +32,27 @@ export type PgTCharacterVaryingBuilderInitial<TName extends string> = PgTCharact
 	hasDefault: false;
 }>;
 
-export class PgTCharacterVaryingBuilder<T extends ColumnBuilderBaseConfig> extends PgVarcharBuilder<T & WithEnum> {
+export class PgTCharacterVaryingBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterVaryingBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterVaryingBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVarying<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTCharacterVaryingConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVarying<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterVarying<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgVarchar<T & WithEnum> {
+export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterVarying";
+
+	readonly length = this.config.length;
+
+	getSQLType(): string {
+		return this.length === undefined ? "varchar" : `varchar(${this.length})`;
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
@@ -50,17 +75,31 @@ export type PgTCharacterVaryingStringBuilderInitial<TName extends string> = PgTC
 	hasDefault: false;
 }>;
 
-export class PgTCharacterVaryingStringBuilder<T extends ColumnBuilderBaseConfig> extends PgVarcharBuilder<T & WithEnum> {
+export class PgTCharacterVaryingStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<
+	PgTCharacterVaryingBuilderHKT,
+	T,
+	{ length?: number }
+> {
 	static readonly [entityKind]: string = "PgTCharacterVaryingStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTCharacterVaryingConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgVarchar<T & WithEnum> {
+export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterVaryingString";
+
+	readonly length = this.config.length;
+
+	getSQLType(): string {
+		return this.length === undefined ? "varchar" : `varchar(${this.length})`;
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string).postgres;

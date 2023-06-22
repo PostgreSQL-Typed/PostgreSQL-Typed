@@ -1,10 +1,25 @@
-/* eslint-disable unicorn/filename-case */
 import { Int2 } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgSmallIntBuilder, PgSmallIntHKT } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTInt2Config<TMode extends "Int2" | "string" | "number" = "Int2" | "string" | "number"> {
 	mode?: TMode;
+}
+export interface PgTInt2BuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTInt2Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTInt2HKT;
+}
+export interface PgTInt2HKT extends ColumnHKTBase {
+	_type: PgTInt2<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Int2
@@ -16,16 +31,15 @@ export type PgTInt2BuilderInitial<TName extends string> = PgTInt2Builder<{
 	hasDefault: false;
 }>;
 
-export class PgTInt2Builder<T extends ColumnBuilderBaseConfig> extends PgSmallIntBuilder<T> {
+export class PgTInt2Builder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt2BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt2Builder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt2<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt2<T extends ColumnBaseConfig> extends PgColumn<PgSmallIntHKT, T> {
+export class PgTInt2<T extends ColumnBaseConfig> extends PgColumn<PgTInt2HKT, T> {
 	static readonly [entityKind]: string = "PgTInt2";
 
 	getSQLType(): string {
@@ -51,16 +65,15 @@ export type PgTInt2StringBuilderInitial<TName extends string> = PgTInt2StringBui
 	hasDefault: false;
 }>;
 
-export class PgTInt2StringBuilder<T extends ColumnBuilderBaseConfig> extends PgSmallIntBuilder<T> {
+export class PgTInt2StringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt2BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt2StringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2String<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2String<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt2String<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt2String<T extends ColumnBaseConfig> extends PgColumn<PgSmallIntHKT, T> {
+export class PgTInt2String<T extends ColumnBaseConfig> extends PgColumn<PgTInt2HKT, T> {
 	static readonly [entityKind]: string = "PgTInt2String";
 
 	getSQLType(): string {
@@ -86,16 +99,15 @@ export type PgTInt2NumberBuilderInitial<TName extends string> = PgTInt2NumberBui
 	hasDefault: false;
 }>;
 
-export class PgTInt2NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgSmallIntBuilder<T> {
+export class PgTInt2NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt2BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt2NumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2Number<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt2Number<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt2Number<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt2Number<T extends ColumnBaseConfig> extends PgColumn<PgSmallIntHKT, T> {
+export class PgTInt2Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt2HKT, T> {
 	static readonly [entityKind]: string = "PgTInt2Number";
 
 	getSQLType(): string {

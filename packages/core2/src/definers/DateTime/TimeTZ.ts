@@ -1,15 +1,32 @@
 /* eslint-disable unicorn/filename-case */
 import { TimeTZ } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgTime, PgTimeBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+	sql,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTTimeTZConfig<
 	TMode extends "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
 > {
 	mode?: TMode;
 }
+export interface PgTTimeTZBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTTimeTZBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTTimeTZHKT;
+}
+export interface PgTTimeTZHKT extends ColumnHKTBase {
+	_type: PgTTimeTZ<Assume<this["config"], ColumnBaseConfig>>;
+}
 
-//#region @postgresql-typed/parsers Date
+//#region @postgresql-typed/parsers Time
 export type PgTTimeTZBuilderInitial<TName extends string> = PgTTimeTZBuilder<{
 	name: TName;
 	data: TimeTZ;
@@ -18,17 +35,25 @@ export type PgTTimeTZBuilderInitial<TName extends string> = PgTTimeTZBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTTimeTZBuilder<T extends ColumnBuilderBaseConfig> extends PgTimeBuilder<T> {
+export class PgTTimeTZBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimeTZBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZ<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZ<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZ<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgTime<T> {
+export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZ";
+
+	getSQLType(): string {
+		return "timetz";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimeTZ.from(value as string);
@@ -40,7 +65,7 @@ export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgTime<T> {
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Date as string
+//#region @postgresql-typed/parsers Time as string
 export type PgTTimeTZStringBuilderInitial<TName extends string> = PgTTimeTZStringBuilder<{
 	name: TName;
 	data: string;
@@ -49,17 +74,25 @@ export type PgTTimeTZStringBuilderInitial<TName extends string> = PgTTimeTZStrin
 	hasDefault: false;
 }>;
 
-export class PgTTimeTZStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTimeBuilder<T> {
+export class PgTTimeTZStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimeTZBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZString<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZString<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgTime<T> {
+export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZString";
+
+	getSQLType(): string {
+		return "timetz";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimeTZ.from(value as string).postgres;
@@ -71,7 +104,7 @@ export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgTime<T> {
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Date as globalThis.Date
+//#region @postgresql-typed/parsers Time as globalThis.Date
 export type PgTTimeTZGlobalThisDateBuilderInitial<TName extends string> = PgTTimeTZGlobalThisDateBuilder<{
 	name: TName;
 	data: globalThis.Date;
@@ -80,17 +113,25 @@ export type PgTTimeTZGlobalThisDateBuilderInitial<TName extends string> = PgTTim
 	hasDefault: false;
 }>;
 
-export class PgTTimeTZGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgTimeBuilder<T> {
+export class PgTTimeTZGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimeTZBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZGlobalThisDateBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZGlobalThisDate<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZGlobalThisDate<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgTime<T> {
+export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZGlobalThisDate";
+
+	getSQLType(): string {
+		return "timetz";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimeTZ.from(value as string).toJSDate();
@@ -102,7 +143,7 @@ export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgTime<
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Date as luxon.DateTime
+//#region @postgresql-typed/parsers Time as luxon.DateTime
 export type PgTTimeTZLuxonDateTimeBuilderInitial<TName extends string> = PgTTimeTZLuxonDateTimeBuilder<{
 	name: TName;
 	data: luxon.DateTime;
@@ -111,17 +152,25 @@ export type PgTTimeTZLuxonDateTimeBuilderInitial<TName extends string> = PgTTime
 	hasDefault: false;
 }>;
 
-export class PgTTimeTZLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgTimeBuilder<T> {
+export class PgTTimeTZLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimeTZBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZLuxonDateTimeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZLuxonDateTime<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZLuxonDateTime<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgTime<T> {
+export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZLuxonDateTime";
+
+	getSQLType(): string {
+		return "timetz";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimeTZ.from(value as string).toDateTime();
@@ -132,7 +181,7 @@ export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgTime<T
 	}
 }
 
-//#region @postgresql-typed/parsers Date as unix
+//#region @postgresql-typed/parsers Time as unix
 export type PgTTimeTZUnixBuilderInitial<TName extends string> = PgTTimeTZUnixBuilder<{
 	name: TName;
 	data: number;
@@ -141,17 +190,25 @@ export type PgTTimeTZUnixBuilderInitial<TName extends string> = PgTTimeTZUnixBui
 	hasDefault: false;
 }>;
 
-export class PgTTimeTZUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgTimeBuilder<T> {
+export class PgTTimeTZUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimeTZBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZUnixBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZUnix<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZUnix<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTTimeTZUnix<T extends ColumnBaseConfig> extends PgTime<T> {
+export class PgTTimeTZUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT, T> {
 	static readonly [entityKind]: string = "PgTTimeTZUnix";
+
+	getSQLType(): string {
+		return "timetz";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimeTZ.from(value as string).toNumber();
@@ -178,9 +235,9 @@ export function defineTimeTZ<TName extends string, TMode extends PgTTimeTZConfig
 	: PgTTimeTZGlobalThisDateBuilderInitial<TName>;
 
 export function defineTimeTZ(name: string, config: PgTTimeTZConfig = {}) {
-	if (config.mode === "TimeTZ") return new PgTTimeTZBuilder(name, true, undefined);
-	if (config.mode === "string") return new PgTTimeTZStringBuilder(name, true, undefined);
-	if (config.mode === "luxon.DateTime") return new PgTTimeTZLuxonDateTimeBuilder(name, true, undefined);
-	if (config.mode === "unix") return new PgTTimeTZUnixBuilder(name, true, undefined);
-	return new PgTTimeTZGlobalThisDateBuilder(name, true, undefined);
+	if (config.mode === "TimeTZ") return new PgTTimeTZBuilder(name);
+	if (config.mode === "string") return new PgTTimeTZStringBuilder(name);
+	if (config.mode === "luxon.DateTime") return new PgTTimeTZLuxonDateTimeBuilder(name);
+	if (config.mode === "unix") return new PgTTimeTZUnixBuilder(name);
+	return new PgTTimeTZGlobalThisDateBuilder(name);
 }

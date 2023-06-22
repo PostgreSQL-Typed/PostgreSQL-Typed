@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { Line } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTLineConfig<TMode extends "Line" | "string" = "Line" | "string"> {
 	mode?: TMode;
 }
+export interface PgTLineBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTLineBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTLineHKT;
+}
+export interface PgTLineHKT extends ColumnHKTBase {
+	_type: PgTLine<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers Line
-export type PgTLineBuilderInitial<TName extends string> = PgTLineBuilder<{
-	name: TName;
+export type PgTLineBuilderInitial<TLine extends string> = PgTLineBuilder<{
+	name: TLine;
 	data: Line;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTLineBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTLineBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTLineBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTLine<MakeColumnConfig<T, TTableName>> {
-		return new PgTLine<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLine<MakeColumnConfig<T, TTableLine>> {
+		return new PgTLine<MakeColumnConfig<T, TTableLine>>(table, this.config);
 	}
 }
 
-export class PgTLine<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTLine<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
 	static readonly [entityKind]: string = "PgTLine";
+
+	getSQLType(): string {
+		return "line";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Line.from(value as string);
@@ -39,25 +57,28 @@ export class PgTLine<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
 //#endregion
 
 //#region @postgresql-typed/parsers Line as string
-export type PgTLineStringBuilderInitial<TName extends string> = PgTLineStringBuilder<{
-	name: TName;
+export type PgTLineStringBuilderInitial<TLine extends string> = PgTLineStringBuilder<{
+	name: TLine;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTLineStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTLineStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTLineStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTLineString<MakeColumnConfig<T, TTableName>> {
-		return new PgTLineString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLineString<MakeColumnConfig<T, TTableLine>> {
+		return new PgTLineString<MakeColumnConfig<T, TTableLine>>(table, this.config);
 	}
 }
 
-export class PgTLineString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTLineString<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
 	static readonly [entityKind]: string = "PgTLineString";
+
+	getSQLType(): string {
+		return "line";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Line.from(value as string).postgres;
@@ -70,11 +91,11 @@ export class PgTLineString<T extends ColumnBaseConfig> extends PgText<T & WithEn
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineLine<TName extends string, TMode extends PgTLineConfig["mode"] & {}>(
-	name: TName,
+export function defineLine<TLine extends string, TMode extends PgTLineConfig["mode"] & {}>(
+	name: TLine,
 	config?: PgTLineConfig<TMode>
-): Equal<TMode, "Line"> extends true ? PgTLineBuilderInitial<TName> : PgTLineStringBuilderInitial<TName>;
+): Equal<TMode, "Line"> extends true ? PgTLineBuilderInitial<TLine> : PgTLineStringBuilderInitial<TLine>;
 export function defineLine(name: string, config: PgTLineConfig = {}) {
-	if (config.mode === "Line") return new PgTLineBuilder(name, {});
-	return new PgTLineStringBuilder(name, {});
+	if (config.mode === "Line") return new PgTLineBuilder(name);
+	return new PgTLineStringBuilder(name);
 }

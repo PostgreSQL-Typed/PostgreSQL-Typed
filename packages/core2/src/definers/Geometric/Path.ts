@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { Path } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTPathConfig<TMode extends "Path" | "string" = "Path" | "string"> {
 	mode?: TMode;
 }
+export interface PgTPathBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTPathBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTPathHKT;
+}
+export interface PgTPathHKT extends ColumnHKTBase {
+	_type: PgTPath<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers Path
-export type PgTPathBuilderInitial<TName extends string> = PgTPathBuilder<{
-	name: TName;
+export type PgTPathBuilderInitial<TPath extends string> = PgTPathBuilder<{
+	name: TPath;
 	data: Path;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTPathBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTPathBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPathBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTPathBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTPath<MakeColumnConfig<T, TTableName>> {
-		return new PgTPath<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPath<MakeColumnConfig<T, TTablePath>> {
+		return new PgTPath<MakeColumnConfig<T, TTablePath>>(table, this.config);
 	}
 }
 
-export class PgTPath<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTPath<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T> {
 	static readonly [entityKind]: string = "PgTPath";
+
+	getSQLType(): string {
+		return "path";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Path.from(value as string);
@@ -39,25 +57,28 @@ export class PgTPath<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
 //#endregion
 
 //#region @postgresql-typed/parsers Path as string
-export type PgTPathStringBuilderInitial<TName extends string> = PgTPathStringBuilder<{
-	name: TName;
+export type PgTPathStringBuilderInitial<TPath extends string> = PgTPathStringBuilder<{
+	name: TPath;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTPathStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTPathStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPathBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTPathStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTPathString<MakeColumnConfig<T, TTableName>> {
-		return new PgTPathString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPathString<MakeColumnConfig<T, TTablePath>> {
+		return new PgTPathString<MakeColumnConfig<T, TTablePath>>(table, this.config);
 	}
 }
 
-export class PgTPathString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTPathString<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T> {
 	static readonly [entityKind]: string = "PgTPathString";
+
+	getSQLType(): string {
+		return "path";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Path.from(value as string).postgres;
@@ -70,11 +91,11 @@ export class PgTPathString<T extends ColumnBaseConfig> extends PgText<T & WithEn
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function definePath<TName extends string, TMode extends PgTPathConfig["mode"] & {}>(
-	name: TName,
+export function definePath<TPath extends string, TMode extends PgTPathConfig["mode"] & {}>(
+	name: TPath,
 	config?: PgTPathConfig<TMode>
-): Equal<TMode, "Path"> extends true ? PgTPathBuilderInitial<TName> : PgTPathStringBuilderInitial<TName>;
+): Equal<TMode, "Path"> extends true ? PgTPathBuilderInitial<TPath> : PgTPathStringBuilderInitial<TPath>;
 export function definePath(name: string, config: PgTPathConfig = {}) {
-	if (config.mode === "Path") return new PgTPathBuilder(name, {});
-	return new PgTPathStringBuilder(name, {});
+	if (config.mode === "Path") return new PgTPathBuilder(name);
+	return new PgTPathStringBuilder(name);
 }

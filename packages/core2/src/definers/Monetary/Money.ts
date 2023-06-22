@@ -1,10 +1,25 @@
-/* eslint-disable unicorn/filename-case */
 import { BigNumber, Money } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgDoublePrecisionBuilder, PgDoublePrecisionHKT } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTMoneyConfig<TMode extends "Money" | "string" | "BigNumber" | "number" = "Money" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
+}
+export interface PgTMoneyBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTMoneyBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTMoneyHKT;
+}
+export interface PgTMoneyHKT extends ColumnHKTBase {
+	_type: PgTMoney<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Money
@@ -16,16 +31,15 @@ export type PgTMoneyBuilderInitial<TName extends string> = PgTMoneyBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTMoneyBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTMoneyBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoney<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoney<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoney<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
 	static readonly [entityKind]: string = "PgTMoney";
 
 	getSQLType(): string {
@@ -51,16 +65,15 @@ export type PgTMoneyStringBuilderInitial<TName extends string> = PgTMoneyStringB
 	hasDefault: false;
 }>;
 
-export class PgTMoneyStringBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTMoneyStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyString<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyString<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyString";
 
 	getSQLType(): string {
@@ -86,16 +99,15 @@ export type PgTMoneyBigNumberBuilderInitial<TName extends string> = PgTMoneyBigN
 	hasDefault: false;
 }>;
 
-export class PgTMoneyBigNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTMoneyBigNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyBigNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyBigNumber";
 
 	getSQLType(): string {
@@ -121,16 +133,15 @@ export type PgTMoneyNumberBuilderInitial<TName extends string> = PgTMoneyNumberB
 	hasDefault: false;
 }>;
 
-export class PgTMoneyNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTMoneyNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyNumber<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
 	static readonly [entityKind]: string = "PgTMoneyNumber";
 
 	getSQLType(): string {

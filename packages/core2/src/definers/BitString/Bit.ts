@@ -1,11 +1,27 @@
-/* eslint-disable unicorn/filename-case */
 import { Bit } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgCharBuilder, PgCharHKT, PgColumn } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTBitConfig<TMode extends "Bit" | "string" | "number" = "Bit" | "string" | "number"> {
 	mode?: TMode;
 	length?: number;
+}
+
+export interface PgTBitBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTBitBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTBitHKT;
+}
+export interface PgTBitHKT extends ColumnHKTBase {
+	_type: PgTBit<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Bit
@@ -17,16 +33,20 @@ export type PgTBitBuilderInitial<TName extends string> = PgTBitBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTBitBuilder<T extends ColumnBuilderBaseConfig> extends PgCharBuilder<T & WithEnum> {
+export class PgTBitBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBitBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBitBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBit<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTBitConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBit<MakeColumnConfig<T, TTableName>> {
 		return new PgTBit<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgCharHKT, T, { length?: number }> {
+export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBit";
 
 	readonly length = this.config.length;
@@ -56,16 +76,20 @@ export type PgTBitStringBuilderInitial<TName extends string> = PgTBitStringBuild
 	hasDefault: false;
 }>;
 
-export class PgTBitStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCharBuilder<T & WithEnum> {
+export class PgTBitStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBitBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBitStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitString<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTBitConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitString<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgCharHKT, T, { length?: number }> {
+export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBitString";
 
 	readonly length = this.config.length;
@@ -95,16 +119,20 @@ export type PgTBitNumberBuilderInitial<TName extends string> = PgTBitNumberBuild
 	hasDefault: false;
 }>;
 
-export class PgTBitNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgCharBuilder<T & WithEnum> {
+export class PgTBitNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBitBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBitNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitNumber<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTBitConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBitNumber<T extends ColumnBaseConfig> extends PgColumn<PgCharHKT, T, { length?: number }> {
+export class PgTBitNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTBitNumber";
 
 	readonly length = this.config.length;

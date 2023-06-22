@@ -1,11 +1,27 @@
-/* eslint-disable unicorn/filename-case */
 import { Character } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgChar, PgCharBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTCharacterConfig<TMode extends "Character" | "string" = "Character" | "string"> {
 	mode?: TMode;
 	length?: number;
+}
+
+export interface PgTCharacterBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTCharacterBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTCharacterHKT;
+}
+export interface PgTCharacterHKT extends ColumnHKTBase {
+	_type: PgTCharacter<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Character
@@ -17,17 +33,27 @@ export type PgTCharacterBuilderInitial<TName extends string> = PgTCharacterBuild
 	hasDefault: false;
 }>;
 
-export class PgTCharacterBuilder<T extends ColumnBuilderBaseConfig> extends PgCharBuilder<T & WithEnum> {
+export class PgTCharacterBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacter<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTCharacterConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacter<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacter<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTCharacter<T extends ColumnBaseConfig> extends PgChar<T & WithEnum> {
+export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacter";
+
+	readonly length = this.config.length;
+
+	getSQLType(): string {
+		return this.length === undefined ? "char" : `char(${this.length})`;
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string);
@@ -50,17 +76,27 @@ export type PgTCharacterStringBuilderInitial<TName extends string> = PgTCharacte
 	hasDefault: false;
 }>;
 
-export class PgTCharacterStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCharBuilder<T & WithEnum> {
+export class PgTCharacterStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterBuilderHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterString<MakeColumnConfig<T, TTableName>> {
+	constructor(name: string, config: PgTCharacterConfig) {
+		super(name);
+		this.config.length = config.length;
+	}
+
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterString<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTCharacterString<T extends ColumnBaseConfig> extends PgChar<T & WithEnum> {
+export class PgTCharacterString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
 	static readonly [entityKind]: string = "PgTCharacterString";
+
+	readonly length = this.config.length;
+
+	getSQLType(): string {
+		return this.length === undefined ? "char" : `char(${this.length})`;
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string).postgres;

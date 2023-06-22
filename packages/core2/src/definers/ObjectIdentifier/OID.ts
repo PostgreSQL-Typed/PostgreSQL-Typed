@@ -1,10 +1,26 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgSerial, PgSerialBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTOIDConfig<TMode extends "OID" | "string" | "number" = "OID" | "string" | "number"> {
 	mode?: TMode;
+}
+export interface PgTOIDBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTOIDBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTOIDHKT;
+}
+export interface PgTOIDHKT extends ColumnHKTBase {
+	_type: PgTOID<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers OID
@@ -16,17 +32,20 @@ export type PgTOIDBuilderInitial<TName extends string> = PgTOIDBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTOIDBuilder<T extends ColumnBuilderBaseConfig> extends PgSerialBuilder<T> {
+export class PgTOIDBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTOIDBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOID<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOID<MakeColumnConfig<T, TTableName>> {
 		return new PgTOID<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTOID<T extends ColumnBaseConfig> extends PgSerial<T> {
+export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 	static readonly [entityKind]: string = "PgTOID";
+
+	getSQLType(): string {
+		return "oid";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return OID.from(value as string);
@@ -47,17 +66,20 @@ export type PgTOIDStringBuilderInitial<TName extends string> = PgTOIDStringBuild
 	hasDefault: false;
 }>;
 
-export class PgTOIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgSerialBuilder<T> {
+export class PgTOIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTOIDStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDString<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDString<MakeColumnConfig<T, TTableName>> {
 		return new PgTOIDString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTOIDString<T extends ColumnBaseConfig> extends PgSerial<T> {
+export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 	static readonly [entityKind]: string = "PgTOIDString";
+
+	getSQLType(): string {
+		return "oid";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return OID.from(value as string).postgres;
@@ -78,17 +100,20 @@ export type PgTOIDNumberBuilderInitial<TName extends string> = PgTOIDNumberBuild
 	hasDefault: false;
 }>;
 
-export class PgTOIDNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgSerialBuilder<T> {
+export class PgTOIDNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTOIDNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDNumber<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTOIDNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgSerial<T> {
+export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 	static readonly [entityKind]: string = "PgTOIDNumber";
+
+	getSQLType(): string {
+		return "oid";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return OID.from(value as string).toNumber();
@@ -98,7 +123,6 @@ export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgSerial<T> {
 		return OID.from(value as number).postgres;
 	}
 }
-//#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function defineOID<TName extends string, TMode extends PgTOIDConfig["mode"] & {}>(

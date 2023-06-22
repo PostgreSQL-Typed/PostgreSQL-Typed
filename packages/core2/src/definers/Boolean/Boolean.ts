@@ -1,10 +1,25 @@
-/* eslint-disable unicorn/filename-case */
 import { Boolean } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgBoolean, PgBooleanBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTBooleanConfig<TMode extends "Boolean" | "string" | "boolean" | "number" = "Boolean" | "string" | "boolean" | "number"> {
 	mode?: TMode;
+}
+export interface PgTBooleanBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTBooleanBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTBooleanHKT;
+}
+export interface PgTBooleanHKT extends ColumnHKTBase {
+	_type: PgTBoolean<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Boolean
@@ -17,17 +32,20 @@ export type PgTBooleanBuilderInitial<TName extends string> = PgTBooleanBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgBooleanBuilder<T> {
+export class PgTBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBooleanBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTBooleanBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBoolean<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBoolean<MakeColumnConfig<T, TTableName>> {
 		return new PgTBoolean<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBoolean<T extends ColumnBaseConfig> extends PgBoolean<T> {
+export class PgTBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
 	static readonly [entityKind]: string = "PgTBoolean";
+
+	getSQLType(): string {
+		return "boolean";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Boolean.from(value as string);
@@ -48,17 +66,20 @@ export type PgTBooleanStringBuilderInitial<TName extends string> = PgTBooleanStr
 	hasDefault: false;
 }>;
 
-export class PgTBooleanStringBuilder<T extends ColumnBuilderBaseConfig> extends PgBooleanBuilder<T> {
+export class PgTBooleanStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBooleanBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTBooleanStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanString<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanString<MakeColumnConfig<T, TTableName>> {
 		return new PgTBooleanString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBooleanString<T extends ColumnBaseConfig> extends PgBoolean<T> {
+export class PgTBooleanString<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
 	static readonly [entityKind]: string = "PgTBooleanString";
+
+	getSQLType(): string {
+		return "boolean";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Boolean.from(value as string).postgres;
@@ -79,17 +100,20 @@ export type PgTJSBooleanBuilderInitial<TName extends string> = PgTJSBooleanBuild
 	hasDefault: false;
 }>;
 
-export class PgTJSBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgBooleanBuilder<T> {
+export class PgTJSBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBooleanBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTJSBooleanBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSBoolean<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSBoolean<MakeColumnConfig<T, TTableName>> {
 		return new PgTJSBoolean<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgBoolean<T> {
+export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
 	static readonly [entityKind]: string = "PgTJSBoolean";
+
+	getSQLType(): string {
+		return "boolean";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Boolean.from(value as string).toBoolean();
@@ -110,17 +134,20 @@ export type PgTBooleanNumberBuilderInitial<TName extends string> = PgTBooleanNum
 	hasDefault: false;
 }>;
 
-export class PgTBooleanNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgBooleanBuilder<T> {
+export class PgTBooleanNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBooleanBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTBooleanNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanNumber<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTBooleanNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTBooleanNumber<T extends ColumnBaseConfig> extends PgBoolean<T> {
+export class PgTBooleanNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
 	static readonly [entityKind]: string = "PgTBooleanNumber";
+
+	getSQLType(): string {
+		return "boolean";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Boolean.from(value as string).toNumber();

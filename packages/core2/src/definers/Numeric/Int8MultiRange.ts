@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { Int8MultiRange } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTInt8MultiRangeConfig<TMode extends "Int8MultiRange" | "string" = "Int8MultiRange" | "string"> {
 	mode?: TMode;
 }
+export interface PgTInt8MultiRangeBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTInt8MultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTInt8MultiRangeHKT;
+}
+export interface PgTInt8MultiRangeHKT extends ColumnHKTBase {
+	_type: PgTInt8MultiRange<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers Int8MultiRange
-export type PgTInt8MultiRangeBuilderInitial<TName extends string> = PgTInt8MultiRangeBuilder<{
-	name: TName;
+export type PgTInt8MultiRangeBuilderInitial<TInt8MultiRange extends string> = PgTInt8MultiRangeBuilder<{
+	name: TInt8MultiRange;
 	data: Int8MultiRange;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTInt8MultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTInt8MultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8MultiRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8MultiRangeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8MultiRange<MakeColumnConfig<T, TTableName>> {
-		return new PgTInt8MultiRange<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableInt8MultiRange extends string>(table: AnyPgTable<{ name: TTableInt8MultiRange }>): PgTInt8MultiRange<MakeColumnConfig<T, TTableInt8MultiRange>> {
+		return new PgTInt8MultiRange<MakeColumnConfig<T, TTableInt8MultiRange>>(table, this.config);
 	}
 }
 
-export class PgTInt8MultiRange<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTInt8MultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTInt8MultiRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8MultiRange";
+
+	getSQLType(): string {
+		return "int8multirange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Int8MultiRange.from(value as string);
@@ -39,25 +57,30 @@ export class PgTInt8MultiRange<T extends ColumnBaseConfig> extends PgText<T & Wi
 //#endregion
 
 //#region @postgresql-typed/parsers Int8MultiRange as string
-export type PgTInt8MultiRangeStringBuilderInitial<TName extends string> = PgTInt8MultiRangeStringBuilder<{
-	name: TName;
+export type PgTInt8MultiRangeStringBuilderInitial<TInt8MultiRange extends string> = PgTInt8MultiRangeStringBuilder<{
+	name: TInt8MultiRange;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTInt8MultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTInt8MultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8MultiRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8MultiRangeStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8MultiRangeString<MakeColumnConfig<T, TTableName>> {
-		return new PgTInt8MultiRangeString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableInt8MultiRange extends string>(
+		table: AnyPgTable<{ name: TTableInt8MultiRange }>
+	): PgTInt8MultiRangeString<MakeColumnConfig<T, TTableInt8MultiRange>> {
+		return new PgTInt8MultiRangeString<MakeColumnConfig<T, TTableInt8MultiRange>>(table, this.config);
 	}
 }
 
-export class PgTInt8MultiRangeString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTInt8MultiRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTInt8MultiRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8MultiRangeString";
+
+	getSQLType(): string {
+		return "int8multirange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Int8MultiRange.from(value as string).postgres;
@@ -70,11 +93,11 @@ export class PgTInt8MultiRangeString<T extends ColumnBaseConfig> extends PgText<
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineInt8MultiRange<TName extends string, TMode extends PgTInt8MultiRangeConfig["mode"] & {}>(
-	name: TName,
+export function defineInt8MultiRange<TInt8MultiRange extends string, TMode extends PgTInt8MultiRangeConfig["mode"] & {}>(
+	name: TInt8MultiRange,
 	config?: PgTInt8MultiRangeConfig<TMode>
-): Equal<TMode, "Int8MultiRange"> extends true ? PgTInt8MultiRangeBuilderInitial<TName> : PgTInt8MultiRangeStringBuilderInitial<TName>;
+): Equal<TMode, "Int8MultiRange"> extends true ? PgTInt8MultiRangeBuilderInitial<TInt8MultiRange> : PgTInt8MultiRangeStringBuilderInitial<TInt8MultiRange>;
 export function defineInt8MultiRange(name: string, config: PgTInt8MultiRangeConfig = {}) {
-	if (config.mode === "Int8MultiRange") return new PgTInt8MultiRangeBuilder(name, {});
-	return new PgTInt8MultiRangeStringBuilder(name, {});
+	if (config.mode === "Int8MultiRange") return new PgTInt8MultiRangeBuilder(name);
+	return new PgTInt8MultiRangeStringBuilder(name);
 }

@@ -1,10 +1,25 @@
-/* eslint-disable unicorn/filename-case */
 import { Int8 } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgBigInt64Builder, PgBigInt64HKT, PgColumn } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTInt8Config<TMode extends "Int8" | "string" | "BigInt" | "number" = "Int8" | "string" | "BigInt" | "number"> {
 	mode?: TMode;
+}
+export interface PgTInt8BuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTInt8Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTInt8HKT;
+}
+export interface PgTInt8HKT extends ColumnHKTBase {
+	_type: PgTInt8<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Int8
@@ -16,16 +31,15 @@ export type PgTInt8BuilderInitial<TName extends string> = PgTInt8Builder<{
 	hasDefault: false;
 }>;
 
-export class PgTInt8Builder<T extends ColumnBuilderBaseConfig> extends PgBigInt64Builder<T> {
+export class PgTInt8Builder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8Builder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt8<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt8<T extends ColumnBaseConfig> extends PgColumn<PgBigInt64HKT, T> {
+export class PgTInt8<T extends ColumnBaseConfig> extends PgColumn<PgTInt8HKT, T> {
 	static readonly [entityKind]: string = "PgTInt8";
 
 	getSQLType(): string {
@@ -51,16 +65,15 @@ export type PgTInt8StringBuilderInitial<TName extends string> = PgTInt8StringBui
 	hasDefault: false;
 }>;
 
-export class PgTInt8StringBuilder<T extends ColumnBuilderBaseConfig> extends PgBigInt64Builder<T> {
+export class PgTInt8StringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8StringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8String<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8String<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt8String<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt8String<T extends ColumnBaseConfig> extends PgColumn<PgBigInt64HKT, T> {
+export class PgTInt8String<T extends ColumnBaseConfig> extends PgColumn<PgTInt8HKT, T> {
 	static readonly [entityKind]: string = "PgTInt8String";
 
 	getSQLType(): string {
@@ -86,16 +99,15 @@ export type PgTInt8BigIntBuilderInitial<TName extends string> = PgTInt8BigIntBui
 	hasDefault: false;
 }>;
 
-export class PgTInt8BigIntBuilder<T extends ColumnBuilderBaseConfig> extends PgBigInt64Builder<T> {
+export class PgTInt8BigIntBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8BigIntBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8BigInt<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8BigInt<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt8BigInt<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt8BigInt<T extends ColumnBaseConfig> extends PgColumn<PgBigInt64HKT, T> {
+export class PgTInt8BigInt<T extends ColumnBaseConfig> extends PgColumn<PgTInt8HKT, T> {
 	static readonly [entityKind]: string = "PgTInt8BigInt";
 
 	getSQLType(): string {
@@ -121,16 +133,15 @@ export type PgTInt8NumberBuilderInitial<TName extends string> = PgTInt8NumberBui
 	hasDefault: false;
 }>;
 
-export class PgTInt8NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgBigInt64Builder<T> {
+export class PgTInt8NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTInt8NumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8Number<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt8Number<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt8Number<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTInt8Number<T extends ColumnBaseConfig> extends PgColumn<PgBigInt64HKT, T> {
+export class PgTInt8Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt8HKT, T> {
 	static readonly [entityKind]: string = "PgTInt8Number";
 
 	getSQLType(): string {

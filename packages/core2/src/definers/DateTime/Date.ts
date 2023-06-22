@@ -1,12 +1,28 @@
-/* eslint-disable unicorn/filename-case */
 import { Date } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgDateBuilder, PgDateHKT } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+	sql,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTDateConfig<
 	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
 > {
 	mode?: TMode;
+}
+export interface PgTDateBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTDateBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTDateHKT;
+}
+export interface PgTDateHKT extends ColumnHKTBase {
+	_type: PgTDate<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Date
@@ -18,16 +34,20 @@ export type PgTDateBuilderInitial<TName extends string> = PgTDateBuilder<{
 	hasDefault: false;
 }>;
 
-export class PgTDateBuilder<T extends ColumnBuilderBaseConfig> extends PgDateBuilder<T> {
+export class PgTDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDate<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDate<MakeColumnConfig<T, TTableName>> {
 		return new PgTDate<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTDate<T extends ColumnBaseConfig> extends PgColumn<PgDateHKT, T> {
+export class PgTDate<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
 	static readonly [entityKind]: string = "PgTDate";
 
 	getSQLType(): string {
@@ -53,16 +73,20 @@ export type PgTDateStringBuilderInitial<TName extends string> = PgTDateStringBui
 	hasDefault: false;
 }>;
 
-export class PgTDateStringBuilder<T extends ColumnBuilderBaseConfig> extends PgDateBuilder<T> {
+export class PgTDateStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateString<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateString<MakeColumnConfig<T, TTableName>> {
 		return new PgTDateString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTDateString<T extends ColumnBaseConfig> extends PgColumn<PgDateHKT, T> {
+export class PgTDateString<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
 	static readonly [entityKind]: string = "PgTDateString";
 
 	getSQLType(): string {
@@ -88,16 +112,20 @@ export type PgTDateGlobalThisDateBuilderInitial<TName extends string> = PgTDateG
 	hasDefault: false;
 }>;
 
-export class PgTDateGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgDateBuilder<T> {
+export class PgTDateGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateGlobalThisDateBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>> {
 		return new PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTDateGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<PgDateHKT, T> {
+export class PgTDateGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
 	static readonly [entityKind]: string = "PgTDateGlobalThisDate";
 
 	getSQLType(): string {
@@ -123,16 +151,20 @@ export type PgTDateLuxonDateTimeBuilderInitial<TName extends string> = PgTDateLu
 	hasDefault: false;
 }>;
 
-export class PgTDateLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgDateBuilder<T> {
+export class PgTDateLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateLuxonDateTimeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateLuxonDateTime<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateLuxonDateTime<MakeColumnConfig<T, TTableName>> {
 		return new PgTDateLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTDateLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<PgDateHKT, T> {
+export class PgTDateLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
 	static readonly [entityKind]: string = "PgTDateLuxonDateTime";
 
 	getSQLType(): string {
@@ -157,16 +189,20 @@ export type PgTDateUnixBuilderInitial<TName extends string> = PgTDateUnixBuilder
 	hasDefault: false;
 }>;
 
-export class PgTDateUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgDateBuilder<T> {
+export class PgTDateUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTDateUnixBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateUnix<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateUnix<MakeColumnConfig<T, TTableName>> {
 		return new PgTDateUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	/* c8 ignore next 3 */
+	defaultNow() {
+		return this.default(sql`now()`);
 	}
 }
 
-export class PgTDateUnix<T extends ColumnBaseConfig> extends PgColumn<PgDateHKT, T> {
+export class PgTDateUnix<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
 	static readonly [entityKind]: string = "PgTDateUnix";
 
 	getSQLType(): string {

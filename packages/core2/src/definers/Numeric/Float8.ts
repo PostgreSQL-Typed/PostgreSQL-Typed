@@ -1,10 +1,25 @@
-/* eslint-disable unicorn/filename-case */
 import { BigNumber, Float8 } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgDoublePrecisionBuilder, PgDoublePrecisionHKT } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTFloat8Config<TMode extends "Float8" | "string" | "BigNumber" | "number" = "Float8" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
+}
+export interface PgTFloat8BuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTFloat8Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTFloat8HKT;
+}
+export interface PgTFloat8HKT extends ColumnHKTBase {
+	_type: PgTFloat8<Assume<this["config"], ColumnBaseConfig>>;
 }
 
 //#region @postgresql-typed/parsers Float8
@@ -16,16 +31,15 @@ export type PgTFloat8BuilderInitial<TName extends string> = PgTFloat8Builder<{
 	hasDefault: false;
 }>;
 
-export class PgTFloat8Builder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTFloat8Builder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTFloat8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8Builder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat8<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTFloat8<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTFloat8<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8";
 
 	getSQLType(): string {
@@ -51,16 +65,15 @@ export type PgTFloat8StringBuilderInitial<TName extends string> = PgTFloat8Strin
 	hasDefault: false;
 }>;
 
-export class PgTFloat8StringBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTFloat8StringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTFloat8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8StringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8String<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8String<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat8String<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTFloat8String<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTFloat8String<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8String";
 
 	getSQLType(): string {
@@ -86,16 +99,15 @@ export type PgTFloat8BigNumberBuilderInitial<TName extends string> = PgTFloat8Bi
 	hasDefault: false;
 }>;
 
-export class PgTFloat8BigNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTFloat8BigNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTFloat8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8BigNumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8BigNumber<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8BigNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat8BigNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTFloat8BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTFloat8BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8BigNumber";
 
 	getSQLType(): string {
@@ -121,16 +133,15 @@ export type PgTFloat8NumberBuilderInitial<TName extends string> = PgTFloat8Numbe
 	hasDefault: false;
 }>;
 
-export class PgTFloat8NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgDoublePrecisionBuilder<T> {
+export class PgTFloat8NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTFloat8BuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8NumberBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8Number<MakeColumnConfig<T, TTableName>> {
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat8Number<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat8Number<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 }
 
-export class PgTFloat8Number<T extends ColumnBaseConfig> extends PgColumn<PgDoublePrecisionHKT, T> {
+export class PgTFloat8Number<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT, T> {
 	static readonly [entityKind]: string = "PgTFloat8Number";
 
 	getSQLType(): string {

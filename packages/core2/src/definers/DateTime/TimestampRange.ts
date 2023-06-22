@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { TimestampRange } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTTimestampRangeConfig<TMode extends "TimestampRange" | "string" = "TimestampRange" | "string"> {
 	mode?: TMode;
 }
+export interface PgTTimestampRangeBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTTimestampRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTTimestampRangeHKT;
+}
+export interface PgTTimestampRangeHKT extends ColumnHKTBase {
+	_type: PgTTimestampRange<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers TimestampRange
-export type PgTTimestampRangeBuilderInitial<TName extends string> = PgTTimestampRangeBuilder<{
-	name: TName;
+export type PgTTimestampRangeBuilderInitial<TTimestampRange extends string> = PgTTimestampRangeBuilder<{
+	name: TTimestampRange;
 	data: TimestampRange;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTTimestampRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTTimestampRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampRangeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampRange<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampRange<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableTimestampRange extends string>(table: AnyPgTable<{ name: TTableTimestampRange }>): PgTTimestampRange<MakeColumnConfig<T, TTableTimestampRange>> {
+		return new PgTTimestampRange<MakeColumnConfig<T, TTableTimestampRange>>(table, this.config);
 	}
 }
 
-export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampRange";
+
+	getSQLType(): string {
+		return "tsrange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimestampRange.from(value as string);
@@ -39,25 +57,30 @@ export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgText<T & Wi
 //#endregion
 
 //#region @postgresql-typed/parsers TimestampRange as string
-export type PgTTimestampRangeStringBuilderInitial<TName extends string> = PgTTimestampRangeStringBuilder<{
-	name: TName;
+export type PgTTimestampRangeStringBuilderInitial<TTimestampRange extends string> = PgTTimestampRangeStringBuilder<{
+	name: TTimestampRange;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTTimestampRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTTimestampRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampRangeStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampRangeString<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampRangeString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableTimestampRange extends string>(
+		table: AnyPgTable<{ name: TTableTimestampRange }>
+	): PgTTimestampRangeString<MakeColumnConfig<T, TTableTimestampRange>> {
+		return new PgTTimestampRangeString<MakeColumnConfig<T, TTableTimestampRange>>(table, this.config);
 	}
 }
 
-export class PgTTimestampRangeString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTTimestampRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampRangeString";
+
+	getSQLType(): string {
+		return "tsrange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimestampRange.from(value as string).postgres;
@@ -70,11 +93,11 @@ export class PgTTimestampRangeString<T extends ColumnBaseConfig> extends PgText<
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineTimestampRange<TName extends string, TMode extends PgTTimestampRangeConfig["mode"] & {}>(
-	name: TName,
+export function defineTimestampRange<TTimestampRange extends string, TMode extends PgTTimestampRangeConfig["mode"] & {}>(
+	name: TTimestampRange,
 	config?: PgTTimestampRangeConfig<TMode>
-): Equal<TMode, "TimestampRange"> extends true ? PgTTimestampRangeBuilderInitial<TName> : PgTTimestampRangeStringBuilderInitial<TName>;
+): Equal<TMode, "TimestampRange"> extends true ? PgTTimestampRangeBuilderInitial<TTimestampRange> : PgTTimestampRangeStringBuilderInitial<TTimestampRange>;
 export function defineTimestampRange(name: string, config: PgTTimestampRangeConfig = {}) {
-	if (config.mode === "TimestampRange") return new PgTTimestampRangeBuilder(name, {});
-	return new PgTTimestampRangeStringBuilder(name, {});
+	if (config.mode === "TimestampRange") return new PgTTimestampRangeBuilder(name);
+	return new PgTTimestampRangeStringBuilder(name);
 }

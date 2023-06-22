@@ -1,32 +1,50 @@
-/* eslint-disable unicorn/filename-case */
 import { Box } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTBoxConfig<TMode extends "Box" | "string" = "Box" | "string"> {
 	mode?: TMode;
 }
+export interface PgTBoxBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTBoxBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTBoxHKT;
+}
+export interface PgTBoxHKT extends ColumnHKTBase {
+	_type: PgTBox<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers Box
-export type PgTBoxBuilderInitial<TName extends string> = PgTBoxBuilder<{
-	name: TName;
+export type PgTBoxBuilderInitial<TBox extends string> = PgTBoxBuilder<{
+	name: TBox;
 	data: Box;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBoxBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTBoxBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBox<MakeColumnConfig<T, TTableName>> {
-		return new PgTBox<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBox<MakeColumnConfig<T, TTableBox>> {
+		return new PgTBox<MakeColumnConfig<T, TTableBox>>(table, this.config);
 	}
 }
 
-export class PgTBox<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTBox<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
 	static readonly [entityKind]: string = "PgTBox";
+
+	getSQLType(): string {
+		return "box";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Box.from(value as string);
@@ -39,25 +57,28 @@ export class PgTBox<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
 //#endregion
 
 //#region @postgresql-typed/parsers Box as string
-export type PgTBoxStringBuilderInitial<TName extends string> = PgTBoxStringBuilder<{
-	name: TName;
+export type PgTBoxStringBuilderInitial<TBox extends string> = PgTBoxStringBuilder<{
+	name: TBox;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBoxBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTBoxStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBoxString<MakeColumnConfig<T, TTableName>> {
-		return new PgTBoxString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBoxString<MakeColumnConfig<T, TTableBox>> {
+		return new PgTBoxString<MakeColumnConfig<T, TTableBox>>(table, this.config);
 	}
 }
 
-export class PgTBoxString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTBoxString<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
 	static readonly [entityKind]: string = "PgTBoxString";
+
+	getSQLType(): string {
+		return "box";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return Box.from(value as string).postgres;
@@ -70,11 +91,11 @@ export class PgTBoxString<T extends ColumnBaseConfig> extends PgText<T & WithEnu
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineBox<TName extends string, TMode extends PgTBoxConfig["mode"] & {}>(
-	name: TName,
+export function defineBox<TBox extends string, TMode extends PgTBoxConfig["mode"] & {}>(
+	name: TBox,
 	config?: PgTBoxConfig<TMode>
-): Equal<TMode, "Box"> extends true ? PgTBoxBuilderInitial<TName> : PgTBoxStringBuilderInitial<TName>;
+): Equal<TMode, "Box"> extends true ? PgTBoxBuilderInitial<TBox> : PgTBoxStringBuilderInitial<TBox>;
 export function defineBox(name: string, config: PgTBoxConfig = {}) {
-	if (config.mode === "Box") return new PgTBoxBuilder(name, {});
-	return new PgTBoxStringBuilder(name, {});
+	if (config.mode === "Box") return new PgTBoxBuilder(name);
+	return new PgTBoxStringBuilder(name);
 }

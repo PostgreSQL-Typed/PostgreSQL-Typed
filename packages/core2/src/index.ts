@@ -31,6 +31,4 @@
  * await db.select().from(autoflexCloudUsers).where(eq(autoflexCloudUsers.id, 123)).returning();
  *
  */
-
-export * from "./definers/index.js";
-export * from "./operators.js";
+export const foo = "bar";

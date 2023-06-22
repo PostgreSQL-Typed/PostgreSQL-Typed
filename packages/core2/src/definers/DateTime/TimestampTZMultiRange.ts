@@ -1,32 +1,53 @@
 /* eslint-disable unicorn/filename-case */
 import { TimestampTZMultiRange } from "@postgresql-typed/parsers";
-import { type ColumnBaseConfig, type ColumnBuilderBaseConfig, entityKind, Equal, type MakeColumnConfig, WithEnum } from "drizzle-orm";
-import { type AnyPgTable, PgText, PgTextBuilder } from "drizzle-orm/pg-core";
+import {
+	type Assume,
+	type ColumnBaseConfig,
+	type ColumnBuilderBaseConfig,
+	type ColumnBuilderHKTBase,
+	type ColumnHKTBase,
+	entityKind,
+	type Equal,
+	type MakeColumnConfig,
+} from "drizzle-orm";
+import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 export interface PgTTimestampTZMultiRangeConfig<TMode extends "TimestampTZMultiRange" | "string" = "TimestampTZMultiRange" | "string"> {
 	mode?: TMode;
 }
+export interface PgTTimestampTZMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
+	_type: PgTTimestampTZMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
+	_columnHKT: PgTTimestampTZMultiRangeHKT;
+}
+export interface PgTTimestampTZMultiRangeHKT extends ColumnHKTBase {
+	_type: PgTTimestampTZMultiRange<Assume<this["config"], ColumnBaseConfig>>;
+}
 
 //#region @postgresql-typed/parsers TimestampTZMultiRange
-export type PgTTimestampTZMultiRangeBuilderInitial<TName extends string> = PgTTimestampTZMultiRangeBuilder<{
-	name: TName;
+export type PgTTimestampTZMultiRangeBuilderInitial<TTimestampTZMultiRange extends string> = PgTTimestampTZMultiRangeBuilder<{
+	name: TTimestampTZMultiRange;
 	data: TimestampTZMultiRange;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTTimestampTZMultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTTimestampTZMultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampTZMultiRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampTZMultiRangeBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampTZMultiRange<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampTZMultiRange<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableTimestampTZMultiRange extends string>(
+		table: AnyPgTable<{ name: TTableTimestampTZMultiRange }>
+	): PgTTimestampTZMultiRange<MakeColumnConfig<T, TTableTimestampTZMultiRange>> {
+		return new PgTTimestampTZMultiRange<MakeColumnConfig<T, TTableTimestampTZMultiRange>>(table, this.config);
 	}
 }
 
-export class PgTTimestampTZMultiRange<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTTimestampTZMultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampTZMultiRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampTZMultiRange";
+
+	getSQLType(): string {
+		return "tstzmultirange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimestampTZMultiRange.from(value as string);
@@ -39,25 +60,30 @@ export class PgTTimestampTZMultiRange<T extends ColumnBaseConfig> extends PgText
 //#endregion
 
 //#region @postgresql-typed/parsers TimestampTZMultiRange as string
-export type PgTTimestampTZMultiRangeStringBuilderInitial<TName extends string> = PgTTimestampTZMultiRangeStringBuilder<{
-	name: TName;
+export type PgTTimestampTZMultiRangeStringBuilderInitial<TTimestampTZMultiRange extends string> = PgTTimestampTZMultiRangeStringBuilder<{
+	name: TTimestampTZMultiRange;
 	data: string;
 	driverParam: string;
 	notNull: false;
 	hasDefault: false;
 }>;
 
-export class PgTTimestampTZMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgTextBuilder<T & WithEnum> {
+export class PgTTimestampTZMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampTZMultiRangeBuilderHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampTZMultiRangeStringBuilder";
 
-	//@ts-expect-error - override
-	override build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampTZMultiRangeString<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampTZMultiRangeString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	build<TTableTimestampTZMultiRange extends string>(
+		table: AnyPgTable<{ name: TTableTimestampTZMultiRange }>
+	): PgTTimestampTZMultiRangeString<MakeColumnConfig<T, TTableTimestampTZMultiRange>> {
+		return new PgTTimestampTZMultiRangeString<MakeColumnConfig<T, TTableTimestampTZMultiRange>>(table, this.config);
 	}
 }
 
-export class PgTTimestampTZMultiRangeString<T extends ColumnBaseConfig> extends PgText<T & WithEnum> {
+export class PgTTimestampTZMultiRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampTZMultiRangeHKT, T> {
 	static readonly [entityKind]: string = "PgTTimestampTZMultiRangeString";
+
+	getSQLType(): string {
+		return "tstzmultirange";
+	}
 
 	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
 		return TimestampTZMultiRange.from(value as string).postgres;
@@ -70,11 +96,13 @@ export class PgTTimestampTZMultiRangeString<T extends ColumnBaseConfig> extends 
 //#endregion
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function defineTimestampTZMultiRange<TName extends string, TMode extends PgTTimestampTZMultiRangeConfig["mode"] & {}>(
-	name: TName,
+export function defineTimestampTZMultiRange<TTimestampTZMultiRange extends string, TMode extends PgTTimestampTZMultiRangeConfig["mode"] & {}>(
+	name: TTimestampTZMultiRange,
 	config?: PgTTimestampTZMultiRangeConfig<TMode>
-): Equal<TMode, "TimestampTZMultiRange"> extends true ? PgTTimestampTZMultiRangeBuilderInitial<TName> : PgTTimestampTZMultiRangeStringBuilderInitial<TName>;
+): Equal<TMode, "TimestampTZMultiRange"> extends true
+	? PgTTimestampTZMultiRangeBuilderInitial<TTimestampTZMultiRange>
+	: PgTTimestampTZMultiRangeStringBuilderInitial<TTimestampTZMultiRange>;
 export function defineTimestampTZMultiRange(name: string, config: PgTTimestampTZMultiRangeConfig = {}) {
-	if (config.mode === "TimestampTZMultiRange") return new PgTTimestampTZMultiRangeBuilder(name, {});
-	return new PgTTimestampTZMultiRangeStringBuilder(name, {});
+	if (config.mode === "TimestampTZMultiRange") return new PgTTimestampTZMultiRangeBuilder(name);
+	return new PgTTimestampTZMultiRangeStringBuilder(name);
 }

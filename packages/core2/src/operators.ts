@@ -226,10 +226,10 @@ export function max(value: AnyColumn | SQL.Aliased): SQL<number> {
  * db.select(ascii(cars.make)).from(cars)
  * ```
  */
-export function ascii<T>(value: SQL.Aliased<T>): SQL<string>;
-export function ascii<TColumn extends AnyColumn>(value: TColumn): SQL<string>;
-export function ascii(value: AnyColumn | SQL.Aliased): SQL<string> {
-	return sql`ascii(${value})`;
+export function ascii<T>(value: SQL.Aliased<T>): SQL<number>;
+export function ascii<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function ascii(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`ascii(${value})::int`;
 }
 
 /**
@@ -374,10 +374,10 @@ export function trim(value: AnyColumn | SQL.Aliased): SQL<string> {
  * db.select(replace(cars.make, 'a', 'b')).from(cars)
  * ```
  */
-export function replace<T>(from: SQL.Aliased<T>, to: T | Placeholder | SQLWrapper | AnyColumn): SQL<string>;
-export function replace<TColumn extends AnyColumn>(from: TColumn, to: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<string>;
-export function replace(from: AnyColumn | SQL.Aliased, to: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<string> {
-	return sql`replace(${from}, ${bindIfParam(to, from)})`;
+export function replace<T>(column: SQL.Aliased<T>, from: string, to: string): SQL<string>;
+export function replace<TColumn extends AnyColumn>(column: TColumn, from: string, to: string): SQL<string>;
+export function replace(column: AnyColumn | SQL.Aliased, from: string, to: string): SQL<string> {
+	return sql`replace(${column}, ${from}, ${to})`;
 }
 
 /**
@@ -409,8 +409,10 @@ export function reverse(value: AnyColumn | SQL.Aliased): SQL<string> {
 export function substring<T>(value: SQL.Aliased<T>, start: number, length?: number): SQL<string>;
 export function substring<TColumn extends AnyColumn>(value: TColumn, start: number, length?: number): SQL<string>;
 export function substring(value: AnyColumn | SQL.Aliased, start: number, length?: number): SQL<string> {
-	return length === undefined ? sql`substring(${value}, ${start})` : sql`substring(${value}, ${start}, ${length})`;
+	return length === undefined ? sql`substring(${value}, ${start}::int)` : sql`substring(${value}, ${start}::int, ${length}::int)`;
 }
+
+export const substr = substring;
 
 /**
  * left
@@ -425,7 +427,7 @@ export function substring(value: AnyColumn | SQL.Aliased, start: number, length?
 export function left<T>(value: SQL.Aliased<T>, length: number): SQL<string>;
 export function left<TColumn extends AnyColumn>(value: TColumn, length: number): SQL<string>;
 export function left(value: AnyColumn | SQL.Aliased, length: number): SQL<string> {
-	return sql`left(${value}, ${length})`;
+	return sql`left(${value}, ${length}::int)`;
 }
 
 /**
@@ -441,7 +443,7 @@ export function left(value: AnyColumn | SQL.Aliased, length: number): SQL<string
 export function right<T>(value: SQL.Aliased<T>, length: number): SQL<string>;
 export function right<TColumn extends AnyColumn>(value: TColumn, length: number): SQL<string>;
 export function right(value: AnyColumn | SQL.Aliased, length: number): SQL<string> {
-	return sql`right(${value}, ${length})`;
+	return sql`right(${value}, ${length}::int)`;
 }
 
 /**
@@ -457,5 +459,167 @@ export function right(value: AnyColumn | SQL.Aliased, length: number): SQL<strin
 export function repeat<T>(value: SQL.Aliased<T>, count: number): SQL<string>;
 export function repeat<TColumn extends AnyColumn>(value: TColumn, count: number): SQL<string>;
 export function repeat(value: AnyColumn | SQL.Aliased, count: number): SQL<string> {
-	return sql`repeat(${value}, ${count})`;
+	return sql`repeat(${value}, ${count}::int)`;
+}
+
+/**
+ * abs
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the absolute value of the car price
+ * db.select(abs(cars.price)).from(cars)
+ * ```
+ */
+export function abs<T>(value: SQL.Aliased<T>): SQL<number>;
+export function abs<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function abs(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`abs(${value})::int`;
+}
+
+/**
+ * ceil
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the ceiling of the car price
+ * db.select(ceil(cars.price)).from(cars)
+ * ```
+ */
+export function ceil<T>(value: SQL.Aliased<T>): SQL<number>;
+export function ceil<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function ceil(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`ceil(${value})::int`;
+}
+
+export const ceiling = ceil;
+
+/**
+ * floor
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the floor of the car price
+ * db.select(floor(cars.price)).from(cars)
+ * ```
+ */
+export function floor<T>(value: SQL.Aliased<T>): SQL<number>;
+export function floor<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function floor(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`floor(${value})::int`;
+}
+
+/**
+ * round
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the car price rounded to the nearest integer
+ * db.select(round(cars.price)).from(cars)
+ * ```
+ */
+export function round<T>(value: SQL.Aliased<T>, decimals?: number): SQL<number>;
+export function round<TColumn extends AnyColumn>(value: TColumn, decimals?: number): SQL<number>;
+export function round(value: AnyColumn | SQL.Aliased, decimals?: number): SQL<number> {
+	return decimals === undefined ? sql`round(${value}::numeric)::int` : sql`round(${value}::numeric, ${decimals}::int)::float`;
+}
+
+/**
+ * sign
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the sign of the car price
+ * db.select(sign(cars.price)).from(cars)
+ * ```
+ */
+export function sign<T>(value: SQL.Aliased<T>): SQL<number>;
+export function sign<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function sign(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`sign(${value})::int`;
+}
+
+/**
+ * sqrt
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the square root of the car price
+ * db.select(sqrt(cars.price)).from(cars)
+ * ```
+ */
+export function sqrt<T>(value: SQL.Aliased<T>): SQL<number>;
+export function sqrt<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
+export function sqrt(value: AnyColumn | SQL.Aliased): SQL<number> {
+	return sql`sqrt(${value})::int`;
+}
+
+/**
+ * power
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the car price to the power of 2
+ * db.select(power(cars.price, 2)).from(cars)
+ * ```
+ */
+export function power<T>(value: SQL.Aliased<T>, exponent: number): SQL<number>;
+export function power<TColumn extends AnyColumn>(value: TColumn, exponent: number): SQL<number>;
+export function power(value: AnyColumn | SQL.Aliased, exponent: number): SQL<number> {
+	return sql`power(${value}, ${exponent}::int)::int`;
+}
+
+export const pow = power;
+
+/**
+ * pi
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the value of pi
+ * db.select(pi()).from(cars)
+ * ```
+ */
+export function pi(): SQL<number> {
+	return sql`pi()::float4`;
+}
+
+/**
+ * lpad
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the car make padded to 10 characters with spaces
+ * db.select(lpad(cars.make, 10, " ")).from(cars)
+ * ```
+ */
+export function lpad<T>(value: SQL.Aliased<T>, length: number, pad: string): SQL<string>;
+export function lpad<TColumn extends AnyColumn>(value: TColumn, length: number, pad: string): SQL<string>;
+export function lpad(value: AnyColumn | SQL.Aliased, length: number, pad: string): SQL<string> {
+	return sql`lpad(${value}, ${length}::int, ${pad})`;
+}
+
+/**
+ * rpad
+ *
+ * ## Examples
+ *
+ * ```ts
+ * // Select the car make padded to 10 characters with spaces
+ * db.select(rpad(cars.make, 10, " ")).from(cars)
+ * ```
+ */
+export function rpad<T>(value: SQL.Aliased<T>, length: number, pad: string): SQL<string>;
+export function rpad<TColumn extends AnyColumn>(value: TColumn, length: number, pad: string): SQL<string>;
+export function rpad(value: AnyColumn | SQL.Aliased, length: number, pad: string): SQL<string> {
+	return sql`rpad(${value}, ${length}::int, ${pad})`;
 }

@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { TimestampTZMultiRange } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimestampTZMultiRange } from "./TimestampTZMultiRange";
 
 describe("defineTimestampTZMultiRange", async () => {
@@ -18,7 +17,7 @@ describe("defineTimestampTZMultiRange", async () => {
 				port: 5432,
 				application_name: "timestamptzmultirange.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzmultirange", {
 				timestamptzmultirange: defineTimestampTZMultiRange("timestamptzmultirange", { mode: "TimestampTZMultiRange" }).notNull(),
 			});
@@ -92,7 +91,7 @@ describe("defineTimestampTZMultiRange", async () => {
 				port: 5432,
 				application_name: "timestamptzmultirangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzmultirangestring", {
 				timestamptzmultirange: defineTimestampTZMultiRange("timestamptzmultirange", { mode: "string" }).notNull(),
 			});

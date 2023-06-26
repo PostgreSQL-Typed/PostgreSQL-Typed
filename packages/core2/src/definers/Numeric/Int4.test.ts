@@ -1,10 +1,9 @@
 import { Int4 } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInt4 } from "./Int4";
 
 describe("defineInt4", async () => {
@@ -17,7 +16,7 @@ describe("defineInt4", async () => {
 				port: 5432,
 				application_name: "int4.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int4", {
 				int4: defineInt4("int4", { mode: "Int4" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInt4", async () => {
 				port: 5432,
 				application_name: "int4string.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int4string", {
 				int4: defineInt4("int4", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineInt4", async () => {
 				port: 5432,
 				application_name: "int4number.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int4number", {
 				int4: defineInt4("int4", { mode: "number" }).notNull(),
 			});

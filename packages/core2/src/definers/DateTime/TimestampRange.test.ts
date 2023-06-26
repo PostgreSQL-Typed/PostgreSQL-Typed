@@ -1,10 +1,9 @@
 import { TimestampRange } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimestampRange } from "./TimestampRange";
 
 describe("defineTimestampRange", async () => {
@@ -17,7 +16,7 @@ describe("defineTimestampRange", async () => {
 				port: 5432,
 				application_name: "timestamprange.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamprange", {
 				timestamprange: defineTimestampRange("timestamprange", { mode: "TimestampRange" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineTimestampRange", async () => {
 				port: 5432,
 				application_name: "timestamprangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamprangestring", {
 				timestamprange: defineTimestampRange("timestamprange", { mode: "string" }).notNull(),
 			});

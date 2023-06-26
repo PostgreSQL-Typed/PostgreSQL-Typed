@@ -1,10 +1,9 @@
 import { BitVarying } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineBitVarying } from "./BitVarying";
 
 describe("defineBitVarying", async () => {
@@ -17,7 +16,7 @@ describe("defineBitVarying", async () => {
 				port: 5432,
 				application_name: "varbit.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("varbit", {
 				varbit: defineBitVarying("varbit", { mode: "BitVarying" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineBitVarying", async () => {
 				port: 5432,
 				application_name: "varbitstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("varbitstring", {
 				varbit: defineBitVarying("varbit", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineBitVarying", async () => {
 				port: 5432,
 				application_name: "varbitnumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("varbitnumber", {
 				varbit: defineBitVarying("varbit", { mode: "number" }).notNull(),
 			});
@@ -175,7 +174,7 @@ describe("defineBitVarying", async () => {
 				port: 5432,
 				application_name: "varbitlength.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("varbitlength", {
 				varbit1: defineBitVarying("varbit1", { mode: "BitVarying", length: 3 }).notNull(),
 				varbit2: defineBitVarying("varbit2", { mode: "string", length: 3 }).notNull(),

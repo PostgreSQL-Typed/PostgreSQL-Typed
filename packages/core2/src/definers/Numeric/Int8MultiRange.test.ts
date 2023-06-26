@@ -1,10 +1,9 @@
 import { Int8MultiRange } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInt8MultiRange } from "./Int8MultiRange";
 
 describe("defineInt8MultiRange", async () => {
@@ -17,7 +16,7 @@ describe("defineInt8MultiRange", async () => {
 				port: 5432,
 				application_name: "int8multirange.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8multirange", {
 				int8multirange: defineInt8MultiRange("int8multirange", { mode: "Int8MultiRange" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInt8MultiRange", async () => {
 				port: 5432,
 				application_name: "int8multirangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8multirangestring", {
 				int8multirange: defineInt8MultiRange("int8multirange", { mode: "string" }).notNull(),
 			});

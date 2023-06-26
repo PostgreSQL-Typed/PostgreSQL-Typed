@@ -1,10 +1,9 @@
 import { CharacterVarying } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineCharacterVarying } from "./CharacterVarying";
 
 describe("defineCharacterVarying", async () => {
@@ -17,7 +16,7 @@ describe("defineCharacterVarying", async () => {
 				port: 5432,
 				application_name: "charactervarying.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("charactervarying", {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "CharacterVarying" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineCharacterVarying", async () => {
 				port: 5432,
 				application_name: "charactervaryingstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("charactervaryingstring", {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineCharacterVarying", async () => {
 				port: 5432,
 				application_name: "charactervaryinglength.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("charactervaryinglength", {
 				charactervarying1: defineCharacterVarying("charactervarying1", { mode: "CharacterVarying", length: 3 }).notNull(),
 				charactervarying2: defineCharacterVarying("charactervarying2", { mode: "string", length: 3 }).notNull(),

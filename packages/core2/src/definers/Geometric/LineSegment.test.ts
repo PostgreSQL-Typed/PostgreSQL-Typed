@@ -1,10 +1,9 @@
 import { LineSegment } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineLineSegment } from "./LineSegment";
 
 describe("defineLineSegment", async () => {
@@ -17,7 +16,7 @@ describe("defineLineSegment", async () => {
 				port: 5432,
 				application_name: "linesegment.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("linesegment", {
 				linesegment: defineLineSegment("linesegment", { mode: "LineSegment" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineLineSegment", async () => {
 				port: 5432,
 				application_name: "linesegmentstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("linesegmentstring", {
 				linesegment: defineLineSegment("linesegment", { mode: "string" }).notNull(),
 			});

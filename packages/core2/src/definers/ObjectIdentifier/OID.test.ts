@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineOID } from "./OID";
 
 describe("defineOID", async () => {
@@ -18,7 +17,7 @@ describe("defineOID", async () => {
 				port: 5432,
 				application_name: "oid.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("oid", {
 				oid: defineOID("oid", { mode: "OID" }).notNull(),
 			});
@@ -76,7 +75,7 @@ describe("defineOID", async () => {
 				port: 5432,
 				application_name: "oidstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("oidstring", {
 				oid: defineOID("oid", { mode: "string" }).notNull(),
 			});
@@ -126,7 +125,7 @@ describe("defineOID", async () => {
 				port: 5432,
 				application_name: "oidnumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("oidnumber", {
 				oid: defineOID("oid", { mode: "number" }).notNull(),
 			});

@@ -1,10 +1,9 @@
 import { Interval } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInterval } from "./Interval";
 
 describe("defineInterval", async () => {
@@ -17,7 +16,7 @@ describe("defineInterval", async () => {
 				port: 5432,
 				application_name: "interval.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("interval", {
 				interval: defineInterval("interval", { mode: "Interval" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInterval", async () => {
 				port: 5432,
 				application_name: "intervalstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("intervalstring", {
 				interval: defineInterval("interval", { mode: "string" }).notNull(),
 			});

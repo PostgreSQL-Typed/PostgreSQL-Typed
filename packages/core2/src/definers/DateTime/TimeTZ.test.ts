@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime, TimeTZ } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimeTZ } from "./TimeTZ";
 
 describe("defineTimeTZ", async () => {
@@ -18,7 +17,7 @@ describe("defineTimeTZ", async () => {
 				port: 5432,
 				application_name: "timetz.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timetz", {
 				timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 			});
@@ -76,7 +75,7 @@ describe("defineTimeTZ", async () => {
 				port: 5432,
 				application_name: "timetzstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timetzstring", {
 				timetz: defineTimeTZ("timetz", { mode: "string" }).notNull(),
 			});
@@ -126,7 +125,7 @@ describe("defineTimeTZ", async () => {
 				port: 5432,
 				application_name: "timetzunix.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timetzunix", {
 				timetz: defineTimeTZ("timetz", { mode: "unix" }).notNull(),
 			});
@@ -185,7 +184,7 @@ describe("defineTimeTZ", async () => {
 				port: 5432,
 				application_name: "timetzluxon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timetzluxon", {
 				timetz: defineTimeTZ("timetz", { mode: "luxon.DateTime" }).notNull(),
 			});
@@ -259,7 +258,7 @@ describe("defineTimeTZ", async () => {
 				port: 5432,
 				application_name: "timetzjs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timetzjs", {
 				timetz: defineTimeTZ("timetz", { mode: "globalThis.Date" }).notNull(),
 			});

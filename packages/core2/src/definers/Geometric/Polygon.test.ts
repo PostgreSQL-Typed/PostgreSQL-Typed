@@ -1,10 +1,8 @@
 import { Polygon } from "@postgresql-typed/parsers";
-import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
 import { sameAs } from "../../operators";
 import { definePolygon } from "./Polygon";
 
@@ -18,7 +16,7 @@ describe("definePolygon", async () => {
 				port: 5432,
 				application_name: "polygon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("polygon", {
 				polygon: definePolygon("polygon", { mode: "Polygon" }).notNull(),
 			});
@@ -76,7 +74,7 @@ describe("definePolygon", async () => {
 				port: 5432,
 				application_name: "polygonstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("polygonstring", {
 				polygon: definePolygon("polygon", { mode: "string" }).notNull(),
 			});

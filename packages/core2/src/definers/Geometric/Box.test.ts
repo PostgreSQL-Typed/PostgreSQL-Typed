@@ -1,10 +1,8 @@
 import { Box } from "@postgresql-typed/parsers";
-import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
 import { sameAs } from "../../operators.js";
 import { defineBox } from "./Box";
 
@@ -18,7 +16,7 @@ describe("defineBox", async () => {
 				port: 5432,
 				application_name: "box.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("box", {
 				box: defineBox("box", { mode: "Box" }).notNull(),
 			});
@@ -76,7 +74,7 @@ describe("defineBox", async () => {
 				port: 5432,
 				application_name: "boxstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("boxstring", {
 				box: defineBox("box", { mode: "string" }).notNull(),
 			});

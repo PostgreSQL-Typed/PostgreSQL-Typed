@@ -1,10 +1,9 @@
 import { DateTime, Time } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTime } from "./Time";
 
 describe("defineTime", async () => {
@@ -17,7 +16,7 @@ describe("defineTime", async () => {
 				port: 5432,
 				application_name: "time.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("time", {
 				time: defineTime("time", { mode: "Time" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineTime", async () => {
 				port: 5432,
 				application_name: "timestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestring", {
 				time: defineTime("time", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineTime", async () => {
 				port: 5432,
 				application_name: "timeunix.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timeunix", {
 				time: defineTime("time", { mode: "unix" }).notNull(),
 			});
@@ -184,7 +183,7 @@ describe("defineTime", async () => {
 				port: 5432,
 				application_name: "timeluxon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timeluxon", {
 				time: defineTime("time", { mode: "luxon.DateTime" }).notNull(),
 			});
@@ -258,7 +257,7 @@ describe("defineTime", async () => {
 				port: 5432,
 				application_name: "timejs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timejs", {
 				time: defineTime("time", { mode: "globalThis.Date" }).notNull(),
 			});

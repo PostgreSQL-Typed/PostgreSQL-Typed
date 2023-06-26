@@ -1,10 +1,9 @@
 import { Boolean } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineBoolean } from "./Boolean";
 
 describe("defineBoolean", async () => {
@@ -17,7 +16,7 @@ describe("defineBoolean", async () => {
 				port: 5432,
 				application_name: "boolean.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("boolean", {
 				boolean: defineBoolean("boolean", { mode: "Boolean" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineBoolean", async () => {
 				port: 5432,
 				application_name: "booleanstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("booleanstring", {
 				boolean: defineBoolean("boolean", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineBoolean", async () => {
 				port: 5432,
 				application_name: "booleannumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("booleannumber", {
 				boolean: defineBoolean("boolean", { mode: "number" }).notNull(),
 			});
@@ -175,7 +174,7 @@ describe("defineBoolean", async () => {
 				port: 5432,
 				application_name: "booleanboolean.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("booleanboolean", {
 				boolean: defineBoolean("boolean", { mode: "boolean" }).notNull(),
 			});

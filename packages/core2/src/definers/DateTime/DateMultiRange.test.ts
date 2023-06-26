@@ -1,10 +1,9 @@
 import { DateMultiRange } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineDateMultiRange } from "./DateMultiRange";
 
 describe("defineDateMultiRange", async () => {
@@ -17,7 +16,7 @@ describe("defineDateMultiRange", async () => {
 				port: 5432,
 				application_name: "datemultirange.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("datemultirange", {
 				datemultirange: defineDateMultiRange("datemultirange", { mode: "DateMultiRange" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineDateMultiRange", async () => {
 				port: 5432,
 				application_name: "datemultirangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("datemultirangestring", {
 				datemultirange: defineDateMultiRange("datemultirange", { mode: "string" }).notNull(),
 			});

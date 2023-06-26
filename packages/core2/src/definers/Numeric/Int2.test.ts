@@ -1,10 +1,9 @@
 import { Int2 } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInt2 } from "./Int2";
 
 describe("defineInt2", async () => {
@@ -17,7 +16,7 @@ describe("defineInt2", async () => {
 				port: 5432,
 				application_name: "int2.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int2", {
 				int2: defineInt2("int2", { mode: "Int2" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInt2", async () => {
 				port: 5432,
 				application_name: "int2string.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int2string", {
 				int2: defineInt2("int2", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineInt2", async () => {
 				port: 5432,
 				application_name: "int2number.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int2number", {
 				int2: defineInt2("int2", { mode: "number" }).notNull(),
 			});

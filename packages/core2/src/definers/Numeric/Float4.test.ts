@@ -1,10 +1,9 @@
 import { BigNumber, Float4 } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineFloat4 } from "./Float4";
 
 describe("defineFloat4", async () => {
@@ -17,7 +16,7 @@ describe("defineFloat4", async () => {
 				port: 5432,
 				application_name: "float4.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float4", {
 				float4: defineFloat4("float4", { mode: "Float4" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineFloat4", async () => {
 				port: 5432,
 				application_name: "float4string.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float4string", {
 				float4: defineFloat4("float4", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineFloat4", async () => {
 				port: 5432,
 				application_name: "float4bignumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float4bignumber", {
 				float4: defineFloat4("float4", { mode: "BigNumber" }).notNull(),
 			});
@@ -183,7 +182,7 @@ describe("defineFloat4", async () => {
 				port: 5432,
 				application_name: "float4number.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float4number", {
 				float4: defineFloat4("float4", { mode: "number" }).notNull(),
 			});

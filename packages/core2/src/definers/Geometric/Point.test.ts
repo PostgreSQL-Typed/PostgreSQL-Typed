@@ -1,10 +1,8 @@
 import { Point } from "@postgresql-typed/parsers";
-import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
 import { sameAs } from "../../operators";
 import { definePoint } from "./Point";
 
@@ -18,7 +16,7 @@ describe("definePoint", async () => {
 				port: 5432,
 				application_name: "point.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("point", {
 				point: definePoint("point", { mode: "Point" }).notNull(),
 			});
@@ -76,7 +74,7 @@ describe("definePoint", async () => {
 				port: 5432,
 				application_name: "pointstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("pointstring", {
 				point: definePoint("point", { mode: "string" }).notNull(),
 			});

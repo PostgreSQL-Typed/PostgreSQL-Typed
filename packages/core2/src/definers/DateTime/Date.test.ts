@@ -1,10 +1,9 @@
 import { Date, DateTime } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineDate } from "./Date";
 
 describe("defineDate", async () => {
@@ -17,7 +16,7 @@ describe("defineDate", async () => {
 				port: 5432,
 				application_name: "date.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("date", {
 				date: defineDate("date", { mode: "Date" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineDate", async () => {
 				port: 5432,
 				application_name: "datestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("datestring", {
 				date: defineDate("date", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineDate", async () => {
 				port: 5432,
 				application_name: "dateunix.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("dateunix", {
 				date: defineDate("date", { mode: "unix" }).notNull(),
 			});
@@ -175,7 +174,7 @@ describe("defineDate", async () => {
 				port: 5432,
 				application_name: "dateluxon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("dateluxon", {
 				date: defineDate("date", { mode: "luxon.DateTime" }).notNull(),
 			});
@@ -233,7 +232,7 @@ describe("defineDate", async () => {
 				port: 5432,
 				application_name: "datejs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("datejs", {
 				date: defineDate("date", { mode: "globalThis.Date" }).notNull(),
 			});

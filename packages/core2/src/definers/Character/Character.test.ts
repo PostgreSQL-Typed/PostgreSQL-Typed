@@ -1,10 +1,9 @@
 import { Character } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineCharacter } from "./Character";
 
 describe("defineCharacter", async () => {
@@ -17,7 +16,7 @@ describe("defineCharacter", async () => {
 				port: 5432,
 				application_name: "character.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("character", {
 				character: defineCharacter("character", { mode: "Character" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineCharacter", async () => {
 				port: 5432,
 				application_name: "characterstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("characterstring", {
 				character: defineCharacter("character", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineCharacter", async () => {
 				port: 5432,
 				application_name: "characterlength.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("characterlength", {
 				character1: defineCharacter("character1", { mode: "Character", length: 3 }).notNull(),
 				character2: defineCharacter("character2", { mode: "string", length: 3 }).notNull(),

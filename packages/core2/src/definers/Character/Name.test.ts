@@ -1,10 +1,9 @@
 import { Name } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineName } from "./Name";
 
 describe("defineName", async () => {
@@ -17,7 +16,7 @@ describe("defineName", async () => {
 				port: 5432,
 				application_name: "name.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("name", {
 				name: defineName("name", { mode: "Name" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineName", async () => {
 				port: 5432,
 				application_name: "namestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("namestring", {
 				name: defineName("name", { mode: "string" }).notNull(),
 			});

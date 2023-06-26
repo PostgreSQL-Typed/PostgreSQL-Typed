@@ -1,10 +1,9 @@
 import { Path } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { definePath } from "./Path";
 
 describe("definePath", async () => {
@@ -17,7 +16,7 @@ describe("definePath", async () => {
 				port: 5432,
 				application_name: "path.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("path", {
 				path: definePath("path", { mode: "Path" }).notNull(),
 			});
@@ -67,7 +66,7 @@ describe("definePath", async () => {
 				port: 5432,
 				application_name: "pathstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("pathstring", {
 				path: definePath("path", { mode: "string" }).notNull(),
 			});

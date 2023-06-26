@@ -1,10 +1,9 @@
 import { Int4Range } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInt4Range } from "./Int4Range";
 
 describe("defineInt4Range", async () => {
@@ -17,7 +16,7 @@ describe("defineInt4Range", async () => {
 				port: 5432,
 				application_name: "int4range.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int4range", {
 				int4range: defineInt4Range("int4range", { mode: "Int4Range" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInt4Range", async () => {
 				port: 5432,
 				application_name: "int4rangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int4rangestring", {
 				int4range: defineInt4Range("int4range", { mode: "string" }).notNull(),
 			});

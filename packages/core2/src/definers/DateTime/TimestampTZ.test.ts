@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime, TimestampTZ } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimestampTZ } from "./TimestampTZ";
 
 describe("defineTimestampTZ", async () => {
@@ -18,7 +17,7 @@ describe("defineTimestampTZ", async () => {
 				port: 5432,
 				application_name: "timestamptz.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptz", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
 			});
@@ -76,7 +75,7 @@ describe("defineTimestampTZ", async () => {
 				port: 5432,
 				application_name: "timestamptzstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzstring", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "string" }).notNull(),
 			});
@@ -126,7 +125,7 @@ describe("defineTimestampTZ", async () => {
 				port: 5432,
 				application_name: "timestamptzunix.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzunix", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "unix" }).notNull(),
 			});
@@ -176,7 +175,7 @@ describe("defineTimestampTZ", async () => {
 				port: 5432,
 				application_name: "timestamptzluxon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzluxon", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "luxon.DateTime" }).notNull(),
 			});
@@ -250,7 +249,7 @@ describe("defineTimestampTZ", async () => {
 				port: 5432,
 				application_name: "timestamptzjs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamptzjs", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "globalThis.Date" }).notNull(),
 			});

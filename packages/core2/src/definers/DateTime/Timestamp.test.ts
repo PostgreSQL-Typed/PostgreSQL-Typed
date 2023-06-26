@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { DateTime, Timestamp } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimestamp } from "./Timestamp";
 
 describe("defineTimestamp", async () => {
@@ -18,7 +17,7 @@ describe("defineTimestamp", async () => {
 				port: 5432,
 				application_name: "timestamp.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestamp", {
 				timestamp: defineTimestamp("timestamp", { mode: "Timestamp" }).notNull(),
 			});
@@ -76,7 +75,7 @@ describe("defineTimestamp", async () => {
 				port: 5432,
 				application_name: "timestampstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampstring", {
 				timestamp: defineTimestamp("timestamp", { mode: "string" }).notNull(),
 			});
@@ -126,7 +125,7 @@ describe("defineTimestamp", async () => {
 				port: 5432,
 				application_name: "timestampunix.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampunix", {
 				timestamp: defineTimestamp("timestamp", { mode: "unix" }).notNull(),
 			});
@@ -176,7 +175,7 @@ describe("defineTimestamp", async () => {
 				port: 5432,
 				application_name: "timestampluxon.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampluxon", {
 				timestamp: defineTimestamp("timestamp", { mode: "luxon.DateTime" }).notNull(),
 			});
@@ -250,7 +249,7 @@ describe("defineTimestamp", async () => {
 				port: 5432,
 				application_name: "timestampjs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampjs", {
 				timestamp: defineTimestamp("timestamp", { mode: "globalThis.Date" }).notNull(),
 			});

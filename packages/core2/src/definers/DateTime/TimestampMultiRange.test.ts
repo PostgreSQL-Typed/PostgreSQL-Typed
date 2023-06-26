@@ -1,10 +1,9 @@
 import { TimestampMultiRange } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineTimestampMultiRange } from "./TimestampMultiRange";
 
 describe("defineTimestampMultiRange", async () => {
@@ -17,7 +16,7 @@ describe("defineTimestampMultiRange", async () => {
 				port: 5432,
 				application_name: "timestampmultirange.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampmultirange", {
 				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "TimestampMultiRange" }).notNull(),
 			});
@@ -91,7 +90,7 @@ describe("defineTimestampMultiRange", async () => {
 				port: 5432,
 				application_name: "timestampmultirangestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("timestampmultirangestring", {
 				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "string" }).notNull(),
 			});

@@ -1,10 +1,9 @@
 import { Text } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineText } from "./Text";
 
 describe("defineText", async () => {
@@ -17,7 +16,7 @@ describe("defineText", async () => {
 				port: 5432,
 				application_name: "text.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("text", {
 				text: defineText("text", { mode: "Text" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineText", async () => {
 				port: 5432,
 				application_name: "textstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("textstring", {
 				text: defineText("text", { mode: "string" }).notNull(),
 			});

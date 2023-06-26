@@ -1,10 +1,9 @@
 import { Bit } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineBit } from "./Bit";
 
 describe("defineBit", async () => {
@@ -17,7 +16,7 @@ describe("defineBit", async () => {
 				port: 5432,
 				application_name: "bit.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("bit", {
 				bit: defineBit("bit", { mode: "Bit" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineBit", async () => {
 				port: 5432,
 				application_name: "bitstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("bitstring", {
 				bit: defineBit("bit", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineBit", async () => {
 				port: 5432,
 				application_name: "bitnumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("bitnumber", {
 				bit: defineBit("bit", { mode: "number" }).notNull(),
 			});
@@ -175,7 +174,7 @@ describe("defineBit", async () => {
 				port: 5432,
 				application_name: "bitlength.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("bitlength", {
 				bit1: defineBit("bit1", { mode: "Bit", length: 3 }).notNull(),
 				bit2: defineBit("bit2", { mode: "string", length: 3 }).notNull(),

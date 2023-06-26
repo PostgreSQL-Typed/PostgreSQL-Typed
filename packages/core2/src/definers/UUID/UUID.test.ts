@@ -1,11 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { UUID } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineUUID } from "./UUID";
 
 describe("defineUUID", async () => {
@@ -18,7 +17,7 @@ describe("defineUUID", async () => {
 				port: 5432,
 				application_name: "uuid.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("uuid", {
 				uuid: defineUUID("uuid", { mode: "UUID" }).notNull(),
 			});
@@ -76,7 +75,7 @@ describe("defineUUID", async () => {
 				port: 5432,
 				application_name: "uuidstring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("uuidstring", {
 				uuid: defineUUID("uuid", { mode: "string" }).notNull(),
 			});

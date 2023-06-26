@@ -1,10 +1,8 @@
 import { Circle } from "@postgresql-typed/parsers";
-import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
 import { sameAs } from "../../operators.js";
 import { defineCircle } from "./Circle";
 
@@ -18,7 +16,7 @@ describe("defineCircle", async () => {
 				port: 5432,
 				application_name: "circle.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("circle", {
 				circle: defineCircle("circle", { mode: "Circle" }).notNull(),
 			});
@@ -76,7 +74,7 @@ describe("defineCircle", async () => {
 				port: 5432,
 				application_name: "circlestring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("circlestring", {
 				circle: defineCircle("circle", { mode: "string" }).notNull(),
 			});

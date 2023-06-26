@@ -1,10 +1,9 @@
 import { Int8 } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineInt8 } from "./Int8";
 
 describe("defineInt8", async () => {
@@ -17,7 +16,7 @@ describe("defineInt8", async () => {
 				port: 5432,
 				application_name: "int8.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8", {
 				int8: defineInt8("int8", { mode: "Int8" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineInt8", async () => {
 				port: 5432,
 				application_name: "int8string.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8string", {
 				int8: defineInt8("int8", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineInt8", async () => {
 				port: 5432,
 				application_name: "int8bignumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8bignumber", {
 				int8: defineInt8("int8", { mode: "BigInt" }).notNull(),
 			});
@@ -183,7 +182,7 @@ describe("defineInt8", async () => {
 				port: 5432,
 				application_name: "int8number.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("int8number", {
 				int8: defineInt8("int8", { mode: "number" }).notNull(),
 			});

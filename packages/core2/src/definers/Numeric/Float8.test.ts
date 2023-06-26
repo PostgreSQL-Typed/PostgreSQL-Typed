@@ -1,10 +1,9 @@
 import { BigNumber, Float8 } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineFloat8 } from "./Float8";
 
 describe("defineFloat8", async () => {
@@ -17,7 +16,7 @@ describe("defineFloat8", async () => {
 				port: 5432,
 				application_name: "float8.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float8", {
 				float8: defineFloat8("float8", { mode: "Float8" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineFloat8", async () => {
 				port: 5432,
 				application_name: "float8string.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float8string", {
 				float8: defineFloat8("float8", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineFloat8", async () => {
 				port: 5432,
 				application_name: "float8bignumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float8bignumber", {
 				float8: defineFloat8("float8", { mode: "BigNumber" }).notNull(),
 			});
@@ -183,7 +182,7 @@ describe("defineFloat8", async () => {
 				port: 5432,
 				application_name: "float8number.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("float8number", {
 				float8: defineFloat8("float8", { mode: "number" }).notNull(),
 			});

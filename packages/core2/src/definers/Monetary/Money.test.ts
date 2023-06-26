@@ -1,10 +1,9 @@
 import { BigNumber, Money } from "@postgresql-typed/parsers";
-import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
+import { pgt, pgTable, sql } from "../../index.js";
+import { eq } from "../../operators.js";
 import { defineMoney } from "./Money";
 
 describe("defineMoney", async () => {
@@ -17,7 +16,7 @@ describe("defineMoney", async () => {
 				port: 5432,
 				application_name: "money.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("money", {
 				money: defineMoney("money", { mode: "Money" }).notNull(),
 			});
@@ -75,7 +74,7 @@ describe("defineMoney", async () => {
 				port: 5432,
 				application_name: "moneystring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("moneystring", {
 				money: defineMoney("money", { mode: "string" }).notNull(),
 			});
@@ -125,7 +124,7 @@ describe("defineMoney", async () => {
 				port: 5432,
 				application_name: "moneybignumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("moneybignumber", {
 				money: defineMoney("money", { mode: "BigNumber" }).notNull(),
 			});
@@ -183,7 +182,7 @@ describe("defineMoney", async () => {
 				port: 5432,
 				application_name: "moneynumber.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("moneynumber", {
 				money: defineMoney("money", { mode: "number" }).notNull(),
 			});

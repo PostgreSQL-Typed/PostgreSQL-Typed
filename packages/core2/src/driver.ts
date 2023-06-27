@@ -9,21 +9,25 @@ import {
 	RelationalSchemaConfig,
 	TablesRelationalConfig,
 } from "drizzle-orm";
-import { NodePgClient, NodePgDatabase, PgDriverOptions } from "drizzle-orm/node-postgres";
-import { PgDatabase, PgDialect } from "drizzle-orm/pg-core";
+import { NodePgClient, PgDriverOptions } from "drizzle-orm/node-postgres";
+import { PgDialect } from "drizzle-orm/pg-core";
 import pg from "pg";
 
+import { PgTDatabase } from "./database.js";
+import { PgTExtensionManager } from "./extensions.js";
 import { PgTSession } from "./session.js";
 
 const { types } = pg;
 
 export class PgTDriver {
+	extensions = new PgTExtensionManager();
+
 	constructor(private client: NodePgClient, private dialect: PgDialect, private options: PgDriverOptions = {}) {
 		this.initMappers();
 	}
 
 	createSession(schema: RelationalSchemaConfig<TablesRelationalConfig> | undefined): PgTSession<Record<string, unknown>, TablesRelationalConfig> {
-		return new PgTSession(this.client, this.dialect, schema, { logger: this.options.logger });
+		return new PgTSession(this.client, this.extensions, this.dialect, schema, { logger: this.options.logger });
 	}
 
 	initMappers(): void {
@@ -148,7 +152,7 @@ export class PgTDriver {
 export function pgt<TSchema extends Record<string, unknown> = Record<string, never>>(
 	client: NodePgClient,
 	config: DrizzleConfig<TSchema> = {}
-): NodePgDatabase<TSchema> {
+): PgTDatabase<TSchema> {
 	const dialect = new PgDialect();
 	let logger: Logger | undefined;
 	if (config.logger === true) logger = new DefaultLogger();
@@ -166,5 +170,5 @@ export function pgt<TSchema extends Record<string, unknown> = Record<string, nev
 
 	const driver = new PgTDriver(client, dialect, { logger }),
 		session = driver.createSession(schema);
-	return new PgDatabase(dialect, session, schema) as NodePgDatabase<TSchema>;
+	return new PgTDatabase(dialect, session, schema) as PgTDatabase<TSchema>;
 }

@@ -21,7 +21,7 @@ describe("defineLineSegment", async () => {
 				linesegment: defineLineSegment("linesegment", { mode: "LineSegment" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists linesegment (
@@ -79,7 +79,7 @@ describe("defineLineSegment", async () => {
 				linesegment: defineLineSegment("linesegment", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists linesegmentstring (

@@ -1,8 +1,7 @@
-import { Client, isReady } from "@postgresql-typed/postgres";
+import { Client, pgt } from "@postgresql-typed/core";
 import { describe, expect, it, vitest } from "vitest";
 
-import { createTable, dropTable, insertQuery, insertQueryValues, selectQuery, selectQueryValues } from "./__mocks__/testData";
-import { TestData, testData } from "./__mocks__/types";
+import { createTable, dropTable, insertQuery, TestTable } from "./__mocks__/testData";
 
 const spiedOn = {
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -15,67 +14,25 @@ describe("Cache", () => {
 	it("should cache the response on a second query", async () => {
 		const spy = vitest.spyOn(spiedOn, "useless"),
 			spy2 = vitest.spyOn(spiedOn, "useless2"),
-			client = await new Client<TestData>(testData, {
+			client = new Client({
 				password: "password",
 				host: "localhost",
 				user: "postgres",
 				database: "postgres",
 				port: 5432,
-			}).testConnection();
+			}),
+			database = pgt(client);
 
-		client.hook("client:post-query", spiedOn.useless);
-		client.hook("client:pre-query-override", spiedOn.useless2);
+		await database.connect();
 
-		if (!isReady(client)) expect.fail("Client is not ready");
+		database.extensions.hook("pgt:post-query", spiedOn.useless);
+		database.extensions.hook("pgt:pre-query-override", spiedOn.useless2);
 
 		let error: Error | undefined;
 		try {
-			const version = await client.query<{
-					version: string;
-				}>("SELECT version()", []),
-				versionNumber = Number(version.rows[0].version.toString().split(" ")[1].split(".")[0]),
-				queries = {
-					createTable,
-					insertQuery,
-					insertQueryValues,
-				};
-			// Multirange types were introduced in PostgreSQL 14
-			if (versionNumber < 14) {
-				queries.createTable = createTable
-					.split("\n")
-					.filter(line => !line.includes("multi"))
-					.join("\n")
-					.replace(/,\n\)/, "\n)");
-				queries.insertQuery = insertQuery
-					.split("\n")
-					.filter(line => !line.includes("multi"))
-					.filter(line => {
-						line = line.trim();
-						if (/^\$\d+,?$/.test(line)) {
-							const index = Number.parseInt(line.slice(1));
-							if (index > 66) return false;
-						}
-						return true;
-					})
-					.join("\n")
-					// eslint-disable-next-line unicorn/prefer-string-replace-all
-					.replace(/,\n\)/g, "\n)");
-				queries.insertQueryValues = insertQueryValues.slice(0, -10);
-			}
+			await client.query(createTable, []);
 
-			await client.query(queries.createTable, []);
-
-			await client.query(queries.insertQuery, queries.insertQueryValues);
-
-			expect(spy).toHaveBeenCalledTimes(3);
-			expect(spy2).toHaveBeenCalledTimes(0);
-
-			spy.mockClear();
-			spy2.mockClear();
-
-			const response = await client.query(selectQuery, selectQueryValues);
-
-			expect(response.rowCount).toBe(1);
+			await database.insert(TestTable).values(insertQuery);
 
 			expect(spy).toHaveBeenCalledTimes(1);
 			expect(spy2).toHaveBeenCalledTimes(0);
@@ -83,9 +40,19 @@ describe("Cache", () => {
 			spy.mockClear();
 			spy2.mockClear();
 
-			const response2 = await client.query(selectQuery, selectQueryValues);
+			const response = await database.select().from(TestTable);
 
-			expect(response2.rowCount).toBe(1);
+			expect(response).toHaveLength(1);
+
+			expect(spy).toHaveBeenCalledTimes(1);
+			expect(spy2).toHaveBeenCalledTimes(0);
+
+			spy.mockClear();
+			spy2.mockClear();
+
+			const response2 = await database.select().from(TestTable);
+
+			expect(response2).toHaveLength(1);
 
 			expect(spy).toHaveBeenCalledTimes(0);
 			expect(spy2).toHaveBeenCalledTimes(1);

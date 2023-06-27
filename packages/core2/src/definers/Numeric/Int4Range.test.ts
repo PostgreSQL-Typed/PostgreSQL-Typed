@@ -21,7 +21,7 @@ describe("defineInt4Range", async () => {
 				int4range: defineInt4Range("int4range", { mode: "Int4Range" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4range (
@@ -79,7 +79,7 @@ describe("defineInt4Range", async () => {
 				int4range: defineInt4Range("int4range", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4rangestring (

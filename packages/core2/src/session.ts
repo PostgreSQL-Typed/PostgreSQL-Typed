@@ -1,8 +1,11 @@
+import type { PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
 //@ts-expect-error - It does have mapResultRow
 import { fillPlaceholders, Logger, mapResultRow, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, TablesRelationalConfig } from "drizzle-orm";
 import { NodePgClient, NodePgQueryResultHKT, NodePgSession, NodePgSessionOptions, NodePgTransaction } from "drizzle-orm/node-postgres";
 import { AnyPgColumn, PgDialect, PgSession, PgTransactionConfig, PreparedQuery, PreparedQueryConfig } from "drizzle-orm/pg-core";
 import type { QueryArrayConfig, QueryConfig } from "pg";
+
+import { PgTExtensionManager } from "./extensions.js";
 
 export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {
 	private rawQuery: QueryConfig;
@@ -10,6 +13,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 
 	constructor(
 		private client: NodePgClient,
+		private extensions: PgTExtensionManager,
 		queryString: string,
 		private parameters: unknown[],
 		private logger: Logger,
@@ -30,6 +34,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 	}
 
 	async execute(placeholderValues: Record<string, unknown> | undefined = {}): Promise<T["execute"]> {
+		if (!this.extensions.initialized) await this.extensions.initialize();
 		const parameters = fillPlaceholders(this.parameters, placeholderValues);
 
 		this.logger.logQuery(this.rawQuery.text, parameters);
@@ -37,15 +42,59 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 		const { fields, rawQuery, client, query, joinsNotNullableMap, customResultMapper } = this as this & {
 			joinsNotNullableMap?: Record<string, boolean>;
 		};
-		if (!fields && !customResultMapper) return client.query(rawQuery, parameters);
+		if (!fields && !customResultMapper) {
+			const data: PreQueryHookData = {
+				input: {
+					query: rawQuery,
+					values: parameters,
+				},
+				output: undefined,
+			};
 
-		const result = await client.query(query, parameters);
+			let override = false;
+			await this.extensions.callHook("pgt:pre-query", data);
+			if (data.output === undefined) data.output = await client.query({ ...data.input.query }, data.input.values);
+			else {
+				await this.extensions.callHook("pgt:pre-query-override", data as PostQueryHookData);
+				override = true;
+			}
+
+			if (!override) await this.extensions.callHook("pgt:post-query", data as PostQueryHookData);
+			return this.mapValue(data.output);
+		}
+
+		const data: PreQueryHookData = {
+			input: {
+				query,
+				values: parameters,
+			},
+			output: undefined,
+		};
+
+		let override = false;
+		await this.extensions.callHook("pgt:pre-query", data);
+		if (data.output === undefined) data.output = await client.query({ ...data.input.query }, data.input.values);
+		else {
+			await this.extensions.callHook("pgt:pre-query-override", data as PostQueryHookData);
+			override = true;
+		}
+
+		if (!override) await this.extensions.callHook("pgt:post-query", data as PostQueryHookData);
+
+		const result = this.mapValue(data.output);
 		return customResultMapper ? customResultMapper(result.rows) : result.rows.map(row => mapResultRow<T["execute"]>(fields, row, joinsNotNullableMap));
 	}
 
 	async all(placeholderValues: Record<string, unknown> | undefined = {}): Promise<T["all"]> {
 		const parameters = fillPlaceholders(this.parameters, placeholderValues);
 		return this.client.query(this.rawQuery, parameters).then(result => result.rows);
+	}
+
+	private mapValue<T>(value: T): T {
+		if (typeof value !== "object" || value === null) return value;
+		if (Array.isArray(value)) return value.map(element => this.mapValue(element)) as unknown as T;
+		if ("value" in value) return value.value as unknown as T;
+		return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, this.mapValue(value)])) as unknown as T;
 	}
 }
 
@@ -57,7 +106,13 @@ export class PgTSession<TFullSchema extends Record<string, unknown>, TSchema ext
 	private logger: Logger;
 	private nodePgSession: NodePgSession<TFullSchema, TSchema>;
 
-	constructor(private client: NodePgClient, dialect: PgDialect, schema: RelationalSchemaConfig<TSchema> | undefined, options: NodePgSessionOptions = {}) {
+	constructor(
+		public client: NodePgClient,
+		public extensions: PgTExtensionManager,
+		dialect: PgDialect,
+		schema: RelationalSchemaConfig<TSchema> | undefined,
+		options: NodePgSessionOptions = {}
+	) {
 		super(dialect);
 		this.logger = options.logger ?? new NoopLogger();
 
@@ -70,7 +125,7 @@ export class PgTSession<TFullSchema extends Record<string, unknown>, TSchema ext
 		name: string | undefined,
 		customResultMapper?: (rows: unknown[][]) => T["execute"]
 	): PreparedQuery<T> {
-		return new PgTPreparedQuery(this.client, query.sql, query.params, this.logger, fields, name, customResultMapper);
+		return new PgTPreparedQuery(this.client, this.extensions, query.sql, query.params, this.logger, fields, name, customResultMapper);
 	}
 
 	override async transaction<T>(

@@ -21,7 +21,7 @@ describe("defineInt4", async () => {
 				int4: defineInt4("int4", { mode: "Int4" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4 (
@@ -79,7 +79,7 @@ describe("defineInt4", async () => {
 				int4: defineInt4("int4", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4string (
@@ -129,7 +129,7 @@ describe("defineInt4", async () => {
 				int4: defineInt4("int4", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4number (

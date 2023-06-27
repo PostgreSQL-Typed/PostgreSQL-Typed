@@ -1,10 +1,10 @@
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
 import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
 import { defineFloat4, defineInt2, defineText } from "./definers/index.js";
+import { pgt } from "./driver.js";
 import {
 	abs,
 	ascii,
@@ -53,12 +53,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "plus.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("plus", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists plus (
@@ -97,12 +97,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "minus.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("minus", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists minus (
@@ -141,12 +141,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "times.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("times", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists times (
@@ -185,12 +185,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "divide.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("divide", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists divide (
@@ -229,12 +229,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "count.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("count", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists count (
@@ -273,12 +273,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "sum.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("sum", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists sum (
@@ -317,12 +317,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "avg.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("avg", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists avg (
@@ -361,12 +361,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "min.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("min", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists min (
@@ -405,12 +405,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "max.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("max", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists max (
@@ -449,12 +449,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "ascii.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("ascii", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists ascii (
@@ -493,15 +493,15 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "bitLength.test.ts",
 			}),
-			database = drizzle(postgres),
-			table = pgTable("bitlength", {
+			database = pgt(postgres),
+			table = pgTable("bitlengthfunc", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
-			create table if not exists bitlength (
+			create table if not exists bitlengthfunc (
 				text text not null
 			);
 		`);
@@ -524,7 +524,7 @@ describe("Operators", async () => {
 		expect(result2[0].bitLength).toBe(8);
 
 		await database.execute(sql`
-			drop table bitlength;
+			drop table bitlengthfunc;
 		`);
 	});
 
@@ -537,12 +537,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "charLength.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("charlength", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists charlength (
@@ -581,12 +581,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "lower.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("lower", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists lower (
@@ -625,12 +625,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "upper.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("upper", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists upper (
@@ -669,12 +669,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "length.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("length", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists length (
@@ -713,12 +713,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "ltrim.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("ltrim", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists ltrim (
@@ -757,12 +757,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "rtrim.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("rtrim", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists rtrim (
@@ -801,12 +801,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "trim.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("trim", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists trim (
@@ -845,12 +845,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "replace.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("replace", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists replace (
@@ -889,12 +889,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "reverse.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("reverse", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists reverse (
@@ -933,13 +933,13 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "substring.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("substring", {
 				text1: defineText("text1").notNull(),
 				text2: defineText("text2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists substring (
@@ -983,12 +983,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "left.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("leftt", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists leftt (
@@ -1027,12 +1027,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "right.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("rightt", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists rightt (
@@ -1071,12 +1071,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "repeat.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("repeat", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists repeat (
@@ -1115,12 +1115,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "abs.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("abs", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists abs (
@@ -1159,12 +1159,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "ceil.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("ceil", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists ceil (
@@ -1203,12 +1203,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "floor.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("floor", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists floor (
@@ -1247,13 +1247,13 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "round.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("round", {
 				float1: defineFloat4("float1").notNull(),
 				float2: defineFloat4("float2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists round (
@@ -1297,12 +1297,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "sign.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("sign", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists sign (
@@ -1341,12 +1341,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "sqrt.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("sqrt", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists sqrt (
@@ -1385,12 +1385,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "power.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("power", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists power (
@@ -1429,12 +1429,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "pi.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("pi", {
 				int2: defineInt2("int2").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists pi (
@@ -1475,12 +1475,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "lpad.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("lpad", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists lpad (
@@ -1519,12 +1519,12 @@ describe("Operators", async () => {
 				port: 5432,
 				application_name: "rpad.test.ts",
 			}),
-			database = drizzle(postgres),
+			database = pgt(postgres),
 			table = pgTable("rpad", {
 				text: defineText("text").notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists rpad (

@@ -21,7 +21,7 @@ describe("defineInterval", async () => {
 				interval: defineInterval("interval", { mode: "Interval" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists interval (
@@ -79,7 +79,7 @@ describe("defineInterval", async () => {
 				interval: defineInterval("interval", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists intervalstring (

@@ -21,7 +21,7 @@ describe("defineLine", async () => {
 				line: defineLine("line", { mode: "Line" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists line (
@@ -79,7 +79,7 @@ describe("defineLine", async () => {
 				line: defineLine("line", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists linestring (

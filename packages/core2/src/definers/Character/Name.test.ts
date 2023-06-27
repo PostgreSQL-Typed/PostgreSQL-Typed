@@ -21,7 +21,7 @@ describe("defineName", async () => {
 				name: defineName("name", { mode: "Name" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists name (
@@ -79,7 +79,7 @@ describe("defineName", async () => {
 				name: defineName("name", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists namestring (

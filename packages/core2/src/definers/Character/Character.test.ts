@@ -21,7 +21,7 @@ describe("defineCharacter", async () => {
 				character: defineCharacter("character", { mode: "Character" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists character (
@@ -79,7 +79,7 @@ describe("defineCharacter", async () => {
 				character: defineCharacter("character", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists characterstring (
@@ -130,7 +130,7 @@ describe("defineCharacter", async () => {
 				character2: defineCharacter("character2", { mode: "string", length: 3 }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		// eslint-disable-next-line unicorn/template-indent
 		await database.execute(sql`

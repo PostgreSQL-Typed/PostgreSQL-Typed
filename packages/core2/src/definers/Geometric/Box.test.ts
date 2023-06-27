@@ -21,7 +21,7 @@ describe("defineBox", async () => {
 				box: defineBox("box", { mode: "Box" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists box (
@@ -79,7 +79,7 @@ describe("defineBox", async () => {
 				box: defineBox("box", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists boxstring (

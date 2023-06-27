@@ -21,7 +21,7 @@ describe("definePoint", async () => {
 				point: definePoint("point", { mode: "Point" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists point (
@@ -79,7 +79,7 @@ describe("definePoint", async () => {
 				point: definePoint("point", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists pointstring (

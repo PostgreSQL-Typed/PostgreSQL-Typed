@@ -21,7 +21,7 @@ describe("defineTime", async () => {
 				time: defineTime("time", { mode: "Time" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists time (
@@ -79,7 +79,7 @@ describe("defineTime", async () => {
 				time: defineTime("time", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestring (
@@ -129,7 +129,7 @@ describe("defineTime", async () => {
 				time: defineTime("time", { mode: "unix" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timeunix (
@@ -188,7 +188,7 @@ describe("defineTime", async () => {
 				time: defineTime("time", { mode: "luxon.DateTime" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timeluxon (
@@ -262,7 +262,7 @@ describe("defineTime", async () => {
 				time: defineTime("time", { mode: "globalThis.Date" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timejs (

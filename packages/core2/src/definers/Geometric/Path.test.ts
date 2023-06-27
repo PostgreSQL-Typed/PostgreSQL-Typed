@@ -21,7 +21,7 @@ describe("definePath", async () => {
 				path: definePath("path", { mode: "Path" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists path (
@@ -71,7 +71,7 @@ describe("definePath", async () => {
 				path: definePath("path", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists pathstring (

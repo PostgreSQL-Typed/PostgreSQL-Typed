@@ -21,7 +21,7 @@ describe("defineCharacterVarying", async () => {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "CharacterVarying" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists charactervarying (
@@ -79,7 +79,7 @@ describe("defineCharacterVarying", async () => {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists charactervaryingstring (
@@ -130,7 +130,7 @@ describe("defineCharacterVarying", async () => {
 				charactervarying2: defineCharacterVarying("charactervarying2", { mode: "string", length: 3 }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		// eslint-disable-next-line unicorn/template-indent
 		await database.execute(sql`

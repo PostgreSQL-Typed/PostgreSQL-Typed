@@ -20,7 +20,7 @@ interface Float8Object {
 interface Float8 {
 	float8: BigNumber;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	toString(): string;
@@ -192,11 +192,11 @@ class Float8Class extends PgTPBase<Float8> implements Float8 {
 		else throw parsed.error;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(float8: string) {
+	set value(float8: number) {
 		const parsed = Float8.safeFrom(float8);
 		if (parsed.success) this._float8 = parsed.data.float8;
 		else throw parsed.error;

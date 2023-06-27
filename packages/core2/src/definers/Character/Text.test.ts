@@ -21,7 +21,7 @@ describe("defineText", async () => {
 				text: defineText("text", { mode: "Text" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists text (
@@ -79,7 +79,7 @@ describe("defineText", async () => {
 				text: defineText("text", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists textstring (

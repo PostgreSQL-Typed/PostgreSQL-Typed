@@ -22,7 +22,7 @@ describe("defineTimestampTZRange", async () => {
 				timestamptzrange: defineTimestampTZRange("timestamptzrange", { mode: "TimestampTZRange" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzrange (
@@ -80,7 +80,7 @@ describe("defineTimestampTZRange", async () => {
 				timestamptzrange: defineTimestampTZRange("timestamptzrange", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzrangestring (

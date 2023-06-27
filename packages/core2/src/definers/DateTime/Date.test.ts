@@ -21,7 +21,7 @@ describe("defineDate", async () => {
 				date: defineDate("date", { mode: "Date" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists date (
@@ -79,7 +79,7 @@ describe("defineDate", async () => {
 				date: defineDate("date", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists datestring (
@@ -129,7 +129,7 @@ describe("defineDate", async () => {
 				date: defineDate("date", { mode: "unix" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists dateunix (
@@ -179,7 +179,7 @@ describe("defineDate", async () => {
 				date: defineDate("date", { mode: "luxon.DateTime" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists dateluxon (
@@ -237,7 +237,7 @@ describe("defineDate", async () => {
 				date: defineDate("date", { mode: "globalThis.Date" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists datejs (

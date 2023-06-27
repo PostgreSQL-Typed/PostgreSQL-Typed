@@ -1,4 +1,4 @@
-import { definePgTExtension, Query } from "@postgresql-typed/util";
+import { definePgTExtension, PostQueryHookData } from "@postgresql-typed/util";
 import { parse, stringify } from "json-buffer";
 import Keyv from "keyv";
 import { hash } from "ohash";
@@ -11,9 +11,9 @@ export default definePgTExtension<PgTCacheOptions>({
 		name: "cache",
 		configKey: "cache",
 	},
-	setup(resolvedOptions, pgt) {
+	setup(resolvedOptions, manager) {
 		const { uri, namespace, ttl, types } = resolvedOptions,
-			keyv = new Keyv<Query<unknown>>({
+			keyv = new Keyv<PostQueryHookData["output"]>({
 				uri,
 				namespace,
 				ttl,
@@ -21,21 +21,21 @@ export default definePgTExtension<PgTCacheOptions>({
 				deserialize: data => deserializer(parse(data)),
 			});
 
-		pgt.hook("client:pre-query", async data => {
+		manager.hook("pgt:pre-query", async data => {
 			//* If another hook has already set the output, don't do anything
 			/* c8 ignore next 1 */
 			if (data.output) return;
 
-			if (!(types as string[]).includes(data.input.query.trim().split(" ")[0].toLowerCase())) return;
+			if (!(types as string[]).includes(data.input.query.text.trim().split(" ")[0].toLowerCase())) return;
 
-			const hashed = hash(data.input),
+			const hashed = hash(data.input, {}),
 				foundCache = await keyv.get(hashed);
 
 			if (foundCache !== undefined) data.output = foundCache;
 		});
 
-		pgt.hook("client:post-query", async data => {
-			if (!(types as string[]).includes(data.input.query.trim().split(" ")[0].toLowerCase())) return;
+		manager.hook("pgt:post-query", async data => {
+			if (!(types as string[]).includes(data.input.query.text.trim().split(" ")[0].toLowerCase())) return;
 
 			const hashed = hash(data.input, {}),
 				isCached = await keyv.has(hashed);

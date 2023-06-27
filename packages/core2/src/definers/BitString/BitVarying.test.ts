@@ -21,7 +21,7 @@ describe("defineBitVarying", async () => {
 				varbit: defineBitVarying("varbit", { mode: "BitVarying" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbit (
@@ -79,7 +79,7 @@ describe("defineBitVarying", async () => {
 				varbit: defineBitVarying("varbit", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbitstring (
@@ -129,7 +129,7 @@ describe("defineBitVarying", async () => {
 				varbit: defineBitVarying("varbit", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbitnumber (
@@ -181,7 +181,7 @@ describe("defineBitVarying", async () => {
 				varbit3: defineBitVarying("varbit3", { mode: "number", length: 3 }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		// eslint-disable-next-line unicorn/template-indent
 		await database.execute(sql`

@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTBoxConfig<TMode extends "Box" | "string" = "Box" | "string"> {
 	mode?: TMode;
@@ -36,6 +38,16 @@ export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBu
 
 	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBox<MakeColumnConfig<T, TTableBox>> {
 		return new PgTBox<MakeColumnConfig<T, TTableBox>>(table, this.config);
+	}
+
+	array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this as PgColumnBuilder<any, any>, size) as any;
 	}
 }
 
@@ -70,6 +82,16 @@ export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 
 	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBoxString<MakeColumnConfig<T, TTableBox>> {
 		return new PgTBoxString<MakeColumnConfig<T, TTableBox>>(table, this.config);
+	}
+
+	array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this as PgColumnBuilder<any, any>, size) as any;
 	}
 }
 

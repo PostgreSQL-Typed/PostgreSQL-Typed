@@ -21,7 +21,7 @@ describe("definePolygon", async () => {
 				polygon: definePolygon("polygon", { mode: "Polygon" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists polygon (
@@ -79,7 +79,7 @@ describe("definePolygon", async () => {
 				polygon: definePolygon("polygon", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists polygonstring (

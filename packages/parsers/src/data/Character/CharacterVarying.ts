@@ -241,7 +241,7 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 		if (Text.isText(argument)) return this._parseString(context, argument.value);
 		if (Int2.isInt2(argument)) return this._parseString(context, argument.toString());
 		if (Int4.isInt4(argument)) return this._parseString(context, argument.toString());
-		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.toString());
 		if (OID.isOID(argument)) return this._parseString(context, argument.toString());
 		if (UUID.isUUID(argument)) return this._parseString(context, argument.value);
 

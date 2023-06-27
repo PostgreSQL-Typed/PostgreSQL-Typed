@@ -21,7 +21,7 @@ describe("defineFloat8", async () => {
 				float8: defineFloat8("float8", { mode: "Float8" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8 (
@@ -79,7 +79,7 @@ describe("defineFloat8", async () => {
 				float8: defineFloat8("float8", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8string (
@@ -129,7 +129,7 @@ describe("defineFloat8", async () => {
 				float8: defineFloat8("float8", { mode: "BigNumber" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8bignumber (
@@ -187,7 +187,7 @@ describe("defineFloat8", async () => {
 				float8: defineFloat8("float8", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8number (

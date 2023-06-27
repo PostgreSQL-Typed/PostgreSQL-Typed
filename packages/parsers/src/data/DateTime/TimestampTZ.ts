@@ -599,7 +599,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		const jsDate = isValidDate(argument);
 		if (jsDate.isOfSameType) {
 			if (jsDate.isValid) {
-				const [year, month, day, hour, minute, second, offset] = [
+				const [year, month, day, hour, minute, second, offset, milliseconds] = [
 					jsDate.data.getFullYear(),
 					jsDate.data.getMonth() + 1,
 					jsDate.data.getDate(),
@@ -607,9 +607,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 					jsDate.data.getMinutes(),
 					jsDate.data.getSeconds(),
 					jsDate.data.getTimezoneOffset(),
+					jsDate.data.getMilliseconds(),
 				];
 				return OK(
-					new TimestampTZClass(year, month, day, hour, minute, second, {
+					new TimestampTZClass(year, month, day, hour, minute, second + milliseconds / 1000, {
 						hour: Math.abs(offset / 60),
 						minute: Math.abs(offset % 60),
 						/* c8 ignore next 2 */
@@ -626,7 +627,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		const luxonDate = isValidDateTime(argument);
 		if (luxonDate.isOfSameType) {
 			if (luxonDate.isValid) {
-				const [year, month, day, hour, minute, second, offset] = [
+				const [year, month, day, hour, minute, second, offset, milliseconds] = [
 					luxonDate.data.year,
 					luxonDate.data.month,
 					luxonDate.data.day,
@@ -634,9 +635,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 					luxonDate.data.minute,
 					luxonDate.data.second,
 					luxonDate.data.offset,
+					luxonDate.data.millisecond,
 				];
 				return OK(
-					new TimestampTZClass(year, month, day, hour, minute, second, {
+					new TimestampTZClass(year, month, day, hour, minute, second + milliseconds / 1000, {
 						hour: Math.abs(offset / 60),
 						minute: Math.abs(offset % 60),
 						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,

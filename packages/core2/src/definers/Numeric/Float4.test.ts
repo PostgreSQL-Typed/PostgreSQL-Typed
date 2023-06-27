@@ -21,7 +21,7 @@ describe("defineFloat4", async () => {
 				float4: defineFloat4("float4", { mode: "Float4" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float4 (
@@ -79,7 +79,7 @@ describe("defineFloat4", async () => {
 				float4: defineFloat4("float4", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float4string (
@@ -129,7 +129,7 @@ describe("defineFloat4", async () => {
 				float4: defineFloat4("float4", { mode: "BigNumber" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float4bignumber (
@@ -187,7 +187,7 @@ describe("defineFloat4", async () => {
 				float4: defineFloat4("float4", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float4number (

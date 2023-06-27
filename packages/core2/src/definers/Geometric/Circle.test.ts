@@ -21,7 +21,7 @@ describe("defineCircle", async () => {
 				circle: defineCircle("circle", { mode: "Circle" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists circle (
@@ -79,7 +79,7 @@ describe("defineCircle", async () => {
 				circle: defineCircle("circle", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists circlestring (

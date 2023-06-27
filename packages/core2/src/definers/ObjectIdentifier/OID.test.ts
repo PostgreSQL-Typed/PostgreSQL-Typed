@@ -22,7 +22,7 @@ describe("defineOID", async () => {
 				oid: defineOID("oid", { mode: "OID" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists oid (
@@ -80,7 +80,7 @@ describe("defineOID", async () => {
 				oid: defineOID("oid", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists oidstring (
@@ -130,7 +130,7 @@ describe("defineOID", async () => {
 				oid: defineOID("oid", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists oidnumber (

@@ -21,7 +21,7 @@ describe("defineDateMultiRange", async () => {
 				datemultirange: defineDateMultiRange("datemultirange", { mode: "DateMultiRange" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists datemultirange (
@@ -79,7 +79,7 @@ describe("defineDateMultiRange", async () => {
 				datemultirange: defineDateMultiRange("datemultirange", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists datemultirangestring (

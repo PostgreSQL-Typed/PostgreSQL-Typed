@@ -224,7 +224,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (Text.isText(argument)) return this._parseString(context, argument.value);
 		if (Int2.isInt2(argument)) return this._parseNumber(context, argument.value);
 		if (Int4.isInt4(argument)) return this._parseNumber(context, argument.value);
-		if (Int8.isInt8(argument)) return this._parseString(context, argument.value);
+		if (Int8.isInt8(argument)) return this._parseString(context, argument.toString());
 		if (OID.isOID(argument)) return this._parseNumber(context, argument.value);
 
 		const parsedObject = hasKeys<BitObject>(argument, [["value", "string"]]);

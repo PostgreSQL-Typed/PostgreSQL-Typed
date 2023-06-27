@@ -21,7 +21,7 @@ describe("defineInt8Range", async () => {
 				int8range: defineInt8Range("int8range", { mode: "Int8Range" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8range (
@@ -79,7 +79,7 @@ describe("defineInt8Range", async () => {
 				int8range: defineInt8Range("int8range", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8rangestring (

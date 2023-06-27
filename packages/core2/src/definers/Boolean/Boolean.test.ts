@@ -21,7 +21,7 @@ describe("defineBoolean", async () => {
 				boolean: defineBoolean("boolean", { mode: "Boolean" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists boolean (
@@ -79,7 +79,7 @@ describe("defineBoolean", async () => {
 				boolean: defineBoolean("boolean", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists booleanstring (
@@ -129,7 +129,7 @@ describe("defineBoolean", async () => {
 				boolean: defineBoolean("boolean", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists booleannumber (
@@ -179,7 +179,7 @@ describe("defineBoolean", async () => {
 				boolean: defineBoolean("boolean", { mode: "boolean" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists booleanboolean (

@@ -21,7 +21,7 @@ describe("defineInt2", async () => {
 				int2: defineInt2("int2", { mode: "Int2" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2 (
@@ -79,7 +79,7 @@ describe("defineInt2", async () => {
 				int2: defineInt2("int2", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2string (
@@ -129,7 +129,7 @@ describe("defineInt2", async () => {
 				int2: defineInt2("int2", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2number (

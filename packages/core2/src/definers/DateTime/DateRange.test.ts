@@ -21,7 +21,7 @@ describe("defineDateRange", async () => {
 				daterange: defineDateRange("daterange", { mode: "DateRange" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists daterange (
@@ -79,7 +79,7 @@ describe("defineDateRange", async () => {
 				daterange: defineDateRange("daterange", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists daterangestring (

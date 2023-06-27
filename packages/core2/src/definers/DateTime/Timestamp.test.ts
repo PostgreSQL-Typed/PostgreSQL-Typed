@@ -22,7 +22,7 @@ describe("defineTimestamp", async () => {
 				timestamp: defineTimestamp("timestamp", { mode: "Timestamp" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamp (
@@ -80,7 +80,7 @@ describe("defineTimestamp", async () => {
 				timestamp: defineTimestamp("timestamp", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampstring (
@@ -130,7 +130,7 @@ describe("defineTimestamp", async () => {
 				timestamp: defineTimestamp("timestamp", { mode: "unix" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampunix (
@@ -180,7 +180,7 @@ describe("defineTimestamp", async () => {
 				timestamp: defineTimestamp("timestamp", { mode: "luxon.DateTime" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampluxon (
@@ -254,7 +254,7 @@ describe("defineTimestamp", async () => {
 				timestamp: defineTimestamp("timestamp", { mode: "globalThis.Date" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampjs (

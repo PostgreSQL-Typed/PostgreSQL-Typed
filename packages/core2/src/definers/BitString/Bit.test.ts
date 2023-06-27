@@ -21,7 +21,7 @@ describe("defineBit", async () => {
 				bit: defineBit("bit", { mode: "Bit" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bit (
@@ -79,7 +79,7 @@ describe("defineBit", async () => {
 				bit: defineBit("bit", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bitstring (
@@ -129,7 +129,7 @@ describe("defineBit", async () => {
 				bit: defineBit("bit", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bitnumber (
@@ -181,7 +181,7 @@ describe("defineBit", async () => {
 				bit3: defineBit("bit3", { mode: "number", length: 3 }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		// eslint-disable-next-line unicorn/template-indent
 		await database.execute(sql`

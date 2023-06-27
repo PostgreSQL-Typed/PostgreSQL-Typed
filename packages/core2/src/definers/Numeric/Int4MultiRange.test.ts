@@ -21,7 +21,7 @@ describe("defineInt4MultiRange", async () => {
 				int4multirange: defineInt4MultiRange("int4multirange", { mode: "Int4MultiRange" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4multirange (
@@ -79,7 +79,7 @@ describe("defineInt4MultiRange", async () => {
 				int4multirange: defineInt4MultiRange("int4multirange", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4multirangestring (

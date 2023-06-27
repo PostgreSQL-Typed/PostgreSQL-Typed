@@ -22,7 +22,7 @@ describe("defineTimeTZ", async () => {
 				timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timetz (
@@ -80,7 +80,7 @@ describe("defineTimeTZ", async () => {
 				timetz: defineTimeTZ("timetz", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timetzstring (
@@ -130,7 +130,7 @@ describe("defineTimeTZ", async () => {
 				timetz: defineTimeTZ("timetz", { mode: "unix" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timetzunix (
@@ -189,7 +189,7 @@ describe("defineTimeTZ", async () => {
 				timetz: defineTimeTZ("timetz", { mode: "luxon.DateTime" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timetzluxon (
@@ -263,7 +263,7 @@ describe("defineTimeTZ", async () => {
 				timetz: defineTimeTZ("timetz", { mode: "globalThis.Date" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timetzjs (

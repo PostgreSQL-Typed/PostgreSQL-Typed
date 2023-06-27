@@ -21,7 +21,7 @@ describe("defineMoney", async () => {
 				money: defineMoney("money", { mode: "Money" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists money (
@@ -79,7 +79,7 @@ describe("defineMoney", async () => {
 				money: defineMoney("money", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneystring (
@@ -129,7 +129,7 @@ describe("defineMoney", async () => {
 				money: defineMoney("money", { mode: "BigNumber" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneybignumber (
@@ -187,7 +187,7 @@ describe("defineMoney", async () => {
 				money: defineMoney("money", { mode: "number" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneynumber (

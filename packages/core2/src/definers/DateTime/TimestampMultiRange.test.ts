@@ -21,7 +21,7 @@ describe("defineTimestampMultiRange", async () => {
 				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "TimestampMultiRange" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampmultirange (
@@ -95,7 +95,7 @@ describe("defineTimestampMultiRange", async () => {
 				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestampmultirangestring (

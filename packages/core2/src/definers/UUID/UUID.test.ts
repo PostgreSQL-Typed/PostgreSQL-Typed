@@ -22,7 +22,7 @@ describe("defineUUID", async () => {
 				uuid: defineUUID("uuid", { mode: "UUID" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists uuid (
@@ -80,7 +80,7 @@ describe("defineUUID", async () => {
 				uuid: defineUUID("uuid", { mode: "string" }).notNull(),
 			});
 
-		await postgres.connect();
+		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists uuidstring (

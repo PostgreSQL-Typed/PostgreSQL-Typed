@@ -7,5 +7,5 @@ import { getTemplateValues } from "../functions/getters/getTemplateValues.js";
 import { parseTemplate } from "../functions/parseTemplate.js";
 
 export function resolveExportName(config: PostgreSQLTypedCLIConfig, id: TypeId): IdentifierName {
-	return parseTemplate(getExportNameTemplate(config, id), config).applyTemplate(getTemplateValues(id));
+	return parseTemplate(getExportNameTemplate(config, id)).applyTemplate(getTemplateValues(id));
 }

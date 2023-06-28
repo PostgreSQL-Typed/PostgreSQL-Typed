@@ -14,12 +14,10 @@ import type { FetchedData } from "../types/interfaces/FetchedData.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
 import type { DataType } from "../types/types/DataType.js";
 import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
-import { DefaultParserMapping } from "../util/DefaultParserMapping.js";
-import { DefaultTypeScriptMapping } from "../util/DefaultTypeScriptMapping.js";
-import { getParserType } from "../util/functions/getters/getParserType.js";
-import { getTypeScriptType } from "../util/functions/getters/getTypeScriptType.js";
+import { DefaultDefinerMappings } from "../util/DefaultDefinerMappings.js";
+import { getDefiner } from "../util/functions/getters/getDefiner.js";
 import { isDebugEnabled } from "../util/functions/isDebugEnabled.js";
-import { printAllDetails } from "../util/functions/printers/printAllDetails.js";
+import { printDatabaseReexport } from "../util/functions/printers/printDatabaseReexport.js";
 import { resolveFilename } from "../util/functions/resolveFileName.js";
 
 export class Printer {
@@ -42,41 +40,12 @@ export class Printer {
 		return this.classes.get(id);
 	}
 
-	private _getTypeOverride(type: DataType): string | null {
-		return this.config.types.typeOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.types.typeOverrides[`${type.type_name}`] ?? null;
+	private _getDefinerOverride(type: DataType): [string, ImportStatement[]] | null {
+		return this.config.files.definerOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.files.definerOverrides[`${type.type_name}`] ?? null;
 	}
 
-	public getTypeScriptType(id: number, file: FileContext, maxLength?: number): string {
-		const override = this.config.types.typeOverrides[id];
-		if (override !== undefined) return override;
-
-		if (id in OID) {
-			const string = OID[id],
-				override = this.config.types.typeOverrides[string];
-
-			if (override !== undefined) return override;
-		}
-
-		const builtin = DefaultTypeScriptMapping.get(id, maxLength);
-		if (builtin !== undefined) {
-			if (!Array.isArray(builtin)) return builtin;
-
-			const [type, imports] = builtin;
-			for (const importStatement of imports) file.addImportStatement(importStatement);
-			return type;
-		}
-
-		const type = this.types.get(id);
-		if (!type) return "unknown";
-		return this._getTypeOverride(type) ?? getTypeScriptType(type, this, file, maxLength);
-	}
-
-	private _getParserOverride(type: DataType): [string, ImportStatement[]] | null {
-		return this.config.types.parserOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.types.parserOverrides[`${type.type_name}`] ?? null;
-	}
-
-	public getParserType(id: number, file: FileContext, maxLength?: number): string {
-		const override = this.config.types.parserOverrides[id];
+	public getDefiner(id: number, file: FileContext, options: { maxLength?: number; nonNull?: boolean } = {}): string {
+		const override = this.config.files.definerOverrides[id];
 		if (override !== undefined) {
 			const [type, imports] = override;
 			for (const importStatement of imports) file.addImportStatement(importStatement);
@@ -85,7 +54,7 @@ export class Printer {
 
 		if (id in OID) {
 			const string = OID[id],
-				override = this.config.types.parserOverrides[string];
+				override = this.config.files.definerOverrides[string];
 
 			if (override !== undefined) {
 				const [type, imports] = override;
@@ -94,7 +63,7 @@ export class Printer {
 			}
 		}
 
-		const builtin = DefaultParserMapping.get(id, maxLength);
+		const builtin = DefaultDefinerMappings.get(id, options);
 		if (builtin !== undefined) {
 			if (!Array.isArray(builtin)) return builtin;
 
@@ -106,13 +75,13 @@ export class Printer {
 		const type = this.types.get(id);
 		if (!type) return "unknown";
 
-		const globalOverride = this._getParserOverride(type);
+		const globalOverride = this._getDefinerOverride(type);
 		if (globalOverride !== null) {
 			const [type, imports] = globalOverride;
 			for (const importStatement of imports) file.addImportStatement(importStatement);
 			return type;
 		}
-		return getParserType(type, this, file, maxLength);
+		return getDefiner(type, this, file, options);
 	}
 
 	public async print() {
@@ -125,13 +94,13 @@ export class Printer {
 			else databaseClassLists.push([cls]);
 		}
 
-		printAllDetails(databaseClassLists, this);
+		for (const classList of databaseClassLists) printDatabaseReexport(classList, this);
 
 		return await this.writeFiles();
 	}
 
 	private async writeFiles() {
-		const { directory } = this.config.types,
+		const { directory } = this.config.files,
 			files = this.context.getFiles().sort((a, b) => a.filename.localeCompare(b.filename)),
 			filenames = new Set(files.map(f => f.filename));
 

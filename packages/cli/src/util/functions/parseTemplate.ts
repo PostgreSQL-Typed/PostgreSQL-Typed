@@ -1,9 +1,8 @@
-import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import camelcase from "camelcase";
 import pascalcase from "pascalcase";
 import pluralize from "pluralize";
 
-export function parseTemplate(string: string, config: PostgreSQLTypedCLIConfig) {
+export function parseTemplate(string: string) {
 	const variables = [],
 		result: ((values: any) => string)[] = [];
 	let inVariables = false;
@@ -14,10 +13,7 @@ export function parseTemplate(string: string, config: PostgreSQLTypedCLIConfig) 
 			if (split.length !== 2) throw new Error(`Mismatched parentheses: ${string}`);
 
 			const [placeholder, plainString] = split,
-				[variable, ...filters] = placeholder
-					.replace("| default", `| ${config.types.defaultFormatter}`)
-					.split("|")
-					.map(string_ => string_.trim());
+				[variable, ...filters] = placeholder.split("|").map(string_ => string_.trim());
 
 			variables.push(variable);
 			result.push(

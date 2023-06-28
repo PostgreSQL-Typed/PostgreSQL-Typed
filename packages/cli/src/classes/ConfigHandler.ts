@@ -26,7 +26,7 @@ export class ConfigHandler {
 		this.LOGGER?.("Config file loaded");
 
 		this.config = result.config.cli;
-		if (this.config.types.debug) {
+		if (this.config.files.debug) {
 			debug.enable(GLOBAL_DEBUG_GLOB);
 			this.LOGGER?.("Debug mode enabled at a later point, to enable it earlier, use the --debug flag");
 		}

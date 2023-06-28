@@ -6,12 +6,12 @@ import { printArrayParser } from "../printers/printArrayParser.js";
 import { printDomainParser } from "../printers/printDomainParser.js";
 import { printEnumType } from "../printers/printEnumType.js";
 
-export function getParserType(type: DataType, context: Printer, file: FileContext, maxLength?: number): string {
+export function getDefiner(type: DataType, context: Printer, file: FileContext, options: { maxLength?: number; nonNull?: boolean } = {}): string {
 	switch (type.kind) {
 		case DataTypeKind.Array:
-			return printArrayParser(type, context, file, maxLength);
+			return printArrayParser(type, context, file, options);
 		case DataTypeKind.Domain:
-			return printDomainParser(type, context, file, maxLength);
+			return printDomainParser(type, context, file, options);
 		case DataTypeKind.Enum:
 			return printEnumType(type, context, file);
 	}

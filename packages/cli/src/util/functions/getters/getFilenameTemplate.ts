@@ -3,41 +3,31 @@ import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId): string {
-	const typeConfig = config.types,
-		bundleConfig = config.types.bundle;
+	const filesConfig = config.files,
+		bundleConfig = config.files.bundle;
 
 	switch (id.type) {
-		case "table_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.tableFileName);
-		case "table_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.tableDataFileName);
-		case "insert_parameters_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.tableInsertParametersFileName);
-		case "insert_parameters_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.tableInsertParametersDataFileName);
-		case "primary_key":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.primaryKeyFileName);
-		case "schema_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.schemaFileName);
-		case "schema_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.schemaDataFileName);
-		case "database_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.databaseFileName);
-		case "database_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.databaseDataFileName);
-		case "full_export_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.fullExportFileName);
-		case "full_export_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.fullExportDataFileName);
+		case "table":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableFileName);
+		case "tableType":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableTypeFileName);
+		case "tableInsertType":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableInsertTypeFileName);
+		case "column":
+			return "";
+		case "databaseReexport":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.databaseFileName);
+		case "schema":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemaFileName);
+		case "schemaReexport":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemaFileName);
+		case "domain":
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.domainFileName);
 		case "enum":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.enumFileName);
-		case "domain_type":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.domainFileName);
-		case "domain_data":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : typeConfig.domainDataFileName);
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.enumFileName);
 		case "debug":
-			return formatFileType(typeConfig.debugFileName, "json");
-		case "re_export":
+			return formatFileType(filesConfig.debugFileName, "json");
+		case "export":
 			return getFilenameTemplate(config, id.of);
 	}
 }

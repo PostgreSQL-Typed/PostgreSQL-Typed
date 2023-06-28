@@ -62,6 +62,13 @@ export class FileContent {
 			const declarationLines = declaration(identifierName, {
 				getImport: (id: FileExport) => this._getImportState(id.file).getImport(id),
 				addImportStatement: (importStatement: ImportStatement) => this._addImportStatement(importStatement),
+				getDeclarationName: (id: TypeId) => resolveExportName(this.config, id),
+				getRelativePath: (id: FileExport) => {
+					const relativePath = relative(dirname(this.file), id.file);
+					return `${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
+						this.config.type === "esm" ? ".js" : ""
+					}`;
+				},
 			});
 
 			this._declarations.push(() => [...declarationLines, `export ${mode === "type" ? "type " : ""}{${identifierName}}`]);

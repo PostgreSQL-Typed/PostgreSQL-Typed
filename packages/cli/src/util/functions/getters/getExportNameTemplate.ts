@@ -3,41 +3,30 @@ import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getExportNameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId): string {
-	const typeConfig = config.types,
-		bundleConfig = config.types.bundle;
+	const filesConfig = config.files;
 
 	switch (id.type) {
-		case "table_type":
-			return bundleConfig.enabled ? bundleConfig.tableTypeName : typeConfig.tableTypeName;
-		case "table_data":
-			return bundleConfig.enabled ? bundleConfig.tableDataTypeName : typeConfig.tableDataTypeName;
-		case "insert_parameters_type":
-			return bundleConfig.enabled ? bundleConfig.tableInsertParametersTypeName : typeConfig.tableInsertParametersTypeName;
-		case "insert_parameters_data":
-			return bundleConfig.enabled ? bundleConfig.tableInsertParametersDataTypeName : typeConfig.tableInsertParametersDataTypeName;
-		case "primary_key":
-			return bundleConfig.enabled ? bundleConfig.primaryKeyTypeName : typeConfig.primaryKeyTypeName;
-		case "schema_type":
-			return bundleConfig.enabled ? bundleConfig.schemaTypeName : typeConfig.schemaTypeName;
-		case "schema_data":
-			return bundleConfig.enabled ? bundleConfig.schemaDataTypeName : typeConfig.schemaDataTypeName;
-		case "database_type":
-			return bundleConfig.enabled ? bundleConfig.databaseTypeName : typeConfig.databaseTypeName;
-		case "database_data":
-			return bundleConfig.enabled ? bundleConfig.databaseDataTypeName : typeConfig.databaseDataTypeName;
-		case "full_export_type":
-			return bundleConfig.enabled ? bundleConfig.fullExportTypeName : typeConfig.fullExportTypeName;
-		case "full_export_data":
-			return bundleConfig.enabled ? bundleConfig.fullExportDataTypeName : typeConfig.fullExportDataTypeName;
+		case "column":
+			return filesConfig.columnName;
+		case "table":
+			return filesConfig.tableName;
+		case "tableType":
+			return filesConfig.tableTypeName;
+		case "tableInsertType":
+			return filesConfig.tableInsertTypeName;
+		case "schema":
+			return filesConfig.schemaName;
 		case "enum":
-			return bundleConfig.enabled ? bundleConfig.enumTypeName : typeConfig.enumTypeName;
-		case "domain_type":
-			return bundleConfig.enabled ? bundleConfig.domainTypeName : typeConfig.domainTypeName;
-		case "domain_data":
-			return bundleConfig.enabled ? bundleConfig.domainDataTypeName : typeConfig.domainDataTypeName;
+			return filesConfig.enumName;
+		case "domain":
+			return filesConfig.domainName;
 		case "debug":
 			return "";
-		case "re_export":
+		case "schemaReexport":
+			return "";
+		case "databaseReexport":
+			return "";
+		case "export":
 			return getExportNameTemplate(config, id.of);
 	}
 }

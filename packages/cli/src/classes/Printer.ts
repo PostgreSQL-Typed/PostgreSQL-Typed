@@ -63,7 +63,7 @@ export class Printer {
 			}
 		}
 
-		const builtin = DefaultDefinerMappings.get(id, options);
+		const builtin = DefaultDefinerMappings.get(id, this.config, options);
 		if (builtin !== undefined) {
 			if (!Array.isArray(builtin)) return builtin;
 

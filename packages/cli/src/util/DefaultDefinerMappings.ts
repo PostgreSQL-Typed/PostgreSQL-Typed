@@ -1,24 +1,28 @@
 import { OID } from "@postgresql-typed/oids";
-import type { ImportStatement } from "@postgresql-typed/util";
+import type { ImportStatement, PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 
 export const DefaultDefinerMappings = {
 	get(
 		oid: OID,
+		config: PostgreSQLTypedCLIConfig,
 		options: {
 			maxLength?: number;
 			notNull?: boolean;
 		} = {}
 	): string | [string, ImportStatement[]] | undefined {
 		const { maxLength, notNull } = options,
-			lengthString = maxLength === undefined ? "" : `length: ${maxLength},`,
+			lengthString = maxLength === undefined ? "" : `length: ${maxLength}, `,
 			notNullString = notNull ? ".notNull()" : "",
+			{
+				files: { definerModes },
+			} = config,
 			ParserMapping: {
 				[key in OID]: string | [string, ImportStatement[]];
 			} = {
 				[OID._abstime]: "undefined",
 				[OID._aclitem]: "undefined",
 				[OID._bit]: [
-					`defineBit("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
+					`defineBit("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.bit}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -28,7 +32,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._bool]: [
-					`defineBoolean("%ATTRIBUTE%").array()${notNullString}`,
+					`defineBoolean("%ATTRIBUTE%", { mode: "${definerModes.boolean}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -38,7 +42,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._box]: [
-					`defineBox("%ATTRIBUTE%").array()${notNullString}`,
+					`defineBox("%ATTRIBUTE%", { mode: "${definerModes.box}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -48,7 +52,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._bpchar]: [
-					`defineCharacter("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
+					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -59,7 +63,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._bytea]: "undefined",
 				[OID._char]: [
-					`defineCharacter("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
+					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}" }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -71,7 +75,7 @@ export const DefaultDefinerMappings = {
 				[OID._cid]: "undefined",
 				[OID._cidr]: "undefined",
 				[OID._circle]: [
-					`defineCircle("%ATTRIBUTE%").array()${notNullString}`,
+					`defineCircle("%ATTRIBUTE%", { mode: "${definerModes.circle}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -82,7 +86,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._cstring]: "undefined",
 				[OID._date]: [
-					`defineDate("%ATTRIBUTE%").array()${notNullString}`,
+					`defineDate("%ATTRIBUTE%", { mode: "${definerModes.date}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -92,7 +96,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._datemultirange]: [
-					`defineDateMultiRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineDateMultiRange("%ATTRIBUTE%", { mode: "${definerModes.dateMultiRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -102,7 +106,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._daterange]: [
-					`defineDateRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineDateRange("%ATTRIBUTE%", { mode: "${definerModes.dateRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -112,7 +116,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._float4]: [
-					`defineFloat4("%ATTRIBUTE%").array()${notNullString}`,
+					`defineFloat4("%ATTRIBUTE%", { mode: "${definerModes.float4}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -122,7 +126,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._float8]: [
-					`defineFloat8("%ATTRIBUTE%").array()${notNullString}`,
+					`defineFloat8("%ATTRIBUTE%", { mode: "${definerModes.float8}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -134,7 +138,7 @@ export const DefaultDefinerMappings = {
 				[OID._gtsvector]: "undefined",
 				[OID._inet]: "undefined",
 				[OID._int2]: [
-					`defineInt2("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt2("%ATTRIBUTE%", { mode: "${definerModes.int2}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -145,7 +149,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._int2vector]: "undefined",
 				[OID._int4]: [
-					`defineInt4("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt4("%ATTRIBUTE%", { mode: "${definerModes.int4}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -155,7 +159,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._int4multirange]: [
-					`defineInt4MultiRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt4MultiRange("%ATTRIBUTE%", { mode: "${definerModes.int4MultiRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -165,7 +169,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._int4range]: [
-					`defineInt4Range("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt4Range("%ATTRIBUTE%", { mode: "${definerModes.int4Range}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -175,7 +179,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._int8]: [
-					`defineInt8("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt8("%ATTRIBUTE%", { mode: "${definerModes.int8}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -185,7 +189,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._int8multirange]: [
-					`defineInt8MultiRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt8MultiRange("%ATTRIBUTE%", { mode: "${definerModes.int8MultiRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -195,7 +199,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._int8range]: [
-					`defineInt8Range("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInt8Range("%ATTRIBUTE%", { mode: "${definerModes.int8Range}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -205,7 +209,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._interval]: [
-					`defineInterval("%ATTRIBUTE%").array()${notNullString}`,
+					`defineInterval("%ATTRIBUTE%", { mode: "${definerModes.interval}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -215,7 +219,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._json]: [
-					`defineJSON("%ATTRIBUTE%").array()${notNullString}`,
+					`defineJSON("%ATTRIBUTE%", { mode: "${definerModes.json}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -225,7 +229,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._jsonb]: [
-					`defineJSONB("%ATTRIBUTE%").array()${notNullString}`,
+					`defineJSONB("%ATTRIBUTE%", { mode: "${definerModes.jsonb}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -236,7 +240,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._jsonpath]: "undefined",
 				[OID._line]: [
-					`defineLine("%ATTRIBUTE%").array()${notNullString}`,
+					`defineLine("%ATTRIBUTE%", { mode: "${definerModes.line}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -246,7 +250,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._lseg]: [
-					`defineLineSegment("%ATTRIBUTE%").array()${notNullString}`,
+					`defineLineSegment("%ATTRIBUTE%", { mode: "${definerModes.lineSegment}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -258,7 +262,7 @@ export const DefaultDefinerMappings = {
 				[OID._macaddr]: "undefined",
 				[OID._macaddr8]: "undefined",
 				[OID._money]: [
-					`defineMoney("%ATTRIBUTE%").array()${notNullString}`,
+					`defineMoney("%ATTRIBUTE%", { mode: "${definerModes.money}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -268,7 +272,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._name]: [
-					`defineName("%ATTRIBUTE%").array()${notNullString}`,
+					`defineName("%ATTRIBUTE%", { mode: "${definerModes.name}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -281,7 +285,7 @@ export const DefaultDefinerMappings = {
 				[OID._nummultirange]: "undefined",
 				[OID._numrange]: "undefined",
 				[OID._oid]: [
-					`defineOID("%ATTRIBUTE%").array()${notNullString}`,
+					`defineOID("%ATTRIBUTE%", { mode: "${definerModes.oid}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -292,7 +296,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._oidvector]: "undefined",
 				[OID._path]: [
-					`definePath("%ATTRIBUTE%").array()${notNullString}`,
+					`definePath("%ATTRIBUTE%", { mode: "${definerModes.path}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -304,7 +308,7 @@ export const DefaultDefinerMappings = {
 				[OID._pg_lsn]: "undefined",
 				[OID._pg_snapshot]: "undefined",
 				[OID._point]: [
-					`definePoint("%ATTRIBUTE%").array()${notNullString}`,
+					`definePoint("%ATTRIBUTE%", { mode: "${definerModes.point}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -314,7 +318,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._polygon]: [
-					`definePolygon("%ATTRIBUTE%").array()${notNullString}`,
+					`definePolygon("%ATTRIBUTE%", { mode: "${definerModes.polygon}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -338,7 +342,7 @@ export const DefaultDefinerMappings = {
 				[OID._regtype]: "undefined",
 				[OID._reltime]: "undefined",
 				[OID._text]: [
-					`defineText("%ATTRIBUTE%").array()${notNullString}`,
+					`defineText("%ATTRIBUTE%", { mode: "${definerModes.text}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -349,7 +353,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID._tid]: "undefined",
 				[OID._time]: [
-					`defineTime("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTime("%ATTRIBUTE%", { mode: "${definerModes.time}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -359,7 +363,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._timestamp]: [
-					`defineTimestamp("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestamp("%ATTRIBUTE%", { mode: "${definerModes.timestamp}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -369,7 +373,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._timestamptz]: [
-					`defineTimestampTZ("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestampTZ("%ATTRIBUTE%", { mode: "${definerModes.timestamptz}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -379,7 +383,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._timetz]: [
-					`defineTimeTZ("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimeTZ("%ATTRIBUTE%", { mode: "${definerModes.timetz}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -391,7 +395,7 @@ export const DefaultDefinerMappings = {
 				[OID._tinterval]: "undefined",
 				[OID._tsquery]: "undefined",
 				[OID._tsmultirange]: [
-					`defineTimestampMultiRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestampMultiRange("%ATTRIBUTE%", { mode: "${definerModes.timestampMultiRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -401,7 +405,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._tsrange]: [
-					`defineTimestampRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestampRange("%ATTRIBUTE%", { mode: "${definerModes.timestampRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -411,7 +415,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._tstzmultirange]: [
-					`defineTimestampTZMultiRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestampTZMultiRange("%ATTRIBUTE%", { mode: "${definerModes.timestamptzMultiRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -421,7 +425,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._tstzrange]: [
-					`defineTimestampTZRange("%ATTRIBUTE%").array()${notNullString}`,
+					`defineTimestampTZRange("%ATTRIBUTE%", { mode: "${definerModes.timestamptzRange}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -433,7 +437,7 @@ export const DefaultDefinerMappings = {
 				[OID._tsvector]: "undefined",
 				[OID._txid_snapshot]: "undefined",
 				[OID._uuid]: [
-					`defineUUID("%ATTRIBUTE%").array()${notNullString}`,
+					`defineUUID("%ATTRIBUTE%", { mode: "${definerModes.uuid}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -443,7 +447,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._varbit]: [
-					`defineBitVarying("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
+					`defineBitVarying("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.bitVarying}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -453,7 +457,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID._varchar]: [
-					`defineCharacterVarying("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
+					`defineCharacterVarying("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.characterVarying}", }).array()${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -480,7 +484,7 @@ export const DefaultDefinerMappings = {
 				[OID.anynonarray]: "undefined",
 				[OID.anyrange]: "undefined",
 				[OID.bit]: [
-					`defineBit("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
+					`defineBit("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.bit}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -490,7 +494,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.bool]: [
-					`defineBoolean("%ATTRIBUTE%")${notNullString}`,
+					`defineBoolean("%ATTRIBUTE%", { mode: "${definerModes.boolean}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -500,7 +504,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.box]: [
-					`defineBox("%ATTRIBUTE%")${notNullString}`,
+					`defineBox("%ATTRIBUTE%", { mode: "${definerModes.box}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -510,7 +514,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.bpchar]: [
-					`defineCharacter("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
+					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -522,7 +526,7 @@ export const DefaultDefinerMappings = {
 				[OID.bytea]: "undefined",
 				[OID.cardinal_number]: "undefined",
 				[OID.char]: [
-					`defineCharacter("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
+					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -535,7 +539,7 @@ export const DefaultDefinerMappings = {
 				[OID.cid]: "undefined",
 				[OID.cidr]: "undefined",
 				[OID.circle]: [
-					`defineCircle("%ATTRIBUTE%")${notNullString}`,
+					`defineCircle("%ATTRIBUTE%", { mode: "${definerModes.circle}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -546,7 +550,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID.cstring]: "undefined",
 				[OID.date]: [
-					`defineDate("%ATTRIBUTE%")${notNullString}`,
+					`defineDate("%ATTRIBUTE%", { mode: "${definerModes.date}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -556,7 +560,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.datemultirange]: [
-					`defineDateMultiRange("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineDateMultiRange("%ATTRIBUTE%", { mode: "${definerModes.dateMultiRange}", }).array("%ATTRIBUTE%")${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -566,7 +570,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.daterange]: [
-					`defineDateRange("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineDateRange("%ATTRIBUTE%", { mode: "${definerModes.dateRange}", }).array("%ATTRIBUTE%")${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -578,7 +582,7 @@ export const DefaultDefinerMappings = {
 				[OID.event_trigger]: "undefined",
 				[OID.fdw_handler]: "undefined",
 				[OID.float4]: [
-					`defineFloat4("%ATTRIBUTE%")${notNullString}`,
+					`defineFloat4("%ATTRIBUTE%", { mode: "${definerModes.float4}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -588,7 +592,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.float8]: [
-					`defineFloat8("%ATTRIBUTE%")${notNullString}`,
+					`defineFloat8("%ATTRIBUTE%", { mode: "${definerModes.float8}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -601,7 +605,7 @@ export const DefaultDefinerMappings = {
 				[OID.index_am_handler]: "undefined",
 				[OID.inet]: "undefined",
 				[OID.int2]: [
-					`defineInt2("%ATTRIBUTE%")${notNullString}`,
+					`defineInt2("%ATTRIBUTE%", { mode: "${definerModes.int2}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -612,7 +616,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID.int2vector]: "undefined",
 				[OID.int4]: [
-					`defineInt4("%ATTRIBUTE%")${notNullString}`,
+					`defineInt4("%ATTRIBUTE%", { mode: "${definerModes.int4}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -622,7 +626,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.int4multirange]: [
-					`defineInt4MultiRange("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineInt4MultiRange("%ATTRIBUTE%", { mode: "${definerModes.int4MultiRange}", }).array("%ATTRIBUTE%")${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -632,7 +636,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.int4range]: [
-					`defineInt4Range("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineInt4Range("%ATTRIBUTE%").array("%ATTRIBUTE%", { mode: "${definerModes.int4Range}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -642,7 +646,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.int8]: [
-					`defineInt8("%ATTRIBUTE%")${notNullString}`,
+					`defineInt8("%ATTRIBUTE%", { mode: "${definerModes.int8}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -652,7 +656,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.int8multirange]: [
-					`defineInt8MultiRange("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineInt8MultiRange("%ATTRIBUTE%", { mode: "${definerModes.int8MultiRange}", }).array("%ATTRIBUTE%")${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -662,7 +666,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.int8range]: [
-					`defineInt8Range("%ATTRIBUTE%").array("%ATTRIBUTE%")${notNullString}`,
+					`defineInt8Range("%ATTRIBUTE%", { mode: "${definerModes.int8Range}", }).array("%ATTRIBUTE%")${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -673,7 +677,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID.internal]: "undefined",
 				[OID.interval]: [
-					`defineInterval("%ATTRIBUTE%")${notNullString}`,
+					`defineInterval("%ATTRIBUTE%", { mode: "${definerModes.interval}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -683,7 +687,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.json]: [
-					`defineJSON("%ATTRIBUTE%")${notNullString}`,
+					`defineJSON("%ATTRIBUTE%", { mode: "${definerModes.json}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -693,7 +697,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.jsonb]: [
-					`defineJSONB("%ATTRIBUTE%")${notNullString}`,
+					`defineJSONB("%ATTRIBUTE%", { mode: "${definerModes.jsonb}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -705,7 +709,7 @@ export const DefaultDefinerMappings = {
 				[OID.jsonpath]: "undefined",
 				[OID.language_handler]: "undefined",
 				[OID.line]: [
-					`defineLine("%ATTRIBUTE%")${notNullString}`,
+					`defineLine("%ATTRIBUTE%", { mode: "${definerModes.line}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -715,7 +719,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.lseg]: [
-					`defineLineSegment("%ATTRIBUTE%")${notNullString}`,
+					`defineLineSegment("%ATTRIBUTE%", { mode: "${definerModes.lineSegment}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -727,7 +731,7 @@ export const DefaultDefinerMappings = {
 				[OID.macaddr]: "undefined",
 				[OID.macaddr8]: "undefined",
 				[OID.money]: [
-					`defineMoney("%ATTRIBUTE%")${notNullString}`,
+					`defineMoney("%ATTRIBUTE%", { mode: "${definerModes.money}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -737,7 +741,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.name]: [
-					`defineName("%ATTRIBUTE%")${notNullString}`,
+					`defineName("%ATTRIBUTE%", { mode: "${definerModes.name}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -750,7 +754,7 @@ export const DefaultDefinerMappings = {
 				[OID.nummultirange]: "undefined",
 				[OID.numrange]: "undefined",
 				[OID.oid]: [
-					`defineOID("%ATTRIBUTE%")${notNullString}`,
+					`defineOID("%ATTRIBUTE%", { mode: "${definerModes.oid}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -762,7 +766,7 @@ export const DefaultDefinerMappings = {
 				[OID.oidvector]: "undefined",
 				[OID.opaque]: "undefined",
 				[OID.path]: [
-					`definePath("%ATTRIBUTE%")${notNullString}`,
+					`definePath("%ATTRIBUTE%", { mode: "${definerModes.path}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -781,7 +785,7 @@ export const DefaultDefinerMappings = {
 				[OID.pg_node_tree]: "undefined",
 				[OID.pg_snapshot]: "undefined",
 				[OID.point]: [
-					`definePoint("%ATTRIBUTE%")${notNullString}`,
+					`definePoint("%ATTRIBUTE%", { mode: "${definerModes.point}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -791,7 +795,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.polygon]: [
-					`definePolygon("%ATTRIBUTE%")${notNullString}`,
+					`definePolygon("%ATTRIBUTE%", { mode: "${definerModes.polygon}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -817,7 +821,7 @@ export const DefaultDefinerMappings = {
 				[OID.smgr]: "undefined",
 				[OID.table_am_handler]: "undefined",
 				[OID.text]: [
-					`defineText("%ATTRIBUTE%")${notNullString}`,
+					`defineText("%ATTRIBUTE%", { mode: "${definerModes.text}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -828,7 +832,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID.tid]: "undefined",
 				[OID.time]: [
-					`defineTime("%ATTRIBUTE%")${notNullString}`,
+					`defineTime("%ATTRIBUTE%", { mode: "${definerModes.time}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -838,7 +842,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.timestamp]: [
-					`defineTimestamp("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestamp("%ATTRIBUTE%", { mode: "${definerModes.timestamp}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -848,7 +852,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.timestamptz]: [
-					`defineTimestampTZ("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestampTZ("%ATTRIBUTE%", { mode: "${definerModes.timestamptz}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -858,7 +862,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.timetz]: [
-					`defineTimeTZ("%ATTRIBUTE%")${notNullString}`,
+					`defineTimeTZ("%ATTRIBUTE%", { mode: "${definerModes.timetz}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -871,7 +875,7 @@ export const DefaultDefinerMappings = {
 				[OID.trigger]: "undefined",
 				[OID.tsm_handler]: "undefined",
 				[OID.tsmultirange]: [
-					`defineTimestampMultiRange("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestampMultiRange("%ATTRIBUTE%", { mode: "${definerModes.timestampMultiRange}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -882,7 +886,7 @@ export const DefaultDefinerMappings = {
 				],
 				[OID.tsquery]: "undefined",
 				[OID.tsrange]: [
-					`defineTimestampRange("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestampRange("%ATTRIBUTE%", { mode: "${definerModes.timestampRange}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -892,7 +896,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.tstzmultirange]: [
-					`defineTimestampTZMultiRange("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestampTZMultiRange("%ATTRIBUTE%", { mode: "${definerModes.timestamptzMultiRange}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -903,7 +907,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.tstzrange]: [
-					`defineTimestampTZRange("%ATTRIBUTE%")${notNullString}`,
+					`defineTimestampTZRange("%ATTRIBUTE%", { mode: "${definerModes.timestamptzRange}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -916,7 +920,7 @@ export const DefaultDefinerMappings = {
 				[OID.txid_snapshot]: "undefined",
 				[OID.unknown]: "undefined",
 				[OID.uuid]: [
-					`defineUUID("%ATTRIBUTE%")${notNullString}`,
+					`defineUUID("%ATTRIBUTE%", { mode: "${definerModes.uuid}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -926,7 +930,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.varbit]: [
-					`defineBitVarying("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
+					`defineBitVarying("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.bitVarying}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",
@@ -936,7 +940,7 @@ export const DefaultDefinerMappings = {
 					],
 				],
 				[OID.varchar]: [
-					`defineCharacterVarying("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
+					`defineCharacterVarying("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.characterVarying}", })${notNullString}`,
 					[
 						{
 							module: "@postgresql-typed/core/definers",

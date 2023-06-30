@@ -1,7 +1,8 @@
 import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
-import bundleSchema, { BundleConfig } from "./BundleConfig.js";
-import { ImportStatement } from "./ImportStatement.js";
+import bundleSchema, { type BundleConfig } from "./BundleConfig.js";
+import definerSchema, { type DefinerModes } from "./DefinerModes.js";
+import type { ImportStatement } from "./ImportStatement.js";
 
 export interface FilesConfig {
 	/**
@@ -24,6 +25,11 @@ export interface FilesConfig {
 	 * @default false
 	 */
 	debug: boolean;
+
+	/**
+	 * Definer modes
+	 */
+	definerModes: DefinerModes;
 
 	/**
 	 * What should the debug file be called
@@ -359,6 +365,7 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: false,
 		$resolve: Boolean,
 	},
+	definerModes: definerSchema,
 	debugFileName: {
 		$default: "debug_{{ TIMESTAMP }}.json",
 		$resolve: value => (typeof value === "string" ? value : "debug_{{ TIMESTAMP }}.json"),

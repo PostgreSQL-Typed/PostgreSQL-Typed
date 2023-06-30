@@ -34,9 +34,6 @@ export default definePgTExtension<PgTTzSwitcherOptions>({
 		manager.hook("pgt:post-query", data => {
 			data.output.rows = checkValue(data.output.rows, resolvedOptions, "to", "from");
 		});
-
-		//@ts-expect-error - This is a private method, but it's the only way to get the hook
-		manager.hook("pgt:map-from-driver-value", console.log);
 	},
 	schema: {
 		timestamp: SCHEMA,

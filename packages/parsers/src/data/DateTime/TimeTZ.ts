@@ -458,7 +458,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		const parsed = TimeTZ.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
+				equals: parsed.data.toDateTime("UTC").toString() === this.toDateTime("UTC").toString(),
 				data: parsed.data,
 			});
 		}

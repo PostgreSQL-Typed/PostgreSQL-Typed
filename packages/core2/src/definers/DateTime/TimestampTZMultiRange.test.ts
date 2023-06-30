@@ -25,6 +25,17 @@ describe("defineTimestampTZMultiRange", async () => {
 
 		await database.connect();
 
+		const version = await postgres.query<{
+				version: string;
+			}>("SELECT version()"),
+			versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]);
+
+		// Multirange types were introduced in PostgreSQL 14
+		if (versionNumber < 14) {
+			await postgres.end();
+			return;
+		}
+
 		await database.execute(sql`
 			create table if not exists timestamptzmultirange (
 				timestamptzmultirange tstzmultirange not null,
@@ -117,6 +128,17 @@ describe("defineTimestampTZMultiRange", async () => {
 			});
 
 		await database.connect();
+
+		const version = await postgres.query<{
+				version: string;
+			}>("SELECT version()"),
+			versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]);
+
+		// Multirange types were introduced in PostgreSQL 14
+		if (versionNumber < 14) {
+			await postgres.end();
+			return;
+		}
 
 		await database.execute(sql`
 			create table if not exists timestamptzmultirangestring (

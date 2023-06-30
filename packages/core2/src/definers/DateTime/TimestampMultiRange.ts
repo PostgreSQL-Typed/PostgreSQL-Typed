@@ -13,6 +13,9 @@ import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from 
 
 import { PgTArrayBuilder } from "../../array.js";
 
+// MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
+/* c8 ignore start */
+
 export interface PgTTimestampMultiRangeConfig<TMode extends "TimestampMultiRange" | "string" = "TimestampMultiRange" | "string"> {
 	mode?: TMode;
 }

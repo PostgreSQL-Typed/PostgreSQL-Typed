@@ -120,42 +120,6 @@
 <p>
 
 <br/>
-<!-- @PostgreSQL-Typed/pg -->
-<h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/pg">
-		@PostgreSQL-Typed/pg
-	</a>
-</h2>
-<div align="center">
-	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/pg">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/pg.svg?logo=npm" alt="@PostgreSQL-Typed/pg Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/pg&logo=vitest&style=flat" alt="@PostgreSQL-Typed/pg Coverage"/>
-	</a>
-</div>
-<p align="center">
-  A type-safe PostgreSQL client for Node.js (Using the pg module)
-<p>
-
-<br/>
-<!-- @PostgreSQL-Typed/postgres -->
-<h2 align="center">
-	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/postgres">
-		@PostgreSQL-Typed/postgres
-	</a>
-</h2>
-<div align="center">
-	<!-- badges -->
-	<a href="https://www.npmjs.com/package/@postgresql-typed/postgres">
-		<img src="https://img.shields.io/npm/v/@postgresql-typed/postgres.svg?logo=npm" alt="@PostgreSQL-Typed/postgres Version"/>
-		<img src="https://img.shields.io/badge/coverage-100%25-success.svg?placeholder=$coverage-url$/packages/postgres&logo=vitest&style=flat" alt="@PostgreSQL-Typed/postgres Coverage"/>
-	</a>
-</div>
-<p align="center">
-  A type-safe PostgreSQL client for Node.js (Using the postgres module)
-<p>
-
-<br/>
 <!-- @PostgreSQL-Typed/TzSwitcher -->
 <h2 align="center">
 	<a href="https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/tree/main/packages/tzswitcher">

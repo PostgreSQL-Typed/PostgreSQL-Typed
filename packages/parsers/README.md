@@ -114,6 +114,16 @@ npm install --save @postgresql-typed/parsers
           <code>polygon</code><br/>
         </td>
       </tr>
+      <!-- JSON -->
+      <tr>
+        <td>
+          <a href="./docs/JSON/JSON.md">JSON</a>
+        </td>
+        <td>
+          <code>json</code><br/>
+          <code>jsonb</code><br/>
+        </td>
+      </tr>
       <!-- Monetary -->
       <tr>
         <td>

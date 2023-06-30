@@ -46,7 +46,7 @@
 		"@recodive/eslint-config": "^1.2.2",
 		"@rushstack/eslint-patch": "^1.2.0",
 		"@vitest/coverage-c8": "^0.31.0",
-		"@vitest/ui": "^0.31.0",
+		"@vitest/ui": "^0.32.0",
 		"commitlint": "^17.6.3",
 		"eslint": "^8.40.0",
 		"husky": "^8.0.3",

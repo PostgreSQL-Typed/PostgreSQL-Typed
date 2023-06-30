@@ -272,7 +272,7 @@ export const defaultParserMappings = {
 		parse: parser<JSON>(JSON),
 	},
 	[OID._json]: {
-		serialize: arraySerializer<JSON>(JSON, ","),
+		serialize: arraySerializer<JSON>(JSON),
 		parse: arrayParser<JSON>(JSON, ","),
 	},
 	[OID.jsonb]: {
@@ -280,7 +280,7 @@ export const defaultParserMappings = {
 		parse: parser<JSON>(JSON),
 	},
 	[OID._jsonb]: {
-		serialize: arraySerializer<JSON>(JSON, ","),
+		serialize: arraySerializer<JSON>(JSON),
 		parse: arrayParser<JSON>(JSON, ","),
 	},
 	[OID.money]: {

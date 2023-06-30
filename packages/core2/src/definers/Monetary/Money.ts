@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTMoneyConfig<TMode extends "Money" | "string" | "BigNumber" | "number" = "Money" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTMoneyBuilder<T extends ColumnBuilderBaseConfig> extends PgColumn
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoney<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoney<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
@@ -51,7 +63,7 @@ export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, 
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as string).postgres;
+		return Money.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTMoneyStringBuilder<T extends ColumnBuilderBaseConfig> extends Pg
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyString<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
@@ -85,7 +107,7 @@ export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMone
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as string).postgres;
+		return Money.from(value as string);
 	}
 }
 //#endregion
@@ -105,6 +127,16 @@ export class PgTMoneyBigNumberBuilder<T extends ColumnBuilderBaseConfig> extends
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
@@ -119,7 +151,7 @@ export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTM
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as BigNumber).postgres;
+		return Money.from(value as BigNumber);
 	}
 }
 //#endregion
@@ -139,6 +171,16 @@ export class PgTMoneyNumberBuilder<T extends ColumnBuilderBaseConfig> extends Pg
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTMoneyNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
@@ -153,7 +195,7 @@ export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMone
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as number).postgres;
+		return Money.from(value as number);
 	}
 }
 

@@ -19,6 +19,7 @@ import {
 	Int8MultiRange,
 	Int8Range,
 	Interval,
+	JSON,
 	Line,
 	LineSegment,
 	Money,
@@ -79,6 +80,7 @@ export function serializer(object: any): Record<string, any> | Record<string, an
 	if (Path.isPath(object)) return toJSON("path", object);
 	if (Point.isPoint(object)) return toJSON("point", object);
 	if (Polygon.isPolygon(object)) return toJSON("polygon", object);
+	if (JSON.isJSON(object)) return toJSON("json", object);
 	if (Text.isText(object)) return toJSON("text", object);
 	if (Time.isTime(object)) return toJSON("time", object);
 	if (Timestamp.isTimestamp(object)) return toJSON("timestamp", object);

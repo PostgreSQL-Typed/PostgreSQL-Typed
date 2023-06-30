@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTCharacterConfig<TMode extends "Character" | "string" = "Character" | "string"> {
 	mode?: TMode;
@@ -44,6 +46,16 @@ export class PgTCharacterBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacter<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacter<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
@@ -61,8 +73,8 @@ export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharac
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string).postgres;
-		return Character.from(value as string).postgres;
+		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string);
+		return Character.from(value as string);
 	}
 }
 //#endregion
@@ -87,6 +99,16 @@ export class PgTCharacterStringBuilder<T extends ColumnBuilderBaseConfig> extend
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterString<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCharacterString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
@@ -104,8 +126,8 @@ export class PgTCharacterString<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string).postgres;
-		return Character.from(value as string).postgres;
+		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string);
+		return Character.from(value as string);
 	}
 }
 //#endregion

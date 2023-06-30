@@ -19,13 +19,15 @@ describe("defineLineSegment", async () => {
 			database = pgt(postgres),
 			table = pgTable("linesegment", {
 				linesegment: defineLineSegment("linesegment", { mode: "LineSegment" }).notNull(),
+				_linesegment: defineLineSegment("_linesegment", { mode: "LineSegment" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists linesegment (
-				linesegment lseg not null
+				linesegment lseg not null,
+				_linesegment _lseg not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineLineSegment", async () => {
 			.insert(table)
 			.values({
 				linesegment: LineSegment.from("[(1,2),(3,4)]"),
+				_linesegment: [LineSegment.from("[(1,2),(3,4)]"), LineSegment.from("[(1,2),(4,5)]")],
 			})
 			.returning();
 
 		expect(LineSegment.isLineSegment(result1[0].linesegment)).toBe(true);
+		expect(result1[0]._linesegment.length).toBe(2);
+		expect(LineSegment.isLineSegment(result1[0]._linesegment[0])).toBe(true);
+		expect(LineSegment.isLineSegment(result1[0]._linesegment[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(LineSegment.isLineSegment(result2[0].linesegment)).toBe(true);
+		expect(result2[0]._linesegment.length).toBe(2);
+		expect(LineSegment.isLineSegment(result2[0]._linesegment[0])).toBe(true);
+		expect(LineSegment.isLineSegment(result2[0]._linesegment[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineLineSegment", async () => {
 			.execute();
 
 		expect(LineSegment.isLineSegment(result3[0].linesegment)).toBe(true);
+		expect(result3[0]._linesegment.length).toBe(2);
+		expect(LineSegment.isLineSegment(result3[0]._linesegment[0])).toBe(true);
+		expect(LineSegment.isLineSegment(result3[0]._linesegment[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineLineSegment", async () => {
 			database = pgt(postgres),
 			table = pgTable("linesegmentstring", {
 				linesegment: defineLineSegment("linesegment", { mode: "string" }).notNull(),
+				_linesegment: defineLineSegment("_linesegment", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists linesegmentstring (
-				linesegment lseg not null
+				linesegment lseg not null,
+				_linesegment _lseg not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineLineSegment", async () => {
 			.insert(table)
 			.values({
 				linesegment: "[(1,2),(3,4)]",
+				_linesegment: ["[(1,2),(3,4)]", "[(1,2),(4,5)]"],
 			})
 			.returning();
 
 		expect(result1[0].linesegment).toBe("[(1,2),(3,4)]");
+		expect(result1[0]._linesegment.length).toBe(2);
+		expect(result1[0]._linesegment[0]).toBe("[(1,2),(3,4)]");
+		expect(result1[0]._linesegment[1]).toBe("[(1,2),(4,5)]");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].linesegment).toBe("[(1,2),(3,4)]");
+		expect(result2[0]._linesegment.length).toBe(2);
+		expect(result2[0]._linesegment[0]).toBe("[(1,2),(3,4)]");
+		expect(result2[0]._linesegment[1]).toBe("[(1,2),(4,5)]");
 
 		const result3 = await database.select().from(table).where(eq(table.linesegment, "[(1,2),(3,4)]")).execute();
 
 		expect(result3[0].linesegment).toBe("[(1,2),(3,4)]");
+		expect(result3[0]._linesegment.length).toBe(2);
+		expect(result3[0]._linesegment[0]).toBe("[(1,2),(3,4)]");
+		expect(result3[0]._linesegment[1]).toBe("[(1,2),(4,5)]");
 
 		const result4 = await database.select().from(table).where(eq(table.linesegment, "[(1,2),(3,5)]")).execute();
 

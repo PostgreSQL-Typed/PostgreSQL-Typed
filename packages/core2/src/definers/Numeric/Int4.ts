@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTInt4Config<TMode extends "Int4" | "string" | "number" = "Int4" | "string" | "number"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTInt4Builder<T extends ColumnBuilderBaseConfig> extends PgColumnB
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt4<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInt4<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
@@ -51,7 +63,7 @@ export class PgTInt4<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int4.from(value as string).postgres;
+		return Int4.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTInt4StringBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4String<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt4String<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInt4String<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
@@ -85,7 +107,7 @@ export class PgTInt4String<T extends ColumnBaseConfig> extends PgColumn<PgTInt4H
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int4.from(value as string).postgres;
+		return Int4.from(value as string);
 	}
 }
 //#endregion
@@ -105,6 +127,16 @@ export class PgTInt4NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4Number<MakeColumnConfig<T, TTableName>> {
 		return new PgTInt4Number<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInt4Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
@@ -119,7 +151,7 @@ export class PgTInt4Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt4H
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int4.from(value as number).postgres;
+		return Int4.from(value as number);
 	}
 }
 

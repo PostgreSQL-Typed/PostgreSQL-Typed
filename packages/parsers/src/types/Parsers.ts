@@ -30,6 +30,8 @@ import type { LineSegment } from "../data/Geometric/LineSegment.js";
 import type { Path } from "../data/Geometric/Path.js";
 import type { Point } from "../data/Geometric/Point.js";
 import type { Polygon } from "../data/Geometric/Polygon.js";
+//* JSON
+import type { JSON } from "../data/JSON/JSON.js";
 //* Monetary
 import type { Money } from "../data/Monetary/Money.js";
 //* NetworkAddress
@@ -83,6 +85,8 @@ export type Parsers =
 	| Path
 	| Point
 	| Polygon
+	//* JSON
+	| JSON
 	//* Monetary
 	| Money
 	//* NetworkAddress

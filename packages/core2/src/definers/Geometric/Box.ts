@@ -9,7 +9,7 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
 
@@ -40,14 +40,14 @@ export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBu
 		return new PgTBox<MakeColumnConfig<T, TTableBox>>(table, this.config);
 	}
 
-	array(size?: number): PgArrayBuilder<{
+	override array(size?: number): PgArrayBuilder<{
 		name: NonNullable<T["name"]>;
 		notNull: NonNullable<T["notNull"]>;
 		hasDefault: NonNullable<T["hasDefault"]>;
 		data: T["data"][];
 		driverParam: T["driverParam"][] | string;
 	}> {
-		return new PgTArrayBuilder(this.config.name, this as PgColumnBuilder<any, any>, size) as any;
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
 	}
 }
 
@@ -63,7 +63,7 @@ export class PgTBox<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Box.from(value as string).postgres;
+		return Box.from(value as string);
 	}
 }
 //#endregion
@@ -84,14 +84,14 @@ export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 		return new PgTBoxString<MakeColumnConfig<T, TTableBox>>(table, this.config);
 	}
 
-	array(size?: number): PgArrayBuilder<{
+	override array(size?: number): PgArrayBuilder<{
 		name: NonNullable<T["name"]>;
 		notNull: NonNullable<T["notNull"]>;
 		hasDefault: NonNullable<T["hasDefault"]>;
 		data: T["data"][];
 		driverParam: T["driverParam"][] | string;
 	}> {
-		return new PgTArrayBuilder(this.config.name, this as PgColumnBuilder<any, any>, size) as any;
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
 	}
 }
 
@@ -107,7 +107,7 @@ export class PgTBoxString<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Box.from(value as string).postgres;
+		return Box.from(value as string);
 	}
 }
 //#endregion

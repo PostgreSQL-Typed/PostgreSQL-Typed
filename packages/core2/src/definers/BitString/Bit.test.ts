@@ -19,13 +19,15 @@ describe("defineBit", async () => {
 			database = pgt(postgres),
 			table = pgTable("bit", {
 				bit: defineBit("bit", { mode: "Bit" }).notNull(),
+				_bit: defineBit("_bit", { mode: "Bit" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bit (
-				bit bit not null
+				bit bit not null,
+				_bit _bit not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineBit", async () => {
 			.insert(table)
 			.values({
 				bit: Bit.from(1),
+				_bit: [Bit.from(1), Bit.from(0)],
 			})
 			.returning();
 
 		expect(Bit.isAnyBit(result1[0].bit)).toBe(true);
+		expect(result1[0]._bit.length).toBe(2);
+		expect(Bit.isAnyBit(result1[0]._bit[0])).toBe(true);
+		expect(Bit.isAnyBit(result1[0]._bit[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Bit.isAnyBit(result2[0].bit)).toBe(true);
+		expect(result2[0]._bit.length).toBe(2);
+		expect(Bit.isAnyBit(result2[0]._bit[0])).toBe(true);
+		expect(Bit.isAnyBit(result2[0]._bit[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineBit", async () => {
 			.execute();
 
 		expect(Bit.isAnyBit(result3[0].bit)).toBe(true);
+		expect(result3[0]._bit.length).toBe(2);
+		expect(Bit.isAnyBit(result3[0]._bit[0])).toBe(true);
+		expect(Bit.isAnyBit(result3[0]._bit[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineBit", async () => {
 			database = pgt(postgres),
 			table = pgTable("bitstring", {
 				bit: defineBit("bit", { mode: "string" }).notNull(),
+				_bit: defineBit("_bit", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bitstring (
-				bit bit not null
+				bit bit not null,
+				_bit _bit not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineBit", async () => {
 			.insert(table)
 			.values({
 				bit: "1",
+				_bit: ["1", "0"],
 			})
 			.returning();
 
 		expect(result1[0].bit).toBe("1");
+		expect(result1[0]._bit.length).toBe(2);
+		expect(result1[0]._bit[0]).toBe("1");
+		expect(result1[0]._bit[1]).toBe("0");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].bit).toBe("1");
+		expect(result2[0]._bit.length).toBe(2);
+		expect(result2[0]._bit[0]).toBe("1");
+		expect(result2[0]._bit[1]).toBe("0");
 
 		const result3 = await database.select().from(table).where(eq(table.bit, "1")).execute();
 
 		expect(result3[0].bit).toBe("1");
+		expect(result3[0]._bit.length).toBe(2);
+		expect(result3[0]._bit[0]).toBe("1");
+		expect(result3[0]._bit[1]).toBe("0");
 
 		const result4 = await database.select().from(table).where(eq(table.bit, "0")).execute();
 
@@ -127,13 +151,15 @@ describe("defineBit", async () => {
 			database = pgt(postgres),
 			table = pgTable("bitnumber", {
 				bit: defineBit("bit", { mode: "number" }).notNull(),
+				_bit: defineBit("_bit", { mode: "number" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists bitnumber (
-				bit bit not null
+				bit bit not null,
+				_bit _bit not null
 			);
 		`);
 
@@ -141,18 +167,28 @@ describe("defineBit", async () => {
 			.insert(table)
 			.values({
 				bit: 1,
+				_bit: [1, 0],
 			})
 			.returning();
 
 		expect(result1[0].bit).toBe(1);
+		expect(result1[0]._bit.length).toBe(2);
+		expect(result1[0]._bit[0]).toBe(1);
+		expect(result1[0]._bit[1]).toBe(0);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].bit).toBe(1);
+		expect(result2[0]._bit.length).toBe(2);
+		expect(result2[0]._bit[0]).toBe(1);
+		expect(result2[0]._bit[1]).toBe(0);
 
 		const result3 = await database.select().from(table).where(eq(table.bit, 1)).execute();
 
 		expect(result3[0].bit).toBe(1);
+		expect(result3[0]._bit.length).toBe(2);
+		expect(result3[0]._bit[0]).toBe(1);
+		expect(result3[0]._bit[1]).toBe(0);
 
 		const result4 = await database.select().from(table).where(eq(table.bit, 0)).execute();
 

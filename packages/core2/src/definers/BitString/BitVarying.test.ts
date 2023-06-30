@@ -19,13 +19,15 @@ describe("defineBitVarying", async () => {
 			database = pgt(postgres),
 			table = pgTable("varbit", {
 				varbit: defineBitVarying("varbit", { mode: "BitVarying" }).notNull(),
+				_varbit: defineBitVarying("_varbit", { mode: "BitVarying" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbit (
-				varbit varbit not null
+				varbit varbit not null,
+				_varbit _varbit not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineBitVarying", async () => {
 			.insert(table)
 			.values({
 				varbit: BitVarying.from(1),
+				_varbit: [BitVarying.from(1), BitVarying.from(0)],
 			})
 			.returning();
 
 		expect(BitVarying.isAnyBitVarying(result1[0].varbit)).toBe(true);
+		expect(result1[0]._varbit.length).toBe(2);
+		expect(BitVarying.isAnyBitVarying(result1[0]._varbit[0])).toBe(true);
+		expect(BitVarying.isAnyBitVarying(result1[0]._varbit[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(BitVarying.isAnyBitVarying(result2[0].varbit)).toBe(true);
+		expect(result2[0]._varbit.length).toBe(2);
+		expect(BitVarying.isAnyBitVarying(result2[0]._varbit[0])).toBe(true);
+		expect(BitVarying.isAnyBitVarying(result2[0]._varbit[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineBitVarying", async () => {
 			.execute();
 
 		expect(BitVarying.isAnyBitVarying(result3[0].varbit)).toBe(true);
+		expect(result3[0]._varbit.length).toBe(2);
+		expect(BitVarying.isAnyBitVarying(result3[0]._varbit[0])).toBe(true);
+		expect(BitVarying.isAnyBitVarying(result3[0]._varbit[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineBitVarying", async () => {
 			database = pgt(postgres),
 			table = pgTable("varbitstring", {
 				varbit: defineBitVarying("varbit", { mode: "string" }).notNull(),
+				_varbit: defineBitVarying("_varbit", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbitstring (
-				varbit varbit not null
+				varbit varbit not null,
+				_varbit _varbit not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineBitVarying", async () => {
 			.insert(table)
 			.values({
 				varbit: "1",
+				_varbit: ["1", "0"],
 			})
 			.returning();
 
 		expect(result1[0].varbit).toBe("1");
+		expect(result1[0]._varbit.length).toBe(2);
+		expect(result1[0]._varbit[0]).toBe("1");
+		expect(result1[0]._varbit[1]).toBe("0");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].varbit).toBe("1");
+		expect(result2[0]._varbit.length).toBe(2);
+		expect(result2[0]._varbit[0]).toBe("1");
+		expect(result2[0]._varbit[1]).toBe("0");
 
 		const result3 = await database.select().from(table).where(eq(table.varbit, "1")).execute();
 
 		expect(result3[0].varbit).toBe("1");
+		expect(result3[0]._varbit.length).toBe(2);
+		expect(result3[0]._varbit[0]).toBe("1");
+		expect(result3[0]._varbit[1]).toBe("0");
 
 		const result4 = await database.select().from(table).where(eq(table.varbit, "0")).execute();
 
@@ -127,13 +151,15 @@ describe("defineBitVarying", async () => {
 			database = pgt(postgres),
 			table = pgTable("varbitnumber", {
 				varbit: defineBitVarying("varbit", { mode: "number" }).notNull(),
+				_varbit: defineBitVarying("_varbit", { mode: "number" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists varbitnumber (
-				varbit varbit not null
+				varbit varbit not null,
+				_varbit _varbit not null
 			);
 		`);
 
@@ -141,18 +167,28 @@ describe("defineBitVarying", async () => {
 			.insert(table)
 			.values({
 				varbit: 1,
+				_varbit: [1, 0],
 			})
 			.returning();
 
 		expect(result1[0].varbit).toBe(1);
+		expect(result1[0]._varbit.length).toBe(2);
+		expect(result1[0]._varbit[0]).toBe(1);
+		expect(result1[0]._varbit[1]).toBe(0);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].varbit).toBe(1);
+		expect(result2[0]._varbit.length).toBe(2);
+		expect(result2[0]._varbit[0]).toBe(1);
+		expect(result2[0]._varbit[1]).toBe(0);
 
 		const result3 = await database.select().from(table).where(eq(table.varbit, 1)).execute();
 
 		expect(result3[0].varbit).toBe(1);
+		expect(result3[0]._varbit.length).toBe(2);
+		expect(result3[0]._varbit[0]).toBe(1);
+		expect(result3[0]._varbit[1]).toBe(0);
 
 		const result4 = await database.select().from(table).where(eq(table.varbit, 0)).execute();
 

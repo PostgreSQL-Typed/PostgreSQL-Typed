@@ -19,13 +19,15 @@ describe("defineInt8Range", async () => {
 			database = pgt(postgres),
 			table = pgTable("int8range", {
 				int8range: defineInt8Range("int8range", { mode: "Int8Range" }).notNull(),
+				_int8range: defineInt8Range("_int8range", { mode: "Int8Range" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8range (
-				int8range int8range not null
+				int8range int8range not null,
+				_int8range _int8range not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineInt8Range", async () => {
 			.insert(table)
 			.values({
 				int8range: Int8Range.from("[1,3)"),
+				_int8range: [Int8Range.from("[1,3)"), Int8Range.from("[3,5)")],
 			})
 			.returning();
 
 		expect(Int8Range.isRange(result1[0].int8range)).toBe(true);
+		expect(result1[0]._int8range.length).toBe(2);
+		expect(Int8Range.isRange(result1[0]._int8range[0])).toBe(true);
+		expect(Int8Range.isRange(result1[0]._int8range[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Int8Range.isRange(result2[0].int8range)).toBe(true);
+		expect(result2[0]._int8range.length).toBe(2);
+		expect(Int8Range.isRange(result2[0]._int8range[0])).toBe(true);
+		expect(Int8Range.isRange(result2[0]._int8range[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineInt8Range", async () => {
 			.execute();
 
 		expect(Int8Range.isRange(result3[0].int8range)).toBe(true);
+		expect(result3[0]._int8range.length).toBe(2);
+		expect(Int8Range.isRange(result3[0]._int8range[0])).toBe(true);
+		expect(Int8Range.isRange(result3[0]._int8range[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineInt8Range", async () => {
 			database = pgt(postgres),
 			table = pgTable("int8rangestring", {
 				int8range: defineInt8Range("int8range", { mode: "string" }).notNull(),
+				_int8range: defineInt8Range("_int8range", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8rangestring (
-				int8range int8range not null
+				int8range int8range not null,
+				_int8range _int8range not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineInt8Range", async () => {
 			.insert(table)
 			.values({
 				int8range: "[1,3)",
+				_int8range: ["[1,3)", "[3,5)"],
 			})
 			.returning();
 
 		expect(result1[0].int8range).toBe("[1,3)");
+		expect(result1[0]._int8range.length).toBe(2);
+		expect(result1[0]._int8range[0]).toBe("[1,3)");
+		expect(result1[0]._int8range[1]).toBe("[3,5)");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].int8range).toBe("[1,3)");
+		expect(result2[0]._int8range.length).toBe(2);
+		expect(result2[0]._int8range[0]).toBe("[1,3)");
+		expect(result2[0]._int8range[1]).toBe("[3,5)");
 
 		const result3 = await database.select().from(table).where(eq(table.int8range, "[1,3)")).execute();
 
 		expect(result3[0].int8range).toBe("[1,3)");
+		expect(result3[0]._int8range.length).toBe(2);
+		expect(result3[0]._int8range[0]).toBe("[1,3)");
+		expect(result3[0]._int8range[1]).toBe("[3,5)");
 
 		const result4 = await database.select().from(table).where(eq(table.int8range, "[11,13)")).execute();
 

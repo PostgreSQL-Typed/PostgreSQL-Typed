@@ -214,8 +214,26 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._json]: "",
-				[OID._jsonb]: "",
+				[OID._json]: [
+					`defineJSON("%ATTRIBUTE%").array()${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineJSON",
+							type: "named",
+						},
+					],
+				],
+				[OID._jsonb]: [
+					`defineJSONB("%ATTRIBUTE%").array()${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineJSONB",
+							type: "named",
+						},
+					],
+				],
 				[OID._jsonpath]: "",
 				[OID._line]: [
 					`defineLine("%ATTRIBUTE%").array()${notNullString}`,
@@ -664,8 +682,26 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.json]: "",
-				[OID.jsonb]: "",
+				[OID.json]: [
+					`defineJSON("%ATTRIBUTE%")${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineJSON",
+							type: "named",
+						},
+					],
+				],
+				[OID.jsonb]: [
+					`defineJSONB("%ATTRIBUTE%")${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineJSONB",
+							type: "named",
+						},
+					],
+				],
 				[OID.jsonpath]: "",
 				[OID.language_handler]: "",
 				[OID.line]: [

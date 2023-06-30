@@ -19,13 +19,15 @@ describe("defineCharacterVarying", async () => {
 			database = pgt(postgres),
 			table = pgTable("charactervarying", {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "CharacterVarying" }).notNull(),
+				_charactervarying: defineCharacterVarying("_charactervarying", { mode: "CharacterVarying" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists charactervarying (
-				charactervarying varchar not null
+				charactervarying varchar not null,
+				_charactervarying _varchar not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineCharacterVarying", async () => {
 			.insert(table)
 			.values({
 				charactervarying: CharacterVarying.from("a"),
+				_charactervarying: [CharacterVarying.from("a"), CharacterVarying.from("b")],
 			})
 			.returning();
 
 		expect(CharacterVarying.isAnyCharacterVarying(result1[0].charactervarying)).toBe(true);
+		expect(result1[0]._charactervarying.length).toBe(2);
+		expect(CharacterVarying.isAnyCharacterVarying(result1[0]._charactervarying[0])).toBe(true);
+		expect(CharacterVarying.isAnyCharacterVarying(result1[0]._charactervarying[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(CharacterVarying.isAnyCharacterVarying(result2[0].charactervarying)).toBe(true);
+		expect(result2[0]._charactervarying.length).toBe(2);
+		expect(CharacterVarying.isAnyCharacterVarying(result2[0]._charactervarying[0])).toBe(true);
+		expect(CharacterVarying.isAnyCharacterVarying(result2[0]._charactervarying[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineCharacterVarying", async () => {
 			.execute();
 
 		expect(CharacterVarying.isAnyCharacterVarying(result3[0].charactervarying)).toBe(true);
+		expect(result3[0]._charactervarying.length).toBe(2);
+		expect(CharacterVarying.isAnyCharacterVarying(result3[0]._charactervarying[0])).toBe(true);
+		expect(CharacterVarying.isAnyCharacterVarying(result3[0]._charactervarying[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineCharacterVarying", async () => {
 			database = pgt(postgres),
 			table = pgTable("charactervaryingstring", {
 				charactervarying: defineCharacterVarying("charactervarying", { mode: "string" }).notNull(),
+				_charactervarying: defineCharacterVarying("_charactervarying", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists charactervaryingstring (
-				charactervarying varchar not null
+				charactervarying varchar not null,
+				_charactervarying _varchar not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineCharacterVarying", async () => {
 			.insert(table)
 			.values({
 				charactervarying: "a",
+				_charactervarying: ["a", "b"],
 			})
 			.returning();
 
 		expect(result1[0].charactervarying).toBe("a");
+		expect(result1[0]._charactervarying.length).toBe(2);
+		expect(result1[0]._charactervarying[0]).toBe("a");
+		expect(result1[0]._charactervarying[1]).toBe("b");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].charactervarying).toBe("a");
+		expect(result2[0]._charactervarying.length).toBe(2);
+		expect(result2[0]._charactervarying[0]).toBe("a");
+		expect(result2[0]._charactervarying[1]).toBe("b");
 
 		const result3 = await database.select().from(table).where(eq(table.charactervarying, "a")).execute();
 
 		expect(result3[0].charactervarying).toBe("a");
+		expect(result3[0]._charactervarying.length).toBe(2);
+		expect(result3[0]._charactervarying[0]).toBe("a");
+		expect(result3[0]._charactervarying[1]).toBe("b");
 
 		const result4 = await database.select().from(table).where(eq(table.charactervarying, "b")).execute();
 

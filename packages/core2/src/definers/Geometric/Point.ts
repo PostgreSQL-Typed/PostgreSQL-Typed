@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTPointConfig<TMode extends "Point" | "string" = "Point" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTPointBuilder<T extends ColumnBuilderBaseConfig> extends PgColumn
 	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPoint<MakeColumnConfig<T, TTablePoint>> {
 		return new PgTPoint<MakeColumnConfig<T, TTablePoint>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTPoint<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, T> {
@@ -51,7 +63,7 @@ export class PgTPoint<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, 
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Point.from(value as string).postgres;
+		return Point.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTPointStringBuilder<T extends ColumnBuilderBaseConfig> extends Pg
 	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPointString<MakeColumnConfig<T, TTablePoint>> {
 		return new PgTPointString<MakeColumnConfig<T, TTablePoint>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTPointString<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, T> {
@@ -85,7 +107,7 @@ export class PgTPointString<T extends ColumnBaseConfig> extends PgColumn<PgTPoin
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Point.from(value as string).postgres;
+		return Point.from(value as string);
 	}
 }
 //#endregion

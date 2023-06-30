@@ -19,13 +19,15 @@ describe("defineCircle", async () => {
 			database = pgt(postgres),
 			table = pgTable("circle", {
 				circle: defineCircle("circle", { mode: "Circle" }).notNull(),
+				_circle: defineCircle("_circle", { mode: "Circle" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists circle (
-				circle circle not null
+				circle circle not null,
+				_circle _circle not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineCircle", async () => {
 			.insert(table)
 			.values({
 				circle: Circle.from("<(1,2),3>"),
+				_circle: [Circle.from("<(1,2),3>"), Circle.from("<(1,2),4>")],
 			})
 			.returning();
 
 		expect(Circle.isCircle(result1[0].circle)).toBe(true);
+		expect(result1[0]._circle.length).toBe(2);
+		expect(Circle.isCircle(result1[0]._circle[0])).toBe(true);
+		expect(Circle.isCircle(result1[0]._circle[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Circle.isCircle(result2[0].circle)).toBe(true);
+		expect(result2[0]._circle.length).toBe(2);
+		expect(Circle.isCircle(result2[0]._circle[0])).toBe(true);
+		expect(Circle.isCircle(result2[0]._circle[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineCircle", async () => {
 			.execute();
 
 		expect(Circle.isCircle(result3[0].circle)).toBe(true);
+		expect(result3[0]._circle.length).toBe(2);
+		expect(Circle.isCircle(result3[0]._circle[0])).toBe(true);
+		expect(Circle.isCircle(result3[0]._circle[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineCircle", async () => {
 			database = pgt(postgres),
 			table = pgTable("circlestring", {
 				circle: defineCircle("circle", { mode: "string" }).notNull(),
+				_circle: defineCircle("_circle", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists circlestring (
-				circle circle not null
+				circle circle not null,
+				_circle _circle not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineCircle", async () => {
 			.insert(table)
 			.values({
 				circle: "<(1,2),3>",
+				_circle: ["<(1,2),3>", "<(1,2),4>"],
 			})
 			.returning();
 
 		expect(result1[0].circle).toBe("<(1,2),3>");
+		expect(result1[0]._circle.length).toBe(2);
+		expect(result1[0]._circle[0]).toBe("<(1,2),3>");
+		expect(result1[0]._circle[1]).toBe("<(1,2),4>");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].circle).toBe("<(1,2),3>");
+		expect(result2[0]._circle.length).toBe(2);
+		expect(result2[0]._circle[0]).toBe("<(1,2),3>");
+		expect(result2[0]._circle[1]).toBe("<(1,2),4>");
 
 		const result3 = await database.select().from(table).where(sameAs(table.circle, "<(1,2),3>")).execute();
 
 		expect(result3[0].circle).toBe("<(1,2),3>");
+		expect(result3[0]._circle.length).toBe(2);
+		expect(result3[0]._circle[0]).toBe("<(1,2),3>");
+		expect(result3[0]._circle[1]).toBe("<(1,2),4>");
 
 		const result4 = await database.select().from(table).where(sameAs(table.circle, "<(1,2),4>")).execute();
 

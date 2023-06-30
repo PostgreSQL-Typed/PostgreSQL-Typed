@@ -318,17 +318,17 @@ describe("Int8", () => {
 	});
 
 	test("get value()", () => {
-		expect(Int8.from(1).value).toEqual("1");
-		expect(Int8.from("2").value).toEqual("2");
-		expect(Int8.from({ value: "3" }).value).toEqual("3");
+		expect(Int8.from(1).value).toEqual(1);
+		expect(Int8.from("2").value).toEqual(2);
+		expect(Int8.from({ value: "3" }).value).toEqual(3);
 	});
 
 	test("set value(...)", () => {
 		const int8 = Int8.from(1);
-		int8.value = "2";
-		expect(int8.value).toEqual("2");
+		int8.value = 2;
+		expect(int8.value).toEqual(2);
 
-		expect(() => (int8.value = "9223372036854775808")).toThrowError("BigInt must be less than or equal to 9223372036854775807");
+		expect(() => (int8.value = "9223372036854775808" as unknown as any)).toThrowError("BigInt must be less than or equal to 9223372036854775807");
 	});
 
 	test("get postgres()", () => {

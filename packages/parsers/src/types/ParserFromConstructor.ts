@@ -30,6 +30,8 @@ import type { LineSegment, LineSegmentConstructor } from "../data/Geometric/Line
 import type { Path, PathConstructor } from "../data/Geometric/Path.js";
 import type { Point, PointConstructor } from "../data/Geometric/Point.js";
 import type { Polygon, PolygonConstructor } from "../data/Geometric/Polygon.js";
+//* JSON
+import type { JSON, JSONConstructor } from "../data/JSON/JSON.js";
 //* Monetary
 import type { Money, MoneyConstructor } from "../data/Monetary/Money.js";
 //* Numeric
@@ -107,6 +109,9 @@ export type ParserFromConstructor<T extends Constructors | ObjectFunction<any> |
 		? Point
 		: T extends PolygonConstructor
 		? Polygon
+		: //* JSON
+		T extends JSONConstructor
+		? JSON
 		: //* Monetary
 		T extends MoneyConstructor
 		? Money

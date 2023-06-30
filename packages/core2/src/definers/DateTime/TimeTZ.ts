@@ -11,7 +11,9 @@ import {
 	type MakeColumnConfig,
 	sql,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTTimeTZConfig<
 	TMode extends "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -42,6 +44,16 @@ export class PgTTimeTZBuilder<T extends ColumnBuilderBaseConfig> extends PgColum
 		return new PgTTimeTZ<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -60,7 +72,7 @@ export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string).postgres;
+		return TimeTZ.from(value as string);
 	}
 }
 //#endregion
@@ -81,6 +93,16 @@ export class PgTTimeTZStringBuilder<T extends ColumnBuilderBaseConfig> extends P
 		return new PgTTimeTZString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -99,7 +121,7 @@ export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgColumn<PgTTim
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string).postgres;
+		return TimeTZ.from(value as string);
 	}
 }
 //#endregion
@@ -120,6 +142,16 @@ export class PgTTimeTZGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> e
 		return new PgTTimeTZGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -138,7 +170,7 @@ export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgColum
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string).postgres;
+		return TimeTZ.from(value as string);
 	}
 }
 //#endregion
@@ -159,6 +191,16 @@ export class PgTTimeTZLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> ex
 		return new PgTTimeTZLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -177,7 +219,7 @@ export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string).postgres;
+		return TimeTZ.from(value as string);
 	}
 }
 
@@ -195,6 +237,16 @@ export class PgTTimeTZUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimeTZUnix<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimeTZUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
 	}
 
 	/* c8 ignore next 3 */
@@ -215,7 +267,7 @@ export class PgTTimeTZUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTimeT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string).postgres;
+		return TimeTZ.from(value as string);
 	}
 }
 //#endregion

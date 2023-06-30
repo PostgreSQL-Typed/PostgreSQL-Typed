@@ -3,6 +3,7 @@ import { Hookable } from "hookable";
 
 import { installExtension } from "./functions/installExtension.js";
 
+/* c8 ignore start */
 export class PgTExtensionManager extends Hookable<ClientHooks> implements PgTExtensionsManagerType {
 	initialized = false;
 	private _config = {} as PgTConfigSchema;

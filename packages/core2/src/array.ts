@@ -8,7 +8,6 @@ import {
 	ColumnBuilderHKTBase,
 	ColumnHKTBase,
 	entityKind,
-	is,
 	MakeColumnConfig,
 } from "drizzle-orm";
 import { AnyPgColumn, AnyPgTable, parsePgArray, PgColumn, PgColumnBuilder, PgColumnBuilderHKT } from "drizzle-orm/pg-core";
@@ -94,11 +93,13 @@ export class PgTArray<T extends ColumnBaseConfig> extends PgColumn<
 		this.size = config.size;
 	}
 
+	/* c8 ignore next 3 */
 	getSQLType(): string {
 		return `${this.baseColumn.getSQLType()}[${typeof this.size === "number" ? this.size : ""}]`;
 	}
 
 	override mapFromDriverValue(value: unknown[] | string): T["data"] {
+		/* c8 ignore next 4 */
 		if (typeof value === "string") {
 			// Thank you node-postgres for not parsing enum arrays
 			value = parsePgArray(value);
@@ -106,23 +107,7 @@ export class PgTArray<T extends ColumnBaseConfig> extends PgColumn<
 		return value.map(v => this.baseColumn.mapFromDriverValue(v));
 	}
 
-	override mapToDriverValue(value: unknown[], isNestedArray = false): unknown[] | string {
-		const a = value.map(v =>
-			v === null ? null : is(this.baseColumn, PgTArray) ? this.baseColumn.mapToDriverValue(v as unknown[], true) : this.baseColumn.mapToDriverValue(v)
-		);
-		if (isNestedArray) return a;
-		return makePgArray(a, this.baseColumn.getSQLType() === "box");
+	override mapToDriverValue(value: unknown[]): unknown[] | string {
+		return value.map(v => this.baseColumn.mapToDriverValue(v));
 	}
-}
-
-export function makePgArray(array: any[], isBox = false): string {
-	return `{${array
-		.map(item => {
-			if (Array.isArray(item)) return makePgArray(item, isBox);
-
-			if (typeof item === "string" && item.includes(",")) return `"${item.replaceAll('"', '\\"')}"`;
-
-			return `${item}`;
-		})
-		.join(isBox ? ";" : ",")}}`;
 }

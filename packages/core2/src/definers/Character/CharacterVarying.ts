@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTCharacterVaryingConfig<TMode extends "CharacterVarying" | "string" = "CharacterVarying" | "string"> {
 	mode?: TMode;
@@ -43,6 +45,16 @@ export class PgTCharacterVaryingBuilder<T extends ColumnBuilderBaseConfig> exten
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVarying<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterVarying<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
@@ -60,8 +72,8 @@ export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string).postgres;
-		return CharacterVarying.from(value as string).postgres;
+		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
+		return CharacterVarying.from(value as string);
 	}
 }
 //#endregion
@@ -90,6 +102,16 @@ export class PgTCharacterVaryingStringBuilder<T extends ColumnBuilderBaseConfig>
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>> {
 		return new PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
@@ -107,8 +129,8 @@ export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgCol
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string).postgres;
-		return CharacterVarying.from(value as string).postgres;
+		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
+		return CharacterVarying.from(value as string);
 	}
 }
 //#endregion

@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTLineSegmentConfig<TMode extends "LineSegment" | "string" = "LineSegment" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTLineSegmentBuilder<T extends ColumnBuilderBaseConfig> extends Pg
 	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>> {
 		return new PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTLineSegment<T extends ColumnBaseConfig> extends PgColumn<PgTLineSegmentHKT, T> {
@@ -51,7 +63,7 @@ export class PgTLineSegment<T extends ColumnBaseConfig> extends PgColumn<PgTLine
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return LineSegment.from(value as string).postgres;
+		return LineSegment.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTLineSegmentStringBuilder<T extends ColumnBuilderBaseConfig> exte
 	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>> {
 		return new PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTLineSegmentString<T extends ColumnBaseConfig> extends PgColumn<PgTLineSegmentHKT, T> {
@@ -85,7 +107,7 @@ export class PgTLineSegmentString<T extends ColumnBaseConfig> extends PgColumn<P
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return LineSegment.from(value as string).postgres;
+		return LineSegment.from(value as string);
 	}
 }
 //#endregion

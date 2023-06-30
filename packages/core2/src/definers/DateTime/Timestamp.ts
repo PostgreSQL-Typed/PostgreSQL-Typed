@@ -11,7 +11,9 @@ import {
 	type MakeColumnConfig,
 	sql,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTTimestampConfig<
 	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -42,6 +44,16 @@ export class PgTTimestampBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 		return new PgTTimestamp<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -60,7 +72,7 @@ export class PgTTimestamp<T extends ColumnBaseConfig> extends PgColumn<PgTTimest
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string).postgres;
+		return Timestamp.from(value as string);
 	}
 }
 //#endregion
@@ -81,6 +93,16 @@ export class PgTTimestampStringBuilder<T extends ColumnBuilderBaseConfig> extend
 		return new PgTTimestampString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -99,7 +121,7 @@ export class PgTTimestampString<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string).postgres;
+		return Timestamp.from(value as string);
 	}
 }
 //#endregion
@@ -120,6 +142,16 @@ export class PgTTimestampGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig
 		return new PgTTimestampGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -138,7 +170,7 @@ export class PgTTimestampGlobalThisDate<T extends ColumnBaseConfig> extends PgCo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string).postgres;
+		return Timestamp.from(value as string);
 	}
 }
 //#endregion
@@ -159,6 +191,16 @@ export class PgTTimestampLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig>
 		return new PgTTimestampLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/* c8 ignore next 3 */
 	defaultNow() {
 		return this.default(sql`now()`);
@@ -177,7 +219,7 @@ export class PgTTimestampLuxonDateTime<T extends ColumnBaseConfig> extends PgCol
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string).postgres;
+		return Timestamp.from(value as string);
 	}
 }
 
@@ -195,6 +237,16 @@ export class PgTTimestampUnixBuilder<T extends ColumnBuilderBaseConfig> extends 
 
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampUnix<MakeColumnConfig<T, TTableName>> {
 		return new PgTTimestampUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
+	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
 	}
 
 	/* c8 ignore next 3 */
@@ -215,7 +267,7 @@ export class PgTTimestampUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTi
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string).postgres;
+		return Timestamp.from(value as string);
 	}
 }
 //#endregion

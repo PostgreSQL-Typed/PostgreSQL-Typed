@@ -19,13 +19,15 @@ describe("defineFloat8", async () => {
 			database = pgt(postgres),
 			table = pgTable("float8", {
 				float8: defineFloat8("float8", { mode: "Float8" }).notNull(),
+				_float8: defineFloat8("_float8", { mode: "Float8" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8 (
-				float8 float8 not null
+				float8 float8 not null,
+				_float8 _float8 not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineFloat8", async () => {
 			.insert(table)
 			.values({
 				float8: Float8.from("1"),
+				_float8: [Float8.from("1"), Float8.from("2")],
 			})
 			.returning();
 
 		expect(Float8.isFloat8(result1[0].float8)).toBe(true);
+		expect(result1[0]._float8.length).toBe(2);
+		expect(Float8.isFloat8(result1[0]._float8[0])).toBe(true);
+		expect(Float8.isFloat8(result1[0]._float8[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Float8.isFloat8(result2[0].float8)).toBe(true);
+		expect(result2[0]._float8.length).toBe(2);
+		expect(Float8.isFloat8(result2[0]._float8[0])).toBe(true);
+		expect(Float8.isFloat8(result2[0]._float8[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineFloat8", async () => {
 			.execute();
 
 		expect(Float8.isFloat8(result3[0].float8)).toBe(true);
+		expect(result3[0]._float8.length).toBe(2);
+		expect(Float8.isFloat8(result3[0]._float8[0])).toBe(true);
+		expect(Float8.isFloat8(result3[0]._float8[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineFloat8", async () => {
 			database = pgt(postgres),
 			table = pgTable("float8string", {
 				float8: defineFloat8("float8", { mode: "string" }).notNull(),
+				_float8: defineFloat8("_float8", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8string (
-				float8 float8 not null
+				float8 float8 not null,
+				_float8 _float8 not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineFloat8", async () => {
 			.insert(table)
 			.values({
 				float8: "1",
+				_float8: ["1", "2"],
 			})
 			.returning();
 
 		expect(result1[0].float8).toBe("1");
+		expect(result1[0]._float8.length).toBe(2);
+		expect(result1[0]._float8[0]).toBe("1");
+		expect(result1[0]._float8[1]).toBe("2");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].float8).toBe("1");
+		expect(result2[0]._float8.length).toBe(2);
+		expect(result2[0]._float8[0]).toBe("1");
+		expect(result2[0]._float8[1]).toBe("2");
 
 		const result3 = await database.select().from(table).where(eq(table.float8, "1")).execute();
 
 		expect(result3[0].float8).toBe("1");
+		expect(result3[0]._float8.length).toBe(2);
+		expect(result3[0]._float8[0]).toBe("1");
+		expect(result3[0]._float8[1]).toBe("2");
 
 		const result4 = await database.select().from(table).where(eq(table.float8, "2")).execute();
 
@@ -127,13 +151,15 @@ describe("defineFloat8", async () => {
 			database = pgt(postgres),
 			table = pgTable("float8bignumber", {
 				float8: defineFloat8("float8", { mode: "BigNumber" }).notNull(),
+				_float8: defineFloat8("_float8", { mode: "BigNumber" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8bignumber (
-				float8 float8 not null
+				float8 float8 not null,
+				_float8 _float8 not null
 			);
 		`);
 
@@ -141,14 +167,21 @@ describe("defineFloat8", async () => {
 			.insert(table)
 			.values({
 				float8: BigNumber(1),
+				_float8: [BigNumber(1), BigNumber(2)],
 			})
 			.returning();
 
 		expect(result1[0].float8.toNumber()).toBe(1);
+		expect(result1[0]._float8.length).toBe(2);
+		expect(result1[0]._float8[0].toNumber()).toBe(1);
+		expect(result1[0]._float8[1].toNumber()).toBe(2);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].float8.toNumber()).toBe(1);
+		expect(result2[0]._float8.length).toBe(2);
+		expect(result2[0]._float8[0].toNumber()).toBe(1);
+		expect(result2[0]._float8[1].toNumber()).toBe(2);
 
 		const result3 = await database
 			.select()
@@ -157,6 +190,9 @@ describe("defineFloat8", async () => {
 			.execute();
 
 		expect(result3[0].float8.toNumber()).toBe(1);
+		expect(result3[0]._float8.length).toBe(2);
+		expect(result3[0]._float8[0].toNumber()).toBe(1);
+		expect(result3[0]._float8[1].toNumber()).toBe(2);
 
 		const result4 = await database
 			.select()
@@ -185,13 +221,15 @@ describe("defineFloat8", async () => {
 			database = pgt(postgres),
 			table = pgTable("float8number", {
 				float8: defineFloat8("float8", { mode: "number" }).notNull(),
+				_float8: defineFloat8("_float8", { mode: "number" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists float8number (
-				float8 float8 not null
+				float8 float8 not null,
+				_float8 _float8 not null
 			);
 		`);
 
@@ -199,18 +237,28 @@ describe("defineFloat8", async () => {
 			.insert(table)
 			.values({
 				float8: 1,
+				_float8: [1, 2],
 			})
 			.returning();
 
 		expect(result1[0].float8).toBe(1);
+		expect(result1[0]._float8.length).toBe(2);
+		expect(result1[0]._float8[0]).toBe(1);
+		expect(result1[0]._float8[1]).toBe(2);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].float8).toBe(1);
+		expect(result2[0]._float8.length).toBe(2);
+		expect(result2[0]._float8[0]).toBe(1);
+		expect(result2[0]._float8[1]).toBe(2);
 
 		const result3 = await database.select().from(table).where(eq(table.float8, 1)).execute();
 
 		expect(result3[0].float8).toBe(1);
+		expect(result3[0]._float8.length).toBe(2);
+		expect(result3[0]._float8[0]).toBe(1);
+		expect(result3[0]._float8[1]).toBe(2);
 
 		const result4 = await database.select().from(table).where(eq(table.float8, 2)).execute();
 

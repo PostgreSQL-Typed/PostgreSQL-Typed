@@ -278,17 +278,17 @@ describe("Float8", () => {
 	});
 
 	test("get value()", () => {
-		expect(Float8.from(1).value).toEqual("1");
-		expect(Float8.from("2").value).toEqual("2");
-		expect(Float8.from({ value: "3" }).value).toEqual("3");
+		expect(Float8.from(1).value).toEqual(1);
+		expect(Float8.from("2").value).toEqual(2);
+		expect(Float8.from({ value: "3" }).value).toEqual(3);
 	});
 
 	test("set value(...)", () => {
 		const float8 = Float8.from(1);
-		float8.value = "2";
-		expect(float8.value).toEqual("2");
+		float8.value = 2;
+		expect(float8.value).toEqual(2);
 
-		expect(() => (float8.value = "10e400")).toThrowError("Number must be less than or equal to 1e+308");
+		expect(() => (float8.value = "10e400" as unknown as number)).toThrowError("Number must be less than or equal to 1e+308");
 	});
 
 	test("get postgres()", () => {

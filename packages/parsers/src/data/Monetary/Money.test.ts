@@ -258,6 +258,11 @@ describe("Money", () => {
 		expect(money5.toString()).toEqual("1.12");
 	});
 
+	test("toNumber()", () => {
+		const money = Money.from(1);
+		expect(money.toNumber()).toEqual(1);
+	});
+
 	test("toBigNumber()", () => {
 		const money = Money.from(1);
 		expect(money.toBigNumber().toNumber()).toEqual(1);

@@ -43,6 +43,8 @@ import type { LineSegment, LineSegmentConstructor, LineSegmentObject, RawLineSeg
 import type { Path, PathConstructor, PathObject, RawPathObject } from "../data/Geometric/Path.js";
 import type { Point, PointConstructor, PointObject } from "../data/Geometric/Point.js";
 import type { Polygon, PolygonConstructor, PolygonObject, RawPolygonObject } from "../data/Geometric/Polygon.js";
+//* JSON
+import type { JSON, JSONConstructor, JSONObject } from "../data/JSON/JSON.js";
 //* Monetary
 import type { Money, MoneyConstructor, MoneyObject } from "../data/Monetary/Money.js";
 //* NetworkAddress
@@ -149,6 +151,9 @@ export type FromParameters<T extends Constructors | null> =
 		? string | Point | PointObject
 		: T extends PolygonConstructor
 		? string | Polygon | PolygonObject | RawPolygonObject | Point[]
+		: //* JSON
+		T extends JSONConstructor
+		? Record<string, unknown> | unknown[] | string | number | boolean | null | JSON | JSONObject
 		: //* Monetary
 		T extends MoneyConstructor
 		? string | number | bigint | BigNumber | Money | MoneyObject

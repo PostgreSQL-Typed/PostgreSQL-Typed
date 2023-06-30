@@ -19,13 +19,15 @@ describe("defineInt2", async () => {
 			database = pgt(postgres),
 			table = pgTable("int2", {
 				int2: defineInt2("int2", { mode: "Int2" }).notNull(),
+				_int2: defineInt2("_int2", { mode: "Int2" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2 (
-				int2 int2 not null
+				int2 int2 not null,
+				_int2 _int2 not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineInt2", async () => {
 			.insert(table)
 			.values({
 				int2: Int2.from("1"),
+				_int2: [Int2.from("1"), Int2.from("2")],
 			})
 			.returning();
 
 		expect(Int2.isInt2(result1[0].int2)).toBe(true);
+		expect(result1[0]._int2.length).toBe(2);
+		expect(Int2.isInt2(result1[0]._int2[0])).toBe(true);
+		expect(Int2.isInt2(result1[0]._int2[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Int2.isInt2(result2[0].int2)).toBe(true);
+		expect(result2[0]._int2.length).toBe(2);
+		expect(Int2.isInt2(result2[0]._int2[0])).toBe(true);
+		expect(Int2.isInt2(result2[0]._int2[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineInt2", async () => {
 			.execute();
 
 		expect(Int2.isInt2(result3[0].int2)).toBe(true);
+		expect(result3[0]._int2.length).toBe(2);
+		expect(Int2.isInt2(result3[0]._int2[0])).toBe(true);
+		expect(Int2.isInt2(result3[0]._int2[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineInt2", async () => {
 			database = pgt(postgres),
 			table = pgTable("int2string", {
 				int2: defineInt2("int2", { mode: "string" }).notNull(),
+				_int2: defineInt2("_int2", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2string (
-				int2 int2 not null
+				int2 int2 not null,
+				_int2 _int2 not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineInt2", async () => {
 			.insert(table)
 			.values({
 				int2: "1",
+				_int2: ["1", "2"],
 			})
 			.returning();
 
 		expect(result1[0].int2).toBe("1");
+		expect(result1[0]._int2.length).toBe(2);
+		expect(result1[0]._int2[0]).toBe("1");
+		expect(result1[0]._int2[1]).toBe("2");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].int2).toBe("1");
+		expect(result2[0]._int2.length).toBe(2);
+		expect(result2[0]._int2[0]).toBe("1");
+		expect(result2[0]._int2[1]).toBe("2");
 
 		const result3 = await database.select().from(table).where(eq(table.int2, "1")).execute();
 
 		expect(result3[0].int2).toBe("1");
+		expect(result3[0]._int2.length).toBe(2);
+		expect(result3[0]._int2[0]).toBe("1");
+		expect(result3[0]._int2[1]).toBe("2");
 
 		const result4 = await database.select().from(table).where(eq(table.int2, "2")).execute();
 
@@ -127,13 +151,15 @@ describe("defineInt2", async () => {
 			database = pgt(postgres),
 			table = pgTable("int2number", {
 				int2: defineInt2("int2", { mode: "number" }).notNull(),
+				_int2: defineInt2("_int2", { mode: "number" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int2number (
-				int2 int2 not null
+				int2 int2 not null,
+				_int2 _int2 not null
 			);
 		`);
 
@@ -141,18 +167,28 @@ describe("defineInt2", async () => {
 			.insert(table)
 			.values({
 				int2: 1,
+				_int2: [1, 2],
 			})
 			.returning();
 
 		expect(result1[0].int2).toBe(1);
+		expect(result1[0]._int2.length).toBe(2);
+		expect(result1[0]._int2[0]).toBe(1);
+		expect(result1[0]._int2[1]).toBe(2);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].int2).toBe(1);
+		expect(result2[0]._int2.length).toBe(2);
+		expect(result2[0]._int2[0]).toBe(1);
+		expect(result2[0]._int2[1]).toBe(2);
 
 		const result3 = await database.select().from(table).where(eq(table.int2, 1)).execute();
 
 		expect(result3[0].int2).toBe(1);
+		expect(result3[0]._int2.length).toBe(2);
+		expect(result3[0]._int2[0]).toBe(1);
+		expect(result3[0]._int2[1]).toBe(2);
 
 		const result4 = await database.select().from(table).where(eq(table.int2, 2)).execute();
 

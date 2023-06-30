@@ -20,13 +20,15 @@ describe("defineTimestampTZMultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzmultirange", {
 				timestamptzmultirange: defineTimestampTZMultiRange("timestamptzmultirange", { mode: "TimestampTZMultiRange" }).notNull(),
+				_timestamptzmultirange: defineTimestampTZMultiRange("_timestamptzmultirange", { mode: "TimestampTZMultiRange" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzmultirange (
-				timestamptzmultirange tstzmultirange not null
+				timestamptzmultirange tstzmultirange not null,
+				_timestamptzmultirange _tstzmultirange not null
 			);
 		`);
 
@@ -36,14 +38,28 @@ describe("defineTimestampTZMultiRange", async () => {
 				timestamptzmultirange: TimestampTZMultiRange.from(
 					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
 				),
+				_timestamptzmultirange: [
+					TimestampTZMultiRange.from(
+						"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+					),
+					TimestampTZMultiRange.from(
+						"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}"
+					),
+				],
 			})
 			.returning();
 
 		expect(TimestampTZMultiRange.isMultiRange(result1[0].timestamptzmultirange)).toBe(true);
+		expect(result1[0]._timestamptzmultirange.length).toBe(2);
+		expect(TimestampTZMultiRange.isMultiRange(result1[0]._timestamptzmultirange[0])).toBe(true);
+		expect(TimestampTZMultiRange.isMultiRange(result1[0]._timestamptzmultirange[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(TimestampTZMultiRange.isMultiRange(result2[0].timestamptzmultirange)).toBe(true);
+		expect(result2[0]._timestamptzmultirange.length).toBe(2);
+		expect(TimestampTZMultiRange.isMultiRange(result2[0]._timestamptzmultirange[0])).toBe(true);
+		expect(TimestampTZMultiRange.isMultiRange(result2[0]._timestamptzmultirange[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -59,6 +75,9 @@ describe("defineTimestampTZMultiRange", async () => {
 			.execute();
 
 		expect(TimestampTZMultiRange.isMultiRange(result3[0].timestamptzmultirange)).toBe(true);
+		expect(result3[0]._timestamptzmultirange.length).toBe(2);
+		expect(TimestampTZMultiRange.isMultiRange(result3[0]._timestamptzmultirange[0])).toBe(true);
+		expect(TimestampTZMultiRange.isMultiRange(result3[0]._timestamptzmultirange[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -94,13 +113,15 @@ describe("defineTimestampTZMultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzmultirangestring", {
 				timestamptzmultirange: defineTimestampTZMultiRange("timestamptzmultirange", { mode: "string" }).notNull(),
+				_timestamptzmultirange: defineTimestampTZMultiRange("_timestamptzmultirange", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzmultirangestring (
-				timestamptzmultirange tstzmultirange not null
+				timestamptzmultirange tstzmultirange not null,
+				_timestamptzmultirange _tstzmultirange not null
 			);
 		`);
 
@@ -109,17 +130,35 @@ describe("defineTimestampTZMultiRange", async () => {
 			.values({
 				timestamptzmultirange:
 					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}",
+				_timestamptzmultirange: [
+					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}",
+					"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}",
+				],
 			})
 			.returning();
 
 		expect(result1[0].timestamptzmultirange).toBe(
 			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
 		);
+		expect(result1[0]._timestamptzmultirange.length).toBe(2);
+		expect(result1[0]._timestamptzmultirange[0]).toBe(
+			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+		);
+		expect(result1[0]._timestamptzmultirange[1]).toBe(
+			"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}"
+		);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].timestamptzmultirange).toBe(
 			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+		);
+		expect(result2[0]._timestamptzmultirange.length).toBe(2);
+		expect(result2[0]._timestamptzmultirange[0]).toBe(
+			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+		);
+		expect(result2[0]._timestamptzmultirange[1]).toBe(
+			"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}"
 		);
 
 		const result3 = await database
@@ -135,6 +174,13 @@ describe("defineTimestampTZMultiRange", async () => {
 
 		expect(result3[0].timestamptzmultirange).toBe(
 			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+		);
+		expect(result3[0]._timestamptzmultirange.length).toBe(2);
+		expect(result3[0]._timestamptzmultirange[0]).toBe(
+			"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+		);
+		expect(result3[0]._timestamptzmultirange[1]).toBe(
+			"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}"
 		);
 
 		const result4 = await database

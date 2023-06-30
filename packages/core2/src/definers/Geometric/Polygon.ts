@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTPolygonConfig<TMode extends "Polygon" | "string" = "Polygon" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTPolygonBuilder<T extends ColumnBuilderBaseConfig> extends PgColu
 	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygon<MakeColumnConfig<T, TTablePolygon>> {
 		return new PgTPolygon<MakeColumnConfig<T, TTablePolygon>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTPolygon<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonHKT, T> {
@@ -51,7 +63,7 @@ export class PgTPolygon<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Polygon.from(value as string).postgres;
+		return Polygon.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTPolygonStringBuilder<T extends ColumnBuilderBaseConfig> extends 
 	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygonString<MakeColumnConfig<T, TTablePolygon>> {
 		return new PgTPolygonString<MakeColumnConfig<T, TTablePolygon>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTPolygonString<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonHKT, T> {
@@ -85,7 +107,7 @@ export class PgTPolygonString<T extends ColumnBaseConfig> extends PgColumn<PgTPo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Polygon.from(value as string).postgres;
+		return Polygon.from(value as string);
 	}
 }
 //#endregion

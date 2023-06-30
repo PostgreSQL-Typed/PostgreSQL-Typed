@@ -19,6 +19,7 @@ import {
 	Int8MultiRange,
 	Int8Range,
 	Interval,
+	JSON,
 	Line,
 	LineSegment,
 	Money,
@@ -114,6 +115,8 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return Point.from(rest as any) as T;
 		case "polygon":
 			return Polygon.from(rest as any) as T;
+		case "json":
+			return JSON.from(rest as any) as T;
 		case "text":
 			return Text.from(rest as any) as T;
 		case "time":

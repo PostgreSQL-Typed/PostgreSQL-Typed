@@ -19,13 +19,15 @@ describe("defineTime", async () => {
 			database = pgt(postgres),
 			table = pgTable("time", {
 				time: defineTime("time", { mode: "Time" }).notNull(),
+				_time: defineTime("_time", { mode: "Time" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists time (
-				time time not null
+				time time not null,
+				_time _time not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineTime", async () => {
 			.insert(table)
 			.values({
 				time: Time.from("11:11:11"),
+				_time: [Time.from("11:11:11"), Time.from("10:10:10")],
 			})
 			.returning();
 
 		expect(Time.isTime(result1[0].time)).toBe(true);
+		expect(result1[0]._time.length).toBe(2);
+		expect(Time.isTime(result1[0]._time[0])).toBe(true);
+		expect(Time.isTime(result1[0]._time[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Time.isTime(result2[0].time)).toBe(true);
+		expect(result2[0]._time.length).toBe(2);
+		expect(Time.isTime(result2[0]._time[0])).toBe(true);
+		expect(Time.isTime(result2[0]._time[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineTime", async () => {
 			.execute();
 
 		expect(Time.isTime(result3[0].time)).toBe(true);
+		expect(result3[0]._time.length).toBe(2);
+		expect(Time.isTime(result3[0]._time[0])).toBe(true);
+		expect(Time.isTime(result3[0]._time[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineTime", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestring", {
 				time: defineTime("time", { mode: "string" }).notNull(),
+				_time: defineTime("_time", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestring (
-				time time not null
+				time time not null,
+				_time _time not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineTime", async () => {
 			.insert(table)
 			.values({
 				time: "11:11:11",
+				_time: ["11:11:11", "10:10:10"],
 			})
 			.returning();
 
 		expect(result1[0].time).toBe("11:11:11");
+		expect(result1[0]._time.length).toBe(2);
+		expect(result1[0]._time[0]).toBe("11:11:11");
+		expect(result1[0]._time[1]).toBe("10:10:10");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].time).toBe("11:11:11");
+		expect(result2[0]._time.length).toBe(2);
+		expect(result2[0]._time[0]).toBe("11:11:11");
+		expect(result2[0]._time[1]).toBe("10:10:10");
 
 		const result3 = await database.select().from(table).where(eq(table.time, "11:11:11")).execute();
 
 		expect(result3[0].time).toBe("11:11:11");
+		expect(result3[0]._time.length).toBe(2);
+		expect(result3[0]._time[0]).toBe("11:11:11");
+		expect(result3[0]._time[1]).toBe("10:10:10");
 
 		const result4 = await database.select().from(table).where(eq(table.time, "10:10:10")).execute();
 
@@ -127,13 +151,15 @@ describe("defineTime", async () => {
 			database = pgt(postgres),
 			table = pgTable("timeunix", {
 				time: defineTime("time", { mode: "unix" }).notNull(),
+				_time: defineTime("_time", { mode: "unix" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timeunix (
-				time time not null
+				time time not null,
+				_time _time not null
 			);
 		`);
 
@@ -146,22 +172,33 @@ describe("defineTime", async () => {
 				})
 				.toMillis(),
 			elevenElevenElevenInMilliseconds = 39_600_000 + 666_000 + 11_000,
+			tenTenTenInMilliseconds = 36_600_000 + 600_000 + 10_000,
 			result1 = await database
 				.insert(table)
 				.values({
 					time: todayInMilliseconds + elevenElevenElevenInMilliseconds,
+					_time: [todayInMilliseconds + elevenElevenElevenInMilliseconds, todayInMilliseconds + tenTenTenInMilliseconds],
 				})
 				.returning();
 
 		expect(result1[0].time).toBe(elevenElevenElevenInMilliseconds);
+		expect(result1[0]._time.length).toBe(2);
+		expect(result1[0]._time[0]).toBe(elevenElevenElevenInMilliseconds);
+		expect(result1[0]._time[1]).toBe(tenTenTenInMilliseconds);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].time).toBe(elevenElevenElevenInMilliseconds);
+		expect(result2[0]._time.length).toBe(2);
+		expect(result2[0]._time[0]).toBe(elevenElevenElevenInMilliseconds);
+		expect(result2[0]._time[1]).toBe(tenTenTenInMilliseconds);
 
 		const result3 = await database.select().from(table).where(eq(table.time, elevenElevenElevenInMilliseconds)).execute();
 
 		expect(result3[0].time).toBe(elevenElevenElevenInMilliseconds);
+		expect(result3[0]._time.length).toBe(2);
+		expect(result3[0]._time[0]).toBe(elevenElevenElevenInMilliseconds);
+		expect(result3[0]._time[1]).toBe(tenTenTenInMilliseconds);
 
 		const result4 = await database.select().from(table).where(eq(table.time, todayInMilliseconds)).execute();
 
@@ -186,13 +223,15 @@ describe("defineTime", async () => {
 			database = pgt(postgres),
 			table = pgTable("timeluxon", {
 				time: defineTime("time", { mode: "luxon.DateTime" }).notNull(),
+				_time: defineTime("_time", { mode: "luxon.DateTime" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timeluxon (
-				time time not null
+				time time not null,
+				_time _time not null
 			);
 		`);
 
@@ -202,14 +241,28 @@ describe("defineTime", async () => {
 				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 					setZone: true,
 				}),
+				_time: [
+					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+						setZone: true,
+					}),
+					DateTime.fromISO("2023-01-01T10:10:10.000Z", {
+						setZone: true,
+					}),
+				],
 			})
 			.returning();
 
 		expect(result1[0].time.toString()).includes("11:11:11");
+		expect(result1[0]._time.length).toBe(2);
+		expect(result1[0]._time[0].toString()).includes("11:11:11");
+		expect(result1[0]._time[1].toString()).includes("10:10:10");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].time.toString()).includes("11:11:11");
+		expect(result2[0]._time.length).toBe(2);
+		expect(result2[0]._time[0].toString()).includes("11:11:11");
+		expect(result2[0]._time[1].toString()).includes("10:10:10");
 
 		const result3 = await database
 			.select()
@@ -225,6 +278,9 @@ describe("defineTime", async () => {
 			.execute();
 
 		expect(result3[0].time.toString()).includes("11:11:11");
+		expect(result3[0]._time.length).toBe(2);
+		expect(result3[0]._time[0].toString()).includes("11:11:11");
+		expect(result3[0]._time[1].toString()).includes("10:10:10");
 
 		const result4 = await database
 			.select()
@@ -260,13 +316,15 @@ describe("defineTime", async () => {
 			database = pgt(postgres),
 			table = pgTable("timejs", {
 				time: defineTime("time", { mode: "globalThis.Date" }).notNull(),
+				_time: defineTime("_time", { mode: "globalThis.Date" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timejs (
-				time time not null
+				time time not null,
+				_time _time not null
 			);
 		`);
 
@@ -276,14 +334,28 @@ describe("defineTime", async () => {
 				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 					setZone: true,
 				}).toJSDate(),
+				_time: [
+					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+						setZone: true,
+					}).toJSDate(),
+					DateTime.fromISO("2023-01-01T10:10:10.000Z", {
+						setZone: true,
+					}).toJSDate(),
+				],
 			})
 			.returning();
 
 		expect(result1[0].time.toLocaleTimeString()).includes("11:11:11");
+		expect(result1[0]._time.length).toBe(2);
+		expect(result1[0]._time[0].toLocaleTimeString()).includes("11:11:11");
+		expect(result1[0]._time[1].toLocaleTimeString()).includes("10:10:10");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].time.toLocaleTimeString()).includes("11:11:11");
+		expect(result2[0]._time.length).toBe(2);
+		expect(result2[0]._time[0].toLocaleTimeString()).includes("11:11:11");
+		expect(result2[0]._time[1].toLocaleTimeString()).includes("10:10:10");
 
 		const result3 = await database
 			.select()
@@ -299,6 +371,9 @@ describe("defineTime", async () => {
 			.execute();
 
 		expect(result3[0].time.toLocaleTimeString()).includes("11:11:11");
+		expect(result3[0]._time.length).toBe(2);
+		expect(result3[0]._time[0].toLocaleTimeString()).includes("11:11:11");
+		expect(result3[0]._time[1].toLocaleTimeString()).includes("10:10:10");
 
 		const result4 = await database
 			.select()

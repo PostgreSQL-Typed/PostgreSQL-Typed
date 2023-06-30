@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTBitConfig<TMode extends "Bit" | "string" | "number" = "Bit" | "string" | "number"> {
 	mode?: TMode;
@@ -44,6 +46,16 @@ export class PgTBitBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBu
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBit<MakeColumnConfig<T, TTableName>> {
 		return new PgTBit<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
@@ -61,8 +73,8 @@ export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, {
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string).postgres;
-		return Bit.from(value as string).postgres;
+		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
+		return Bit.from(value as string);
 	}
 }
 //#endregion
@@ -87,6 +99,16 @@ export class PgTBitStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitString<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
@@ -104,8 +126,8 @@ export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string).postgres;
-		return Bit.from(value as string).postgres;
+		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
+		return Bit.from(value as string);
 	}
 }
 //#endregion
@@ -130,6 +152,16 @@ export class PgTBitNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBitNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, { length?: number }> {
@@ -151,8 +183,8 @@ export class PgTBitNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string).postgres;
-		return Bit.from(value as string).postgres;
+		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
+		return Bit.from(value as string);
 	}
 }
 

@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTBooleanConfig<TMode extends "Boolean" | "string" | "boolean" | "number" = "Boolean" | "string" | "boolean" | "number"> {
 	mode?: TMode;
@@ -38,6 +40,16 @@ export class PgTBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgColu
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBoolean<MakeColumnConfig<T, TTableName>> {
 		return new PgTBoolean<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
@@ -52,7 +64,7 @@ export class PgTBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as string).postgres;
+		return Boolean.from(value as string);
 	}
 }
 //#endregion
@@ -72,6 +84,16 @@ export class PgTBooleanStringBuilder<T extends ColumnBuilderBaseConfig> extends 
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanString<MakeColumnConfig<T, TTableName>> {
 		return new PgTBooleanString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBooleanString<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
@@ -86,7 +108,7 @@ export class PgTBooleanString<T extends ColumnBaseConfig> extends PgColumn<PgTBo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as string).postgres;
+		return Boolean.from(value as string);
 	}
 }
 //#endregion
@@ -106,6 +128,16 @@ export class PgTJSBooleanBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSBoolean<MakeColumnConfig<T, TTableName>> {
 		return new PgTJSBoolean<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
@@ -120,7 +152,7 @@ export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBoolea
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as boolean).postgres;
+		return Boolean.from(value as boolean);
 	}
 }
 //#endregion
@@ -140,6 +172,16 @@ export class PgTBooleanNumberBuilder<T extends ColumnBuilderBaseConfig> extends 
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBooleanNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTBooleanNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBooleanNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanHKT, T> {
@@ -154,7 +196,7 @@ export class PgTBooleanNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as number).postgres;
+		return Boolean.from(value as number);
 	}
 }
 

@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTInt8MultiRangeConfig<TMode extends "Int8MultiRange" | "string" = "Int8MultiRange" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTInt8MultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends
 	build<TTableInt8MultiRange extends string>(table: AnyPgTable<{ name: TTableInt8MultiRange }>): PgTInt8MultiRange<MakeColumnConfig<T, TTableInt8MultiRange>> {
 		return new PgTInt8MultiRange<MakeColumnConfig<T, TTableInt8MultiRange>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInt8MultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTInt8MultiRangeHKT, T> {
@@ -51,7 +63,7 @@ export class PgTInt8MultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTI
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int8MultiRange.from(value as string).postgres;
+		return Int8MultiRange.from(value as string);
 	}
 }
 //#endregion
@@ -73,6 +85,16 @@ export class PgTInt8MultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> e
 	): PgTInt8MultiRangeString<MakeColumnConfig<T, TTableInt8MultiRange>> {
 		return new PgTInt8MultiRangeString<MakeColumnConfig<T, TTableInt8MultiRange>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInt8MultiRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTInt8MultiRangeHKT, T> {
@@ -87,7 +109,7 @@ export class PgTInt8MultiRangeString<T extends ColumnBaseConfig> extends PgColum
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int8MultiRange.from(value as string).postgres;
+		return Int8MultiRange.from(value as string);
 	}
 }
 //#endregion

@@ -11,6 +11,7 @@ export const IssueCode = arrayToEnum([
 	"invalid_string",
 	"invalid_timezone",
 	"invalid_type",
+	"invalid_json",
 	"missing_keys",
 	"not_finite",
 	"not_whole",
@@ -49,6 +50,10 @@ export interface InvalidDateIssue {
 
 export interface InvalidLuxonDateIssue {
 	code: typeof IssueCode.invalid_luxon_date;
+}
+
+export interface InvalidJsonIssue {
+	code: typeof IssueCode.invalid_json;
 }
 
 export interface InvalidKeyTypeIssue extends Omit<InvalidTypeIssue, "code"> {
@@ -106,6 +111,7 @@ export type IssueWithoutMessage =
 	| InvalidStringIssue
 	| InvalidTimezoneIssue
 	| InvalidTypeIssue
+	| InvalidJsonIssue
 	| MissingKeysIssue
 	| NotFiniteIssue
 	| NotWholeIssue

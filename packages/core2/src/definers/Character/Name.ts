@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTNameConfig<TMode extends "Name" | "string" = "Name" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTNameBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnB
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTName<MakeColumnConfig<T, TTableName>> {
 		return new PgTName<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTName<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T> {
@@ -51,7 +63,7 @@ export class PgTName<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Name.from(value as string).postgres;
+		return Name.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTNameStringBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTNameString<MakeColumnConfig<T, TTableName>> {
 		return new PgTNameString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTNameString<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T> {
@@ -85,7 +107,7 @@ export class PgTNameString<T extends ColumnBaseConfig> extends PgColumn<PgTNameH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Name.from(value as string).postgres;
+		return Name.from(value as string);
 	}
 }
 //#endregion

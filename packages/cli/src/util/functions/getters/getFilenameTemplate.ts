@@ -18,7 +18,7 @@ export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId
 		case "databaseReexport":
 			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.databaseFileName);
 		case "schema":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemaFileName);
+			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemasFileName);
 		case "schemaReexport":
 			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemaFileName);
 		case "domain":

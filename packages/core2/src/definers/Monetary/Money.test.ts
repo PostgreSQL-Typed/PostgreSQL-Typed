@@ -19,13 +19,15 @@ describe("defineMoney", async () => {
 			database = pgt(postgres),
 			table = pgTable("money", {
 				money: defineMoney("money", { mode: "Money" }).notNull(),
+				_money: defineMoney("_money", { mode: "Money" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists money (
-				money money not null
+				money money not null,
+				_money _money not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineMoney", async () => {
 			.insert(table)
 			.values({
 				money: Money.from("1"),
+				_money: [Money.from("1"), Money.from("2")],
 			})
 			.returning();
 
 		expect(Money.isMoney(result1[0].money)).toBe(true);
+		expect(result1[0]._money.length).toBe(2);
+		expect(Money.isMoney(result1[0]._money[0])).toBe(true);
+		expect(Money.isMoney(result1[0]._money[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Money.isMoney(result2[0].money)).toBe(true);
+		expect(result2[0]._money.length).toBe(2);
+		expect(Money.isMoney(result2[0]._money[0])).toBe(true);
+		expect(Money.isMoney(result2[0]._money[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineMoney", async () => {
 			.execute();
 
 		expect(Money.isMoney(result3[0].money)).toBe(true);
+		expect(result3[0]._money.length).toBe(2);
+		expect(Money.isMoney(result3[0]._money[0])).toBe(true);
+		expect(Money.isMoney(result3[0]._money[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineMoney", async () => {
 			database = pgt(postgres),
 			table = pgTable("moneystring", {
 				money: defineMoney("money", { mode: "string" }).notNull(),
+				_money: defineMoney("_money", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneystring (
-				money money not null
+				money money not null,
+				_money _money not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineMoney", async () => {
 			.insert(table)
 			.values({
 				money: "1",
+				_money: ["1", "2"],
 			})
 			.returning();
 
 		expect(result1[0].money).toBe("1.00");
+		expect(result1[0]._money.length).toBe(2);
+		expect(result1[0]._money[0]).toBe("1.00");
+		expect(result1[0]._money[1]).toBe("2.00");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].money).toBe("1.00");
+		expect(result2[0]._money.length).toBe(2);
+		expect(result2[0]._money[0]).toBe("1.00");
+		expect(result2[0]._money[1]).toBe("2.00");
 
 		const result3 = await database.select().from(table).where(eq(table.money, "1")).execute();
 
 		expect(result3[0].money).toBe("1.00");
+		expect(result3[0]._money.length).toBe(2);
+		expect(result3[0]._money[0]).toBe("1.00");
+		expect(result3[0]._money[1]).toBe("2.00");
 
 		const result4 = await database.select().from(table).where(eq(table.money, "2")).execute();
 
@@ -127,13 +151,15 @@ describe("defineMoney", async () => {
 			database = pgt(postgres),
 			table = pgTable("moneybignumber", {
 				money: defineMoney("money", { mode: "BigNumber" }).notNull(),
+				_money: defineMoney("_money", { mode: "BigNumber" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneybignumber (
-				money money not null
+				money money not null,
+				_money _money not null
 			);
 		`);
 
@@ -141,14 +167,21 @@ describe("defineMoney", async () => {
 			.insert(table)
 			.values({
 				money: BigNumber(1),
+				_money: [BigNumber(1), BigNumber(2)],
 			})
 			.returning();
 
 		expect(result1[0].money.toNumber()).toBe(1);
+		expect(result1[0]._money.length).toBe(2);
+		expect(result1[0]._money[0].toNumber()).toBe(1);
+		expect(result1[0]._money[1].toNumber()).toBe(2);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].money.toNumber()).toBe(1);
+		expect(result2[0]._money.length).toBe(2);
+		expect(result2[0]._money[0].toNumber()).toBe(1);
+		expect(result2[0]._money[1].toNumber()).toBe(2);
 
 		const result3 = await database
 			.select()
@@ -157,6 +190,9 @@ describe("defineMoney", async () => {
 			.execute();
 
 		expect(result3[0].money.toNumber()).toBe(1);
+		expect(result3[0]._money.length).toBe(2);
+		expect(result3[0]._money[0].toNumber()).toBe(1);
+		expect(result3[0]._money[1].toNumber()).toBe(2);
 
 		const result4 = await database
 			.select()
@@ -185,13 +221,15 @@ describe("defineMoney", async () => {
 			database = pgt(postgres),
 			table = pgTable("moneynumber", {
 				money: defineMoney("money", { mode: "number" }).notNull(),
+				_money: defineMoney("_money", { mode: "number" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists moneynumber (
-				money money not null
+				money money not null,
+				_money _money not null
 			);
 		`);
 
@@ -199,18 +237,28 @@ describe("defineMoney", async () => {
 			.insert(table)
 			.values({
 				money: 1,
+				_money: [1, 2],
 			})
 			.returning();
 
 		expect(result1[0].money).toBe(1);
+		expect(result1[0]._money.length).toBe(2);
+		expect(result1[0]._money[0]).toBe(1);
+		expect(result1[0]._money[1]).toBe(2);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].money).toBe(1);
+		expect(result2[0]._money.length).toBe(2);
+		expect(result2[0]._money[0]).toBe(1);
+		expect(result2[0]._money[1]).toBe(2);
 
 		const result3 = await database.select().from(table).where(eq(table.money, 1)).execute();
 
 		expect(result3[0].money).toBe(1);
+		expect(result3[0]._money.length).toBe(2);
+		expect(result3[0]._money[0]).toBe(1);
+		expect(result3[0]._money[1]).toBe(2);
 
 		const result4 = await database.select().from(table).where(eq(table.money, 2)).execute();
 

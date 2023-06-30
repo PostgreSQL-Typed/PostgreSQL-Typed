@@ -20,13 +20,15 @@ describe("defineTimestampTZ", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptz", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
+				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "TimestampTZ" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptz (
-				timestamptz timestamptz not null
+				timestamptz timestamptz not null,
+				_timestamptz _timestamptz not null
 			);
 		`);
 
@@ -34,14 +36,21 @@ describe("defineTimestampTZ", async () => {
 			.insert(table)
 			.values({
 				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z"),
+				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z"), TimestampTZ.from("2023-01-01T11:11:11Z")],
 			})
 			.returning();
 
 		expect(TimestampTZ.isTimestampTZ(result1[0].timestamptz)).toBe(true);
+		expect(result1[0]._timestamptz.length).toBe(2);
+		expect(TimestampTZ.isTimestampTZ(result1[0]._timestamptz[0])).toBe(true);
+		expect(TimestampTZ.isTimestampTZ(result1[0]._timestamptz[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(TimestampTZ.isTimestampTZ(result2[0].timestamptz)).toBe(true);
+		expect(result2[0]._timestamptz.length).toBe(2);
+		expect(TimestampTZ.isTimestampTZ(result2[0]._timestamptz[0])).toBe(true);
+		expect(TimestampTZ.isTimestampTZ(result2[0]._timestamptz[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -50,6 +59,9 @@ describe("defineTimestampTZ", async () => {
 			.execute();
 
 		expect(TimestampTZ.isTimestampTZ(result3[0].timestamptz)).toBe(true);
+		expect(result3[0]._timestamptz.length).toBe(2);
+		expect(TimestampTZ.isTimestampTZ(result3[0]._timestamptz[0])).toBe(true);
+		expect(TimestampTZ.isTimestampTZ(result3[0]._timestamptz[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -78,13 +90,15 @@ describe("defineTimestampTZ", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzstring", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "string" }).notNull(),
+				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzstring (
-				timestamptz timestamptz not null
+				timestamptz timestamptz not null,
+				_timestamptz _timestamptz not null
 			);
 		`);
 
@@ -92,18 +106,28 @@ describe("defineTimestampTZ", async () => {
 			.insert(table)
 			.values({
 				timestamptz: "2023-01-01T00:00:00Z",
+				_timestamptz: ["2023-01-01T00:00:00Z", "2023-01-01T11:11:11Z"],
 			})
 			.returning();
 
 		expect(result1[0].timestamptz).toBe("2023-01-01T00:00:00Z");
+		expect(result1[0]._timestamptz.length).toBe(2);
+		expect(result1[0]._timestamptz[0]).toBe("2023-01-01T00:00:00Z");
+		expect(result1[0]._timestamptz[1]).toBe("2023-01-01T11:11:11Z");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].timestamptz).toBe("2023-01-01T00:00:00Z");
+		expect(result2[0]._timestamptz.length).toBe(2);
+		expect(result2[0]._timestamptz[0]).toBe("2023-01-01T00:00:00Z");
+		expect(result2[0]._timestamptz[1]).toBe("2023-01-01T11:11:11Z");
 
 		const result3 = await database.select().from(table).where(eq(table.timestamptz, "2023-01-01T00:00:00Z")).execute();
 
 		expect(result3[0].timestamptz).toBe("2023-01-01T00:00:00Z");
+		expect(result3[0]._timestamptz.length).toBe(2);
+		expect(result3[0]._timestamptz[0]).toBe("2023-01-01T00:00:00Z");
+		expect(result3[0]._timestamptz[1]).toBe("2023-01-01T11:11:11Z");
 
 		const result4 = await database.select().from(table).where(eq(table.timestamptz, "2023-01-01T11:11:11Z")).execute();
 
@@ -128,13 +152,15 @@ describe("defineTimestampTZ", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzunix", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "unix" }).notNull(),
+				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "unix" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzunix (
-				timestamptz timestamptz not null
+				timestamptz timestamptz not null,
+				_timestamptz _timestamptz not null
 			);
 		`);
 
@@ -142,18 +168,28 @@ describe("defineTimestampTZ", async () => {
 			.insert(table)
 			.values({
 				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z").value,
+				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z").value, TimestampTZ.from("2023-01-01T11:11:11Z").value],
 			})
 			.returning();
 
 		expect(result1[0].timestamptz).toBe(1_672_531_200_000);
+		expect(result1[0]._timestamptz.length).toBe(2);
+		expect(result1[0]._timestamptz[0]).toBe(1_672_531_200_000);
+		expect(result1[0]._timestamptz[1]).toBe(1_672_571_471_000);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].timestamptz).toBe(1_672_531_200_000);
+		expect(result2[0]._timestamptz.length).toBe(2);
+		expect(result2[0]._timestamptz[0]).toBe(1_672_531_200_000);
+		expect(result2[0]._timestamptz[1]).toBe(1_672_571_471_000);
 
 		const result3 = await database.select().from(table).where(eq(table.timestamptz, 1_672_531_200_000)).execute();
 
 		expect(result3[0].timestamptz).toBe(1_672_531_200_000);
+		expect(result3[0]._timestamptz.length).toBe(2);
+		expect(result3[0]._timestamptz[0]).toBe(1_672_531_200_000);
+		expect(result3[0]._timestamptz[1]).toBe(1_672_571_471_000);
 
 		const result4 = await database.select().from(table).where(eq(table.timestamptz, 1_672_531_300_000)).execute();
 
@@ -178,13 +214,15 @@ describe("defineTimestampTZ", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzluxon", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "luxon.DateTime" }).notNull(),
+				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "luxon.DateTime" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzluxon (
-				timestamptz timestamptz not null
+				timestamptz timestamptz not null,
+				_timestamptz _timestamptz not null
 			);
 		`);
 
@@ -194,14 +232,28 @@ describe("defineTimestampTZ", async () => {
 				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 					setZone: true,
 				}),
+				_timestamptz: [
+					DateTime.fromISO("2023-01-01T00:00:00.000Z", {
+						setZone: true,
+					}),
+					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+						setZone: true,
+					}),
+				],
 			})
 			.returning();
 
 		expect(result1[0].timestamptz.toString()).includes("2023-01-01T11:11:11");
+		expect(result1[0]._timestamptz.length).toBe(2);
+		expect(result1[0]._timestamptz[0].toString()).includes("2023-01-01T00:00:00");
+		expect(result1[0]._timestamptz[1].toString()).includes("2023-01-01T11:11:11");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].timestamptz.toString()).includes("2023-01-01T11:11:11");
+		expect(result2[0]._timestamptz.length).toBe(2);
+		expect(result2[0]._timestamptz[0].toString()).includes("2023-01-01T00:00:00");
+		expect(result2[0]._timestamptz[1].toString()).includes("2023-01-01T11:11:11");
 
 		const result3 = await database
 			.select()
@@ -217,6 +269,9 @@ describe("defineTimestampTZ", async () => {
 			.execute();
 
 		expect(result3[0].timestamptz.toString()).includes("2023-01-01T11:11:11");
+		expect(result3[0]._timestamptz.length).toBe(2);
+		expect(result3[0]._timestamptz[0].toString()).includes("2023-01-01T00:00:00");
+		expect(result3[0]._timestamptz[1].toString()).includes("2023-01-01T11:11:11");
 
 		const result4 = await database
 			.select()
@@ -252,13 +307,15 @@ describe("defineTimestampTZ", async () => {
 			database = pgt(postgres),
 			table = pgTable("timestamptzjs", {
 				timestamptz: defineTimestampTZ("timestamptz", { mode: "globalThis.Date" }).notNull(),
+				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "globalThis.Date" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists timestamptzjs (
-				timestamptz timestamptz not null
+				timestamptz timestamptz not null,
+				_timestamptz _timestamptz not null
 			);
 		`);
 
@@ -268,14 +325,28 @@ describe("defineTimestampTZ", async () => {
 				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 					setZone: true,
 				}).toJSDate(),
+				_timestamptz: [
+					DateTime.fromISO("2023-01-01T00:00:00.000Z", {
+						setZone: true,
+					}).toJSDate(),
+					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+						setZone: true,
+					}).toJSDate(),
+				],
 			})
 			.returning();
 
 		expect(result1[0].timestamptz.toISOString()).toBe("2023-01-01T11:11:11.000Z");
+		expect(result1[0]._timestamptz.length).toBe(2);
+		expect(result1[0]._timestamptz[0].toISOString()).toBe("2023-01-01T00:00:00.000Z");
+		expect(result1[0]._timestamptz[1].toISOString()).toBe("2023-01-01T11:11:11.000Z");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].timestamptz.toISOString()).toBe("2023-01-01T11:11:11.000Z");
+		expect(result2[0]._timestamptz.length).toBe(2);
+		expect(result2[0]._timestamptz[0].toISOString()).toBe("2023-01-01T00:00:00.000Z");
+		expect(result2[0]._timestamptz[1].toISOString()).toBe("2023-01-01T11:11:11.000Z");
 
 		const result3 = await database
 			.select()
@@ -291,6 +362,9 @@ describe("defineTimestampTZ", async () => {
 			.execute();
 
 		expect(result3[0].timestamptz.toISOString()).toBe("2023-01-01T11:11:11.000Z");
+		expect(result3[0]._timestamptz.length).toBe(2);
+		expect(result3[0]._timestamptz[0].toISOString()).toBe("2023-01-01T00:00:00.000Z");
+		expect(result3[0]._timestamptz[1].toISOString()).toBe("2023-01-01T11:11:11.000Z");
 
 		const result4 = await database
 			.select()

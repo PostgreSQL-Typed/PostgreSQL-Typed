@@ -19,13 +19,15 @@ describe("defineInt8MultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("int8multirange", {
 				int8multirange: defineInt8MultiRange("int8multirange", { mode: "Int8MultiRange" }).notNull(),
+				_int8multirange: defineInt8MultiRange("_int8multirange", { mode: "Int8MultiRange" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8multirange (
-				int8multirange int8multirange not null
+				int8multirange int8multirange not null,
+				_int8multirange _int8multirange not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineInt8MultiRange", async () => {
 			.insert(table)
 			.values({
 				int8multirange: Int8MultiRange.from("{[1,3),[11,13),[21,23)}"),
+				_int8multirange: [Int8MultiRange.from("{[1,3),[11,13),[21,23)}"), Int8MultiRange.from("{[3,5),[13,15),[23,25)}")],
 			})
 			.returning();
 
 		expect(Int8MultiRange.isMultiRange(result1[0].int8multirange)).toBe(true);
+		expect(result1[0]._int8multirange.length).toBe(2);
+		expect(Int8MultiRange.isMultiRange(result1[0]._int8multirange[0])).toBe(true);
+		expect(Int8MultiRange.isMultiRange(result1[0]._int8multirange[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Int8MultiRange.isMultiRange(result2[0].int8multirange)).toBe(true);
+		expect(result2[0]._int8multirange.length).toBe(2);
+		expect(Int8MultiRange.isMultiRange(result2[0]._int8multirange[0])).toBe(true);
+		expect(Int8MultiRange.isMultiRange(result2[0]._int8multirange[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineInt8MultiRange", async () => {
 			.execute();
 
 		expect(Int8MultiRange.isMultiRange(result3[0].int8multirange)).toBe(true);
+		expect(result3[0]._int8multirange.length).toBe(2);
+		expect(Int8MultiRange.isMultiRange(result3[0]._int8multirange[0])).toBe(true);
+		expect(Int8MultiRange.isMultiRange(result3[0]._int8multirange[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineInt8MultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("int8multirangestring", {
 				int8multirange: defineInt8MultiRange("int8multirange", { mode: "string" }).notNull(),
+				_int8multirange: defineInt8MultiRange("_int8multirange", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int8multirangestring (
-				int8multirange int8multirange not null
+				int8multirange int8multirange not null,
+				_int8multirange _int8multirange not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineInt8MultiRange", async () => {
 			.insert(table)
 			.values({
 				int8multirange: "{[1,3),[11,13),[21,23)}",
+				_int8multirange: ["{[1,3),[11,13),[21,23)}", "{[3,5),[13,15),[23,25)}"],
 			})
 			.returning();
 
 		expect(result1[0].int8multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result1[0]._int8multirange.length).toBe(2);
+		expect(result1[0]._int8multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result1[0]._int8multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].int8multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result2[0]._int8multirange.length).toBe(2);
+		expect(result2[0]._int8multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result2[0]._int8multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result3 = await database.select().from(table).where(eq(table.int8multirange, "{[1,3),[11,13),[21,23)}")).execute();
 
 		expect(result3[0].int8multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result3[0]._int8multirange.length).toBe(2);
+		expect(result3[0]._int8multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result3[0]._int8multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result4 = await database.select().from(table).where(eq(table.int8multirange, "{[1,3),[11,13),[21,25)}")).execute();
 

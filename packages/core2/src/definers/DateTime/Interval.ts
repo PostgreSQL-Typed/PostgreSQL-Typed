@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTIntervalConfig<TMode extends "Interval" | "string" = "Interval" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTIntervalBuilder<T extends ColumnBuilderBaseConfig> extends PgCol
 	build<TTableInterval extends string>(table: AnyPgTable<{ name: TTableInterval }>): PgTInterval<MakeColumnConfig<T, TTableInterval>> {
 		return new PgTInterval<MakeColumnConfig<T, TTableInterval>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTInterval<T extends ColumnBaseConfig> extends PgColumn<PgTIntervalHKT, T> {
@@ -51,7 +63,7 @@ export class PgTInterval<T extends ColumnBaseConfig> extends PgColumn<PgTInterva
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Interval.from(value as string).postgres;
+		return Interval.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTIntervalStringBuilder<T extends ColumnBuilderBaseConfig> extends
 	build<TTableInterval extends string>(table: AnyPgTable<{ name: TTableInterval }>): PgTIntervalString<MakeColumnConfig<T, TTableInterval>> {
 		return new PgTIntervalString<MakeColumnConfig<T, TTableInterval>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTIntervalString<T extends ColumnBaseConfig> extends PgColumn<PgTIntervalHKT, T> {
@@ -85,7 +107,7 @@ export class PgTIntervalString<T extends ColumnBaseConfig> extends PgColumn<PgTI
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Interval.from(value as string).postgres;
+		return Interval.from(value as string);
 	}
 }
 //#endregion

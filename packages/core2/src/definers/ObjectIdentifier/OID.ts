@@ -10,7 +10,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTOIDConfig<TMode extends "OID" | "string" | "number" = "OID" | "string" | "number"> {
 	mode?: TMode;
@@ -38,6 +40,16 @@ export class PgTOIDBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBu
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOID<MakeColumnConfig<T, TTableName>> {
 		return new PgTOID<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
@@ -52,7 +64,7 @@ export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as string).postgres;
+		return OID.from(value as string);
 	}
 }
 //#endregion
@@ -72,6 +84,16 @@ export class PgTOIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDString<MakeColumnConfig<T, TTableName>> {
 		return new PgTOIDString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
@@ -86,7 +108,7 @@ export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as string).postgres;
+		return OID.from(value as string);
 	}
 }
 //#endregion
@@ -106,6 +128,16 @@ export class PgTOIDNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTOIDNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
@@ -120,7 +152,7 @@ export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as number).postgres;
+		return OID.from(value as number);
 	}
 }
 

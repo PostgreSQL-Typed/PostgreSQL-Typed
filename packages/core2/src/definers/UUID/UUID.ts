@@ -11,7 +11,9 @@ import {
 	type MakeColumnConfig,
 	sql,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTUUIDConfig<TMode extends "UUID" | "string" = "UUID" | "string"> {
 	mode?: TMode;
@@ -40,6 +42,16 @@ export class PgTUUIDBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnB
 		return new PgTUUID<MakeColumnConfig<T, TTableUUID>>(table, this.config);
 	}
 
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
+
 	/**
 	 * Adds `default gen_random_uuid()` to the column definition.
 	 */
@@ -61,7 +73,7 @@ export class PgTUUID<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return UUID.from(value as string).postgres;
+		return UUID.from(value as string);
 	}
 }
 //#endregion
@@ -80,6 +92,16 @@ export class PgTUUIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 
 	build<TTableUUID extends string>(table: AnyPgTable<{ name: TTableUUID }>): PgTUUIDString<MakeColumnConfig<T, TTableUUID>> {
 		return new PgTUUIDString<MakeColumnConfig<T, TTableUUID>>(table, this.config);
+	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
 	}
 
 	/**
@@ -103,7 +125,7 @@ export class PgTUUIDString<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return UUID.from(value as string).postgres;
+		return UUID.from(value as string);
 	}
 }
 //#endregion

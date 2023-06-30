@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTLineConfig<TMode extends "Line" | "string" = "Line" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTLineBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnB
 	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLine<MakeColumnConfig<T, TTableLine>> {
 		return new PgTLine<MakeColumnConfig<T, TTableLine>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTLine<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
@@ -51,7 +63,7 @@ export class PgTLine<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Line.from(value as string).postgres;
+		return Line.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTLineStringBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLineString<MakeColumnConfig<T, TTableLine>> {
 		return new PgTLineString<MakeColumnConfig<T, TTableLine>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTLineString<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
@@ -85,7 +107,7 @@ export class PgTLineString<T extends ColumnBaseConfig> extends PgColumn<PgTLineH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Line.from(value as string).postgres;
+		return Line.from(value as string);
 	}
 }
 //#endregion

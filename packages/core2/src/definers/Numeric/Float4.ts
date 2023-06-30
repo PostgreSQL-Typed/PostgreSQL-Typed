@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTFloat4Config<TMode extends "Float4" | "string" | "BigNumber" | "number" = "Float4" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTFloat4Builder<T extends ColumnBuilderBaseConfig> extends PgColum
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat4<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat4<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTFloat4<T extends ColumnBaseConfig> extends PgColumn<PgTFloat4HKT, T> {
@@ -51,7 +63,7 @@ export class PgTFloat4<T extends ColumnBaseConfig> extends PgColumn<PgTFloat4HKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float4.from(value as string).postgres;
+		return Float4.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTFloat4StringBuilder<T extends ColumnBuilderBaseConfig> extends P
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat4String<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat4String<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTFloat4String<T extends ColumnBaseConfig> extends PgColumn<PgTFloat4HKT, T> {
@@ -85,7 +107,7 @@ export class PgTFloat4String<T extends ColumnBaseConfig> extends PgColumn<PgTFlo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float4.from(value as string).postgres;
+		return Float4.from(value as string);
 	}
 }
 //#endregion
@@ -105,6 +127,16 @@ export class PgTFloat4BigNumberBuilder<T extends ColumnBuilderBaseConfig> extend
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat4BigNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat4BigNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTFloat4BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTFloat4HKT, T> {
@@ -119,7 +151,7 @@ export class PgTFloat4BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float4.from(value as BigNumber).postgres;
+		return Float4.from(value as BigNumber);
 	}
 }
 //#endregion
@@ -139,6 +171,16 @@ export class PgTFloat4NumberBuilder<T extends ColumnBuilderBaseConfig> extends P
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTFloat4Number<MakeColumnConfig<T, TTableName>> {
 		return new PgTFloat4Number<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTFloat4Number<T extends ColumnBaseConfig> extends PgColumn<PgTFloat4HKT, T> {
@@ -153,7 +195,7 @@ export class PgTFloat4Number<T extends ColumnBaseConfig> extends PgColumn<PgTFlo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float4.from(value as number).postgres;
+		return Float4.from(value as number);
 	}
 }
 

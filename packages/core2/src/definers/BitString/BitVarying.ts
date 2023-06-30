@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTBitVaryingConfig<TMode extends "BitVarying" | "string" | "number" = "BitVarying" | "string" | "number"> {
 	mode?: TMode;
@@ -43,6 +45,16 @@ export class PgTBitVaryingBuilder<T extends ColumnBuilderBaseConfig> extends PgC
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitVarying<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitVarying<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBitVarying<T extends ColumnBaseConfig> extends PgColumn<PgTBitVaryingHKT, T, { length?: number }> {
@@ -60,8 +72,8 @@ export class PgTBitVarying<T extends ColumnBaseConfig> extends PgColumn<PgTBitVa
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string).postgres;
-		return BitVarying.from(value as string).postgres;
+		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string);
+		return BitVarying.from(value as string);
 	}
 }
 //#endregion
@@ -86,6 +98,16 @@ export class PgTBitVaryingStringBuilder<T extends ColumnBuilderBaseConfig> exten
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitVaryingString<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitVaryingString<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBitVaryingString<T extends ColumnBaseConfig> extends PgColumn<PgTBitVaryingHKT, T, { length?: number }> {
@@ -103,8 +125,8 @@ export class PgTBitVaryingString<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string).postgres;
-		return BitVarying.from(value as string).postgres;
+		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string);
+		return BitVarying.from(value as string);
 	}
 }
 //#endregion
@@ -129,6 +151,16 @@ export class PgTBitVaryingNumberBuilder<T extends ColumnBuilderBaseConfig> exten
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTBitVaryingNumber<MakeColumnConfig<T, TTableName>> {
 		return new PgTBitVaryingNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTBitVaryingNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBitVaryingHKT, T, { length?: number }> {
@@ -150,8 +182,8 @@ export class PgTBitVaryingNumber<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as number).postgres;
-		return BitVarying.from(value as number).postgres;
+		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as number);
+		return BitVarying.from(value as number);
 	}
 }
 

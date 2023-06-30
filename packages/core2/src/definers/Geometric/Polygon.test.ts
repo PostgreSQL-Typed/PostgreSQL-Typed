@@ -19,13 +19,15 @@ describe("definePolygon", async () => {
 			database = pgt(postgres),
 			table = pgTable("polygon", {
 				polygon: definePolygon("polygon", { mode: "Polygon" }).notNull(),
+				_polygon: definePolygon("_polygon", { mode: "Polygon" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists polygon (
-				polygon polygon not null
+				polygon polygon not null,
+				_polygon _polygon not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("definePolygon", async () => {
 			.insert(table)
 			.values({
 				polygon: Polygon.from("((1,2),(3,4))"),
+				_polygon: [Polygon.from("((1,2),(3,4))"), Polygon.from("((1,2),(4,5))")],
 			})
 			.returning();
 
 		expect(Polygon.isPolygon(result1[0].polygon)).toBe(true);
+		expect(result1[0]._polygon.length).toBe(2);
+		expect(Polygon.isPolygon(result1[0]._polygon[0])).toBe(true);
+		expect(Polygon.isPolygon(result1[0]._polygon[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Polygon.isPolygon(result2[0].polygon)).toBe(true);
+		expect(result2[0]._polygon.length).toBe(2);
+		expect(Polygon.isPolygon(result2[0]._polygon[0])).toBe(true);
+		expect(Polygon.isPolygon(result2[0]._polygon[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("definePolygon", async () => {
 			.execute();
 
 		expect(Polygon.isPolygon(result3[0].polygon)).toBe(true);
+		expect(result3[0]._polygon.length).toBe(2);
+		expect(Polygon.isPolygon(result3[0]._polygon[0])).toBe(true);
+		expect(Polygon.isPolygon(result3[0]._polygon[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("definePolygon", async () => {
 			database = pgt(postgres),
 			table = pgTable("polygonstring", {
 				polygon: definePolygon("polygon", { mode: "string" }).notNull(),
+				_polygon: definePolygon("_polygon", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists polygonstring (
-				polygon polygon not null
+				polygon polygon not null,
+				_polygon _polygon not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("definePolygon", async () => {
 			.insert(table)
 			.values({
 				polygon: "((1,2),(3,4))",
+				_polygon: ["((1,2),(3,4))", "((1,2),(4,5))"],
 			})
 			.returning();
 
 		expect(result1[0].polygon).toBe("((1,2),(3,4))");
+		expect(result1[0]._polygon.length).toBe(2);
+		expect(result1[0]._polygon[0]).toBe("((1,2),(3,4))");
+		expect(result1[0]._polygon[1]).toBe("((1,2),(4,5))");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].polygon).toBe("((1,2),(3,4))");
+		expect(result2[0]._polygon.length).toBe(2);
+		expect(result2[0]._polygon[0]).toBe("((1,2),(3,4))");
+		expect(result2[0]._polygon[1]).toBe("((1,2),(4,5))");
 
 		const result3 = await database.select().from(table).where(sameAs(table.polygon, "((1,2),(3,4))")).execute();
 
 		expect(result3[0].polygon).toBe("((1,2),(3,4))");
+		expect(result3[0]._polygon.length).toBe(2);
+		expect(result3[0]._polygon[0]).toBe("((1,2),(3,4))");
+		expect(result3[0]._polygon[1]).toBe("((1,2),(4,5))");
 
 		const result4 = await database.select().from(table).where(sameAs(table.polygon, "((1,2),(3,5))")).execute();
 

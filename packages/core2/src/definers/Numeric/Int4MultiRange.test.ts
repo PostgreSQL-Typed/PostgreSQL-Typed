@@ -19,13 +19,15 @@ describe("defineInt4MultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("int4multirange", {
 				int4multirange: defineInt4MultiRange("int4multirange", { mode: "Int4MultiRange" }).notNull(),
+				_int4multirange: defineInt4MultiRange("_int4multirange", { mode: "Int4MultiRange" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4multirange (
-				int4multirange int4multirange not null
+				int4multirange int4multirange not null,
+				_int4multirange _int4multirange not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineInt4MultiRange", async () => {
 			.insert(table)
 			.values({
 				int4multirange: Int4MultiRange.from("{[1,3),[11,13),[21,23)}"),
+				_int4multirange: [Int4MultiRange.from("{[1,3),[11,13),[21,23)}"), Int4MultiRange.from("{[3,5),[13,15),[23,25)}")],
 			})
 			.returning();
 
 		expect(Int4MultiRange.isMultiRange(result1[0].int4multirange)).toBe(true);
+		expect(result1[0]._int4multirange.length).toBe(2);
+		expect(Int4MultiRange.isMultiRange(result1[0]._int4multirange[0])).toBe(true);
+		expect(Int4MultiRange.isMultiRange(result1[0]._int4multirange[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Int4MultiRange.isMultiRange(result2[0].int4multirange)).toBe(true);
+		expect(result2[0]._int4multirange.length).toBe(2);
+		expect(Int4MultiRange.isMultiRange(result2[0]._int4multirange[0])).toBe(true);
+		expect(Int4MultiRange.isMultiRange(result2[0]._int4multirange[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineInt4MultiRange", async () => {
 			.execute();
 
 		expect(Int4MultiRange.isMultiRange(result3[0].int4multirange)).toBe(true);
+		expect(result3[0]._int4multirange.length).toBe(2);
+		expect(Int4MultiRange.isMultiRange(result3[0]._int4multirange[0])).toBe(true);
+		expect(Int4MultiRange.isMultiRange(result3[0]._int4multirange[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineInt4MultiRange", async () => {
 			database = pgt(postgres),
 			table = pgTable("int4multirangestring", {
 				int4multirange: defineInt4MultiRange("int4multirange", { mode: "string" }).notNull(),
+				_int4multirange: defineInt4MultiRange("_int4multirange", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists int4multirangestring (
-				int4multirange int4multirange not null
+				int4multirange int4multirange not null,
+				_int4multirange _int4multirange not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineInt4MultiRange", async () => {
 			.insert(table)
 			.values({
 				int4multirange: "{[1,3),[11,13),[21,23)}",
+				_int4multirange: ["{[1,3),[11,13),[21,23)}", "{[3,5),[13,15),[23,25)}"],
 			})
 			.returning();
 
 		expect(result1[0].int4multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result1[0]._int4multirange.length).toBe(2);
+		expect(result1[0]._int4multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result1[0]._int4multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].int4multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result2[0]._int4multirange.length).toBe(2);
+		expect(result2[0]._int4multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result2[0]._int4multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result3 = await database.select().from(table).where(eq(table.int4multirange, "{[1,3),[11,13),[21,23)}")).execute();
 
 		expect(result3[0].int4multirange).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result3[0]._int4multirange.length).toBe(2);
+		expect(result3[0]._int4multirange[0]).toBe("{[1,3),[11,13),[21,23)}");
+		expect(result3[0]._int4multirange[1]).toBe("{[3,5),[13,15),[23,25)}");
 
 		const result4 = await database.select().from(table).where(eq(table.int4multirange, "{[1,3),[11,13),[21,25)}")).execute();
 

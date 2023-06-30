@@ -24,6 +24,8 @@ export * from "./Geometric/LineSegment.js";
 export * from "./Geometric/Path.js";
 export * from "./Geometric/Point.js";
 export * from "./Geometric/Polygon.js";
+export * from "./JSON/JSON.js";
+export * from "./JSON/JSON-B.js";
 export * from "./Monetary/Money.js";
 export * from "./Numeric/Float4.js";
 export * from "./Numeric/Float8.js";

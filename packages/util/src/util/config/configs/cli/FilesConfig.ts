@@ -268,7 +268,26 @@ export interface FilesConfig {
 	schemaName: string;
 
 	/**
-	 * Where should schema be located in the generated code
+	 * Where should all schema definitions be located in the generated code
+	 *
+	 * You may use the following placeholders:
+	 * - `SCHEMA_NAME`: The name of the schema
+	 * - `DATABASE_NAME`: The name of the database
+	 *
+	 * You may use the following formatters: (You can use more than one at a time, serparated by " | ")
+	 * - `pascal-case`: Capitalize the first letter of each word
+	 * - `camel-case`: Capitalize the first letter of each word, except for the first word
+	 * - `plural`: Add an "s" to the end of the type name
+	 * - `singular`: Remove the "s" from the end of the type name
+	 *
+	 * Note: .ts is automatically appended to the end of the path (unless you include it yourself)
+	 *
+	 * @default "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts"
+	 */
+	schemasFileName: string;
+
+	/**
+	 * Where should all column reexports of a schema be located in the generated code
 	 *
 	 * You may use the following placeholders:
 	 * - `SCHEMA_NAME`: The name of the schema
@@ -394,6 +413,10 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	schemaName: {
 		$default: "{{ SCHEMA_NAME | camel-case }}",
 		$resolve: value => (typeof value === "string" ? value : "{{ SCHEMA_NAME | camel-case }}"),
+	},
+	schemasFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts",
+		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts"),
 	},
 	schemaFileName: {
 		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}.ts",

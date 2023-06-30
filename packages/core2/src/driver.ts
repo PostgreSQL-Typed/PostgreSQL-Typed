@@ -1,5 +1,5 @@
 import { OID } from "@postgresql-typed/oids";
-import { defaultParserMappings } from "@postgresql-typed/parsers";
+import { defaultParserMappings, isAnyParser, parserToOid } from "@postgresql-typed/parsers";
 import {
 	createTableRelationsHelpers,
 	DefaultLogger,
@@ -27,7 +27,40 @@ export class PgTDriver {
 	}
 
 	createSession(schema: RelationalSchemaConfig<TablesRelationalConfig> | undefined): PgTSession<Record<string, unknown>, TablesRelationalConfig> {
-		return new PgTSession(this.client, this.extensions, this.dialect, schema, { logger: this.options.logger });
+		return new PgTSession(this.client, this.extensions, this, this.dialect, schema, { logger: this.options.logger });
+	}
+
+	serialize(value: unknown): string {
+		if (Array.isArray(value) && value.every(element => isAnyParser(element))) {
+			//* Make sure they all have the same OID, so we can just use the first one
+			const oid = parserToOid(value[0], true);
+			if (value.every(element => parserToOid(element, true) === oid) && oid !== OID.unknown) return defaultParserMappings[oid].serialize(value);
+		}
+		if (!Array.isArray(value) && isAnyParser(value)) {
+			const oid = parserToOid(value);
+			if (oid !== OID.unknown) return defaultParserMappings[oid].serialize(value as unknown as string);
+		}
+
+		/* c8 ignore next */
+		if (Array.isArray(value)) return this.makePgArray(value);
+
+		/* c8 ignore next */
+		if (typeof value === "object" && value !== null && "postgres" in value) return value.postgres as string;
+		return value as string;
+	}
+
+	/* c8 ignore next 12 */
+	private makePgArray(array: any[]): string {
+		return `{${array
+			.map(item => {
+				if (Array.isArray(item)) return this.makePgArray(item);
+
+				if (typeof item === "object" && item !== null && "postgres" in item) item = item.postgres;
+				if (typeof item === "string" && item.includes(",")) return `"${item.replaceAll('"', '\\"')}"`;
+
+				return `${item}`;
+			})
+			.join(",")}}`;
 	}
 
 	initMappers(): void {
@@ -111,6 +144,12 @@ export class PgTDriver {
 		types.setTypeParser(OID.polygon as any, defaultParserMappings[OID.polygon].parse);
 		types.setTypeParser(OID._polygon as any, defaultParserMappings[OID._polygon].parse);
 
+		types.setTypeParser(OID.json as any, defaultParserMappings[OID.json].parse);
+		types.setTypeParser(OID._json as any, defaultParserMappings[OID._json].parse);
+
+		types.setTypeParser(OID.jsonb as any, defaultParserMappings[OID.jsonb].parse);
+		types.setTypeParser(OID._jsonb as any, defaultParserMappings[OID._jsonb].parse);
+
 		types.setTypeParser(OID.money as any, defaultParserMappings[OID.money].parse);
 		types.setTypeParser(OID._money as any, defaultParserMappings[OID._money].parse);
 
@@ -155,10 +194,12 @@ export function pgt<TSchema extends Record<string, unknown> = Record<string, nev
 ): PgTDatabase<TSchema> {
 	const dialect = new PgDialect();
 	let logger: Logger | undefined;
+	/* c8 ignore next */
 	if (config.logger === true) logger = new DefaultLogger();
 	else if (config.logger !== false) ({ logger } = config);
 
 	let schema: RelationalSchemaConfig<TablesRelationalConfig> | undefined;
+	/* c8 ignore next 8 */
 	if (config.schema) {
 		const tablesConfig = extractTablesRelationalConfig(config.schema, createTableRelationsHelpers);
 		schema = {

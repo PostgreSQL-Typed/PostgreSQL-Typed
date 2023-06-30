@@ -23,6 +23,7 @@ import {
 	Int8MultiRange,
 	Int8Range,
 	Interval,
+	JSON,
 	Line,
 	LineSegment,
 	Money,
@@ -265,6 +266,22 @@ export const defaultParserMappings = {
 	[OID._polygon]: {
 		serialize: arraySerializer<Polygon>(Polygon),
 		parse: arrayParser<Polygon>(Polygon),
+	},
+	[OID.json]: {
+		serialize: serializer<JSON>(JSON),
+		parse: parser<JSON>(JSON),
+	},
+	[OID._json]: {
+		serialize: arraySerializer<JSON>(JSON, ","),
+		parse: arrayParser<JSON>(JSON, ","),
+	},
+	[OID.jsonb]: {
+		serialize: serializer<JSON>(JSON),
+		parse: parser<JSON>(JSON),
+	},
+	[OID._jsonb]: {
+		serialize: arraySerializer<JSON>(JSON, ","),
+		parse: arrayParser<JSON>(JSON, ","),
 	},
 	[OID.money]: {
 		serialize: serializer<Money>(Money),

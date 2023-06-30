@@ -19,13 +19,15 @@ describe("defineName", async () => {
 			database = pgt(postgres),
 			table = pgTable("name", {
 				name: defineName("name", { mode: "Name" }).notNull(),
+				_name: defineName("_name", { mode: "Name" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists name (
-				name name not null
+				name name not null,
+				_name _name not null
 			);
 		`);
 
@@ -33,14 +35,21 @@ describe("defineName", async () => {
 			.insert(table)
 			.values({
 				name: Name.from("a"),
+				_name: [Name.from("a"), Name.from("b")],
 			})
 			.returning();
 
 		expect(Name.isName(result1[0].name)).toBe(true);
+		expect(result1[0]._name.length).toBe(2);
+		expect(Name.isName(result1[0]._name[0])).toBe(true);
+		expect(Name.isName(result1[0]._name[1])).toBe(true);
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(Name.isName(result2[0].name)).toBe(true);
+		expect(result2[0]._name.length).toBe(2);
+		expect(Name.isName(result2[0]._name[0])).toBe(true);
+		expect(Name.isName(result2[0]._name[1])).toBe(true);
 
 		const result3 = await database
 			.select()
@@ -49,6 +58,9 @@ describe("defineName", async () => {
 			.execute();
 
 		expect(Name.isName(result3[0].name)).toBe(true);
+		expect(result3[0]._name.length).toBe(2);
+		expect(Name.isName(result3[0]._name[0])).toBe(true);
+		expect(Name.isName(result3[0]._name[1])).toBe(true);
 
 		const result4 = await database
 			.select()
@@ -77,13 +89,15 @@ describe("defineName", async () => {
 			database = pgt(postgres),
 			table = pgTable("namestring", {
 				name: defineName("name", { mode: "string" }).notNull(),
+				_name: defineName("_name", { mode: "string" }).array().notNull(),
 			});
 
 		await database.connect();
 
 		await database.execute(sql`
 			create table if not exists namestring (
-				name name not null
+				name name not null,
+				_name _name not null
 			);
 		`);
 
@@ -91,18 +105,28 @@ describe("defineName", async () => {
 			.insert(table)
 			.values({
 				name: "a",
+				_name: ["a", "b"],
 			})
 			.returning();
 
 		expect(result1[0].name).toBe("a");
+		expect(result1[0]._name.length).toBe(2);
+		expect(result1[0]._name[0]).toBe("a");
+		expect(result1[0]._name[1]).toBe("b");
 
 		const result2 = await database.select().from(table).execute();
 
 		expect(result2[0].name).toBe("a");
+		expect(result2[0]._name.length).toBe(2);
+		expect(result2[0]._name[0]).toBe("a");
+		expect(result2[0]._name[1]).toBe("b");
 
 		const result3 = await database.select().from(table).where(eq(table.name, "a")).execute();
 
 		expect(result3[0].name).toBe("a");
+		expect(result3[0]._name.length).toBe(2);
+		expect(result3[0]._name[0]).toBe("a");
+		expect(result3[0]._name[1]).toBe("b");
 
 		const result4 = await database.select().from(table).where(eq(table.name, "b")).execute();
 

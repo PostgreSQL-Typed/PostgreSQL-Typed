@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTCircleConfig<TMode extends "Circle" | "string" = "Circle" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTCircleBuilder<T extends ColumnBuilderBaseConfig> extends PgColum
 	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircle<MakeColumnConfig<T, TTableCircle>> {
 		return new PgTCircle<MakeColumnConfig<T, TTableCircle>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCircle<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT, T> {
@@ -51,7 +63,7 @@ export class PgTCircle<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Circle.from(value as string).postgres;
+		return Circle.from(value as string);
 	}
 }
 //#endregion
@@ -71,6 +83,16 @@ export class PgTCircleStringBuilder<T extends ColumnBuilderBaseConfig> extends P
 	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircleString<MakeColumnConfig<T, TTableCircle>> {
 		return new PgTCircleString<MakeColumnConfig<T, TTableCircle>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTCircleString<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT, T> {
@@ -85,7 +107,7 @@ export class PgTCircleString<T extends ColumnBaseConfig> extends PgColumn<PgTCir
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Circle.from(value as string).postgres;
+		return Circle.from(value as string);
 	}
 }
 //#endregion

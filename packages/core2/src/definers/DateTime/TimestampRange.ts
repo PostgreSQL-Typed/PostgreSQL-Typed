@@ -9,7 +9,9 @@ import {
 	type Equal,
 	type MakeColumnConfig,
 } from "drizzle-orm";
-import { type AnyPgTable, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+
+import { PgTArrayBuilder } from "../../array.js";
 
 export interface PgTTimestampRangeConfig<TMode extends "TimestampRange" | "string" = "TimestampRange" | "string"> {
 	mode?: TMode;
@@ -37,6 +39,16 @@ export class PgTTimestampRangeBuilder<T extends ColumnBuilderBaseConfig> extends
 	build<TTableTimestampRange extends string>(table: AnyPgTable<{ name: TTableTimestampRange }>): PgTTimestampRange<MakeColumnConfig<T, TTableTimestampRange>> {
 		return new PgTTimestampRange<MakeColumnConfig<T, TTableTimestampRange>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampRangeHKT, T> {
@@ -51,7 +63,7 @@ export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgColumn<PgTT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampRange.from(value as string).postgres;
+		return TimestampRange.from(value as string);
 	}
 }
 //#endregion
@@ -73,6 +85,16 @@ export class PgTTimestampRangeStringBuilder<T extends ColumnBuilderBaseConfig> e
 	): PgTTimestampRangeString<MakeColumnConfig<T, TTableTimestampRange>> {
 		return new PgTTimestampRangeString<MakeColumnConfig<T, TTableTimestampRange>>(table, this.config);
 	}
+
+	override array(size?: number): PgArrayBuilder<{
+		name: NonNullable<T["name"]>;
+		notNull: NonNullable<T["notNull"]>;
+		hasDefault: NonNullable<T["hasDefault"]>;
+		data: T["data"][];
+		driverParam: T["driverParam"][] | string;
+	}> {
+		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	}
 }
 
 export class PgTTimestampRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampRangeHKT, T> {
@@ -87,7 +109,7 @@ export class PgTTimestampRangeString<T extends ColumnBaseConfig> extends PgColum
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampRange.from(value as string).postgres;
+		return TimestampRange.from(value as string);
 	}
 }
 //#endregion

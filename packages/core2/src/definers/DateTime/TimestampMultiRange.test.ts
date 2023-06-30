@@ -27,7 +27,7 @@ describe("defineTimestampMultiRange", async () => {
 		const version = await postgres.query<{
 				version: string;
 			}>("SELECT version()"),
-			versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]);
+			versionNumber = Number(version.rows[0].version.toString().split(" ")[1].split(".")[0]);
 
 		// Multirange types were introduced in PostgreSQL 14
 		if (versionNumber < 14) {
@@ -131,7 +131,7 @@ describe("defineTimestampMultiRange", async () => {
 		const version = await postgres.query<{
 				version: string;
 			}>("SELECT version()"),
-			versionNumber = Number(version.rows[0].version.split(" ")[1].split(".")[0]);
+			versionNumber = Number(version.rows[0].version.toString().split(" ")[1].split(".")[0]);
 
 		// Multirange types were introduced in PostgreSQL 14
 		if (versionNumber < 14) {

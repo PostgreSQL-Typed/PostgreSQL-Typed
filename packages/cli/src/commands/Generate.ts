@@ -114,7 +114,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 				g("Finished generating types!"),
 				I("You can find the generated files in the following output directory:"),
 				false,
-				I(resolve(config.types.directory))
+				I(resolve(config.files.directory))
 			)
 		);
 	}

@@ -21,17 +21,17 @@ export default definePgTExtension<PgTTzSwitcherOptions>({
 		name: "tzswitcher",
 		configKey: "tzswitcher",
 	},
-	setup(resolvedOptions, pgt) {
+	setup(resolvedOptions, manager) {
 		const { timestamp, timestamptz, time, timetz } = resolvedOptions;
 
 		/* c8 ignore next 1 */
 		if (!timestamp && !timestamptz && !time && !timetz) return;
 
-		pgt.hook("client:pre-query", data => {
+		manager.hook("pgt:pre-query", data => {
 			data.input.values = checkValue(data.input.values, resolvedOptions, "from", "to");
 		});
 
-		pgt.hook("client:post-query", data => {
+		manager.hook("pgt:post-query", data => {
 			data.output.rows = checkValue(data.output.rows, resolvedOptions, "to", "from");
 		});
 	},

@@ -1,11 +1,17 @@
+import type { QueryArrayConfig, QueryArrayResult, QueryConfig, QueryResult } from "pg";
+
 import type { Awaitable } from "./Awaitable.js";
-import type { Context } from "./Context.js";
-import type { Query } from "./Query.js";
+
+export type PreQueryHookData =
+	| { input: { query: QueryConfig<any[]>; values: unknown[] }; output: QueryResult<any> | undefined }
+	| { input: { query: QueryArrayConfig<any[]>; values: unknown[] }; output: QueryArrayResult<any[]> | undefined };
+
+export type PostQueryHookData =
+	| { input: { query: QueryConfig<any[]>; values: unknown[] }; output: QueryResult<any> }
+	| { input: { query: QueryArrayConfig<any[]>; values: unknown[] }; output: QueryArrayResult<any[]> };
 
 export interface ClientHooks {
-	"client:pre-query": (data: { input: { query: string; values: unknown[] }; output: Query<unknown> | undefined }, context: Context) => Awaitable<void>;
-	"client:post-query": (data: { input: { query: string; values: unknown[] }; output: Query<unknown> }, context: Context) => Awaitable<void>;
-	"client:pre-query-override": (data: { input: { query: string; values: unknown[] }; output: Query<unknown> }, context: Context) => Awaitable<void>;
-	"client:pre-connect": () => Awaitable<void>;
-	"client:post-connect": () => Awaitable<void>;
+	"pgt:pre-query": (data: PreQueryHookData) => Awaitable<void>;
+	"pgt:post-query": (data: PostQueryHookData) => Awaitable<void>;
+	"pgt:pre-query-override": (data: PostQueryHookData) => Awaitable<void>;
 }

@@ -2,7 +2,7 @@ import type { PgTConfigSchema, PgTExtension, PgTExtensionOptions } from "@postgr
 import { normalize } from "pathe";
 import { resolveAlias as _resolveAlias } from "pathe/utils";
 
-import type { BaseClient } from "../classes/BaseClient.js";
+import { PgTExtensionManager } from "../extensions.js";
 import { importModule } from "./importModule.js";
 import { requireModule } from "./requireModule.js";
 
@@ -11,13 +11,13 @@ import { requireModule } from "./requireModule.js";
 
 export async function installExtension(
 	config: PgTConfigSchema,
-	pgt: BaseClient<any, boolean>,
+	manager: PgTExtensionManager,
 	moduleToInstall: string | PgTExtension,
 	_inlineOptions?: PgTExtensionOptions
 ) {
 	const { extension, inlineOptions } = await normalizeModule(config, moduleToInstall, _inlineOptions);
 	// Call extension
-	await extension(inlineOptions, pgt);
+	await extension(inlineOptions, manager);
 }
 
 async function normalizeModule(

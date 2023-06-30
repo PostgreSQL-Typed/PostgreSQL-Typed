@@ -1,4 +1,19 @@
+import { table } from "@postgresql-typed/core";
+import { defineText, defineTime, defineTimestamp, defineTimestampTZ, defineTimeTZ } from "@postgresql-typed/core/definers";
 import { Text, Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
+
+export const TzSwitcherTable = table("tzswitcher_testing", {
+	time: defineTime("time", { mode: "Time" }).notNull(),
+	_time: defineTime("_time", { mode: "Time" }).array().notNull(),
+	timestamp: defineTimestamp("timestamp", { mode: "Timestamp" }).notNull(),
+	_timestamp: defineTimestamp("_timestamp", { mode: "Timestamp" }).array().notNull(),
+	timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
+	_timestamptz: defineTimestampTZ("_timestamptz", { mode: "TimestampTZ" }).array().notNull(),
+	timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
+	_timetz: defineTimeTZ("_timetz", { mode: "TimeTZ" }).array().notNull(),
+	not_a_time: defineText("not_a_time", { mode: "Text" }).notNull(),
+	nullable_time: defineTime("nullable_time", { mode: "Time" }),
+});
 
 export const createTable = `
 CREATE TABLE IF NOT EXISTS tzswitcher_testing (
@@ -45,15 +60,15 @@ INSERT INTO tzswitcher_testing (
 `;
 
 export const insertQueryValues = [
-	Time.from("12:34:56"),
-	[Time.from("12:34:56"), Time.from("12:56:12")],
+	Time.from("12:34:56").postgres,
+	[Time.from("12:34:56").postgres, Time.from("12:56:12").postgres],
 	Timestamp.from("2021-01-01 12:34:56").postgres,
-	[Timestamp.from("2021-01-01 12:34:56.123"), Timestamp.from("2021-01-01 12:56:12")],
-	TimestampTZ.from("2021-01-01 12:34:56 UTC"),
-	[TimestampTZ.from("2021-01-01 12:34:56 UTC"), TimestampTZ.from("2021-01-01 12:56:12 UTC")],
-	TimeTZ.from("12:34:56 UTC"),
-	[TimeTZ.from("12:34:56 UTC"), TimeTZ.from("12:56:12 UTC")],
-	Text.from("not a time"),
+	[Timestamp.from("2021-01-01 12:34:56.123").postgres, Timestamp.from("2021-01-01 12:56:12").postgres],
+	TimestampTZ.from("2021-01-01 12:34:56 UTC").postgres,
+	[TimestampTZ.from("2021-01-01 12:34:56 UTC").postgres, TimestampTZ.from("2021-01-01 12:56:12 UTC").postgres],
+	TimeTZ.from("12:34:56 UTC").postgres,
+	[TimeTZ.from("12:34:56 UTC").postgres, TimeTZ.from("12:56:12 UTC").postgres],
+	Text.from("not a time").postgres,
 	// eslint-disable-next-line unicorn/no-null
 	null,
 ];
@@ -71,10 +86,3 @@ export const valuesInSeoul = {
 	// eslint-disable-next-line unicorn/no-null
 	nullable_time: null,
 };
-
-export const selectQuery = `
-SELECT * FROM tzswitcher_testing
-WHERE timestamp = $1
-`;
-
-export const selectQueryValues = [Timestamp.from("2021-01-01 21:34:56")];

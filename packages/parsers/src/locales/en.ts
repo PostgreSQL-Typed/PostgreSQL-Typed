@@ -39,6 +39,9 @@ const errorMap: ErrorMap = issue => {
 		case IssueCode.invalid_luxon_date:
 			message = "Invalid luxon.DateTime";
 			break;
+		case IssueCode.invalid_json:
+			message = "Invalid JSON";
+			break;
 		case IssueCode.too_small:
 			switch (issue.type) {
 				case "array":

@@ -13,10 +13,11 @@ interface Int8Object {
 interface Int8 {
 	int8: bigint;
 
-	value: string;
+	value: number;
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toBigint(): bigint;
 	toJSON(): Int8Object;
 
@@ -198,6 +199,10 @@ class Int8Class extends PgTPBase<Int8> implements Int8 {
 		return this._int8.toString();
 	}
 
+	toNumber(): number {
+		return Number(this._int8);
+	}
+
 	toBigint(): bigint {
 		return this._int8;
 	}
@@ -218,11 +223,11 @@ class Int8Class extends PgTPBase<Int8> implements Int8 {
 		else throw parsed.error;
 	}
 
-	get value(): string {
-		return this.toString();
+	get value(): number {
+		return this.toNumber();
 	}
 
-	set value(int8: string) {
+	set value(int8: number) {
 		const parsed = Int8.safeFrom(int8);
 		if (parsed.success) this._int8 = parsed.data.int8;
 		else throw parsed.error;

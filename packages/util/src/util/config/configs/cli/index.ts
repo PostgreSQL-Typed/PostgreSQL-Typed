@@ -1,7 +1,7 @@
 import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
 import { type Connection } from "./Connection.js";
-import typesSchema, { type TypesConfig } from "./TypesConfig.js";
+import filesSchema, { type FilesConfig } from "./FilesConfig.js";
 
 export interface PostgreSQLTypedCLIConfig {
 	/**
@@ -54,11 +54,11 @@ export interface PostgreSQLTypedCLIConfig {
 	tables: string | string[] | number | number[];
 
 	/**
-	 * Config for the types generator
+	 * Config for the generator
 	 *
 	 * @default {}
 	 */
-	types: TypesConfig;
+	files: FilesConfig;
 
 	/**
 	 * The TypeScript module type you use in your project (if you are using esm it adds the .js import extension)
@@ -80,7 +80,7 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "*",
 		$resolve: value => (typeof value === "string" ? value : "*"),
 	},
-	types: typesSchema,
+	files: filesSchema,
 	type: {
 		$default: "cjs",
 		$resolve: value => (value === "esm" ? "esm" : "cjs"),

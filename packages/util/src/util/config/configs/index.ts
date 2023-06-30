@@ -13,6 +13,6 @@ type DeepPartial<T> = {
 };
 
 export type { Connection } from "./cli/Connection.js";
+export type { FilesConfig } from "./cli/FilesConfig.js";
 export type { ImportStatement } from "./cli/ImportStatement.js";
 export type { PostgreSQLTypedCLIConfig } from "./cli/index.js";
-export type { TypesConfig } from "./cli/TypesConfig.js";

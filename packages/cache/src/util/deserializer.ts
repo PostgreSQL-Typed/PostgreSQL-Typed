@@ -19,6 +19,7 @@ import {
 	Int8MultiRange,
 	Int8Range,
 	Interval,
+	JSON,
 	Line,
 	LineSegment,
 	Money,
@@ -68,7 +69,7 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return Circle.from(rest as any) as T;
 		case "date":
 			return Date.from(rest as any) as T;
-		/* c8 ignore next 3 */
+		/* c8 ignore next 5 */
 		// Not all postgres versions support this type, it is tested in higher versions.
 		case "dateMultiRange":
 			return DateMultiRange.from(rest as any) as T;
@@ -82,7 +83,7 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return Int2.from(rest as any) as T;
 		case "int4":
 			return Int4.from(rest as any) as T;
-		/* c8 ignore next 3 */
+		/* c8 ignore next 5 */
 		// Not all postgres versions support this type, it is tested in higher versions.
 		case "int4MultiRange":
 			return Int4MultiRange.from(rest as any) as T;
@@ -90,7 +91,7 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return Int4Range.from(rest as any) as T;
 		case "int8":
 			return Int8.from(rest as any) as T;
-		/* c8 ignore next 3 */
+		/* c8 ignore next 5 */
 		// Not all postgres versions support this type, it is tested in higher versions.
 		case "int8MultiRange":
 			return Int8MultiRange.from(rest as any) as T;
@@ -114,13 +115,15 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return Point.from(rest as any) as T;
 		case "polygon":
 			return Polygon.from(rest as any) as T;
+		case "json":
+			return JSON.from(rest as any) as T;
 		case "text":
 			return Text.from(rest as any) as T;
 		case "time":
 			return Time.from(rest as any) as T;
 		case "timestamp":
 			return Timestamp.from(rest as any) as T;
-		/* c8 ignore next 3 */
+		/* c8 ignore next 5 */
 		// Not all postgres versions support this type, it is tested in higher versions.
 		case "timestampMultiRange":
 			return TimestampMultiRange.from(rest as any) as T;
@@ -128,7 +131,7 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return TimestampRange.from(rest as any) as T;
 		case "timestampTZ":
 			return TimestampTZ.from(rest as any) as T;
-		/* c8 ignore next 3 */
+		/* c8 ignore next 5 */
 		// Not all postgres versions support this type, it is tested in higher versions.
 		case "timestampTZMultiRange":
 			return TimestampTZMultiRange.from(rest as any) as T;

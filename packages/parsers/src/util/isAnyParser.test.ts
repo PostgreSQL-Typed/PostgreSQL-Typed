@@ -31,6 +31,8 @@ import { LineSegment } from "../data/Geometric/LineSegment.js";
 import { Path } from "../data/Geometric/Path.js";
 import { Point } from "../data/Geometric/Point.js";
 import { Polygon } from "../data/Geometric/Polygon.js";
+//* JSON
+import { JSON } from "../data/JSON/JSON.js";
 //* Monetary
 import { Money } from "../data/Monetary/Money.js";
 //* Numeric
@@ -98,6 +100,7 @@ describe("isAnyParser", () => {
 		expect(isAnyParser(Path.from("((0,0),(1,1))"))).toBe(true);
 		expect(isAnyParser(Point.from("(0,0)"))).toBe(true);
 		expect(isAnyParser(Polygon.from("(0,0),(1,1)"))).toBe(true);
+		expect(isAnyParser(JSON.from({}))).toBe(true);
 		expect(isAnyParser(Money.from("$1.00"))).toBe(true);
 		expect(isAnyParser(Float4.from(1))).toBe(true);
 		expect(isAnyParser(Float8.from(1))).toBe(true);

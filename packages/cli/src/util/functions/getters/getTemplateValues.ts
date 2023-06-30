@@ -2,32 +2,34 @@ import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getTemplateValues(id: TypeId): any {
 	switch (id.type) {
-		case "table_type":
-		case "table_data":
-		case "insert_parameters_type":
-		case "insert_parameters_data":
-		case "primary_key":
+		case "column":
+			return {
+				COLUMN_NAME: id.name,
+				TABLE_NAME: id.tableName,
+				DATABASE_NAME: id.databaseName,
+				SCHEMA_NAME: id.schemaName,
+			};
+		case "table":
+		case "tableType":
+		case "tableInsertType":
 			return {
 				TABLE_NAME: id.name,
 				DATABASE_NAME: id.databaseName,
 				SCHEMA_NAME: id.schemaName,
 			};
-		case "schema_type":
-		case "schema_data":
+		case "schema":
+		case "schemaReexport":
 			return {
 				SCHEMA_NAME: id.name,
 				DATABASE_NAME: id.databaseName,
 			};
-		case "database_type":
-		case "database_data":
+		case "databaseReexport":
 			return {
 				DATABASE_NAME: id.name,
 			};
 		case "enum":
 			return { TYPE_NAME: id.name, DATABASE_NAME: id.databaseName };
-		case "domain_type":
-			return { TYPE_NAME: id.name };
-		case "domain_data":
+		case "domain":
 			return { TYPE_NAME: id.name };
 		case "debug":
 			return {
@@ -42,7 +44,7 @@ export function getTemplateValues(id: TypeId): any {
 				SECOND: id.second,
 				MILLISECOND: id.millisecond,
 			};
-		case "re_export":
+		case "export":
 			return getTemplateValues(id.of);
 	}
 }

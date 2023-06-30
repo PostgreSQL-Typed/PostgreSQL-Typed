@@ -21,6 +21,7 @@ interface Money {
 	postgres: string;
 
 	toString(): string;
+	toNumber(): number;
 	toBigNumber(): BigNumber;
 	toJSON(): MoneyObject;
 
@@ -169,6 +170,10 @@ class MoneyClass extends PgTPBase<Money> implements Money {
 			if (decimal.length > 2) return `${int}.${Math.round(Number(`0.${decimal}`) * 100)}`;
 			return `${int}.${decimal.padEnd(2, "0")}`;
 		} else return `${money}.00`;
+	}
+
+	toNumber(): number {
+		return this._money.toNumber();
 	}
 
 	toBigNumber(): BigNumber {

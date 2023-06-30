@@ -44,6 +44,8 @@ import type { LineSegment, LineSegmentConstructor, LineSegmentObject, RawLineSeg
 import type { Path, PathConstructor, PathObject, RawPathObject } from "../data/Geometric/Path.js";
 import type { Point, PointConstructor, PointObject } from "../data/Geometric/Point.js";
 import type { Polygon, PolygonConstructor, PolygonObject, RawPolygonObject } from "../data/Geometric/Polygon.js";
+//* JSON
+import type { JSON, JSONConstructor, JSONObject } from "../data/JSON/JSON.js";
 //* Monetary
 import type { Money, MoneyConstructor, MoneyObject } from "../data/Monetary/Money.js";
 //* NetworkAddress
@@ -259,6 +261,11 @@ describe("FromParameters", () => {
 	test("FromParameters<PolygonConstructor>", () => {
 		let a: FromParameters<PolygonConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | Point[] | Polygon | PolygonObject | RawPolygonObject | undefined>();
+	});
+
+	test("FromParameters<JSONConstructor>", () => {
+		let a: FromParameters<JSONConstructor> | undefined;
+		expectTypeOf(a).toEqualTypeOf<string | number | boolean | Record<string, unknown> | unknown[] | JSON | JSONObject | null | undefined>();
 	});
 
 	test("FromParameters<MoneyConstructor>", () => {

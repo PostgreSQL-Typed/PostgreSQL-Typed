@@ -427,12 +427,14 @@ describe("TimeTZ", () => {
 
 	test("get value()", () => {
 		const time = TimeTZ.from("22:10:09+02:00");
-		expect(time.value).toBe(72_609_000);
+		expect(time.value).toBe("22:10:09+02:00");
 	});
 
 	test("set value(...)", () => {
 		const time = TimeTZ.from("22:10:09+02:00");
-		time.value = 1_681_208_553_000;
+		time.value = "11:22:33+01:00";
+		expect(time.value).toBe("11:22:33+01:00");
+		time.value = 1_681_208_553_000 as any;
 		expect(time.toString()).toBe("10:22:33");
 		expect(() => {
 			time.value = true as any;

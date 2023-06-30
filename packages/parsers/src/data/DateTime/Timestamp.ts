@@ -32,7 +32,7 @@ interface Timestamp {
 	minute: number;
 	second: number;
 
-	value: number;
+	value: string;
 	postgres: string;
 
 	/**
@@ -232,15 +232,19 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 		const jsDate = isValidDate(argument);
 		if (jsDate.isOfSameType) {
 			if (jsDate.isValid) {
-				const [year, month, day, hour, minute, second] = [
+				const [year, month, day, hour, minute, second, millisecond] = [
 					jsDate.data.getFullYear(),
 					jsDate.data.getMonth() + 1,
 					jsDate.data.getDate(),
 					jsDate.data.getHours(),
 					jsDate.data.getMinutes(),
 					jsDate.data.getSeconds(),
+					jsDate.data.getMilliseconds(),
 				];
-				return this._parseString(context, `${pad(year, 4)}-${pad(month)}-${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}`);
+				return this._parseString(
+					context,
+					`${pad(year, 4)}-${pad(month)}-${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}${millisecond === 0 ? "" : `.${pad(millisecond, 3)}`}`
+				);
 			}
 			this.setIssueForContext(context, jsDate.error);
 			return INVALID;
@@ -250,15 +254,19 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 		const luxonDate = isValidDateTime(argument);
 		if (luxonDate.isOfSameType) {
 			if (luxonDate.isValid) {
-				const [year, month, day, hour, minute, second] = [
+				const [year, month, day, hour, minute, second, millisecond] = [
 					luxonDate.data.year,
 					luxonDate.data.month,
 					luxonDate.data.day,
 					luxonDate.data.hour,
 					luxonDate.data.minute,
 					luxonDate.data.second,
+					luxonDate.data.millisecond,
 				];
-				return this._parseString(context, `${pad(year, 4)}-${pad(month)}-${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}`);
+				return this._parseString(
+					context,
+					`${pad(year, 4)}-${pad(month)}-${pad(day)} ${pad(hour)}:${pad(minute)}:${pad(second)}${millisecond === 0 ? "" : `.${pad(millisecond, 3)}`}`
+				);
 			}
 			this.setIssueForContext(context, luxonDate.error);
 			return INVALID;
@@ -744,11 +752,11 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		this._second = second;
 	}
 
-	get value(): number {
-		return this.toNumber();
+	get value(): string {
+		return this.toString();
 	}
 
-	set value(timestamp: number) {
+	set value(timestamp: string) {
 		const parsed = Timestamp.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

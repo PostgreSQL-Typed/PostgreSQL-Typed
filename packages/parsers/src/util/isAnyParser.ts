@@ -29,6 +29,8 @@ import { LineSegment } from "../data/Geometric/LineSegment.js";
 import { Path } from "../data/Geometric/Path.js";
 import { Point } from "../data/Geometric/Point.js";
 import { Polygon } from "../data/Geometric/Polygon.js";
+//* JSON
+import { JSON } from "../data/JSON/JSON.js";
 //* Monetary
 import { Money } from "../data/Monetary/Money.js";
 //* Numeric
@@ -45,8 +47,10 @@ import { Int8Range } from "../data/Numeric/Int8Range.js";
 import { OID } from "../data/ObjectIdentifier/OID.js";
 //* UUID
 import { UUID } from "../data/UUID/UUID.js";
+import { Constructors } from "../types/Constructors.js";
+import { ParserFromConstructor } from "../types/ParserFromConstructor.js";
 
-export function isAnyParser(parser: any) {
+export function isAnyParser(parser: any): parser is ParserFromConstructor<Constructors> {
 	if (typeof parser !== "object") return false;
 	if (parser === null) return false;
 
@@ -76,6 +80,7 @@ export function isAnyParser(parser: any) {
 	if (Path.isPath(parser)) return true;
 	if (Point.isPoint(parser)) return true;
 	if (Polygon.isPolygon(parser)) return true;
+	if (JSON.isJSON(parser)) return true;
 	if (Money.isMoney(parser)) return true;
 	if (Float4.isFloat4(parser)) return true;
 	if (Float8.isFloat8(parser)) return true;

@@ -278,17 +278,19 @@ describe("Float4", () => {
 	});
 
 	test("get value()", () => {
-		expect(Float4.from(1).value).toEqual("1");
-		expect(Float4.from("2").value).toEqual("2");
-		expect(Float4.from({ value: "3" }).value).toEqual("3");
+		expect(Float4.from(1).value).toEqual(1);
+		expect(Float4.from("2").value).toEqual(2);
+		expect(Float4.from({ value: "3" }).value).toEqual(3);
 	});
 
 	test("set value(...)", () => {
 		const float4 = Float4.from(1);
-		float4.value = "2";
-		expect(float4.value).toEqual("2");
+		float4.value = 2;
+		expect(float4.value).toEqual(2);
 
-		expect(() => (float4.value = "10e400")).toThrowError("Number must be less than or equal to 9.9999999999999999999999999999999999999e+37");
+		expect(() => (float4.value = "10e400" as unknown as number)).toThrowError(
+			"Number must be less than or equal to 9.9999999999999999999999999999999999999e+37"
+		);
 	});
 
 	test("get postgres()", () => {

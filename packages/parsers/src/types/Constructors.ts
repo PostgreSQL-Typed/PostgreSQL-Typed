@@ -30,6 +30,8 @@ import type { LineSegmentConstructor } from "../data/Geometric/LineSegment.js";
 import type { PathConstructor } from "../data/Geometric/Path.js";
 import type { PointConstructor } from "../data/Geometric/Point.js";
 import type { PolygonConstructor } from "../data/Geometric/Polygon.js";
+//* JSON
+import type { JSONConstructor } from "../data/JSON/JSON.js";
 //* Monetary
 import type { MoneyConstructor } from "../data/Monetary/Money.js";
 //* NetworkAddress
@@ -83,6 +85,8 @@ export type Constructors =
 	| PathConstructor
 	| PointConstructor
 	| PolygonConstructor
+	//* JSON
+	| JSONConstructor
 	//* Monetary
 	| MoneyConstructor
 	//* NetworkAddress

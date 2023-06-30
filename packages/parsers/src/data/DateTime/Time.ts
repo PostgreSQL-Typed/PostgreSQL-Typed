@@ -23,7 +23,7 @@ interface Time {
 	minute: number;
 	second: number;
 
-	value: number;
+	value: string;
 	postgres: string;
 
 	toString(): string;
@@ -489,11 +489,11 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		this._second = second;
 	}
 
-	get value(): number {
-		return this.toNumber();
+	get value(): string {
+		return this.toString();
 	}
 
-	set value(time: number) {
+	set value(time: string) {
 		const parsed = Time.safeFrom(time);
 		if (parsed.success) {
 			this._hour = parsed.data.hour;

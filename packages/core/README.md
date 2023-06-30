@@ -34,9 +34,6 @@
 </h2>
 
 <p align="center">
-	<strong>NOTE:</strong> This package is an internal package, and is not intended to be used directly.<br/>
-	Instead, use the <a href="https://www.npmjs.com/package/@postgresql-typed/pg">@PostgreSQL-Typed/pg</a> or the <a href="https://www.npmjs.com/package/@postgresql-typed/postgres">@PostgreSQL-Typed/postgres</a> package to use the PostgreSQL-Typed system with the specific PostgreSQL Client.
-	<br/><br/>
 	Install @postgresql-typed/core
 </p>
 
@@ -49,10 +46,40 @@ npm install --save @postgresql-typed/core
 	Usage
 </h2>
 <p align="center">
-	This package is an internal package, and is not intended to be used directly.<br/>
-	Please use the <a href="https://www.npmjs.com/package/@postgresql-typed/pg">@PostgreSQL-Typed/pg</a> or the <a href="https://www.npmjs.com/package/@postgresql-typed/postgres">@PostgreSQL-Typed/postgres</a> package.
-	<br/><br/>
-	A documentation website is coming soon for the entire PostgreSQL-Typed ecosystem to explain how to use the system and all of its features.
+	This package is build on top of <a href="https://www.npmjs.com/package/drizzle-orm">drizzle-orm</a>, which is a type-safe ORM for Node.js.<br/>
+	For more information on how to use this package, please refer to the <a href="https://www.npmjs.com/package/drizzle-orm">drizzle-orm documentation</a>.<br/>
+	Differences between drizzle-orm and @postgresql-typed/core are listed below.
+</p>
+
+```ts
+import { Client, pgt, table } from "@postgresql-typed/core";
+import {
+	defineCharacterVarying,
+	defineInt2,
+	defineUUID
+} from "@postgresql-typed/core/definers";
+import { eq } from "@postgresql-typed/core/operators";
+
+const db = pgt(new Client({
+	connectionString: "postgres://user:pass@localhost:5432/dbname"
+}));
+
+await db.connect();
+
+const users = table("users", {
+	id: defineUUID("user_id").primaryKey(),
+	name: defineCharacterVarying("user_name", {
+		length: 255
+	}).notNull(),
+	age: defineInt2("user_age").notNull()
+});
+
+await db.select().from(users).where(eq(users.age, 18));
+```
+
+<p align="center">
+	There is no need to install <a href="https://www.npmjs.com/package/pg">pg</a>, nor <a href="https://www.npmjs.com/package/drizzle-orm">drizzle-orm</a> as they are both dependencies of this package.<br/>
+	However, you will need to install <a href="https://www.npmjs.com/package/@postgresql-typed/cli">@postgresql-typed/cli</a> if you want to use the CLI to generate the table definitions.
 </p>
 
 <!-- Ecosystem -->

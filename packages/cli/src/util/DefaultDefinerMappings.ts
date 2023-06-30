@@ -15,8 +15,8 @@ export const DefaultDefinerMappings = {
 			ParserMapping: {
 				[key in OID]: string | [string, ImportStatement[]];
 			} = {
-				[OID._abstime]: "",
-				[OID._aclitem]: "",
+				[OID._abstime]: "undefined",
+				[OID._aclitem]: "undefined",
 				[OID._bit]: [
 					`defineBit("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
 					[
@@ -57,7 +57,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._bytea]: "",
+				[OID._bytea]: "undefined",
 				[OID._char]: [
 					`defineCharacter("%ATTRIBUTE%", { ${lengthString} }).array()${notNullString}`,
 					[
@@ -68,8 +68,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._cid]: "",
-				[OID._cidr]: "",
+				[OID._cid]: "undefined",
+				[OID._cidr]: "undefined",
 				[OID._circle]: [
 					`defineCircle("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -80,7 +80,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._cstring]: "",
+				[OID._cstring]: "undefined",
 				[OID._date]: [
 					`defineDate("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -131,8 +131,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._gtsvector]: "",
-				[OID._inet]: "",
+				[OID._gtsvector]: "undefined",
+				[OID._inet]: "undefined",
 				[OID._int2]: [
 					`defineInt2("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -143,7 +143,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._int2vector]: "",
+				[OID._int2vector]: "undefined",
 				[OID._int4]: [
 					`defineInt4("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -234,7 +234,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._jsonpath]: "",
+				[OID._jsonpath]: "undefined",
 				[OID._line]: [
 					`defineLine("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -255,8 +255,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._macaddr]: "",
-				[OID._macaddr8]: "",
+				[OID._macaddr]: "undefined",
+				[OID._macaddr8]: "undefined",
 				[OID._money]: [
 					`defineMoney("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -277,9 +277,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._numeric]: "",
-				[OID._nummultirange]: "",
-				[OID._numrange]: "",
+				[OID._numeric]: "undefined",
+				[OID._nummultirange]: "undefined",
+				[OID._numrange]: "undefined",
 				[OID._oid]: [
 					`defineOID("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -290,7 +290,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._oidvector]: "",
+				[OID._oidvector]: "undefined",
 				[OID._path]: [
 					`definePath("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -301,8 +301,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._pg_lsn]: "",
-				[OID._pg_snapshot]: "",
+				[OID._pg_lsn]: "undefined",
+				[OID._pg_snapshot]: "undefined",
 				[OID._point]: [
 					`definePoint("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -323,20 +323,20 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._record]: "",
-				[OID._refcursor]: "",
-				[OID._regclass]: "",
-				[OID._regcollation]: "",
-				[OID._regconfig]: "",
-				[OID._regdictionary]: "",
-				[OID._regnamespace]: "",
-				[OID._regoper]: "",
-				[OID._regoperator]: "",
-				[OID._regproc]: "",
-				[OID._regprocedure]: "",
-				[OID._regrole]: "",
-				[OID._regtype]: "",
-				[OID._reltime]: "",
+				[OID._record]: "undefined",
+				[OID._refcursor]: "undefined",
+				[OID._regclass]: "undefined",
+				[OID._regcollation]: "undefined",
+				[OID._regconfig]: "undefined",
+				[OID._regdictionary]: "undefined",
+				[OID._regnamespace]: "undefined",
+				[OID._regoper]: "undefined",
+				[OID._regoperator]: "undefined",
+				[OID._regproc]: "undefined",
+				[OID._regprocedure]: "undefined",
+				[OID._regrole]: "undefined",
+				[OID._regtype]: "undefined",
+				[OID._reltime]: "undefined",
 				[OID._text]: [
 					`defineText("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -347,7 +347,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._tid]: "",
+				[OID._tid]: "undefined",
 				[OID._time]: [
 					`defineTime("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -388,8 +388,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._tinterval]: "",
-				[OID._tsquery]: "",
+				[OID._tinterval]: "undefined",
+				[OID._tsquery]: "undefined",
 				[OID._tsmultirange]: [
 					`defineTimestampMultiRange("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -430,8 +430,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._tsvector]: "",
-				[OID._txid_snapshot]: "",
+				[OID._tsvector]: "undefined",
+				[OID._txid_snapshot]: "undefined",
 				[OID._uuid]: [
 					`defineUUID("%ATTRIBUTE%").array()${notNullString}`,
 					[
@@ -462,23 +462,23 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._xid]: "",
-				[OID._xid8]: "",
-				[OID._xml]: "",
-				[OID.abstime]: "",
-				[OID.aclitem]: "",
-				[OID.any]: "",
-				[OID.anyarray]: "",
-				[OID.anycompatible]: "",
-				[OID.anycompatiblearray]: "",
-				[OID.anycompatiblemultirange]: "",
-				[OID.anycompatiblenonarray]: "",
-				[OID.anycompatiblerange]: "",
-				[OID.anyelement]: "",
-				[OID.anyenum]: "",
-				[OID.anymultirange]: "",
-				[OID.anynonarray]: "",
-				[OID.anyrange]: "",
+				[OID._xid]: "undefined",
+				[OID._xid8]: "undefined",
+				[OID._xml]: "undefined",
+				[OID.abstime]: "undefined",
+				[OID.aclitem]: "undefined",
+				[OID.any]: "undefined",
+				[OID.anyarray]: "undefined",
+				[OID.anycompatible]: "undefined",
+				[OID.anycompatiblearray]: "undefined",
+				[OID.anycompatiblemultirange]: "undefined",
+				[OID.anycompatiblenonarray]: "undefined",
+				[OID.anycompatiblerange]: "undefined",
+				[OID.anyelement]: "undefined",
+				[OID.anyenum]: "undefined",
+				[OID.anymultirange]: "undefined",
+				[OID.anynonarray]: "undefined",
+				[OID.anyrange]: "undefined",
 				[OID.bit]: [
 					`defineBit("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
 					[
@@ -519,8 +519,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.bytea]: "",
-				[OID.cardinal_number]: "",
+				[OID.bytea]: "undefined",
+				[OID.cardinal_number]: "undefined",
 				[OID.char]: [
 					`defineCharacter("%ATTRIBUTE%", { ${lengthString} })${notNullString}`,
 					[
@@ -531,9 +531,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.character_data]: "",
-				[OID.cid]: "",
-				[OID.cidr]: "",
+				[OID.character_data]: "undefined",
+				[OID.cid]: "undefined",
+				[OID.cidr]: "undefined",
 				[OID.circle]: [
 					`defineCircle("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -544,7 +544,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.cstring]: "",
+				[OID.cstring]: "undefined",
 				[OID.date]: [
 					`defineDate("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -575,8 +575,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.event_trigger]: "",
-				[OID.fdw_handler]: "",
+				[OID.event_trigger]: "undefined",
+				[OID.fdw_handler]: "undefined",
 				[OID.float4]: [
 					`defineFloat4("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -597,9 +597,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.gtsvector]: "",
-				[OID.index_am_handler]: "",
-				[OID.inet]: "",
+				[OID.gtsvector]: "undefined",
+				[OID.index_am_handler]: "undefined",
+				[OID.inet]: "undefined",
 				[OID.int2]: [
 					`defineInt2("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -610,7 +610,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.int2vector]: "",
+				[OID.int2vector]: "undefined",
 				[OID.int4]: [
 					`defineInt4("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -671,7 +671,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.internal]: "",
+				[OID.internal]: "undefined",
 				[OID.interval]: [
 					`defineInterval("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -702,8 +702,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.jsonpath]: "",
-				[OID.language_handler]: "",
+				[OID.jsonpath]: "undefined",
+				[OID.language_handler]: "undefined",
 				[OID.line]: [
 					`defineLine("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -724,8 +724,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.macaddr]: "",
-				[OID.macaddr8]: "",
+				[OID.macaddr]: "undefined",
+				[OID.macaddr8]: "undefined",
 				[OID.money]: [
 					`defineMoney("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -746,9 +746,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.numeric]: "",
-				[OID.nummultirange]: "",
-				[OID.numrange]: "",
+				[OID.numeric]: "undefined",
+				[OID.nummultirange]: "undefined",
+				[OID.numrange]: "undefined",
 				[OID.oid]: [
 					`defineOID("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -759,8 +759,8 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.oidvector]: "",
-				[OID.opaque]: "",
+				[OID.oidvector]: "undefined",
+				[OID.opaque]: "undefined",
 				[OID.path]: [
 					`definePath("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -771,15 +771,15 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.pg_brin_bloom_summary]: "",
-				[OID.pg_brin_minmax_multi_summary]: "",
-				[OID.pg_ddl_command]: "",
-				[OID.pg_dependencies]: "",
-				[OID.pg_lsn]: "",
-				[OID.pg_mcv_list]: "",
-				[OID.pg_ndistinct]: "",
-				[OID.pg_node_tree]: "",
-				[OID.pg_snapshot]: "",
+				[OID.pg_brin_bloom_summary]: "undefined",
+				[OID.pg_brin_minmax_multi_summary]: "undefined",
+				[OID.pg_ddl_command]: "undefined",
+				[OID.pg_dependencies]: "undefined",
+				[OID.pg_lsn]: "undefined",
+				[OID.pg_mcv_list]: "undefined",
+				[OID.pg_ndistinct]: "undefined",
+				[OID.pg_node_tree]: "undefined",
+				[OID.pg_snapshot]: "undefined",
 				[OID.point]: [
 					`definePoint("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -800,22 +800,22 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.record]: "",
-				[OID.refcursor]: "",
-				[OID.regcollation]: "",
-				[OID.regclass]: "",
-				[OID.regconfig]: "",
-				[OID.regdictionary]: "",
-				[OID.regnamespace]: "",
-				[OID.regoper]: "",
-				[OID.regoperator]: "",
-				[OID.regproc]: "",
-				[OID.regprocedure]: "",
-				[OID.regrole]: "",
-				[OID.regtype]: "",
-				[OID.reltime]: "",
-				[OID.smgr]: "",
-				[OID.table_am_handler]: "",
+				[OID.record]: "undefined",
+				[OID.refcursor]: "undefined",
+				[OID.regcollation]: "undefined",
+				[OID.regclass]: "undefined",
+				[OID.regconfig]: "undefined",
+				[OID.regdictionary]: "undefined",
+				[OID.regnamespace]: "undefined",
+				[OID.regoper]: "undefined",
+				[OID.regoperator]: "undefined",
+				[OID.regproc]: "undefined",
+				[OID.regprocedure]: "undefined",
+				[OID.regrole]: "undefined",
+				[OID.regtype]: "undefined",
+				[OID.reltime]: "undefined",
+				[OID.smgr]: "undefined",
+				[OID.table_am_handler]: "undefined",
 				[OID.text]: [
 					`defineText("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -826,7 +826,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.tid]: "",
+				[OID.tid]: "undefined",
 				[OID.time]: [
 					`defineTime("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -867,9 +867,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.tinterval]: "",
-				[OID.trigger]: "",
-				[OID.tsm_handler]: "",
+				[OID.tinterval]: "undefined",
+				[OID.trigger]: "undefined",
+				[OID.tsm_handler]: "undefined",
 				[OID.tsmultirange]: [
 					`defineTimestampMultiRange("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -880,7 +880,7 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.tsquery]: "",
+				[OID.tsquery]: "undefined",
 				[OID.tsrange]: [
 					`defineTimestampRange("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -912,9 +912,9 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.tsvector]: "",
-				[OID.txid_snapshot]: "",
-				[OID.unknown]: "",
+				[OID.tsvector]: "undefined",
+				[OID.txid_snapshot]: "undefined",
+				[OID.unknown]: "undefined",
 				[OID.uuid]: [
 					`defineUUID("%ATTRIBUTE%")${notNullString}`,
 					[
@@ -945,10 +945,10 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.void]: "",
-				[OID.xid]: "",
-				[OID.xid8]: "",
-				[OID.xml]: "",
+				[OID.void]: "undefined",
+				[OID.xid]: "undefined",
+				[OID.xid8]: "undefined",
+				[OID.xml]: "undefined",
 			};
 
 		return ParserMapping[oid];

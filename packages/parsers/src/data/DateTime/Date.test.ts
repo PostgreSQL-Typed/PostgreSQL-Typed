@@ -182,13 +182,15 @@ describe("Date", () => {
 
 	test("get value()", () => {
 		const date = Date.from("2022-09-02");
-		expect(date.value).toBe(1_662_076_800_000);
+		expect(date.value).toBe("2022-09-02");
 	});
 
 	test("set value(...)", () => {
 		const date = Date.from("2022-09-02");
-		date.value = 1_693_612_800_000;
-		expect(date.value).toBe(1_693_612_800_000);
+		date.value = "2023-09-02";
+		expect(date.value).toBe("2023-09-02");
+		date.value = 1_693_612_800_000 as any;
+		expect(date.value).toBe("2023-09-02");
 		expect(() => {
 			date.value = true as any;
 		}).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'boolean'");

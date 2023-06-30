@@ -32,7 +32,7 @@ interface Timestamp {
 	minute: number;
 	second: number;
 
-	value: number;
+	value: string;
 	postgres: string;
 
 	/**
@@ -752,11 +752,11 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		this._second = second;
 	}
 
-	get value(): number {
-		return this.toNumber();
+	get value(): string {
+		return this.toString();
 	}
 
-	set value(timestamp: number) {
+	set value(timestamp: string) {
 		const parsed = Timestamp.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

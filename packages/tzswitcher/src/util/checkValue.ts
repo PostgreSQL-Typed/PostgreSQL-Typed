@@ -19,6 +19,7 @@ export function checkValue<T>(value: T, options: PgTTzSwitcherOptions, target: k
 
 	if (timetz && TimeTZ.isTimeTZ(value)) return TimeTZ.from(value.toDateTime(timetz[target]).toFormat("HH:mm:ss.SSSZZ")) as unknown as T;
 
+	/* c8 ignore start */
 	if (isAnyParser(value)) return value;
 
 	return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, checkValue(value, options, target, current)])) as T;

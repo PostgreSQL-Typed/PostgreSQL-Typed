@@ -23,7 +23,7 @@ interface Date {
 	month: number;
 	day: number;
 
-	value: number;
+	value: string;
 	postgres: string;
 
 	toString(): string;
@@ -417,11 +417,11 @@ class DateClass extends PgTPBase<Date> implements Date {
 		this._day = day;
 	}
 
-	get value(): number {
-		return this.toNumber();
+	get value(): string {
+		return this.toString();
 	}
 
-	set value(date: number) {
+	set value(date: string) {
 		const parsed = Date.safeFrom(date);
 		if (parsed.success) {
 			this._year = parsed.data.year;

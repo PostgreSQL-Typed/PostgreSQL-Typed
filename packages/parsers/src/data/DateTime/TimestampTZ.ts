@@ -77,7 +77,7 @@ interface TimestampTZ {
 	second: number;
 	offset: Offset;
 
-	value: number;
+	value: string;
 	postgres: string;
 
 	/**
@@ -1438,11 +1438,11 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		this._offset = parsedOffset.obj;
 	}
 
-	get value(): number {
-		return this.toNumber();
+	get value(): string {
+		return this.toString();
 	}
 
-	set value(timestamp: number) {
+	set value(timestamp: string) {
 		const parsed = TimestampTZ.safeFrom(timestamp);
 		if (parsed.success) {
 			this._year = parsed.data.year;

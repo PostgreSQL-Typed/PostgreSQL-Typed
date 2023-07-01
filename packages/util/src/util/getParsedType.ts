@@ -23,6 +23,7 @@ export const ParsedType = arrayToEnum([
 	"symbol",
 	"undefined",
 	"unknown",
+	"Buffer",
 ]);
 
 export type ParsedType = keyof typeof ParsedType;
@@ -50,6 +51,7 @@ export const getParsedType = (data: any): ParsedType => {
 			if (typeof Map !== "undefined" && data instanceof Map) return ParsedType.map;
 			if (typeof Set !== "undefined" && data instanceof Set) return ParsedType.set;
 			if (typeof Date !== "undefined" && data instanceof Date) return ParsedType["globalThis.Date"];
+			if (typeof Buffer !== "undefined" && data instanceof Buffer) return ParsedType.Buffer;
 			if (data instanceof DateTime) return ParsedType["luxon.DateTime"];
 			if (BigNumber.isBigNumber(data)) return ParsedType.bigNumber;
 			return ParsedType.object;

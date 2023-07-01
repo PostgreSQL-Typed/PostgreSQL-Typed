@@ -4,7 +4,7 @@ import type { ObjectFunction } from "../types/ObjectFunction.js";
 import type { PgTPBase } from "./PgTPBase.js";
 
 export const arraySerializer =
-	<DataType>(constructor: Constructors | ObjectFunction<PgTPBase<DataType>>, delimiter = '","') =>
+	<DataType>(constructor: Constructors | ObjectFunction<PgTPBase<DataType>>, delimiter = '","', prefix?: string) =>
 	(value: string | FromParameters<Constructors>[] | null): string => {
 		if (value === null) return "NULL";
 
@@ -41,7 +41,7 @@ export const arraySerializer =
 					//* If the value contains { or } escape it.
 					if (v.includes("{") || v.includes("}")) v = v.replaceAll(/[{}]/g, "\\$&");
 
-					return v;
+					return (prefix === undefined ? "" : prefix) + v;
 				})
 				.join(delimiter) +
 			end

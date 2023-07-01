@@ -1,3 +1,5 @@
+//* Binary
+import { ByteA } from "../data/Binary/ByteA.js";
 //* BitString
 import { Bit } from "../data/BitString/Bit.js";
 import { BitVarying } from "../data/BitString/BitVarying.js";
@@ -54,6 +56,7 @@ export function isAnyParser(parser: any): parser is ParserFromConstructor<Constr
 	if (typeof parser !== "object") return false;
 	if (parser === null) return false;
 
+	if (ByteA.isByteA(parser)) return true;
 	if (Bit.isAnyBit(parser)) return true;
 	if (BitVarying.isAnyBitVarying(parser)) return true;
 	if (Boolean.isBoolean(parser)) return true;

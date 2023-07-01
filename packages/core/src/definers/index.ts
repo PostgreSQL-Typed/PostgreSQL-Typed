@@ -1,3 +1,4 @@
+export * from "./Binary/ByteA.js";
 export * from "./BitString/Bit.js";
 export * from "./BitString/BitVarying.js";
 export * from "./Boolean/Boolean.js";

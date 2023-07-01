@@ -3,6 +3,7 @@ import {
 	BitVarying,
 	Boolean,
 	Box,
+	ByteA,
 	Character,
 	CharacterVarying,
 	Circle,
@@ -53,6 +54,8 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 	};
 
 	switch (__pgtParserType) {
+		case "bytea":
+			return ByteA.from(rest as any) as T;
 		case "bit":
 			return Bit.setN(Number.POSITIVE_INFINITY).from(rest as any) as T;
 		case "bitVarying":

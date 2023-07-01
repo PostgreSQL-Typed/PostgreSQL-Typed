@@ -61,7 +61,16 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID._bytea]: "undefined",
+				[OID._bytea]: [
+					`defineByteA("%ATTRIBUTE%", { mode: "${definerModes.bytea}", }).array()${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineByteA",
+							type: "named",
+						},
+					],
+				],
 				[OID._char]: [
 					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}" }).array()${notNullString}`,
 					[
@@ -523,7 +532,16 @@ export const DefaultDefinerMappings = {
 						},
 					],
 				],
-				[OID.bytea]: "undefined",
+				[OID.bytea]: [
+					`defineByteA("%ATTRIBUTE%", { mode: "${definerModes.bytea}", })${notNullString}`,
+					[
+						{
+							module: "@postgresql-typed/core/definers",
+							name: "defineByteA",
+							type: "named",
+						},
+					],
+				],
 				[OID.cardinal_number]: "undefined",
 				[OID.char]: [
 					`defineCharacter("%ATTRIBUTE%", { ${lengthString}mode: "${definerModes.character}", })${notNullString}`,

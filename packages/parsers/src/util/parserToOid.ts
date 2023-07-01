@@ -1,6 +1,8 @@
-//* BitString
 import { OID as OIDEnum } from "@postgresql-typed/oids";
 
+//* Binary
+import { ByteA } from "../data/Binary/ByteA.js";
+//* BitString
 import { Bit } from "../data/BitString/Bit.js";
 import { BitVarying } from "../data/BitString/BitVarying.js";
 //* Boolean
@@ -53,6 +55,7 @@ import type { Constructors } from "../types/Constructors.js";
 import type { ParserFromConstructor } from "../types/ParserFromConstructor.js";
 
 export function parserToOid(parser: ParserFromConstructor<Constructors>, array = false) {
+	if (ByteA.isByteA(parser)) return array ? OIDEnum._bytea : OIDEnum.bytea;
 	if (Bit.isAnyBit(parser)) return array ? OIDEnum._bit : OIDEnum.bit;
 	if (BitVarying.isAnyBitVarying(parser)) return array ? OIDEnum._varbit : OIDEnum.varbit;
 	if (Boolean.isBoolean(parser)) return array ? OIDEnum._bool : OIDEnum.bool;

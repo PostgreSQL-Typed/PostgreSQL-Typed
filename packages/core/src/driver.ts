@@ -64,6 +64,9 @@ export class PgTDriver {
 	}
 
 	initMappers(): void {
+		types.setTypeParser(OID.bytea as any, defaultParserMappings[OID.bytea].parse);
+		types.setTypeParser(OID._bytea as any, defaultParserMappings[OID._bytea].parse);
+
 		types.setTypeParser(OID.bit as any, defaultParserMappings[OID.bit].parse);
 		types.setTypeParser(OID._bit as any, defaultParserMappings[OID._bit].parse);
 

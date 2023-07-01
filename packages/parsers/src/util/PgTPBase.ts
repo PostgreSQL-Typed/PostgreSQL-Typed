@@ -12,7 +12,7 @@ export abstract class PgTPBase<DataType> {
 		this.safeEquals = this.safeEquals.bind(this);
 	}
 
-	abstract value: Record<string, unknown> | unknown[] | string | number | boolean | null;
+	abstract value: Record<string, unknown> | unknown[] | string | number | boolean | null | Buffer;
 	abstract postgres: string;
 
 	abstract _equals(context: ParseContext): ParseReturnType<{

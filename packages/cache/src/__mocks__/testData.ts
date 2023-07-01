@@ -4,6 +4,7 @@ import {
 	defineBitVarying,
 	defineBoolean,
 	defineBox,
+	defineByteA,
 	defineCharacter,
 	defineCharacterVarying,
 	defineCircle,
@@ -32,6 +33,8 @@ import {
 } from "@postgresql-typed/core/definers";
 
 export const TestTable = table("cache_testing", {
+	bytea: defineByteA("bytea").notNull(),
+	_bytea: defineByteA("_bytea").array().notNull(),
 	bit: defineBit("bit", { length: 1 }).notNull(),
 	_bit: defineBit("_bit", { length: 1 }).array().notNull(),
 	varbit: defineBitVarying("varbit", { length: 1 }).notNull(),
@@ -100,6 +103,8 @@ export const TestTable = table("cache_testing", {
 
 export const createTable = `
 CREATE TABLE IF NOT EXISTS cache_testing (
+	bytea BYTEA NOT NULL,
+	_bytea BYTEA[] NOT NULL,
   bit BIT(1) NOT NULL,
   _bit BIT(1)[] NOT NULL,
   varbit BIT VARYING(1) NOT NULL,
@@ -167,6 +172,8 @@ DROP TABLE IF EXISTS cache_testing;
 `;
 
 export const insertQuery: PgInsertValue<typeof TestTable> = {
+	bytea: Buffer.from("hello"),
+	_bytea: [Buffer.from("hello"), Buffer.from("world")],
 	bit: "1",
 	_bit: ["1", "0"],
 	varbit: "1",

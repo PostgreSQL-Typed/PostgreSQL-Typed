@@ -1,6 +1,8 @@
 import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
 export interface DefinerModes {
+	//* Binary
+	bytea: "ByteA" | "string" | "Buffer";
 	//* BitString
 	/**
 	 * The bit definer mode.
@@ -254,6 +256,10 @@ export interface DefinerModes {
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
+	bytea: {
+		$default: "Buffer",
+		$resolve: (value: any) => (typeof value === "string" && ["ByteA", "Buffer", "string"].includes(value) ? value : "Buffer"),
+	},
 	bit: {
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["Bit", "string", "number"].includes(value) ? value : "string"),

@@ -53,6 +53,15 @@ npm install --save @postgresql-typed/parsers
       </tr>
     </thead>
     <tbody>
+      <!--- Binary -->
+      <tr>
+        <td>
+          <a href="./docs/Binary/ByteA.md">ByteA</a>
+        </td>
+        <td>
+          <code>bytea</code><br/>
+        </td>
+      </tr>
       <!--- Bit String -->
       <tr>
         <td>

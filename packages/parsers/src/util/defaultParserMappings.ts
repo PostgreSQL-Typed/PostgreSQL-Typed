@@ -7,6 +7,7 @@ import {
 	BitVarying,
 	Boolean,
 	Box,
+	ByteA,
 	Character,
 	CharacterVarying,
 	Circle,
@@ -47,6 +48,14 @@ import { parser } from "./parser.js";
 import { serializer } from "./serializer.js";
 
 export const defaultParserMappings = {
+	[OID.bytea]: {
+		serialize: serializer<ByteA>(ByteA),
+		parse: parser<ByteA>(ByteA),
+	},
+	[OID._bytea]: {
+		serialize: arraySerializer<ByteA>(ByteA, undefined, "\\"),
+		parse: arrayParser<ByteA>(ByteA, undefined, "\\"),
+	},
 	[OID.bit]: {
 		serialize: serializer<Bit<number>>(Bit),
 		parse: parser<Bit<number>>(Bit),

@@ -2,6 +2,8 @@
 import type { BigNumber } from "bignumber.js";
 import type { DateTime } from "luxon";
 
+//* Binary
+import type { ByteA, ByteAConstructor, ByteAObject } from "../data/Binary/ByteA.js";
 //* BitString
 import type { Bit, BitConstructor, BitObject } from "../data/BitString/Bit.js";
 import type { BitVarying, BitVaryingConstructor, BitVaryingObject } from "../data/BitString/BitVarying.js";
@@ -68,8 +70,11 @@ import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
 import type { Constructors } from "./Constructors.js";
 
 export type FromParameters<T extends Constructors | null> =
-	//* BitString
-	T extends BitConstructor<number>
+	//* Binary
+	T extends ByteAConstructor
+		? string | ByteA | ByteAObject | Buffer
+		: //* BitString
+		T extends BitConstructor<number>
 		? string | number | Bit<number> | BitVarying<number> | Character<number> | CharacterVarying<number> | Name | Text | Int2 | Int4 | Int8 | OID | BitObject
 		: T extends BitVaryingConstructor<number>
 		?

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+//* Binary
+import type { ByteA, ByteAConstructor } from "../data/Binary/ByteA.js";
 //* BitString
 import type { Bit, BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVarying, BitVaryingConstructor } from "../data/BitString/BitVarying.js";
@@ -52,8 +54,11 @@ import type { Constructors } from "./Constructors.js";
 import { ObjectFunction } from "./ObjectFunction.js";
 
 export type ParserFromConstructor<T extends Constructors | ObjectFunction<any> | "unknown" | null> =
-	//* BitString
-	T extends BitConstructor<infer N>
+	//* Binary
+	T extends ByteAConstructor
+		? ByteA
+		: //* BitString
+		T extends BitConstructor<infer N>
 		? Bit<N>
 		: T extends BitVaryingConstructor<infer N>
 		? BitVarying<N>

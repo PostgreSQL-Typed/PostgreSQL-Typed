@@ -3,6 +3,8 @@ import type { BigNumber } from "bignumber.js";
 import type { DateTime } from "luxon";
 import { describe, expectTypeOf, test } from "vitest";
 
+//* Binary
+import type { ByteA, ByteAConstructor, ByteAObject } from "../data/Binary/ByteA.js";
 //* BitString
 import type { Bit, BitConstructor, BitObject } from "../data/BitString/Bit.js";
 import type { BitVarying, BitVaryingConstructor, BitVaryingObject } from "../data/BitString/BitVarying.js";
@@ -70,6 +72,11 @@ import type { UUID, UUIDConstructor, UUIDObject } from "../data/UUID/UUID.js";
 import type { FromParameters } from "./FromParameters.js";
 
 describe("FromParameters", () => {
+	test("FromParameters<ByteAConstructor>", () => {
+		let a: FromParameters<ByteAConstructor> | undefined;
+		expectTypeOf(a).toEqualTypeOf<string | ByteA | Buffer | ByteAObject | undefined>();
+	});
+
 	test("FromParameters<BitConstructor<...>>", () => {
 		let a: FromParameters<BitConstructor<1>> | undefined;
 		expectTypeOf(a).toEqualTypeOf<

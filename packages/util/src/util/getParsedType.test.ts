@@ -83,6 +83,10 @@ describe("getParsedType", () => {
 		expect(getParsedType(Number.POSITIVE_INFINITY)).toBe("infinity");
 		expect(getParsedType(Number.NEGATIVE_INFINITY)).toBe("infinity");
 	});
+
+	it("should return Buffer", () => {
+		expect(getParsedType(Buffer.from(""))).toBe("Buffer");
+	});
 });
 
 describe("ParsedType", () => {
@@ -107,6 +111,7 @@ describe("ParsedType", () => {
 			symbol: "symbol",
 			undefined: "undefined",
 			unknown: "unknown",
+			Buffer: "Buffer",
 		});
 	});
 
@@ -131,6 +136,7 @@ describe("ParsedType", () => {
 			| "symbol"
 			| "undefined"
 			| "unknown"
+			| "Buffer"
 		>();
 	});
 });

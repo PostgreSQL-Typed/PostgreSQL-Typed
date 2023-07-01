@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+//* Binary
+import type { ByteAConstructor } from "../data/Binary/ByteA.js";
 //* BitString
 import type { BitConstructor } from "../data/BitString/Bit.js";
 import type { BitVaryingConstructor } from "../data/BitString/BitVarying.js";
@@ -54,6 +56,8 @@ import type { OIDConstructor } from "../data/ObjectIdentifier/OID.js";
 import type { UUIDConstructor } from "../data/UUID/UUID.js";
 
 export type Constructors =
+	//* Binary
+	| ByteAConstructor
 	//* BitString
 	| BitConstructor<number>
 	| BitVaryingConstructor<number>

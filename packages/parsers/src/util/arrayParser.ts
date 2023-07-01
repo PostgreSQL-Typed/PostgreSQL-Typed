@@ -2,7 +2,7 @@ import type { Constructors } from "../types/Constructors.js";
 import type { ObjectFunction } from "../types/ObjectFunction.js";
 
 export const arrayParser =
-	<DataType>(constructor: Constructors | ObjectFunction<DataType>, delimiter = '","') =>
+	<DataType>(constructor: Constructors | ObjectFunction<DataType>, delimiter = '","', prefix?: string) =>
 	(value: string | null) => {
 		if (value === null) return null;
 		//* If the value doesn't start with { and end with }, it's not an ARRAY.
@@ -14,6 +14,8 @@ export const arrayParser =
 			.join(delimiter.includes('"') ? '", "' : ", ")
 			.split(", ")
 			.filter(Boolean);
+		//* If the values have a prefix, remove it.
+		if (prefix !== undefined) values = values.map(v => v.slice(prefix.length));
 		//* Removes the quotes from the strings
 		if (delimiter.includes('"')) values = values.map(v => v.slice(1, -1));
 		//* Returns the values as Object objects

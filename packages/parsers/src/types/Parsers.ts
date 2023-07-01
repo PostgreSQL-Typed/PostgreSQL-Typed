@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+//* Binary
+import type { ByteA } from "../data/Binary/ByteA.js";
 //* BitString
 import type { Bit } from "../data/BitString/Bit.js";
 import type { BitVarying } from "../data/BitString/BitVarying.js";
@@ -54,6 +56,8 @@ import type { OID } from "../data/ObjectIdentifier/OID.js";
 import type { UUID } from "../data/UUID/UUID.js";
 
 export type Parsers =
+	//* Binary
+	| ByteA
 	//* BitString
 	| Bit<number>
 	| BitVarying<number>

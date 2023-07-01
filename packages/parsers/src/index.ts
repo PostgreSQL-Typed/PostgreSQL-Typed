@@ -1,5 +1,7 @@
 import "source-map-support/register.js";
 
+//* Binary
+export * from "./data/Binary/ByteA.js";
 //* BitString
 export * from "./data/BitString/Bit.js";
 export * from "./data/BitString/BitVarying.js";

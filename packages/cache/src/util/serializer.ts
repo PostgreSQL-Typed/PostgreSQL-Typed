@@ -3,6 +3,7 @@ import {
 	BitVarying,
 	Boolean,
 	Box,
+	ByteA,
 	Character,
 	CharacterVarying,
 	Circle,
@@ -46,6 +47,7 @@ export function serializer(object: any): Record<string, any> | Record<string, an
 
 	if (Array.isArray(object)) return object.map(element => serializer(element));
 
+	if (ByteA.isByteA(object)) return toJSON("bytea", object);
 	if (Bit.isAnyBit(object)) return toJSON("bit", object);
 	if (BitVarying.isAnyBitVarying(object)) return toJSON("bitVarying", object);
 	if (Boolean.isBoolean(object)) return toJSON("boolean", object);

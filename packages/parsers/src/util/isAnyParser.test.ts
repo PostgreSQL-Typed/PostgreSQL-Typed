@@ -1,6 +1,8 @@
-//* BitString
 import { describe, expect, it } from "vitest";
 
+//* Binary
+import { ByteA } from "../data/Binary/ByteA.js";
+//* BitString
 import { Bit } from "../data/BitString/Bit.js";
 import { BitVarying } from "../data/BitString/BitVarying.js";
 //* Boolean
@@ -53,6 +55,7 @@ import { isAnyParser } from "./isAnyParser.js";
 
 describe("isAnyParser", () => {
 	it("should return true for any parser", () => {
+		expect(isAnyParser(ByteA.from("\\x1234"))).toBe(true);
 		expect(isAnyParser(Bit.from("1"))).toBe(true);
 		expect(isAnyParser(BitVarying.from("1"))).toBe(true);
 		expect(isAnyParser(Boolean.from(true))).toBe(true);

@@ -31,6 +31,8 @@ export interface PostgreSQLTypedCLIConfig {
 	 *
 	 * Note that if you input a string, then you need to prefix the schema name with the database name, you can use the following syntax:
 	 * - `database.schema`
+	 * - `*.schema`
+	 * - `database.*`
 	 *
 	 * @default "*"
 	 */
@@ -48,6 +50,13 @@ export interface PostgreSQLTypedCLIConfig {
 	 *
 	 * Note that if you input a string, then you need to prefix the table with the name of the schema and name of the database, you can use the following syntax:
 	 * - `database.schema.table`
+	 * - `*.schema.table`
+	 * - `*.*.table`
+	 * - `database.schema.*`
+	 * - `database.*.*`
+	 * - `database.*.table`
+	 * - `*.schema.*`
+	 *
 	 *
 	 * @default "*"
 	 */

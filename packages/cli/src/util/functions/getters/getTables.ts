@@ -25,11 +25,14 @@ export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig
 			const { schemas } = config;
 
 			if (schemas === "*") return true;
-			if (typeof schemas === "string") return schemas === `${databaseName}.${t.schema_name}`;
+			if (typeof schemas === "string")
+				return schemas === `${databaseName}.${t.schema_name}` || schemas === `*.${t.schema_name}` || schemas === `${databaseName}.*`;
 			if (typeof schemas === "number") return schemas === t.schema_id;
 
 			return (
 				[...schemas].filter((s): s is string => typeof s === "string").includes(`${databaseName}.${t.schema_name}`) ||
+				[...schemas].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}`) ||
+				[...schemas].filter((s): s is string => typeof s === "string").includes(`${databaseName}.*`) ||
 				[...schemas].filter((s): s is number => typeof s === "number").includes(t.schema_id)
 			);
 		})
@@ -37,11 +40,27 @@ export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig
 			const { tables } = config;
 
 			if (tables === "*") return true;
-			if (typeof tables === "string") return tables === `${databaseName}.${t.schema_name}.${t.table_name}`;
+			if (typeof tables === "string") {
+				return (
+					tables === `${databaseName}.${t.schema_name}.${t.table_name}` ||
+					tables === `*.${t.schema_name}.${t.table_name}` ||
+					tables === `*.*.${t.table_name}` ||
+					tables === `${databaseName}.${t.schema_name}.*` ||
+					tables === `${databaseName}.*.*` ||
+					tables === `${databaseName}.*.${t.table_name}` ||
+					tables === `*.${t.schema_name}.*`
+				);
+			}
 			if (typeof tables === "number") return tables === t.table_id;
 
 			return (
 				[...tables].filter((s): s is string => typeof s === "string").includes(`${databaseName}.${t.schema_name}.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`*.*.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`${databaseName}.${t.schema_name}.*`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`${databaseName}.*.*`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`${databaseName}.*.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}.*`) ||
 				[...tables].filter((s): s is number => typeof s === "number").includes(t.table_id)
 			);
 		});

@@ -1,5 +1,16 @@
 # postgresql-type-parsers
 
+## 0.8.0
+
+### Minor Changes
+
+- [`fb24727`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/fb24727a22126012c8d884735c03f8eec4791315) Thanks [@Bas950](https://github.com/Bas950)! - Add support for ByteA
+
+### Patch Changes
+
+- Updated dependencies [[`d2f306c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/d2f306cb908d86d4615195949f9fbcb1e8ab0e97), [`141cf8e`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/141cf8e9c17cdb91ab1c9f5461065c0b3b75e48c), [`fb24727`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/fb24727a22126012c8d884735c03f8eec4791315)]:
+  - @postgresql-typed/util@0.6.0
+
 ## 0.7.0
 
 ### Minor Changes

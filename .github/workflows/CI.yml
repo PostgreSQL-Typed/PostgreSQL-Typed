@@ -1,5 +1,11 @@
 name: Ecosystem
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
 jobs:
   "Cache":
     name: '@PostgreSQL-Typed/Cache'

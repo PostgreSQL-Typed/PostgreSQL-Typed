@@ -83,11 +83,25 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	},
 	schemas: {
 		$default: "*",
-		$resolve: value => (typeof value === "string" ? value : "*"),
+		$resolve: value =>
+			typeof value === "string" || typeof value === "number"
+				? value
+				: Array.isArray(value)
+				? value.every(v => typeof v === "string" || typeof v === "number")
+					? value
+					: "*"
+				: "*",
 	},
 	tables: {
 		$default: "*",
-		$resolve: value => (typeof value === "string" ? value : "*"),
+		$resolve: value =>
+			typeof value === "string" || typeof value === "number"
+				? value
+				: Array.isArray(value)
+				? value.every(v => typeof v === "string" || typeof v === "number")
+					? value
+					: "*"
+				: "*",
 	},
 	files: filesSchema,
 	type: {

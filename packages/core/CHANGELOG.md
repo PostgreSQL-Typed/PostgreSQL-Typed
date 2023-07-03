@@ -1,5 +1,26 @@
 # @postgresql-typed/core
 
+## 0.6.0
+
+### Minor Changes
+
+- [`ccceddf`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ccceddf41cac568d856ace78082160a3614adf4a) Thanks [@Bas950](https://github.com/Bas950)! - Add new operators
+
+  - `isNull`
+  - `isNotNull`
+  - `asc`
+  - `desc`
+  - `exists`
+  - `notExists`
+
+  Remove the `in` operator, as it is a reserved variable in TypeScript.
+
+### Patch Changes
+
+- Updated dependencies [[`f41ba0b`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f41ba0b1a93fb86577297384589b2c928adc9c29)]:
+  - @postgresql-typed/util@0.6.1
+  - @postgresql-typed/parsers@0.8.1
+
 ## 0.5.1
 
 ### Patch Changes

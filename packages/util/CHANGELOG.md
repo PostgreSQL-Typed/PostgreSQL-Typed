@@ -1,5 +1,11 @@
 # @postgresql-typed/util
 
+## 0.6.1
+
+### Patch Changes
+
+- [`f41ba0b`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f41ba0b1a93fb86577297384589b2c928adc9c29) Thanks [@Bas950](https://github.com/Bas950)! - Parse tables and schema options correctly
+
 ## 0.6.0
 
 ### Minor Changes

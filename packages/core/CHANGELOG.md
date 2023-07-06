@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.7.0
+
+### Minor Changes
+
+- [`49e363e`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/49e363eb1c1e0f87ebadec514522ab467cf8288c) Thanks [@Bas950](https://github.com/Bas950)! - add some more operators (extract)
+
 ## 0.6.0
 
 ### Minor Changes

@@ -3,27 +3,67 @@ import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
-import { defineFloat4, defineInt2, defineText } from "./definers/index.js";
+import { defineFloat4, defineInt2, defineText, defineTimestamp, defineTimestampTZ } from "./definers/index.js";
 import { pgt } from "./driver.js";
 import {
 	abs,
+	and,
 	ascii,
 	avg,
+	between,
 	bitLength,
 	ceil,
 	charLength,
 	count,
 	divide,
+	eq,
+	extractCentury,
+	extractDay,
+	extractDecade,
+	extractDow,
+	extractDoy,
+	extractEpoch,
+	extractHour,
+	extractIsoDow,
+	extractIsoYear,
+	extractMicroseconds,
+	extractMillennium,
+	extractMilliseconds,
+	extractMinute,
+	extractMonth,
+	extractQuarter,
+	extractSecond,
+	extractTimezone,
+	extractTimezoneHour,
+	extractTimezoneMinute,
+	extractUnix,
+	extractWeek,
+	extractYear,
 	floor,
+	gt,
+	gte,
+	ilike,
+	inArray,
+	isNotNull,
+	isNull,
 	left,
 	length,
+	like,
 	lower,
 	lpad,
+	lt,
+	lte,
 	ltrim,
 	max,
 	min,
 	minus,
 	neq,
+	not,
+	notBetween,
+	notIlike,
+	notInArray,
+	notLike,
+	or,
 	pi,
 	plus,
 	power,
@@ -1551,6 +1591,1831 @@ describe("Operators", async () => {
 
 		await database.execute(sql`
 			drop table rpad;
+		`);
+	});
+
+	test("extractCentury", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractcentury.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractcentury", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractcentury (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractcentury: extractCentury(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractcentury).toBe(21);
+
+		await database.execute(sql`
+			drop table extractcentury;
+		`);
+	});
+
+	test("extractDay", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractday.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractday", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractday (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractday: extractDay(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractday).toBe(21);
+
+		await database.execute(sql`
+			drop table extractday;
+		`);
+	});
+
+	test("extractDecade", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractdecade.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractdecade", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractdecade (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractdecade: extractDecade(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractdecade).toBe(202);
+
+		await database.execute(sql`
+			drop table extractdecade;
+		`);
+	});
+
+	test("extractDow", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractdow.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractdow", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractdow (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractdow: extractDow(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractdow).toBe(4);
+
+		await database.execute(sql`
+			drop table extractdow;
+		`);
+	});
+
+	test("extractDoy", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractdoy.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractdoy", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractdoy (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractdoy: extractDoy(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractdoy).toBe(21);
+
+		await database.execute(sql`
+			drop table extractdoy;
+		`);
+	});
+
+	test("extractEpoch", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractepoch.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractepoch", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractepoch (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractepoch: extractEpoch(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractepoch).toBe(1_611_187_200);
+
+		await database.execute(sql`
+			drop table extractepoch;
+		`);
+	});
+
+	test("extractHour", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extracthour.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extracthour", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extracthour (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extracthour: extractHour(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extracthour).toBe(0);
+
+		await database.execute(sql`
+			drop table extracthour;
+		`);
+	});
+
+	test("extractIsoDow", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractisodow.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractisodow", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractisodow (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractisodow: extractIsoDow(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractisodow).toBe(4);
+
+		await database.execute(sql`
+			drop table extractisodow;
+		`);
+	});
+
+	test("extractIsoYear", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractisoyear.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractisoyear", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractisoyear (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractisoyear: extractIsoYear(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractisoyear).toBe(2021);
+
+		await database.execute(sql`
+			drop table extractisoyear;
+		`);
+	});
+
+	test("extractMicroseconds", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractmicroseconds.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractmicroseconds", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractmicroseconds (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractmicroseconds: extractMicroseconds(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractmicroseconds).toBe(0);
+
+		await database.execute(sql`
+			drop table extractmicroseconds;
+		`);
+	});
+
+	test("extractMillennium", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractmillennium.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractmillennium", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractmillennium (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractmillennium: extractMillennium(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractmillennium).toBe(3);
+
+		await database.execute(sql`
+			drop table extractmillennium;
+		`);
+	});
+
+	test("extractMilliseconds", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractmilliseconds.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractmilliseconds", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractmilliseconds (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractmilliseconds: extractMilliseconds(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractmilliseconds).toBe(0);
+
+		await database.execute(sql`
+			drop table extractmilliseconds;
+		`);
+	});
+
+	test("extractMinute", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractminute.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractminute", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractminute (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractminute: extractMinute(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractminute).toBe(0);
+
+		await database.execute(sql`
+			drop table extractminute;
+		`);
+	});
+
+	test("extractMonth", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractmonth.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractmonth", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractmonth (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractmonth: extractMonth(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractmonth).toBe(1);
+
+		await database.execute(sql`
+			drop table extractmonth;
+		`);
+	});
+
+	test("extractQuarter", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractquarter.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractquarter", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractquarter (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractquarter: extractQuarter(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractquarter).toBe(1);
+
+		await database.execute(sql`
+			drop table extractquarter;
+		`);
+	});
+
+	test("extractSecond", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractsecond.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractsecond", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractsecond (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractsecond: extractSecond(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractsecond).toBe(0);
+
+		await database.execute(sql`
+			drop table extractsecond;
+		`);
+	});
+
+	test("extractTimezone", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extracttimezone.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extracttimezone", {
+				ts: defineTimestampTZ("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extracttimezone (
+				ts timestamptz not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extracttimezone: extractTimezone(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extracttimezone).toBe(0);
+
+		await database.execute(sql`
+			drop table extracttimezone;
+		`);
+	});
+
+	test("extractTimezoneHour", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extracttimezonehour.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extracttimezonehour", {
+				ts: defineTimestampTZ("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extracttimezonehour (
+				ts timestamptz not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extracttimezonehour: extractTimezoneHour(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extracttimezonehour).toBe(0);
+
+		await database.execute(sql`
+			drop table extracttimezonehour;
+		`);
+	});
+
+	test("extractTimezoneMinute", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extracttimezoneminute.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extracttimezoneminute", {
+				ts: defineTimestampTZ("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extracttimezoneminute (
+				ts timestamptz not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extracttimezoneminute: extractTimezoneMinute(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extracttimezoneminute).toBe(0);
+
+		await database.execute(sql`
+			drop table extracttimezoneminute;
+		`);
+	});
+
+	test("extractWeek", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractweek.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractweek", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractweek (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractweek: extractWeek(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractweek).toBe(3);
+
+		await database.execute(sql`
+			drop table extractweek;
+		`);
+	});
+
+	test("extractUnix", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractunix.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractunix", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractunix (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: Date.now() + 1000 * 60 * 60 * 24,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBeGreaterThan(Date.now());
+
+		const result2 = await database
+			.select({
+				extractunix: table.ts,
+			})
+			.from(table)
+			.where(gt(extractUnix(table.ts), Date.now()));
+
+		expect(result2[0].extractunix).toBeGreaterThan(Date.now());
+
+		await database.execute(sql`
+			drop table extractunix;
+		`);
+	});
+
+	test("extractYear", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "extractyear.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("extractyear", {
+				ts: defineTimestamp("ts", { mode: "unix" }).notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists extractyear (
+				ts timestamp not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				ts: "2021-01-21 00:00:00" as any,
+			})
+			.returning();
+
+		expect(result1[0].ts).toBe(1_611_187_200_000);
+
+		const result2 = await database
+			.select({
+				extractyear: extractYear(table.ts),
+			})
+			.from(table);
+
+		expect(result2[0].extractyear).toBe(2021);
+
+		await database.execute(sql`
+			drop table extractyear;
+		`);
+	});
+
+	test("eq", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "eq.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("eq", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists eq (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database.select().from(table).where(eq(table.int2, 1));
+
+		expect(result2).toHaveLength(1);
+		expect(result2[0].int2).toBe(1);
+
+		await database.execute(sql`
+			drop table eq;
+		`);
+	});
+
+	test("neq", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "neq.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("neq", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists neq (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database.select().from(table).where(neq(table.int2, 2));
+
+		expect(result2).toHaveLength(1);
+		expect(result2[0].int2).toBe(1);
+
+		await database.execute(sql`
+			drop table neq;
+		`);
+	});
+
+	test("and", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "and.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("andd", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists andd (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select()
+			.from(table)
+			.where(and(neq(table.int2, 2), neq(table.int2, 3)));
+
+		expect(result2).toHaveLength(1);
+		expect(result2[0].int2).toBe(1);
+
+		const result3 = await database
+			.select()
+			.from(table)
+			.where(and(neq(table.int2, 3)));
+
+		expect(result3).toHaveLength(1);
+		expect(result3[0].int2).toBe(1);
+
+		const result4 = await database.select().from(table).where(and());
+
+		expect(result4).toHaveLength(1);
+		expect(result4[0].int2).toBe(1);
+
+		await database.execute(sql`
+			drop table andd;
+		`);
+	});
+
+	test("or", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "or.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("orr", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists orr (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select()
+			.from(table)
+			.where(or(eq(table.int2, 1), eq(table.int2, 2)));
+
+		expect(result2).toHaveLength(1);
+		expect(result2[0].int2).toBe(1);
+
+		const result3 = await database
+			.select()
+			.from(table)
+			.where(or(eq(table.int2, 1)));
+
+		expect(result3).toHaveLength(1);
+		expect(result3[0].int2).toBe(1);
+
+		const result4 = await database.select().from(table).where(or());
+
+		expect(result4).toHaveLength(1);
+		expect(result4[0].int2).toBe(1);
+
+		await database.execute(sql`
+			drop table orr;
+		`);
+	});
+
+	test("not", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "not.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("nott", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists nott (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				nott: not(inArray(table.int2, [2])),
+			})
+			.from(table);
+
+		expect(result2[0].nott).toBe(true);
+
+		await database.execute(sql`
+			drop table nott;
+		`);
+	});
+
+	test("gt", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "gt.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("gt", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists gt (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				gt: gt(table.int2, 0),
+			})
+			.from(table);
+
+		expect(result2[0].gt).toBe(true);
+
+		await database.execute(sql`
+			drop table gt;
+		`);
+	});
+
+	test("gte", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "gte.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("gte", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists gte (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				gte: gte(table.int2, 1),
+			})
+			.from(table);
+
+		expect(result2[0].gte).toBe(true);
+
+		await database.execute(sql`
+			drop table gte;
+		`);
+	});
+
+	test("lt", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "lt.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("lt", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists lt (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				lt: lt(table.int2, 2),
+			})
+			.from(table);
+
+		expect(result2[0].lt).toBe(true);
+
+		await database.execute(sql`
+			drop table lt;
+		`);
+	});
+
+	test("lte", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "lte.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("lte", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists lte (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				lte: lte(table.int2, 1),
+			})
+			.from(table);
+
+		expect(result2[0].lte).toBe(true);
+
+		await database.execute(sql`
+			drop table lte;
+		`);
+	});
+
+	test("inArray", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "inarray.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("inarray", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists inarray (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				inarray: inArray(table.int2, [1, 2, 3]),
+			})
+			.from(table);
+
+		expect(result2[0].inarray).toBe(true);
+
+		await database.execute(sql`
+			drop table inarray;
+		`);
+	});
+
+	test("notInArray", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "notinarray.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("notinarray", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists notinarray (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				notinarray: notInArray(table.int2, [2, 3, 4]),
+			})
+			.from(table);
+
+		expect(result2[0].notinarray).toBe(true);
+
+		await database.execute(sql`
+			drop table notinarray;
+		`);
+	});
+
+	test("isNull", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "isnull.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("isnulll", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists isnulll (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				isnull: isNull(table.int2),
+			})
+			.from(table);
+
+		expect(result2[0].isnull).toBe(false);
+
+		await database.execute(sql`
+			drop table isnulll;
+		`);
+	});
+
+	test("isNotNull", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "isnotnull.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("isnotnull", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists isnotnull (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				isnotnull: isNotNull(table.int2),
+			})
+			.from(table);
+
+		expect(result2[0].isnotnull).toBe(true);
+
+		await database.execute(sql`
+			drop table isnotnull;
+		`);
+	});
+
+	test("between", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "between.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("between", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists between (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				between: between(table.int2, 0, 2),
+			})
+			.from(table);
+
+		expect(result2[0].between).toBe(true);
+
+		await database.execute(sql`
+			drop table between;
+		`);
+	});
+
+	test("notBetween", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "notbetween.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("notbetween", {
+				int2: defineInt2("int2").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists notbetween (
+				int2 int2 not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				int2: 1,
+			})
+			.returning();
+
+		expect(result1[0].int2).toBe(1);
+
+		const result2 = await database
+			.select({
+				notbetween: notBetween(table.int2, 2, 4),
+			})
+			.from(table);
+
+		expect(result2[0].notbetween).toBe(true);
+
+		await database.execute(sql`
+			drop table notbetween;
+		`);
+	});
+
+	test("like", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "likee.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("likee", {
+				text: defineText("text").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists likee (
+				text text not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				text: "Foo",
+			})
+			.returning();
+
+		expect(result1[0].text).toBe("Foo");
+
+		const result2 = await database
+			.select({
+				likee: like(table.text, "%oo"),
+			})
+			.from(table);
+
+		expect(result2[0].likee).toBe(true);
+
+		await database.execute(sql`
+			drop table likee;
+		`);
+	});
+
+	test("notLike", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "notlikee.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("notlikee", {
+				text: defineText("text").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists notlikee (
+				text text not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				text: "Foo",
+			})
+			.returning();
+
+		expect(result1[0].text).toBe("Foo");
+
+		const result2 = await database
+			.select({
+				notlikee: notLike(table.text, "%ar"),
+			})
+			.from(table);
+
+		expect(result2[0].notlikee).toBe(true);
+
+		await database.execute(sql`
+			drop table notlikee;
+		`);
+	});
+
+	test("ilike", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "ilikee.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("ilikee", {
+				text: defineText("text").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists ilikee (
+				text text not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				text: "Foo",
+			})
+			.returning();
+
+		expect(result1[0].text).toBe("Foo");
+
+		const result2 = await database
+			.select({
+				ilikee: ilike(table.text, "%oo"),
+			})
+			.from(table);
+
+		expect(result2[0].ilikee).toBe(true);
+
+		await database.execute(sql`
+			drop table ilikee;
+		`);
+	});
+
+	test("notIlike", async () => {
+		const postgres = new Client({
+				password: "password",
+				host: "localhost",
+				user: "postgres",
+				database: "postgres",
+				port: 5432,
+				application_name: "notilikee.test.ts",
+			}),
+			database = pgt(postgres),
+			table = pgTable("notilikee", {
+				text: defineText("text").notNull(),
+			});
+
+		await database.connect();
+
+		await database.execute(sql`
+			create table if not exists notilikee (
+				text text not null
+			);
+		`);
+
+		const result1 = await database
+			.insert(table)
+			.values({
+				text: "Foo",
+			})
+			.returning();
+
+		expect(result1[0].text).toBe("Foo");
+
+		const result2 = await database
+			.select({
+				notilikee: notIlike(table.text, "%ar"),
+			})
+			.from(table);
+
+		expect(result2[0].notilikee).toBe(true);
+
+		await database.execute(sql`
+			drop table notilikee;
 		`);
 	});
 });

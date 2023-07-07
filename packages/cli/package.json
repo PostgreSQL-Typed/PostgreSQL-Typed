@@ -80,6 +80,9 @@
 		"@types/pluralize": "^0.0.29",
 		"typescript": "^4.7.4"
 	},
+	"publishConfig": {
+		"provenance": true
+	},
 	"packageManager": "pnpm@8.6.0",
 	"engines": {
 		"node": ">=16",

@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { Client, types } from "pg";
 import { describe, expect, it, test } from "vitest";
 

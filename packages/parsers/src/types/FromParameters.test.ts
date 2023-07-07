@@ -1,4 +1,6 @@
 /* eslint-disable unicorn/filename-case */
+import { Buffer } from "node:buffer";
+
 import type { BigNumber } from "bignumber.js";
 import type { DateTime } from "luxon";
 import { describe, expectTypeOf, test } from "vitest";

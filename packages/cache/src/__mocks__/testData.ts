@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { PgInsertValue, table } from "@postgresql-typed/core";
 import {
 	defineBit,

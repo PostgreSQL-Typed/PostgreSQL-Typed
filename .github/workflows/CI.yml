@@ -37,18 +37,6 @@ jobs:
     with:
       package: '@postgresql-typed/parsers'
     secrets: inherit
-  "pg":
-    name: '@PostgreSQL-Typed/pg'
-    uses: ./.github/workflows/package.yml
-    with:
-      package: '@postgresql-typed/pg'
-    secrets: inherit
-  "postgres":
-    name: '@PostgreSQL-Typed/postgres'
-    uses: ./.github/workflows/package.yml
-    with:
-      package: '@postgresql-typed/postgres'
-    secrets: inherit
   "TzSwitcher":
     name: '@PostgreSQL-Typed/TzSwitcher'
     uses: ./.github/workflows/package.yml
@@ -69,7 +57,7 @@ jobs:
     secrets: inherit
   coverage:
     name: Coverage
-    needs: [Cache, CLI, Core, OIDs, Parsers, pg, postgres, TzSwitcher, UI, Util]
+    needs: [Cache, CLI, Core, OIDs, Parsers, TzSwitcher, UI, Util]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

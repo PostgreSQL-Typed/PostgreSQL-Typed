@@ -299,6 +299,14 @@ describe("Operators", async () => {
 
 		expect(result2[0].count).toBe(1);
 
+		const result3 = await database
+			.select({
+				count: count(),
+			})
+			.from(table);
+
+		expect(result3[0].count).toBe(1);
+
 		await database.execute(sql`
 			drop table count;
 		`);

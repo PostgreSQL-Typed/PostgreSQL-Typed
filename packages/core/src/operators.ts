@@ -105,9 +105,10 @@ export function sameAs(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Pla
  * db.select(count(cars.id)).from(cars)
  * ```
  */
-export function count<T>(value: SQL.Aliased<T> | SQL<T>): SQL<number>;
-export function count<TColumn extends AnyColumn>(value: TColumn): SQL<number>;
-export function count(value: AnyColumn | SQL.Aliased | SQL): SQL<number> {
+export function count<T>(value?: SQL.Aliased<T> | SQL<T>): SQL<number>;
+export function count<TColumn extends AnyColumn>(value?: TColumn): SQL<number>;
+export function count(value?: AnyColumn | SQL.Aliased | SQL): SQL<number> {
+	if (value === undefined) return sql`count(*)::int`;
 	return sql<number>`count(${value})::int`;
 }
 

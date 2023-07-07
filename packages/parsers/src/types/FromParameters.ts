@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import { Buffer } from "node:buffer";
+
 import type { BigNumber } from "bignumber.js";
 import type { DateTime } from "luxon";
 

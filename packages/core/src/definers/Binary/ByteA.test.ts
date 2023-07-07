@@ -1,3 +1,5 @@
+import { Buffer } from "node:buffer";
+
 import { ByteA } from "@postgresql-typed/parsers";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";

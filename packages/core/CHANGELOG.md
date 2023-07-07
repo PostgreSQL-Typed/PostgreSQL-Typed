@@ -1,5 +1,20 @@
 # @postgresql-typed/core
 
+## 0.7.1
+
+### Patch Changes
+
+- [`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c) Thanks [@Bas950](https://github.com/Bas950)! - add provenance
+
+- [`165d3e8`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/165d3e8a17e1eb09bfb90359377e18cb8f15643c) Thanks [@Bas950](https://github.com/Bas950)! - make count optional for count(\*)
+
+- [#54](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/54) [`f365d6f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f365d6f5ccc22a69db3db044676ff8c5d3c72edf) Thanks [@Bas950](https://github.com/Bas950)! - Import Buffer from 'node:buffer'
+
+- Updated dependencies [[`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c), [`f365d6f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f365d6f5ccc22a69db3db044676ff8c5d3c72edf)]:
+  - @postgresql-typed/parsers@0.8.2
+  - @postgresql-typed/oids@0.1.3
+  - @postgresql-typed/util@0.6.2
+
 ## 0.7.0
 
 ### Minor Changes

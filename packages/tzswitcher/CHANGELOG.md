@@ -1,5 +1,15 @@
 # @postgresql-typed/tzswitcher
 
+## 0.2.7
+
+### Patch Changes
+
+- [`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c) Thanks [@Bas950](https://github.com/Bas950)! - add provenance
+
+- Updated dependencies [[`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c), [`f365d6f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f365d6f5ccc22a69db3db044676ff8c5d3c72edf)]:
+  - @postgresql-typed/parsers@0.8.2
+  - @postgresql-typed/util@0.6.2
+
 ## 0.2.6
 
 ### Patch Changes

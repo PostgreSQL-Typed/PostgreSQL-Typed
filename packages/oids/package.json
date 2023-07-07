@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/oids",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "A collection of the PostgreSQL OIDs (Object Identifiers) for all of the built-in data types.",
 	"type": "module",
 	"exports": "./lib/OIDs.js",

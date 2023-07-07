@@ -1,5 +1,11 @@
 # @postgresql-typed/util
 
+## 0.6.3
+
+### Patch Changes
+
+- [`a4e40f9`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/a4e40f98b56cff64a1cd70d63fd11885c37a2d28) Thanks [@Bas950](https://github.com/Bas950)! - fix provenance
+
 ## 0.6.2
 
 ### Patch Changes

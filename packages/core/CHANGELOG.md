@@ -1,5 +1,16 @@
 # @postgresql-typed/core
 
+## 0.7.2
+
+### Patch Changes
+
+- [`a4e40f9`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/a4e40f98b56cff64a1cd70d63fd11885c37a2d28) Thanks [@Bas950](https://github.com/Bas950)! - fix provenance
+
+- Updated dependencies [[`a4e40f9`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/a4e40f98b56cff64a1cd70d63fd11885c37a2d28)]:
+  - @postgresql-typed/oids@0.1.4
+  - @postgresql-typed/parsers@0.8.3
+  - @postgresql-typed/util@0.6.3
+
 ## 0.7.1
 
 ### Patch Changes

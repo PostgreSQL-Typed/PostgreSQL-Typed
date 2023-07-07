@@ -1,5 +1,14 @@
 # @postgresql-typed/ui
 
+## 0.3.6
+
+### Patch Changes
+
+- [`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c) Thanks [@Bas950](https://github.com/Bas950)! - add provenance
+
+- Updated dependencies [[`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c)]:
+  - @postgresql-typed/cli@0.5.2
+
 ## 0.3.5
 
 ### Patch Changes

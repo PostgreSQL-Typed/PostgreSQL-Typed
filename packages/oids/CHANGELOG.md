@@ -1,5 +1,11 @@
 # @postgresql-typed/oids
 
+## 0.1.3
+
+### Patch Changes
+
+- [`2162c8c`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2162c8c01c68a0e6540fe804e2d3dd891931ed2c) Thanks [@Bas950](https://github.com/Bas950)! - add provenance
+
 ## 0.1.2
 
 ### Patch Changes

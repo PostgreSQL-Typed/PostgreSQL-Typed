@@ -1,5 +1,11 @@
 # @postgresql-typed/util
 
+## 0.7.0
+
+### Minor Changes
+
+- Don't import Buffer from node:buffer
+
 ## 0.6.3
 
 ### Patch Changes

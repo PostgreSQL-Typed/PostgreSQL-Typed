@@ -1,5 +1,4 @@
 /* eslint-disable unicorn/filename-case */
-import { Buffer } from "node:buffer";
 
 import { isValid, type ParseReturnType } from "@postgresql-typed/util";
 

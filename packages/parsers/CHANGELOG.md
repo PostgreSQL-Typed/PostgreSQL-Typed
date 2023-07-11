@@ -1,5 +1,16 @@
 # postgresql-type-parsers
 
+## 0.9.0
+
+### Minor Changes
+
+- Don't import Buffer from node:buffer
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @postgresql-typed/util@0.7.0
+
 ## 0.8.3
 
 ### Patch Changes

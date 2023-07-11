@@ -1,5 +1,3 @@
-import { Buffer } from "node:buffer";
-
 import { getParsedType, hasKeys, INVALID, isOneOf, OK, ParsedType, type ParseReturnType } from "@postgresql-typed/util";
 
 import type { ParseContext } from "../../types/ParseContext.js";

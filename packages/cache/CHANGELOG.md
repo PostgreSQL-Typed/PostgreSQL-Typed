@@ -1,5 +1,17 @@
 # @postgresql-typed/cache
 
+## 0.2.0
+
+### Minor Changes
+
+- Don't import Buffer from node:buffer
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @postgresql-typed/parsers@0.9.0
+  - @postgresql-typed/util@0.7.0
+
 ## 0.1.12
 
 ### Patch Changes

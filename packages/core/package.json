@@ -13,6 +13,10 @@
 			"types": "./operators.d.ts",
 			"import": "./operators.js"
 		},
+		"./drizzle-orm": {
+			"types": "./drizzle-orm.d.ts",
+			"import": "./drizzle-orm.js"
+		},
 		"./package.json": "./package.json"
 	},
 	"types": "./lib/index.d.ts",

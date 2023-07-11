@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.7.3
+
+### Patch Changes
+
+- [`589b6ea`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/589b6ea6de9468888243409cb7df4ba8fe880be5) Thanks [@Bas950](https://github.com/Bas950)! - Export drizzle-orm for if you need to use their functions
+
 ## 0.7.2
 
 ### Patch Changes

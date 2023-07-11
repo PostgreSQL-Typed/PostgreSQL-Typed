@@ -27,8 +27,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       '@vitest/coverage-c8':
-        specifier: ^0.31.0
-        version: 0.31.0(vitest@0.31.0)
+        specifier: ^0.33.0
+        version: 0.33.0(vitest@0.31.0)
       '@vitest/ui':
         specifier: ^0.31.0
         version: 0.31.0(vitest@0.31.0)
@@ -1936,7 +1936,7 @@ packages:
       get-port-please: 3.0.1
       h3: 1.6.5
       knitwork: 1.0.0
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       mlly: 1.2.1
       ohash: 1.1.2
       pathe: 1.1.0
@@ -2795,7 +2795,7 @@ packages:
       colorette: 2.0.20
       consola: 3.2.2
       fast-glob: 3.2.12
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       pathe: 1.1.0
       perfect-debounce: 1.0.0
     transitivePeerDependencies:
@@ -2862,7 +2862,7 @@ packages:
       '@unocss/core': 0.51.12
       css-tree: 2.3.1
       fast-glob: 3.2.12
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       postcss: 8.4.24
     dev: true
 
@@ -2981,7 +2981,7 @@ packages:
       '@unocss/transformer-directives': 0.51.12
       chokidar: 3.5.3
       fast-glob: 3.2.12
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       vite: 4.3.9(@types/node@20.1.2)(sass@1.62.1)
     transitivePeerDependencies:
       - rollup
@@ -2998,7 +2998,7 @@ packages:
       '@unocss/core': 0.51.12
       chokidar: 3.5.3
       fast-glob: 3.2.12
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       unplugin: 1.3.1
       webpack: 5.88.1
       webpack-sources: 3.2.3
@@ -3054,14 +3054,14 @@ packages:
       vue: 3.2.47
     dev: true
 
-  /@vitest/coverage-c8@0.31.0(vitest@0.31.0):
-    resolution: {integrity: sha512-h72qN1D962AO7UefQVulm9JFP5ACS7OfhCdBHioXU8f7ohH/+NTZCgAqmgcfRNHHO/8wLFxx+93YVxhodkEJVA==}
+  /@vitest/coverage-c8@0.33.0(vitest@0.31.0):
+    resolution: {integrity: sha512-DaF1zJz4dcOZS4k/neiQJokmOWqsGXwhthfmUdPGorXIQHjdPvV6JQSYhQDI41MyI8c+IieQUdIDs5XAMHtDDw==}
     peerDependencies:
       vitest: '>=0.30.0 <1'
     dependencies:
       '@ampproject/remapping': 2.2.1
       c8: 7.14.0
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       picocolors: 1.0.0
       std-env: 3.3.3
       vitest: 0.31.0(@vitest/ui@0.31.0)
@@ -3087,7 +3087,7 @@ packages:
   /@vitest/snapshot@0.31.0:
     resolution: {integrity: sha512-5dTXhbHnyUMTMOujZPB0wjFjQ6q5x9c8TvAsSPUNKjp1tVU7i9pbqcKPqntyu2oXtmVxKbuHCqrOd+Ft60r4tg==}
     dependencies:
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       pathe: 1.1.0
       pretty-format: 27.5.1
     dev: true
@@ -7478,6 +7478,13 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
+  /magic-string@0.30.1:
+    resolution: {integrity: sha512-mbVKXPmS0z0G4XqFDCTllmDQ6coZzn94aMlb0o/A4HEHJCKcanlDZwYJgwnkmgD3jyWhUgj9VsPrfd972yPffA==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.15
+    dev: true
+
   /make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
@@ -7861,7 +7868,7 @@ packages:
       klona: 2.0.6
       knitwork: 1.0.0
       listhen: 1.0.4
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       mime: 3.0.0
       mlly: 1.4.0
       mri: 1.2.0
@@ -10296,7 +10303,7 @@ packages:
     dependencies:
       acorn: 8.9.0
       estree-walker: 3.0.3
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       unplugin: 1.3.1
     dev: true
 
@@ -10333,7 +10340,7 @@ packages:
       escape-string-regexp: 5.0.0
       fast-glob: 3.2.12
       local-pkg: 0.4.3
-      magic-string: 0.30.0
+      magic-string: 0.30.1
       mlly: 1.4.0
       pathe: 1.1.1
       pkg-types: 1.0.3

@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/core",
-	"version": "0.7.3",
+	"version": "0.7.4",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
 	"exports": {
@@ -37,7 +37,8 @@
 	"files": [
 		"lib",
 		"definers.*",
-		"operators.*"
+		"operators.*",
+		"drizzle-orm.*"
 	],
 	"keywords": [
 		"postgresql",

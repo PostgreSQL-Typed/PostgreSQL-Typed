@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/core",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
 	"exports": {
@@ -16,6 +16,10 @@
 		"./drizzle-orm": {
 			"types": "./drizzle-orm.d.ts",
 			"import": "./drizzle-orm.js"
+		},
+		"./config": {
+			"types": "./config.d.ts",
+			"import": "./config.js"
 		},
 		"./package.json": "./package.json"
 	},
@@ -38,7 +42,8 @@
 		"lib",
 		"definers.*",
 		"operators.*",
-		"drizzle-orm.*"
+		"drizzle-orm.*",
+		"config.*"
 	],
 	"keywords": [
 		"postgresql",
@@ -60,6 +65,7 @@
 		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/parsers": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
+		"c12": "^1.4.1",
 		"drizzle-orm": "^0.27.0",
 		"hookable": "^5.5.3",
 		"jiti": "^1.18.2",

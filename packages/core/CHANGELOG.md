@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.8.1
+
+### Patch Changes
+
+- allow config import from core
+
 ## 0.8.0
 
 ### Minor Changes

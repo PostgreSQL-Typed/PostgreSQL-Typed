@@ -32,7 +32,7 @@ describe("Cache", () => {
 		try {
 			await client.query(createTable, []);
 
-			await database.insert(TestTable).values(insertQuery);
+			await database.insert(TestTable).values(insertQuery).execute({}, {});
 
 			expect(spy).toHaveBeenCalledTimes(1);
 			expect(spy2).toHaveBeenCalledTimes(0);

@@ -1,4 +1,4 @@
-import type { PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
+import type { PgTExtensionContext, PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
 //@ts-expect-error - It does have mapResultRow
 import { fillPlaceholders, Logger, mapResultRow, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, TablesRelationalConfig } from "drizzle-orm";
 import { NodePgClient, NodePgQueryResultHKT, NodePgSession, NodePgSessionOptions, NodePgTransaction } from "drizzle-orm/node-postgres";
@@ -35,7 +35,10 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 		};
 	}
 
-	async execute(placeholderValues: Record<string, unknown> | undefined = {}): Promise<T["execute"]> {
+	/** @internal */
+	joinsNotNullableMap?: Record<string, boolean>;
+
+	override async execute(placeholderValues: Record<string, unknown> | undefined = {}, context: PgTExtensionContext = {}): Promise<T["execute"]> {
 		/* c8 ignore next */
 		if (!this.extensions.initialized) await this.extensions.initialize();
 		const parameters = fillPlaceholders(this.parameters, placeholderValues);
@@ -52,6 +55,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 					values: parameters,
 				},
 				output: undefined,
+				context,
 			};
 
 			let override = false;
@@ -77,6 +81,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 				values: parameters,
 			},
 			output: undefined,
+			context,
 		};
 
 		let override = false;
@@ -113,11 +118,10 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 	}
 }
 
-export class PgTSession<TFullSchema extends Record<string, unknown>, TSchema extends TablesRelationalConfig> extends PgSession<
-	NodePgQueryResultHKT,
-	TFullSchema,
-	TSchema
-> {
+export class PgTSession<
+	TFullSchema extends Record<string, unknown> = Record<string, never>,
+	TSchema extends TablesRelationalConfig = Record<string, never>
+> extends PgSession<NodePgQueryResultHKT, TFullSchema, TSchema> {
 	private logger: Logger;
 	private nodePgSession: NodePgSession<TFullSchema, TSchema>;
 
@@ -139,8 +143,8 @@ export class PgTSession<TFullSchema extends Record<string, unknown>, TSchema ext
 		query: Query,
 		fields: SelectedFieldsOrdered<AnyPgColumn> | undefined,
 		name: string | undefined,
-		customResultMapper?: (rows: unknown[][]) => T["execute"]
-	): PreparedQuery<T> {
+		customResultMapper?: (rows: unknown[][], mapColumnValue?: (value: unknown) => unknown) => T["execute"]
+	): PgTPreparedQuery<T> {
 		return new PgTPreparedQuery(this.client, this.extensions, this.driver, query.sql, query.params, this.logger, fields, name, customResultMapper);
 	}
 

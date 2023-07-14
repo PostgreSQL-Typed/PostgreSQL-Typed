@@ -1,6 +1,7 @@
 export * from "./types/Awaitable.js";
 export * from "./types/ClientHooks.js";
 export * from "./types/PgTExtension.js";
+export * from "./types/PgTExtensionContext.js";
 export * from "./types/PgTExtensionsManagerType.js";
 export * from "./util/arrayToEnum.js";
 export * from "./util/config/index.js";

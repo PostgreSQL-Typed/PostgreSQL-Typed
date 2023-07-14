@@ -10,7 +10,7 @@ import {
 	TablesRelationalConfig,
 } from "drizzle-orm";
 import { NodePgClient, PgDriverOptions } from "drizzle-orm/node-postgres";
-import { PgDialect } from "drizzle-orm/pg-core";
+import { PgDialect, QueryResultHKT } from "drizzle-orm/pg-core";
 import pg from "pg";
 
 import { PgTDatabase } from "./database.js";
@@ -194,7 +194,7 @@ export class PgTDriver {
 export function pgt<TSchema extends Record<string, unknown> = Record<string, never>>(
 	client: NodePgClient,
 	config: DrizzleConfig<TSchema> = {}
-): PgTDatabase<TSchema> {
+): PgTDatabase<QueryResultHKT, TSchema> {
 	const dialect = new PgDialect();
 	let logger: Logger | undefined;
 	/* c8 ignore next */
@@ -214,5 +214,5 @@ export function pgt<TSchema extends Record<string, unknown> = Record<string, nev
 
 	const driver = new PgTDriver(client, dialect, { logger }),
 		session = driver.createSession(schema);
-	return new PgTDatabase(dialect, session, schema) as PgTDatabase<TSchema>;
+	return new PgTDatabase(dialect, session, schema) as PgTDatabase<QueryResultHKT, TSchema>;
 }

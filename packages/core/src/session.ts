@@ -38,7 +38,20 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 	/** @internal */
 	joinsNotNullableMap?: Record<string, boolean>;
 
-	override async execute(placeholderValues: Record<string, unknown> | undefined = {}, context: PgTExtensionContext = {}): Promise<T["execute"]> {
+	override async execute(
+		placeholderValues: Record<string, unknown> | undefined = {},
+		context: PgTExtensionContext | PreQueryHookData | PostQueryHookData = {}
+	): Promise<T["execute"]> {
+		if (!("context" in context)) {
+			const contextCopy = { ...context };
+			//* Delete all properties of main context object
+			for (const key in context) delete context[key as keyof typeof context];
+
+			(context as PreQueryHookData).context = contextCopy;
+		}
+
+		context = context as PreQueryHookData | PostQueryHookData;
+
 		/* c8 ignore next */
 		if (!this.extensions.initialized) await this.extensions.initialize();
 		const parameters = fillPlaceholders(this.parameters, placeholderValues);
@@ -49,65 +62,91 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 			joinsNotNullableMap?: Record<string, boolean>;
 		};
 		if (!fields && !customResultMapper) {
-			const data: PreQueryHookData = {
-				input: {
-					query: rawQuery,
-					values: parameters,
-				},
-				output: undefined,
-				context,
+			context.input = {
+				query: rawQuery,
+				values: parameters,
 			};
 
 			let override = false;
-			await this.extensions.callHook("pgt:pre-query", data);
-			if (data.output === undefined) {
-				data.output = await client.query(
-					{ ...data.input.query },
-					data.input.values.map(value => this.driver.serialize(value))
+			await this.extensions.callHook("pgt:pre-query", context);
+			if (context.output === undefined) {
+				context.output = await client.query(
+					{ ...context.input.query },
+					context.input.values.map(value => this.driver.serialize(value))
 				);
 				/* c8 ignore next 4 */
 			} else {
-				await this.extensions.callHook("pgt:pre-query-override", data as PostQueryHookData);
+				await this.extensions.callHook("pgt:pre-query-override", context as PostQueryHookData);
 				override = true;
 			}
 
-			if (!override) await this.extensions.callHook("pgt:post-query", data as PostQueryHookData);
-			return this.mapValue(data.output);
+			if (!override) await this.extensions.callHook("pgt:post-query", context as PostQueryHookData);
+			return this.mapValue(context.output);
 		}
 
-		const data: PreQueryHookData = {
-			input: {
-				query,
-				values: parameters,
-			},
-			output: undefined,
-			context,
+		context.input = {
+			query,
+			values: parameters,
 		};
 
 		let override = false;
-		await this.extensions.callHook("pgt:pre-query", data);
-		if (data.output === undefined) {
-			data.output = await client.query(
-				{ ...data.input.query },
-				data.input.values.map(value => this.driver.serialize(value))
+		await this.extensions.callHook("pgt:pre-query", context);
+		if (context.output === undefined) {
+			context.output = await client.query(
+				{ ...context.input.query },
+				context.input.values.map(value => this.driver.serialize(value))
 			);
 			/* c8 ignore next 4 */
 		} else {
-			await this.extensions.callHook("pgt:pre-query-override", data as PostQueryHookData);
+			await this.extensions.callHook("pgt:pre-query-override", context as PostQueryHookData);
 			override = true;
 		}
 
-		if (!override) await this.extensions.callHook("pgt:post-query", data as PostQueryHookData);
+		if (!override) await this.extensions.callHook("pgt:post-query", context as PostQueryHookData);
 
-		const result = this.mapValue(data.output);
+		const result = this.mapValue(context.output);
 		/* c8 ignore next */
 		return customResultMapper ? customResultMapper(result.rows) : result.rows.map(row => mapResultRow<T["execute"]>(fields, row, joinsNotNullableMap));
 	}
 
-	/* c8 ignore next 4 */
-	async all(placeholderValues: Record<string, unknown> | undefined = {}): Promise<T["all"]> {
+	async all(
+		placeholderValues: Record<string, unknown> | undefined = {},
+		context: PgTExtensionContext | PreQueryHookData | PostQueryHookData = {}
+	): Promise<T["all"]> {
+		if (!("context" in context)) {
+			const contextCopy = { ...context };
+			//* Delete all properties of main context object
+			for (const key in context) delete context[key as keyof typeof context];
+
+			(context as PreQueryHookData).context = contextCopy;
+		}
+
+		context = context as PreQueryHookData | PostQueryHookData;
+
 		const parameters = fillPlaceholders(this.parameters, placeholderValues);
-		return this.client.query(this.rawQuery, parameters).then(result => result.rows);
+
+		context.input = {
+			query: this.rawQuery,
+			values: parameters,
+		};
+
+		let override = false;
+		await this.extensions.callHook("pgt:pre-query", context);
+		if (context.output === undefined) {
+			context.output = await this.client.query(
+				{ ...context.input.query },
+				context.input.values.map(value => this.driver.serialize(value))
+			);
+			/* c8 ignore next 4 */
+		} else {
+			await this.extensions.callHook("pgt:pre-query-override", context as PostQueryHookData);
+			override = true;
+		}
+
+		if (!override) await this.extensions.callHook("pgt:post-query", context as PostQueryHookData);
+
+		const result = this.mapValue(context.output);
+		return result.rows;
 	}
 
 	private mapValue<T>(value: T): T {

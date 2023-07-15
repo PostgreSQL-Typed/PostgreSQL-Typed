@@ -8,6 +8,7 @@ import {
 	type Equal,
 	type GetColumnData,
 	is,
+	Param,
 	type SelectedFieldsOrdered,
 	type SimplifyShallow,
 	SQL,

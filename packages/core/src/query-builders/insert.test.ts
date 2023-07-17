@@ -6,8 +6,8 @@ import { defineInt2, defineText } from "../definers/index.js";
 import { pgt } from "../driver.js";
 import { sql, table as pgTable } from "../index.js";
 
-describe("query-builders", () => {
-	test("insert", async () => {
+describe("insert", () => {
+	test("insert()", async () => {
 		const postgres = new Client({
 				password: "password",
 				host: "localhost",

@@ -54,7 +54,7 @@ describe("query-builders", () => {
 			expect(result3).toEqual([{ int2: 4, text: null }]);
 
 			expect(async () => await database.insert(table).values({ int2: 1, text: "test" }).execute()).rejects.toThrowError(
-				'duplicate key value violates unique constraint "insert_test_un1"'
+				'duplicate key value violates unique constraint "insert_test_int2_key"'
 			);
 
 			const result4 = await database.insert(table).values({ int2: 1, text: "test" }).onConflictDoNothing().returning().execute();

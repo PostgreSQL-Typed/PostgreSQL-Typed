@@ -48,7 +48,7 @@ export class Fetcher {
 			await this.setDatabaseName();
 		} catch {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true)
+			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not connect to database!"), "Please check your connection settings.", false, `Remote host: ${this.hostPort}`));
 
 			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not connect to database! Remote host: ${this.hostPort}`);
@@ -89,7 +89,7 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d tables", tables.length);
 		if (tables.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true)
+			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not fetch any tables!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
 
 			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any tables! Remote host: ${this.hostPort}`);
@@ -105,7 +105,7 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d data types", types.length);
 		if (types.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true) {
+			if (this.generatorConfig?.silent !== true) {
 				console.log(
 					getConsoleHeader(r("Could not fetch any data types!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`)
 				);
@@ -127,7 +127,7 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d classes", classes.length);
 		if (classes.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true)
+			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not fetch any classes!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
 
 			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any classes! Remote host: ${this.hostPort}`);
@@ -146,7 +146,7 @@ export class Fetcher {
 		this.LOGGER?.("Fetched %d attributes", attributes.length);
 		if (attributes.length === 0) {
 			this.progressBar.stop();
-			if (this.generatorConfig?.noConsoleLogs !== true) {
+			if (this.generatorConfig?.silent !== true) {
 				console.log(
 					getConsoleHeader(r("Could not fetch any attributes!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`)
 				);

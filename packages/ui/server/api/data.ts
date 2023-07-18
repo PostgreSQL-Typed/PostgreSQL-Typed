@@ -23,8 +23,8 @@ export default defineEventHandler(async () => {
 
 export async function generateData() {
 	return await generate({
-		noConsoleLogs: true,
-		throwOnError: true,
+		silent: true,
+		onError: "throwNewError",
 		returnDebug: true,
 		noFiles: true,
 	});

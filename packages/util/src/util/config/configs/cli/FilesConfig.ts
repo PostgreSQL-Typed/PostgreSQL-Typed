@@ -1,6 +1,5 @@
 import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
-import bundleSchema, { type BundleConfig } from "./BundleConfig.js";
 import definerSchema, { type DefinerModes } from "./DefinerModes.js";
 import type { ImportStatement } from "./ImportStatement.js";
 
@@ -11,13 +10,6 @@ export interface FilesConfig {
 	 * @default "__generated__"
 	 */
 	directory: string;
-
-	/**
-	 * Whether to bundle the generated code into a single file (per database)
-	 *
-	 * @default { "enabled": false }
-	 */
-	bundle: BundleConfig;
 
 	/**
 	 * Whether to add debugging statements to the generated code
@@ -360,7 +352,6 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "__generated__",
 		$resolve: value => (typeof value === "string" ? value : "__generated__"),
 	},
-	bundle: bundleSchema,
 	debug: {
 		$default: false,
 		$resolve: Boolean,

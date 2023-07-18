@@ -3,28 +3,27 @@ import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 import type { TypeId } from "../../../types/types/TypeId.js";
 
 export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId): string {
-	const filesConfig = config.files,
-		bundleConfig = config.files.bundle;
+	const filesConfig = config.files;
 
 	switch (id.type) {
 		case "table":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableFileName);
+			return formatFileType(filesConfig.tableFileName);
 		case "tableType":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableTypeFileName);
+			return formatFileType(filesConfig.tableTypeFileName);
 		case "tableInsertType":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.tableInsertTypeFileName);
+			return formatFileType(filesConfig.tableInsertTypeFileName);
 		case "column":
 			return "";
 		case "databaseReexport":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.databaseFileName);
+			return formatFileType(filesConfig.databaseFileName);
 		case "schema":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemasFileName);
+			return formatFileType(filesConfig.schemasFileName);
 		case "schemaReexport":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.schemaFileName);
+			return formatFileType(filesConfig.schemaFileName);
 		case "domain":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.domainFileName);
+			return formatFileType(filesConfig.domainFileName);
 		case "enum":
-			return formatFileType(bundleConfig.enabled ? bundleConfig.bundleFileName : filesConfig.enumFileName);
+			return formatFileType(filesConfig.enumFileName);
 		case "debug":
 			return formatFileType(filesConfig.debugFileName, "json");
 		case "export":

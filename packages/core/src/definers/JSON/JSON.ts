@@ -17,6 +17,30 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTJSONConfig<TMode extends "JSON" | "string" | "value" = "JSON" | "string" | "value"> {
 	mode?: TMode;
 }
+
+export type PgTJSONType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "JSON" | "string" | "value",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "JSON"
+		? JSON
+		: TMode extends "string"
+		? string
+		: TMode extends "value"
+		? Record<string, unknown> | unknown[] | string | number | boolean | null
+		: JSON,
+	TDriverParameter = JSON
+> = PgTJSON<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTJSONBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTJSONBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTJSONHKT;
@@ -29,7 +53,7 @@ export interface PgTJSONHKT extends ColumnHKTBase {
 export type PgTJSONBuilderInitial<TName extends string> = PgTJSONBuilder<{
 	name: TName;
 	data: JSON;
-	driverParam: string;
+	driverParam: JSON;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -73,7 +97,7 @@ export class PgTJSON<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHKT, T>
 export type PgTJSONStringBuilderInitial<TName extends string> = PgTJSONStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: JSON;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -117,7 +141,7 @@ export class PgTJSONString<T extends ColumnBaseConfig> extends PgColumn<PgTJSONH
 export type PgTJSONValueBuilderInitial<TName extends string> = PgTJSONValueBuilder<{
 	name: TName;
 	data: Record<string, unknown> | unknown[] | string | number | boolean | null;
-	driverParam: string;
+	driverParam: JSON;
 	notNull: false;
 	hasDefault: false;
 }>;

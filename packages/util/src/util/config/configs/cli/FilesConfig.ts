@@ -19,6 +19,15 @@ export interface FilesConfig {
 	debug: boolean;
 
 	/**
+	 * Whether to pre-compile the generated code
+	 *
+	 * This will make the generated code run faster, but will only generate .d.ts and .js files
+	 *
+	 * @default false
+	 */
+	preCompile: boolean;
+
+	/**
 	 * Definer modes
 	 */
 	definerModes: DefinerModes;
@@ -353,6 +362,10 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$resolve: value => (typeof value === "string" ? value : "__generated__"),
 	},
 	debug: {
+		$default: false,
+		$resolve: Boolean,
+	},
+	preCompile: {
 		$default: false,
 		$resolve: Boolean,
 	},

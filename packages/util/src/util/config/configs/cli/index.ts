@@ -68,13 +68,6 @@ export interface PostgreSQLTypedCLIConfig {
 	 * @default {}
 	 */
 	files: FilesConfig;
-
-	/**
-	 * The TypeScript module type you use in your project (if you are using esm it adds the .js import extension)
-	 *
-	 * @default "cjs"
-	 */
-	type: "esm" | "cjs";
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
@@ -104,9 +97,5 @@ const schema: SchemaDefinition = defineUntypedSchema({
 				: "*",
 	},
 	files: filesSchema,
-	type: {
-		$default: "cjs",
-		$resolve: value => (value === "esm" ? "esm" : "cjs"),
-	},
 });
 export default schema;

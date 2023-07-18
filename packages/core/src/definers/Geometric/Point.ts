@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTPointConfig<TMode extends "Point" | "string" = "Point" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTPointType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Point" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Point" ? Point : string,
+	TDriverParameter = Point
+> = PgTPoint<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTPointBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTPointBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTPointHKT;
@@ -25,10 +43,10 @@ export interface PgTPointHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Point
-export type PgTPointBuilderInitial<TPoint extends string> = PgTPointBuilder<{
-	name: TPoint;
+export type PgTPointBuilderInitial<TName extends string> = PgTPointBuilder<{
+	name: TName;
 	data: Point;
-	driverParam: string;
+	driverParam: Point;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTPoint<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, 
 //#endregion
 
 //#region @postgresql-typed/parsers Point as string
-export type PgTPointStringBuilderInitial<TPoint extends string> = PgTPointStringBuilder<{
-	name: TPoint;
+export type PgTPointStringBuilderInitial<TName extends string> = PgTPointStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Point;
 	notNull: false;
 	hasDefault: false;
 }>;

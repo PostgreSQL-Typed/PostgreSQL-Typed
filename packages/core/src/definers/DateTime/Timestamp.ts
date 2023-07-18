@@ -20,6 +20,32 @@ export interface PgTTimestampConfig<
 > {
 	mode?: TMode;
 }
+
+export type PgTTimestampType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Timestamp"
+		? Timestamp
+		: TMode extends "globalThis.Date"
+		? globalThis.Date
+		: TMode extends "luxon.DateTime"
+		? luxon.DateTime
+		: TMode extends "unix"
+		? number
+		: string,
+	TDriverParameter = Timestamp
+> = PgTTimestamp<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTimestampBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTimestampBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTimestampHKT;
@@ -32,7 +58,7 @@ export interface PgTTimestampHKT extends ColumnHKTBase {
 export type PgTTimestampBuilderInitial<TName extends string> = PgTTimestampBuilder<{
 	name: TName;
 	data: Timestamp;
-	driverParam: string;
+	driverParam: Timestamp;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -81,7 +107,7 @@ export class PgTTimestamp<T extends ColumnBaseConfig> extends PgColumn<PgTTimest
 export type PgTTimestampStringBuilderInitial<TName extends string> = PgTTimestampStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Timestamp;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -130,7 +156,7 @@ export class PgTTimestampString<T extends ColumnBaseConfig> extends PgColumn<PgT
 export type PgTTimestampGlobalThisDateBuilderInitial<TName extends string> = PgTTimestampGlobalThisDateBuilder<{
 	name: TName;
 	data: globalThis.Date;
-	driverParam: string;
+	driverParam: Timestamp;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -179,7 +205,7 @@ export class PgTTimestampGlobalThisDate<T extends ColumnBaseConfig> extends PgCo
 export type PgTTimestampLuxonDateTimeBuilderInitial<TName extends string> = PgTTimestampLuxonDateTimeBuilder<{
 	name: TName;
 	data: luxon.DateTime;
-	driverParam: string;
+	driverParam: Timestamp;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -227,7 +253,7 @@ export class PgTTimestampLuxonDateTime<T extends ColumnBaseConfig> extends PgCol
 export type PgTTimestampUnixBuilderInitial<TName extends string> = PgTTimestampUnixBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Timestamp;
 	notNull: false;
 	hasDefault: false;
 }>;

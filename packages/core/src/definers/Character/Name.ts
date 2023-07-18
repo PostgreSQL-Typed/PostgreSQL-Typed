@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTNameConfig<TMode extends "Name" | "string" = "Name" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTNameType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Name" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Name" ? Name : string,
+	TDriverParameter = Name
+> = PgTName<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTNameBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTNameBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTNameHKT;
@@ -28,7 +46,7 @@ export interface PgTNameHKT extends ColumnHKTBase {
 export type PgTNameBuilderInitial<TName extends string> = PgTNameBuilder<{
 	name: TName;
 	data: Name;
-	driverParam: string;
+	driverParam: Name;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTName<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T>
 export type PgTNameStringBuilderInitial<TName extends string> = PgTNameStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Name;
 	notNull: false;
 	hasDefault: false;
 }>;

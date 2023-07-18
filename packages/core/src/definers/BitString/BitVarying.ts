@@ -17,6 +17,24 @@ export interface PgTBitVaryingConfig<TMode extends "BitVarying" | "string" | "nu
 	mode?: TMode;
 	length?: number;
 }
+
+export type PgTBitVaryingType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "BitVarying" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "BitVarying" ? BitVarying<number> : TMode extends "string" ? string : number,
+	TDriverParameter = BitVarying<number>
+> = PgTBitVarying<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTBitVaryingBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTBitVaryingBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTBitVaryingHKT;
@@ -29,7 +47,7 @@ export interface PgTBitVaryingHKT extends ColumnHKTBase {
 export type PgTBitVaryingBuilderInitial<TName extends string> = PgTBitVaryingBuilder<{
 	name: TName;
 	data: BitVarying<number>;
-	driverParam: string;
+	driverParam: BitVarying<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -82,7 +100,7 @@ export class PgTBitVarying<T extends ColumnBaseConfig> extends PgColumn<PgTBitVa
 export type PgTBitVaryingStringBuilderInitial<TName extends string> = PgTBitVaryingStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: BitVarying<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -135,7 +153,7 @@ export class PgTBitVaryingString<T extends ColumnBaseConfig> extends PgColumn<Pg
 export type PgTBitVaryingNumberBuilderInitial<TName extends string> = PgTBitVaryingNumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: BitVarying<number>;
 	notNull: false;
 	hasDefault: false;
 }>;

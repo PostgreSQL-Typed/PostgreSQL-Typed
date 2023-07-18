@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTDateRangeConfig<TMode extends "DateRange" | "string" = "DateRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTDateRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "DateRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "DateRange" ? DateRange : string,
+	TDriverParameter = DateRange
+> = PgTDateRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTDateRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTDateRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTDateRangeHKT;
@@ -25,10 +43,10 @@ export interface PgTDateRangeHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers DateRange
-export type PgTDateRangeBuilderInitial<TDateRange extends string> = PgTDateRangeBuilder<{
-	name: TDateRange;
+export type PgTDateRangeBuilderInitial<TName extends string> = PgTDateRangeBuilder<{
+	name: TName;
 	data: DateRange;
-	driverParam: string;
+	driverParam: DateRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTDateRange<T extends ColumnBaseConfig> extends PgColumn<PgTDateRa
 //#endregion
 
 //#region @postgresql-typed/parsers DateRange as string
-export type PgTDateRangeStringBuilderInitial<TDateRange extends string> = PgTDateRangeStringBuilder<{
-	name: TDateRange;
+export type PgTDateRangeStringBuilderInitial<TName extends string> = PgTDateRangeStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: DateRange;
 	notNull: false;
 	hasDefault: false;
 }>;

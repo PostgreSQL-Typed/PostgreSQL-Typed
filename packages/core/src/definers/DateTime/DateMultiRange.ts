@@ -19,6 +19,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTDateMultiRangeConfig<TMode extends "DateMultiRange" | "string" = "DateMultiRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTDateMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "DateMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "DateMultiRange" ? DateMultiRange : string,
+	TDriverParameter = DateMultiRange
+> = PgTDateMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTDateMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTDateMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTDateMultiRangeHKT;
@@ -28,10 +46,10 @@ export interface PgTDateMultiRangeHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers DateMultiRange
-export type PgTDateMultiRangeBuilderInitial<TDateMultiRange extends string> = PgTDateMultiRangeBuilder<{
-	name: TDateMultiRange;
+export type PgTDateMultiRangeBuilderInitial<TName extends string> = PgTDateMultiRangeBuilder<{
+	name: TName;
 	data: DateMultiRange;
-	driverParam: string;
+	driverParam: DateMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,10 +90,10 @@ export class PgTDateMultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTD
 //#endregion
 
 //#region @postgresql-typed/parsers DateMultiRange as string
-export type PgTDateMultiRangeStringBuilderInitial<TDateMultiRange extends string> = PgTDateMultiRangeStringBuilder<{
-	name: TDateMultiRange;
+export type PgTDateMultiRangeStringBuilderInitial<TName extends string> = PgTDateMultiRangeStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: DateMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;

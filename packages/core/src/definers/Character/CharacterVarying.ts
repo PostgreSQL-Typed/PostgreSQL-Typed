@@ -17,6 +17,24 @@ export interface PgTCharacterVaryingConfig<TMode extends "CharacterVarying" | "s
 	mode?: TMode;
 	length?: number;
 }
+
+export type PgTCharacterVaryingType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "CharacterVarying" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "CharacterVarying" ? CharacterVarying<number> : string,
+	TDriverParameter = CharacterVarying<number>
+> = PgTCharacterVarying<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTCharacterVaryingBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTCharacterVaryingBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTCharacterVaryingHKT;
@@ -29,7 +47,7 @@ export interface PgTCharacterVaryingHKT extends ColumnHKTBase {
 export type PgTCharacterVaryingBuilderInitial<TName extends string> = PgTCharacterVaryingBuilder<{
 	name: TName;
 	data: CharacterVarying<number>;
-	driverParam: string;
+	driverParam: CharacterVarying<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -82,7 +100,7 @@ export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<Pg
 export type PgTCharacterVaryingStringBuilderInitial<TName extends string> = PgTCharacterVaryingStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: CharacterVarying<number>;
 	notNull: false;
 	hasDefault: false;
 }>;

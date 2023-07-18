@@ -39,7 +39,48 @@ export function printTable(type: ClassDetails, printer: Printer) {
 		TableRecord
 	);
 
-	return { TableRecord };
+	if (!printer.config.files.preCompile) return { TableRecord };
+
+	const TableTypeRecord = printer.context.pushTypeDeclaration(
+		{
+			type: "tableType",
+			name: type.class_name,
+			databaseName: type.database_name,
+			schemaName: type.schema_name,
+		},
+		(identifierName, file) => {
+			file.addImportStatement({
+				module: "@postgresql-typed/core",
+				name: "PgTableWithColumns",
+				type: "named",
+				isType: true,
+			});
+			return [
+				`declare const ${identifierName}: PgTableWithColumns<{`,
+				`  name: "${type.class_name}";`,
+				`  schema: "${type.schema_name}";`,
+				"  columns: {",
+				...type.attributes.filter(a => a.attribute_number >= 0).map(attribute => printColumnType(type, attribute, printer, file)),
+				"  };",
+				"}>;",
+			];
+		}
+	);
+
+	printer.context.pushReExport(
+		{
+			type: "export",
+			of: {
+				type: "tableType",
+				name: type.class_name,
+				databaseName: type.database_name,
+				schemaName: type.schema_name,
+			},
+		},
+		TableTypeRecord
+	);
+
+	return { TableRecord, TableTypeRecord };
 }
 
 function printColumn(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
@@ -52,6 +93,18 @@ function printColumn(type: ClassDetails, attribute: Attribute, printer: Printer,
 			tableName: type.class_name,
 		});
 	return `  ${name}: ${getAttribute(type, attribute, printer, file)},`;
+}
+
+function printColumnType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
+	const { getDeclarationName } = file,
+		name = getDeclarationName({
+			type: "column",
+			name: attribute.attribute_name,
+			databaseName: type.database_name,
+			schemaName: type.schema_name,
+			tableName: type.class_name,
+		});
+	return `    ${name}: ${getAttributeType(type, attribute, printer, file)};`;
 }
 
 function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
@@ -74,11 +127,31 @@ function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer
 	const definer = printer
 		.getDefiner(attribute.type_id, file, {
 			maxLength,
-			nonNull: attribute.not_null,
+			notNull: attribute.not_null,
 		})
 		.replace("%ATTRIBUTE%", attribute.attribute_name);
 
 	return `${definer}${getDefault(attribute, file)}${getReference(type, attribute, printer, file)}`;
+}
+
+function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
+	const columnTypeOverride =
+		printer.config.files.columnDefinerOverrides[`${type.schema_name}.${type.class_name}.${attribute.attribute_name}`] ||
+		printer.config.files.columnDefinerOverrides[`${type.class_name}.${attribute.attribute_name}`];
+
+	if (columnTypeOverride) {
+		const [importString, importStatement] = columnTypeOverride;
+		for (const statement of importStatement) file.addImportStatement(statement);
+		return importString;
+	}
+
+	return printer
+		.getDefinerType(attribute.type_id, file, {
+			notNull: attribute.not_null,
+		})
+		.replace("%ATTRIBUTE%", attribute.attribute_name)
+		.replace("%TABLE%", type.class_name)
+		.replace("%HASDEFAULT%", attribute.has_default ? "true" : "false");
 }
 
 function getReference(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {

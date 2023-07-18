@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTCircleConfig<TMode extends "Circle" | "string" = "Circle" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTCircleType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Circle" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Circle" ? Circle : TMode extends "string" ? string : number,
+	TDriverParameter = Circle
+> = PgTCircle<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTCircleBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTCircleBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTCircleHKT;
@@ -25,10 +43,10 @@ export interface PgTCircleHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Circle
-export type PgTCircleBuilderInitial<TCircle extends string> = PgTCircleBuilder<{
-	name: TCircle;
+export type PgTCircleBuilderInitial<TName extends string> = PgTCircleBuilder<{
+	name: TName;
 	data: Circle;
-	driverParam: string;
+	driverParam: Circle;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTCircle<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT
 //#endregion
 
 //#region @postgresql-typed/parsers Circle as string
-export type PgTCircleStringBuilderInitial<TCircle extends string> = PgTCircleStringBuilder<{
-	name: TCircle;
+export type PgTCircleStringBuilderInitial<TName extends string> = PgTCircleStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Circle;
 	notNull: false;
 	hasDefault: false;
 }>;

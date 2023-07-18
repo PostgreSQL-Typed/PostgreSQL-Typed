@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTPolygonConfig<TMode extends "Polygon" | "string" = "Polygon" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTPolygonType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Polygon" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Polygon" ? Polygon : string,
+	TDriverParameter = string
+> = PgTPolygon<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTPolygonBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTPolygonBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTPolygonHKT;
@@ -25,10 +43,10 @@ export interface PgTPolygonHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Polygon
-export type PgTPolygonBuilderInitial<TPolygon extends string> = PgTPolygonBuilder<{
-	name: TPolygon;
+export type PgTPolygonBuilderInitial<TName extends string> = PgTPolygonBuilder<{
+	name: TName;
 	data: Polygon;
-	driverParam: string;
+	driverParam: Polygon;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTPolygon<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonH
 //#endregion
 
 //#region @postgresql-typed/parsers Polygon as string
-export type PgTPolygonStringBuilderInitial<TPolygon extends string> = PgTPolygonStringBuilder<{
-	name: TPolygon;
+export type PgTPolygonStringBuilderInitial<TName extends string> = PgTPolygonStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Polygon;
 	notNull: false;
 	hasDefault: false;
 }>;

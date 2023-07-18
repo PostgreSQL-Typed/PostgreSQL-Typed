@@ -37,5 +37,35 @@ export function printDatabaseReexport(types: ClassDetails[], printer: Printer) {
 		DatabaseReexportRecord
 	);
 
-	return { DatabaseReexportRecord };
+	if (!printer.config.files.preCompile) return { DatabaseReexportRecord };
+
+	const DatabaseTypeReexportRecord = printer.context.pushTypeDeclaration(
+		{
+			type: "databaseTypeReexport",
+			name: types[0].database_name,
+		},
+		(_, { getRelativePath }) => [
+			schemaClassList
+				.map(types => {
+					const { SchemaTypeReexportRecord } = printSchemaReexport(types, printer);
+					if (SchemaTypeReexportRecord) return `export * from "${getRelativePath(SchemaTypeReexportRecord)}";`;
+					return "";
+				})
+				.filter(Boolean)
+				.join("\n"),
+		]
+	);
+
+	printer.context.pushReExport(
+		{
+			type: "export",
+			of: {
+				type: "databaseTypeReexport",
+				name: types[0].database_name,
+			},
+		},
+		DatabaseTypeReexportRecord
+	);
+
+	return { DatabaseReexportRecord, DatabaseTypeReexportRecord };
 }

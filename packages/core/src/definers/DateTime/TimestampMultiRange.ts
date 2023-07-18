@@ -19,6 +19,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTTimestampMultiRangeConfig<TMode extends "TimestampMultiRange" | "string" = "TimestampMultiRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTTimestampMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampMultiRange" ? TimestampMultiRange : string,
+	TDriverParameter = TimestampMultiRange
+> = PgTTimestampMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTimestampMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTimestampMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTimestampMultiRangeHKT;
@@ -28,10 +46,10 @@ export interface PgTTimestampMultiRangeHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers TimestampMultiRange
-export type PgTTimestampMultiRangeBuilderInitial<TTimestampMultiRange extends string> = PgTTimestampMultiRangeBuilder<{
-	name: TTimestampMultiRange;
+export type PgTTimestampMultiRangeBuilderInitial<TName extends string> = PgTTimestampMultiRangeBuilder<{
+	name: TName;
 	data: TimestampMultiRange;
-	driverParam: string;
+	driverParam: TimestampMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -74,10 +92,10 @@ export class PgTTimestampMultiRange<T extends ColumnBaseConfig> extends PgColumn
 //#endregion
 
 //#region @postgresql-typed/parsers TimestampMultiRange as string
-export type PgTTimestampMultiRangeStringBuilderInitial<TTimestampMultiRange extends string> = PgTTimestampMultiRangeStringBuilder<{
-	name: TTimestampMultiRange;
+export type PgTTimestampMultiRangeStringBuilderInitial<TName extends string> = PgTTimestampMultiRangeStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: TimestampMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;

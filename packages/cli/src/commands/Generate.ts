@@ -12,7 +12,10 @@ import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js"
 
 export interface GenerateArguments<ReturnDebug extends boolean> {
 	"debug-only"?: boolean;
-	throwOnError?: boolean;
+	/**
+	 * @default "processExit"
+	 */
+	onError?: "processExit" | "throwNewError";
 	returnDebug?: ReturnDebug;
 	silent?: boolean;
 	noFiles?: boolean;
@@ -26,6 +29,8 @@ export const Generate = {
 } satisfies Command;
 
 async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<ReturnDebug> = {}): Promise<ReturnDebug extends true ? FetchedData[] : void> {
+	arguments_.onError ??= "processExit";
+
 	const log = LOGGER?.extend("Command").extend("Generate");
 	log?.("Running command...");
 	const configHandler = await new ConfigHandler().loadConfig(),
@@ -120,6 +125,6 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	}
 
 	if (arguments_.returnDebug === true) return fetchers.map(f => f.fetchedData) as ReturnDebug extends true ? FetchedData[] : void;
-	if (arguments_.throwOnError !== true) process.exit(0);
+	if (arguments_.onError === "processExit") process.exit(0);
 	return undefined as ReturnDebug extends true ? FetchedData[] : void;
 }

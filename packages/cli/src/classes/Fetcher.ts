@@ -51,7 +51,7 @@ export class Fetcher {
 			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not connect to database!"), "Please check your connection settings.", false, `Remote host: ${this.hostPort}`));
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not connect to database! Remote host: ${this.hostPort}`);
+			if (this.generatorConfig?.onError === "throwNewError") throw new Error(`Could not connect to database! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 	}
@@ -92,7 +92,7 @@ export class Fetcher {
 			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not fetch any tables!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any tables! Remote host: ${this.hostPort}`);
+			if (this.generatorConfig?.onError === "throwNewError") throw new Error(`Could not fetch any tables! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.tables = tables;
@@ -111,7 +111,7 @@ export class Fetcher {
 				);
 			}
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any data types! Remote host: ${this.hostPort}`);
+			if (this.generatorConfig?.onError === "throwNewError") throw new Error(`Could not fetch any data types! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.dataTypes = types;
@@ -130,7 +130,7 @@ export class Fetcher {
 			if (this.generatorConfig?.silent !== true)
 				console.log(getConsoleHeader(r("Could not fetch any classes!"), "Please check your schemas/tables settings.", false, `Remote host: ${this.hostPort}`));
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any classes! Remote host: ${this.hostPort}`);
+			if (this.generatorConfig?.onError === "throwNewError") throw new Error(`Could not fetch any classes! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.classes = classes;
@@ -152,7 +152,7 @@ export class Fetcher {
 				);
 			}
 
-			if (this.generatorConfig?.throwOnError === true) throw new Error(`Could not fetch any attributes! Remote host: ${this.hostPort}`);
+			if (this.generatorConfig?.onError === "throwNewError") throw new Error(`Could not fetch any attributes! Remote host: ${this.hostPort}`);
 			process.exit(1);
 		}
 		this.attributes = attributes;

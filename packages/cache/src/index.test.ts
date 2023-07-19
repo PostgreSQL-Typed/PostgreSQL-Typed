@@ -1,4 +1,5 @@
 import { Client, pgt } from "@postgresql-typed/core";
+import { PgTExtensionContext, PostQueryHookData } from "@postgresql-typed/util";
 import { describe, expect, it, vitest } from "vitest";
 
 import { createTable, dropTable, insertQuery, TestTable } from "./__mocks__/testData";
@@ -56,6 +57,51 @@ describe("Cache", () => {
 
 			expect(spy).toHaveBeenCalledTimes(0);
 			expect(spy2).toHaveBeenCalledTimes(1);
+
+			spy.mockClear();
+			spy2.mockClear();
+
+			let context: PgTExtensionContext | PostQueryHookData = {
+				nonce: "test",
+				cache: {
+					enabled: false,
+				},
+			};
+			const response3 = await database.select().from(TestTable).execute({}, context);
+
+			expect(response3).toHaveLength(1);
+
+			expect(spy).toHaveBeenCalledTimes(1);
+			expect(spy2).toHaveBeenCalledTimes(0);
+
+			expect(context).toHaveProperty("context");
+			expect(context).toHaveProperty("input");
+			expect(context).toHaveProperty("output");
+
+			spy.mockClear();
+			spy2.mockClear();
+
+			context = {
+				nonce: "test2",
+				cache: {
+					enabled: true,
+					key: "test",
+				},
+			};
+
+			const response4 = await database.select().from(TestTable).execute({}, context);
+
+			expect(response4).toHaveLength(1);
+
+			expect(spy).toHaveBeenCalledTimes(1);
+			expect(spy2).toHaveBeenCalledTimes(0);
+
+			expect(context).toHaveProperty("context");
+			expect(context).toHaveProperty("input");
+			expect(context).toHaveProperty("output");
+
+			spy.mockClear();
+			spy2.mockClear();
 		} catch (error_) {
 			error = error_;
 

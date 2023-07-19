@@ -3,6 +3,7 @@ import {
 	type AnyTable,
 	type Assume,
 	Column,
+	type ColumnKind,
 	type ColumnsSelection,
 	type DrizzleTypeError,
 	type Equal,
@@ -12,10 +13,13 @@ import {
 	type SelectedFieldsOrdered,
 	type SimplifyShallow,
 	SQL,
-	type Subquery,
+	Subquery,
+	SubqueryConfig,
 	Table,
+	type UpdateColConfig,
 	type UpdateSet,
-	type View,
+	View,
+	ViewBaseConfig,
 } from "drizzle-orm";
 
 /** @internal */
@@ -137,3 +141,49 @@ export type GetSelectTableSelection<TTable extends AnyTable | Subquery | View | 
 	? // eslint-disable-next-line @typescript-eslint/ban-types
 	  {}
 	: never;
+
+export type ApplyNullabilityToColumn<TColumn extends AnyColumn, TNullability extends JoinNullability> = TNullability extends "not-null"
+	? TColumn
+	: ColumnKind<
+			TColumn["_"]["hkt"],
+			UpdateColConfig<
+				TColumn["_"]["config"],
+				{
+					notNull: TNullability extends "nullable" ? false : TColumn["_"]["notNull"];
+				}
+			>
+	  >;
+
+export type BuildSubquerySelection<TSelection extends ColumnsSelection, TNullability extends Record<string, JoinNullability>> = TSelection extends never
+	? any
+	: SimplifyShallow<{
+			[Key in keyof TSelection]: TSelection[Key] extends SQL
+				? DrizzleTypeError<"You cannot reference this field without assigning it an alias first - use `.as(<alias>)`">
+				: TSelection[Key] extends SQL.Aliased
+				? TSelection[Key]
+				: TSelection[Key] extends AnyColumn
+				? ApplyNullabilityToColumn<TSelection[Key], TNullability[TSelection[Key]["_"]["tableName"]]>
+				: TSelection[Key] extends ColumnsSelection
+				? BuildSubquerySelection<TSelection[Key], TNullability>
+				: never;
+	  }>;
+
+/** @internal */
+export function getTableLikeName(table: AnyTable | Subquery | View | SQL): string | undefined {
+	return is(table, Subquery)
+		? //@ts-expect-error - TODO: fix this
+		  table[SubqueryConfig].alias
+		: is(table, View)
+		? //@ts-expect-error - TODO: fix this
+		  table[ViewBaseConfig].name
+		: is(table, SQL)
+		? undefined
+		: //@ts-expect-error - TODO: fix this
+		table[Table.Symbol.IsAlias]
+		? //@ts-expect-error - TODO: fix this
+		  table[Table.Symbol.Name]
+		: //@ts-expect-error - TODO: fix this
+		  table[Table.Symbol.BaseName];
+}
+
+export type JoinType = "inner" | "left" | "right" | "full";

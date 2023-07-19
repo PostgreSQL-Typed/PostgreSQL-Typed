@@ -12,10 +12,7 @@ export abstract class TypedQueryBuilder<TSelection, TResult = unknown> implement
 		result: TResult;
 	};
 
-	/** @internal */
-	getSelectedFields(): TSelection {
-		return this._.selectedFields;
-	}
+	abstract getSelectedFields(): TSelection;
 
 	abstract getSQL(): SQL;
 }

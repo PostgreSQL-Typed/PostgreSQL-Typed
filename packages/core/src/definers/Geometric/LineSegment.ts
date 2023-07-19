@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTLineSegmentConfig<TMode extends "LineSegment" | "string" = "LineSegment" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTLineSegmentType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "LineSegment" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "LineSegment" ? LineSegment : string,
+	TDriverParameter = string
+> = PgTLineSegment<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTLineSegmentBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTLineSegmentBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTLineSegmentHKT;
@@ -25,10 +43,10 @@ export interface PgTLineSegmentHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers LineSegment
-export type PgTLineSegmentBuilderInitial<TLineSegment extends string> = PgTLineSegmentBuilder<{
-	name: TLineSegment;
+export type PgTLineSegmentBuilderInitial<TName extends string> = PgTLineSegmentBuilder<{
+	name: TName;
 	data: LineSegment;
-	driverParam: string;
+	driverParam: LineSegment;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTLineSegment<T extends ColumnBaseConfig> extends PgColumn<PgTLine
 //#endregion
 
 //#region @postgresql-typed/parsers LineSegment as string
-export type PgTLineSegmentStringBuilderInitial<TLineSegment extends string> = PgTLineSegmentStringBuilder<{
-	name: TLineSegment;
+export type PgTLineSegmentStringBuilderInitial<TName extends string> = PgTLineSegmentStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: LineSegment;
 	notNull: false;
 	hasDefault: false;
 }>;

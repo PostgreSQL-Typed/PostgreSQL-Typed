@@ -15,8 +15,11 @@ export type TypeId =
 			millisecond: string;
 	  }
 	| { type: "databaseReexport"; name: string }
+	| { type: "databaseTypeReexport"; name: string }
 	| { type: "schema"; name: string; databaseName: string }
+	| { type: "schemaType"; name: string; databaseName: string }
 	| { type: "schemaReexport"; name: string; databaseName: string }
+	| { type: "schemaTypeReexport"; name: string; databaseName: string }
 	| {
 			type: "table";
 			name: string;
@@ -30,7 +33,13 @@ export type TypeId =
 			schemaName: string;
 	  }
 	| {
-			type: "tableInsertType";
+			type: "tableInferType";
+			name: string;
+			databaseName: string;
+			schemaName: string;
+	  }
+	| {
+			type: "tableInsertInferType";
 			name: string;
 			databaseName: string;
 			schemaName: string;
@@ -46,8 +55,11 @@ export type TypeId =
 			type: "export";
 			of:
 				| { type: "databaseReexport"; name: string }
+				| { type: "databaseTypeReexport"; name: string }
 				| { type: "schema"; name: string; databaseName: string }
+				| { type: "schemaType"; name: string; databaseName: string }
 				| { type: "schemaReexport"; name: string; databaseName: string }
+				| { type: "schemaTypeReexport"; name: string; databaseName: string }
 				| {
 						type: "table";
 						name: string;
@@ -61,7 +73,13 @@ export type TypeId =
 						schemaName: string;
 				  }
 				| {
-						type: "tableInsertType";
+						type: "tableInferType";
+						name: string;
+						databaseName: string;
+						schemaName: string;
+				  }
+				| {
+						type: "tableInsertInferType";
 						name: string;
 						databaseName: string;
 						schemaName: string;

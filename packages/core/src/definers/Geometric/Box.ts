@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTBoxConfig<TMode extends "Box" | "string" = "Box" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTBoxType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Box" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Box" ? Box : string,
+	TDriverParameter = Box
+> = PgTBox<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTBoxBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTBoxBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTBoxHKT;
@@ -25,10 +43,10 @@ export interface PgTBoxHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Box
-export type PgTBoxBuilderInitial<TBox extends string> = PgTBoxBuilder<{
-	name: TBox;
+export type PgTBoxBuilderInitial<TName extends string> = PgTBoxBuilder<{
+	name: TName;
 	data: Box;
-	driverParam: string;
+	driverParam: Box;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTBox<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
 //#endregion
 
 //#region @postgresql-typed/parsers Box as string
-export type PgTBoxStringBuilderInitial<TBox extends string> = PgTBoxStringBuilder<{
-	name: TBox;
+export type PgTBoxStringBuilderInitial<TName extends string> = PgTBoxStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Box;
 	notNull: false;
 	hasDefault: false;
 }>;

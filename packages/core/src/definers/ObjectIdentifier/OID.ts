@@ -17,6 +17,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTOIDConfig<TMode extends "OID" | "string" | "number" = "OID" | "string" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTOIDType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "OID" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "OID" ? OID : TMode extends "string" ? string : number,
+	TDriverParameter = OID
+> = PgTOID<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTOIDBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTOIDBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTOIDHKT;
@@ -29,7 +47,7 @@ export interface PgTOIDHKT extends ColumnHKTBase {
 export type PgTOIDBuilderInitial<TName extends string> = PgTOIDBuilder<{
 	name: TName;
 	data: OID;
-	driverParam: string;
+	driverParam: OID;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -73,7 +91,7 @@ export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 export type PgTOIDStringBuilderInitial<TName extends string> = PgTOIDStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: OID;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -117,7 +135,7 @@ export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT
 export type PgTOIDNumberBuilderInitial<TName extends string> = PgTOIDNumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: OID;
 	notNull: false;
 	hasDefault: false;
 }>;

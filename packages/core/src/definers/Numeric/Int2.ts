@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTInt2Config<TMode extends "Int2" | "string" | "number" = "Int2" | "string" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTInt2Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int2" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int2" ? Int2 : TMode extends "string" ? string : number,
+	TDriverParameter = Int2
+> = PgTInt2<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTInt2BuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTInt2Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTInt2HKT;
@@ -28,7 +46,7 @@ export interface PgTInt2HKT extends ColumnHKTBase {
 export type PgTInt2BuilderInitial<TName extends string> = PgTInt2Builder<{
 	name: TName;
 	data: Int2;
-	driverParam: string;
+	driverParam: Int2;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTInt2<T extends ColumnBaseConfig> extends PgColumn<PgTInt2HKT, T>
 export type PgTInt2StringBuilderInitial<TName extends string> = PgTInt2StringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Int2;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -116,7 +134,7 @@ export class PgTInt2String<T extends ColumnBaseConfig> extends PgColumn<PgTInt2H
 export type PgTInt2NumberBuilderInitial<TName extends string> = PgTInt2NumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Int2;
 	notNull: false;
 	hasDefault: false;
 }>;

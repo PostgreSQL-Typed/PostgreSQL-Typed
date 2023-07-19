@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTPathConfig<TMode extends "Path" | "string" = "Path" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTPathType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Path" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Path" ? Path : string,
+	TDriverParameter = Path
+> = PgTPath<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTPathBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTPathBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTPathHKT;
@@ -25,10 +43,10 @@ export interface PgTPathHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Path
-export type PgTPathBuilderInitial<TPath extends string> = PgTPathBuilder<{
-	name: TPath;
+export type PgTPathBuilderInitial<TName extends string> = PgTPathBuilder<{
+	name: TName;
 	data: Path;
-	driverParam: string;
+	driverParam: Path;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTPath<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T>
 //#endregion
 
 //#region @postgresql-typed/parsers Path as string
-export type PgTPathStringBuilderInitial<TPath extends string> = PgTPathStringBuilder<{
-	name: TPath;
+export type PgTPathStringBuilderInitial<TName extends string> = PgTPathStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Path;
 	notNull: false;
 	hasDefault: false;
 }>;

@@ -9,22 +9,24 @@ export function getExportNameTemplate(config: PostgreSQLTypedCLIConfig, id: Type
 		case "column":
 			return filesConfig.columnName;
 		case "table":
-			return filesConfig.tableName;
 		case "tableType":
+			return filesConfig.tableName;
+		case "tableInferType":
 			return filesConfig.tableTypeName;
-		case "tableInsertType":
+		case "tableInsertInferType":
 			return filesConfig.tableInsertTypeName;
 		case "schema":
+		case "schemaType":
 			return filesConfig.schemaName;
 		case "enum":
 			return filesConfig.enumName;
 		case "domain":
 			return filesConfig.domainName;
 		case "debug":
-			return "";
 		case "schemaReexport":
-			return "";
+		case "schemaTypeReexport":
 		case "databaseReexport":
+		case "databaseTypeReexport":
 			return "";
 		case "export":
 			return getExportNameTemplate(config, id.of);

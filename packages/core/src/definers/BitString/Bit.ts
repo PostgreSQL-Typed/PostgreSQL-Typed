@@ -18,6 +18,23 @@ export interface PgTBitConfig<TMode extends "Bit" | "string" | "number" = "Bit" 
 	length?: number;
 }
 
+export type PgTBitType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Bit" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Bit" ? Bit<number> : TMode extends "string" ? string : number,
+	TDriverParameter = Bit<number>
+> = PgTBit<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTBitBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTBitBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTBitHKT;
@@ -30,7 +47,7 @@ export interface PgTBitHKT extends ColumnHKTBase {
 export type PgTBitBuilderInitial<TName extends string> = PgTBitBuilder<{
 	name: TName;
 	data: Bit<number>;
-	driverParam: string;
+	driverParam: Bit<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -83,7 +100,7 @@ export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, {
 export type PgTBitStringBuilderInitial<TName extends string> = PgTBitStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Bit<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -136,7 +153,7 @@ export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT
 export type PgTBitNumberBuilderInitial<TName extends string> = PgTBitNumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Bit<number>;
 	notNull: false;
 	hasDefault: false;
 }>;

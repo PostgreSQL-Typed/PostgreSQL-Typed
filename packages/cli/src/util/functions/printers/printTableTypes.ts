@@ -6,10 +6,10 @@ import { printTable } from "./printTable.js";
 export function printTableTypes(type: ClassDetails, printer: Printer) {
 	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printTableTypes only supports ordinary tables at the moment.");
 
-	const { TableRecord } = printTable(type, printer),
-		TableTypeRecord = printer.context.pushTypeDeclaration(
+	const { TableRecord, TableTypeRecord } = printTable(type, printer),
+		TableInferTypeRecord = printer.context.pushTypeDeclaration(
 			{
-				type: "tableType",
+				type: "tableInferType",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
@@ -21,12 +21,12 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 					type: "named",
 					isType: true,
 				});
-				return [`type ${identifierName} = InferModel<typeof ${getImport(TableRecord)}>;`];
+				return [`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}>;`];
 			}
 		),
-		TableInsertTypeRecord = printer.context.pushTypeDeclaration(
+		TableInsertInferTypeRecord = printer.context.pushTypeDeclaration(
 			{
-				type: "tableInsertType",
+				type: "tableInsertInferType",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
@@ -38,7 +38,9 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 					type: "named",
 					isType: true,
 				});
-				return [`type ${identifierName} = InferModel<typeof ${getImport(TableRecord)}, "insert">;`];
+				return [
+					`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}, "insert">;`,
+				];
 			}
 		);
 
@@ -46,27 +48,27 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 		{
 			type: "export",
 			of: {
-				type: "tableType",
+				type: "tableInferType",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
 			},
 		},
-		TableTypeRecord
+		TableInferTypeRecord
 	);
 
 	printer.context.pushReExport(
 		{
 			type: "export",
 			of: {
-				type: "tableInsertType",
+				type: "tableInsertInferType",
 				name: type.class_name,
 				databaseName: type.database_name,
 				schemaName: type.schema_name,
 			},
 		},
-		TableInsertTypeRecord
+		TableInsertInferTypeRecord
 	);
 
-	return { TableTypeRecord, TableInsertTypeRecord };
+	return { TableInferTypeRecord, TableInsertInferTypeRecord, TableRecord, TableTypeRecord };
 }

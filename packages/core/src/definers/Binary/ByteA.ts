@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTByteAConfig<TMode extends "ByteA" | "string" | "Buffer" = "ByteA" | "string" | "Buffer"> {
 	mode?: TMode;
 }
+
+export type PgTByteAType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "ByteA" | "string" | "Buffer",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "ByteA" ? ByteA : TMode extends "string" ? string : Buffer,
+	TDriverParameter = ByteA
+> = PgTByteA<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTByteABuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTByteABuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTByteAHKT;
@@ -28,7 +46,7 @@ export interface PgTByteAHKT extends ColumnHKTBase {
 export type PgTByteABuilderInitial<TName extends string> = PgTByteABuilder<{
 	name: TName;
 	data: ByteA;
-	driverParam: string;
+	driverParam: ByteA;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTByteA<T extends ColumnBaseConfig> extends PgColumn<PgTByteAHKT, 
 export type PgTByteAStringBuilderInitial<TName extends string> = PgTByteAStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: ByteA;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -116,7 +134,7 @@ export class PgTByteAString<T extends ColumnBaseConfig> extends PgColumn<PgTByte
 export type PgTByteABufferBuilderInitial<TName extends string> = PgTByteABufferBuilder<{
 	name: TName;
 	data: Buffer;
-	driverParam: string;
+	driverParam: ByteA;
 	notNull: false;
 	hasDefault: false;
 }>;

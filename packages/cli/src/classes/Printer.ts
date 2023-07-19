@@ -15,6 +15,7 @@ import type { FileContext } from "../types/interfaces/FileContext.js";
 import type { DataType } from "../types/types/DataType.js";
 import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
 import { DefaultDefinerMappings } from "../util/DefaultDefinerMappings.js";
+import { DefaultDefinerTypeMappings } from "../util/DefaultDefinerTypeMappings.js";
 import { getDefiner } from "../util/functions/getters/getDefiner.js";
 import { isDebugEnabled } from "../util/functions/isDebugEnabled.js";
 import { printDatabaseReexport } from "../util/functions/printers/printDatabaseReexport.js";
@@ -44,7 +45,7 @@ export class Printer {
 		return this.config.files.definerOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.files.definerOverrides[`${type.type_name}`] ?? null;
 	}
 
-	public getDefiner(id: number, file: FileContext, options: { maxLength?: number; nonNull?: boolean } = {}): string {
+	public getDefiner(id: number, file: FileContext, options: { maxLength?: number; notNull?: boolean } = {}): string {
 		const override = this.config.files.definerOverrides[id];
 		if (override !== undefined) {
 			const [type, imports] = override;
@@ -84,6 +85,46 @@ export class Printer {
 		return getDefiner(type, this, file, options);
 	}
 
+	public getDefinerType(id: number, file: FileContext, options: { maxLength?: number; notNull?: boolean } = {}): string {
+		const override = this.config.files.definerOverrides[id];
+		if (override !== undefined) {
+			const [type, imports] = override;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+
+		if (id in OID) {
+			const string = OID[id],
+				override = this.config.files.definerOverrides[string];
+
+			if (override !== undefined) {
+				const [type, imports] = override;
+				for (const importStatement of imports) file.addImportStatement(importStatement);
+				return type;
+			}
+		}
+
+		const builtin = DefaultDefinerTypeMappings.get(id, this.config, options);
+		if (builtin !== undefined) {
+			if (!Array.isArray(builtin)) return builtin;
+
+			const [type, imports] = builtin;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+
+		const type = this.types.get(id);
+		if (!type) return "unknown";
+
+		const globalOverride = this._getDefinerOverride(type);
+		if (globalOverride !== null) {
+			const [type, imports] = globalOverride;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+		return getDefiner(type, this, file, options);
+	}
+
 	public async print() {
 		const allClasses = [...this.classes.values()].filter(cls => cls.kind === ClassKind.OrdinaryTable),
 			databaseClassLists: ClassDetails[][] = [];
@@ -100,7 +141,7 @@ export class Printer {
 	}
 
 	private async writeFiles() {
-		const { directory } = this.config.files,
+		const { directory, preCompile } = this.config.files,
 			files = this.context.getFiles().sort((a, b) => a.filename.localeCompare(b.filename)),
 			filenames = new Set(files.map(f => f.filename));
 
@@ -146,8 +187,10 @@ export class Printer {
 
 			await Promise.all(
 				files.map(async f => {
-					const filename = join(directory, f.filename);
-					if (filename.endsWith(".ts")) {
+					const filename = join(directory, f.filename),
+						extensionsToCheck = preCompile ? [".d.ts", ".js"] : [".ts"],
+						shouldCheck = extensionsToCheck.some(extension => filename.endsWith(extension));
+					if (shouldCheck) {
 						const content = f.content.trim(),
 							checksum = `Checksum: ${createHash("sha512").update(content).digest("base64")}`;
 

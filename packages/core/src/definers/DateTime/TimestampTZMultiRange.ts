@@ -20,6 +20,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTTimestampTZMultiRangeConfig<TMode extends "TimestampTZMultiRange" | "string" = "TimestampTZMultiRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTTimestampTZMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampTZMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampTZMultiRange" ? TimestampTZMultiRange : string,
+	TDriverParameter = TimestampTZMultiRange
+> = PgTTimestampTZMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTimestampTZMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTimestampTZMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTimestampTZMultiRangeHKT;
@@ -29,10 +47,10 @@ export interface PgTTimestampTZMultiRangeHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers TimestampTZMultiRange
-export type PgTTimestampTZMultiRangeBuilderInitial<TTimestampTZMultiRange extends string> = PgTTimestampTZMultiRangeBuilder<{
-	name: TTimestampTZMultiRange;
+export type PgTTimestampTZMultiRangeBuilderInitial<TName extends string> = PgTTimestampTZMultiRangeBuilder<{
+	name: TName;
 	data: TimestampTZMultiRange;
-	driverParam: string;
+	driverParam: TimestampTZMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -75,10 +93,10 @@ export class PgTTimestampTZMultiRange<T extends ColumnBaseConfig> extends PgColu
 //#endregion
 
 //#region @postgresql-typed/parsers TimestampTZMultiRange as string
-export type PgTTimestampTZMultiRangeStringBuilderInitial<TTimestampTZMultiRange extends string> = PgTTimestampTZMultiRangeStringBuilder<{
-	name: TTimestampTZMultiRange;
+export type PgTTimestampTZMultiRangeStringBuilderInitial<TName extends string> = PgTTimestampTZMultiRangeStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: TimestampTZMultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;

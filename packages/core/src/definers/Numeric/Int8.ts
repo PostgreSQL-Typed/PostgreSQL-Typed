@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTInt8Config<TMode extends "Int8" | "string" | "BigInt" | "number" = "Int8" | "string" | "BigInt" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTInt8Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int8" | "string" | "BigInt" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int8" ? Int8 : TMode extends "string" ? string : TMode extends "BigInt" ? bigint : number,
+	TDriverParameter = Int8
+> = PgTInt8<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTInt8BuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTInt8Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTInt8HKT;
@@ -28,7 +46,7 @@ export interface PgTInt8HKT extends ColumnHKTBase {
 export type PgTInt8BuilderInitial<TName extends string> = PgTInt8Builder<{
 	name: TName;
 	data: Int8;
-	driverParam: string;
+	driverParam: Int8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTInt8<T extends ColumnBaseConfig> extends PgColumn<PgTInt8HKT, T>
 export type PgTInt8StringBuilderInitial<TName extends string> = PgTInt8StringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Int8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -116,7 +134,7 @@ export class PgTInt8String<T extends ColumnBaseConfig> extends PgColumn<PgTInt8H
 export type PgTInt8BigIntBuilderInitial<TName extends string> = PgTInt8BigIntBuilder<{
 	name: TName;
 	data: bigint;
-	driverParam: string;
+	driverParam: Int8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -160,7 +178,7 @@ export class PgTInt8BigInt<T extends ColumnBaseConfig> extends PgColumn<PgTInt8H
 export type PgTInt8NumberBuilderInitial<TName extends string> = PgTInt8NumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Int8;
 	notNull: false;
 	hasDefault: false;
 }>;

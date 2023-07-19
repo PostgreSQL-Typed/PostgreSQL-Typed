@@ -1,10 +1,9 @@
-import { sql } from "drizzle-orm";
-import { pgTable } from "drizzle-orm/pg-core";
 import { Client } from "pg";
 import { describe, expect, test } from "vitest";
 
 import { defineFloat4, defineInt2, defineText, defineTimestamp, defineTimestampTZ } from "./definers/index.js";
 import { pgt } from "./driver.js";
+import { sql, table as pgTable } from "./index.js";
 import {
 	abs,
 	and,

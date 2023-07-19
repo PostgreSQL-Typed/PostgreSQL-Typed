@@ -18,6 +18,23 @@ export interface PgTCharacterConfig<TMode extends "Character" | "string" = "Char
 	length?: number;
 }
 
+export type PgTCharacterType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Character" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Character" ? Character<number> : string,
+	TDriverParameter = Character<number>
+> = PgTCharacter<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTCharacterBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTCharacterBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTCharacterHKT;
@@ -30,7 +47,7 @@ export interface PgTCharacterHKT extends ColumnHKTBase {
 export type PgTCharacterBuilderInitial<TName extends string> = PgTCharacterBuilder<{
 	name: TName;
 	data: Character<number>;
-	driverParam: string;
+	driverParam: Character<number>;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -83,7 +100,7 @@ export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharac
 export type PgTCharacterStringBuilderInitial<TName extends string> = PgTCharacterStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Character<number>;
 	notNull: false;
 	hasDefault: false;
 }>;

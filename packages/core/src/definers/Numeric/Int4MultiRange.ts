@@ -19,6 +19,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTInt4MultiRangeConfig<TMode extends "Int4MultiRange" | "string" = "Int4MultiRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTInt4MultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int4MultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int4MultiRange" ? Int4MultiRange : string,
+	TDriverParameter = Int4MultiRange
+> = PgTInt4MultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTInt4MultiRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTInt4MultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTInt4MultiRangeHKT;
@@ -31,7 +49,7 @@ export interface PgTInt4MultiRangeHKT extends ColumnHKTBase {
 export type PgTInt4MultiRangeBuilderInitial<TInt4MultiRange extends string> = PgTInt4MultiRangeBuilder<{
 	name: TInt4MultiRange;
 	data: Int4MultiRange;
-	driverParam: string;
+	driverParam: Int4MultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -75,7 +93,7 @@ export class PgTInt4MultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTI
 export type PgTInt4MultiRangeStringBuilderInitial<TInt4MultiRange extends string> = PgTInt4MultiRangeStringBuilder<{
 	name: TInt4MultiRange;
 	data: string;
-	driverParam: string;
+	driverParam: Int4MultiRange;
 	notNull: false;
 	hasDefault: false;
 }>;

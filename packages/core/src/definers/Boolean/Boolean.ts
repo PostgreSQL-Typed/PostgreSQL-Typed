@@ -16,6 +16,26 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTBooleanConfig<TMode extends "Boolean" | "string" | "boolean" | "number" = "Boolean" | "string" | "boolean" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTBooleanType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Boolean" | "string" | "boolean",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	TData = TMode extends "Boolean" ? Boolean : TMode extends "string" ? string : TMode extends "boolean" ? boolean : number,
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	TDriverParameter = Boolean
+> = PgTBoolean<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTBooleanBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTBooleanBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTBooleanHKT;
@@ -29,7 +49,8 @@ export type PgTBooleanBuilderInitial<TName extends string> = PgTBooleanBuilder<{
 	name: TName;
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	data: Boolean;
-	driverParam: string;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	driverParam: Boolean;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -73,7 +94,8 @@ export class PgTBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanH
 export type PgTBooleanStringBuilderInitial<TName extends string> = PgTBooleanStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	driverParam: Boolean;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -117,7 +139,8 @@ export class PgTBooleanString<T extends ColumnBaseConfig> extends PgColumn<PgTBo
 export type PgTJSBooleanBuilderInitial<TName extends string> = PgTJSBooleanBuilder<{
 	name: TName;
 	data: boolean;
-	driverParam: string;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	driverParam: Boolean;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -161,7 +184,8 @@ export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBoolea
 export type PgTBooleanNumberBuilderInitial<TName extends string> = PgTBooleanNumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	driverParam: Boolean;
 	notNull: false;
 	hasDefault: false;
 }>;

@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTIntervalConfig<TMode extends "Interval" | "string" = "Interval" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTIntervalType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Interval" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Interval" ? Interval : string,
+	TDriverParameter = Interval
+> = PgTInterval<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTIntervalBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTIntervalBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTIntervalHKT;
@@ -25,10 +43,10 @@ export interface PgTIntervalHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Interval
-export type PgTIntervalBuilderInitial<TInterval extends string> = PgTIntervalBuilder<{
-	name: TInterval;
+export type PgTIntervalBuilderInitial<TName extends string> = PgTIntervalBuilder<{
+	name: TName;
 	data: Interval;
-	driverParam: string;
+	driverParam: Interval;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTInterval<T extends ColumnBaseConfig> extends PgColumn<PgTInterva
 //#endregion
 
 //#region @postgresql-typed/parsers Interval as string
-export type PgTIntervalStringBuilderInitial<TInterval extends string> = PgTIntervalStringBuilder<{
-	name: TInterval;
+export type PgTIntervalStringBuilderInitial<TName extends string> = PgTIntervalStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Interval;
 	notNull: false;
 	hasDefault: false;
 }>;

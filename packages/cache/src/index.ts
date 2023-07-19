@@ -1,4 +1,4 @@
-import { definePgTExtension, PostQueryHookData } from "@postgresql-typed/util";
+import { definePgTExtension, PgTExtensionContext, PostQueryHookData } from "@postgresql-typed/util";
 import { parse, stringify } from "json-buffer";
 import Keyv from "keyv";
 import { hash } from "ohash";
@@ -26,21 +26,34 @@ export default definePgTExtension<PgTCacheOptions>({
 			/* c8 ignore next 1 */
 			if (data.output) return;
 
+			const context = defaultContext(data.context, ttl);
+
+			if (!context.cache?.enabled) return;
 			if (!(types as string[]).includes(data.input.query.text.trim().split(" ")[0].toLowerCase())) return;
 
-			const hashed = hash(data.input, {}),
-				foundCache = await keyv.get(hashed);
+			const key = context.cache?.key ?? hash(data.input, {}),
+				foundCache = await keyv.get(key);
 
 			if (foundCache !== undefined) data.output = foundCache;
+
+			context.cache.key = key;
+			context.cache.cache = foundCache;
 		});
 
 		manager.hook("pgt:post-query", async data => {
+			const context = defaultContext(data.context, ttl);
+
+			if (!context.cache?.enabled) return;
 			if (!(types as string[]).includes(data.input.query.text.trim().split(" ")[0].toLowerCase())) return;
 
-			const hashed = hash(data.input, {}),
-				isCached = await keyv.has(hashed);
+			/* c8 ignore next 1 */
+			const key = context.cache?.key ?? hash(data.input, {}),
+				isCached = await keyv.has(key);
 
-			if (!isCached) await keyv.set(hashed, data.output);
+			if (!isCached) await keyv.set(key, data.output, context.cache?.ttl);
+
+			context.cache.key = key;
+			context.cache.cache = data.output;
 		});
 	},
 	/* c8 ignore next 27 */
@@ -98,4 +111,45 @@ export interface PgTCacheOptions {
 	 * @default ["select"]
 	 */
 	types?: ("select" | "insert" | "update" | "delete")[];
+}
+
+export interface PgTCacheContext {
+	/**
+	 * Whether the query should be cached.
+	 *
+	 * @default true
+	 */
+	enabled?: boolean;
+	/**
+	 * The TTL for the cache.
+	 *
+	 * Set to `0` to disable TTL.
+	 *
+	 * @default "What was set in the config file"
+	 */
+	ttl?: number;
+	/**
+	 * The key to use for the cache.
+	 *
+	 * If not provided, the key will be generated from the query.
+	 *
+	 * @default undefined
+	 */
+	key?: string;
+	/**
+	 * Do NOT set this manually.
+	 *
+	 * This is set by the extension to the cached value.
+	 *
+	 * @default undefined
+	 */
+	cache?: PostQueryHookData["output"];
+}
+
+function defaultContext(contextt: PgTExtensionContext, ttl?: number): PgTExtensionContext & { cache?: PgTCacheContext } {
+	const context = contextt as PgTExtensionContext & { cache?: PgTCacheContext };
+	context.cache ??= {};
+	context.cache.enabled ??= true;
+	context.cache.ttl ??= ttl;
+	return context;
 }

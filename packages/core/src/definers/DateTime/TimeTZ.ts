@@ -20,6 +20,32 @@ export interface PgTTimeTZConfig<
 > {
 	mode?: TMode;
 }
+
+export type PgTTimeTZType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimeTZ"
+		? TimeTZ
+		: TMode extends "globalThis.Date"
+		? globalThis.Date
+		: TMode extends "luxon.DateTime"
+		? luxon.DateTime
+		: TMode extends "unix"
+		? number
+		: string,
+	TDriverParameter = TimeTZ
+> = PgTTimeTZ<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTimeTZBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTimeTZBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTimeTZHKT;
@@ -32,7 +58,7 @@ export interface PgTTimeTZHKT extends ColumnHKTBase {
 export type PgTTimeTZBuilderInitial<TName extends string> = PgTTimeTZBuilder<{
 	name: TName;
 	data: TimeTZ;
-	driverParam: string;
+	driverParam: TimeTZ;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -81,7 +107,7 @@ export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT
 export type PgTTimeTZStringBuilderInitial<TName extends string> = PgTTimeTZStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: TimeTZ;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -130,7 +156,7 @@ export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgColumn<PgTTim
 export type PgTTimeTZGlobalThisDateBuilderInitial<TName extends string> = PgTTimeTZGlobalThisDateBuilder<{
 	name: TName;
 	data: globalThis.Date;
-	driverParam: string;
+	driverParam: TimeTZ;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -179,7 +205,7 @@ export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgColum
 export type PgTTimeTZLuxonDateTimeBuilderInitial<TName extends string> = PgTTimeTZLuxonDateTimeBuilder<{
 	name: TName;
 	data: luxon.DateTime;
-	driverParam: string;
+	driverParam: TimeTZ;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -227,7 +253,7 @@ export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn
 export type PgTTimeTZUnixBuilderInitial<TName extends string> = PgTTimeTZUnixBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: TimeTZ;
 	notNull: false;
 	hasDefault: false;
 }>;

@@ -1,6 +1,5 @@
 import { defineUntypedSchema, SchemaDefinition } from "untyped";
 
-import bundleSchema, { type BundleConfig } from "./BundleConfig.js";
 import definerSchema, { type DefinerModes } from "./DefinerModes.js";
 import type { ImportStatement } from "./ImportStatement.js";
 
@@ -13,18 +12,20 @@ export interface FilesConfig {
 	directory: string;
 
 	/**
-	 * Whether to bundle the generated code into a single file (per database)
-	 *
-	 * @default { "enabled": false }
-	 */
-	bundle: BundleConfig;
-
-	/**
 	 * Whether to add debugging statements to the generated code
 	 *
 	 * @default false
 	 */
 	debug: boolean;
+
+	/**
+	 * Whether to pre-compile the generated code
+	 *
+	 * This will make the generated code run faster, but will only generate .d.ts and .js files
+	 *
+	 * @default false
+	 */
+	preCompile: boolean;
 
 	/**
 	 * Definer modes
@@ -360,8 +361,11 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "__generated__",
 		$resolve: value => (typeof value === "string" ? value : "__generated__"),
 	},
-	bundle: bundleSchema,
 	debug: {
+		$default: false,
+		$resolve: Boolean,
+	},
+	preCompile: {
 		$default: false,
 		$resolve: Boolean,
 	},

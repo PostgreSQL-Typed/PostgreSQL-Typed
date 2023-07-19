@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTFloat8Config<TMode extends "Float8" | "string" | "BigNumber" | "number" = "Float8" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTFloat8Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Float8" | "string" | "BigNumber" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Float8" ? Float8 : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
+	TDriverParameter = Float8
+> = PgTFloat8<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTFloat8BuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTFloat8Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTFloat8HKT;
@@ -28,7 +46,7 @@ export interface PgTFloat8HKT extends ColumnHKTBase {
 export type PgTFloat8BuilderInitial<TName extends string> = PgTFloat8Builder<{
 	name: TName;
 	data: Float8;
-	driverParam: string;
+	driverParam: Float8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTFloat8<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT
 export type PgTFloat8StringBuilderInitial<TName extends string> = PgTFloat8StringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Float8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -116,7 +134,7 @@ export class PgTFloat8String<T extends ColumnBaseConfig> extends PgColumn<PgTFlo
 export type PgTFloat8BigNumberBuilderInitial<TName extends string> = PgTFloat8BigNumberBuilder<{
 	name: TName;
 	data: BigNumber;
-	driverParam: string;
+	driverParam: Float8;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -160,7 +178,7 @@ export class PgTFloat8BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgT
 export type PgTFloat8NumberBuilderInitial<TName extends string> = PgTFloat8NumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Float8;
 	notNull: false;
 	hasDefault: false;
 }>;

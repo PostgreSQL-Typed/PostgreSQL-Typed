@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTInt8RangeConfig<TMode extends "Int8Range" | "string" = "Int8Range" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTInt8RangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int8Range" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int8Range" ? Int8Range : TMode extends "string" ? string : number,
+	TDriverParameter = Int8Range
+> = PgTInt8Range<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTInt8RangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTInt8RangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTInt8RangeHKT;
@@ -28,7 +46,7 @@ export interface PgTInt8RangeHKT extends ColumnHKTBase {
 export type PgTInt8RangeBuilderInitial<TInt8Range extends string> = PgTInt8RangeBuilder<{
 	name: TInt8Range;
 	data: Int8Range;
-	driverParam: string;
+	driverParam: Int8Range;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTInt8Range<T extends ColumnBaseConfig> extends PgColumn<PgTInt8Ra
 export type PgTInt8RangeStringBuilderInitial<TInt8Range extends string> = PgTInt8RangeStringBuilder<{
 	name: TInt8Range;
 	data: string;
-	driverParam: string;
+	driverParam: Int8Range;
 	notNull: false;
 	hasDefault: false;
 }>;

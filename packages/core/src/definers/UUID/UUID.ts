@@ -18,6 +18,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTUUIDConfig<TMode extends "UUID" | "string" = "UUID" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTUUIDType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "UUID" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "UUID" ? UUID : string,
+	TDriverParameter = UUID
+> = PgTUUID<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTUUIDBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTUUIDBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTUUIDHKT;
@@ -30,7 +48,7 @@ export interface PgTUUIDHKT extends ColumnHKTBase {
 export type PgTUUIDBuilderInitial<TUUID extends string> = PgTUUIDBuilder<{
 	name: TUUID;
 	data: UUID;
-	driverParam: string;
+	driverParam: UUID;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -82,7 +100,7 @@ export class PgTUUID<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDHKT, T>
 export type PgTUUIDStringBuilderInitial<TUUID extends string> = PgTUUIDStringBuilder<{
 	name: TUUID;
 	data: string;
-	driverParam: string;
+	driverParam: UUID;
 	notNull: false;
 	hasDefault: false;
 }>;

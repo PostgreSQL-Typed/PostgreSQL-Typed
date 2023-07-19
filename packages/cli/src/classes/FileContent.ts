@@ -65,13 +65,11 @@ export class FileContent {
 				getDeclarationName: (id: TypeId) => resolveExportName(this.config, id),
 				getRelativePath: (id: FileExport) => {
 					const relativePath = relative(dirname(this.file), id.file);
-					return `${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
-						this.config.type === "esm" ? ".js" : ""
-					}`;
+					return `${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.(t|j)sx?$/, "").replaceAll("\\", "/")}.js`;
 				},
 			});
 
-			this._declarations.push(() => [...declarationLines, `export ${mode === "type" ? "type " : ""}{${identifierName}}`]);
+			this._declarations.push(() => [...declarationLines, identifierName ? `export ${mode === "type" ? "type " : ""}{${identifierName}}` : ""]);
 		}
 
 		return {
@@ -192,9 +190,7 @@ export class FileContent {
 							.map(imp => {
 								const relativePath = relative(dirname(this.file), imp.file);
 								return imp.getImportStatement(
-									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.tsx?$/, "").replaceAll("\\", "/")}${
-										this.config.type === "esm" ? ".js" : ""
-									}`
+									`${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.(t|j)sx?$/, "").replaceAll("\\", "/")}.js`
 								);
 							})
 							.join("\n"),

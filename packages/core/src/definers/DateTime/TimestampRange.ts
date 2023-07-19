@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTTimestampRangeConfig<TMode extends "TimestampRange" | "string" = "TimestampRange" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTTimestampRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampRange" ? TimestampRange : string,
+	TDriverParameter = TimestampRange
+> = PgTTimestampRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTimestampRangeBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTimestampRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTimestampRangeHKT;
@@ -25,10 +43,10 @@ export interface PgTTimestampRangeHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers TimestampRange
-export type PgTTimestampRangeBuilderInitial<TTimestampRange extends string> = PgTTimestampRangeBuilder<{
-	name: TTimestampRange;
+export type PgTTimestampRangeBuilderInitial<TName extends string> = PgTTimestampRangeBuilder<{
+	name: TName;
 	data: TimestampRange;
-	driverParam: string;
+	driverParam: TimestampRange;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTTimestampRange<T extends ColumnBaseConfig> extends PgColumn<PgTT
 //#endregion
 
 //#region @postgresql-typed/parsers TimestampRange as string
-export type PgTTimestampRangeStringBuilderInitial<TTimestampRange extends string> = PgTTimestampRangeStringBuilder<{
-	name: TTimestampRange;
+export type PgTTimestampRangeStringBuilderInitial<TName extends string> = PgTTimestampRangeStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: TimestampRange;
 	notNull: false;
 	hasDefault: false;
 }>;

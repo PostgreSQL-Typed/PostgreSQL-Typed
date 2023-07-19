@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTMoneyConfig<TMode extends "Money" | "string" | "BigNumber" | "number" = "Money" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
 }
+
+export type PgTMoneyType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Money" | "string" | "BigNumber" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Money" ? Money : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
+	TDriverParameter = Money
+> = PgTMoney<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTMoneyBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTMoneyBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTMoneyHKT;
@@ -28,7 +46,7 @@ export interface PgTMoneyHKT extends ColumnHKTBase {
 export type PgTMoneyBuilderInitial<TName extends string> = PgTMoneyBuilder<{
 	name: TName;
 	data: Money;
-	driverParam: string;
+	driverParam: Money;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -72,7 +90,7 @@ export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, 
 export type PgTMoneyStringBuilderInitial<TName extends string> = PgTMoneyStringBuilder<{
 	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Money;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -116,7 +134,7 @@ export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMone
 export type PgTMoneyBigNumberBuilderInitial<TName extends string> = PgTMoneyBigNumberBuilder<{
 	name: TName;
 	data: BigNumber;
-	driverParam: string;
+	driverParam: Money;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -160,7 +178,7 @@ export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTM
 export type PgTMoneyNumberBuilderInitial<TName extends string> = PgTMoneyNumberBuilder<{
 	name: TName;
 	data: number;
-	driverParam: string;
+	driverParam: Money;
 	notNull: false;
 	hasDefault: false;
 }>;

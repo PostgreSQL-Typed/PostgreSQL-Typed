@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTTextConfig<TMode extends "Text" | "string" = "Text" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTTextType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Text" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Text" ? Text : string,
+	TDriverParameter = Text
+> = PgTText<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTTextBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTTextBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTTextHKT;
@@ -25,10 +43,10 @@ export interface PgTTextHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Text
-export type PgTTextBuilderInitial<TText extends string> = PgTTextBuilder<{
-	name: TText;
+export type PgTTextBuilderInitial<TName extends string> = PgTTextBuilder<{
+	name: TName;
 	data: Text;
-	driverParam: string;
+	driverParam: Text;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTText<T extends ColumnBaseConfig> extends PgColumn<PgTTextHKT, T>
 //#endregion
 
 //#region @postgresql-typed/parsers Text as string
-export type PgTTextStringBuilderInitial<TText extends string> = PgTTextStringBuilder<{
-	name: TText;
+export type PgTTextStringBuilderInitial<TName extends string> = PgTTextStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Text;
 	notNull: false;
 	hasDefault: false;
 }>;

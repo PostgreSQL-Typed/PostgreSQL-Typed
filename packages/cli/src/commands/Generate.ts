@@ -12,9 +12,12 @@ import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js"
 
 export interface GenerateArguments<ReturnDebug extends boolean> {
 	"debug-only"?: boolean;
-	throwOnError?: boolean;
+	/**
+	 * @default "processExit"
+	 */
+	onError?: "processExit" | "throwNewError";
 	returnDebug?: ReturnDebug;
-	noConsoleLogs?: boolean;
+	silent?: boolean;
 	noFiles?: boolean;
 }
 
@@ -25,7 +28,9 @@ export const Generate = {
 	run,
 } satisfies Command;
 
-async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<ReturnDebug>): Promise<ReturnDebug extends true ? FetchedData[] : void> {
+async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<ReturnDebug> = {}): Promise<ReturnDebug extends true ? FetchedData[] : void> {
+	arguments_.onError ??= "processExit";
+
 	const log = LOGGER?.extend("Command").extend("Generate");
 	log?.("Running command...");
 	const configHandler = await new ConfigHandler().loadConfig(),
@@ -47,7 +52,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 			},
 		});
 
-	if (arguments_.noConsoleLogs !== true) progressBar.startWaiter();
+	if (arguments_.silent !== true) progressBar.startWaiter();
 
 	let promises: Promise<void>[] = [];
 	const fetchers: Fetcher[] = [];
@@ -63,7 +68,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	promises = [];
 	log?.("Connected to database(s)!");
 
-	if (arguments_.noConsoleLogs !== true) progressBar.startProgress();
+	if (arguments_.silent !== true) progressBar.startProgress();
 
 	log?.("Fetching data...");
 	log?.("Fetching tables...");
@@ -91,13 +96,13 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	);
 
 	log?.("Printing types...");
-	if (arguments_.noConsoleLogs !== true) progressBar.setProgressLine1(g("Generating types"));
+	if (arguments_.silent !== true) progressBar.setProgressLine1(g("Generating types"));
 	if (arguments_.noFiles !== true) await printer.print();
 	log?.("Printed types!");
 	progressBar.incrementProgress();
 
 	log?.("Disconnecting from database(s)...");
-	if (arguments_.noConsoleLogs !== true) progressBar.setProgressLine1(g("Finalizing"));
+	if (arguments_.silent !== true) progressBar.setProgressLine1(g("Finalizing"));
 
 	for (const fetcher of fetchers) promises.push(fetcher.disconnect());
 
@@ -107,7 +112,7 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	log?.("Disconnected from database(s)!");
 	progressBar.stop();
 
-	if (arguments_.noConsoleLogs !== true) {
+	if (arguments_.silent !== true) {
 		// eslint-disable-next-line no-console
 		console.log(
 			getConsoleHeader(
@@ -120,6 +125,6 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 	}
 
 	if (arguments_.returnDebug === true) return fetchers.map(f => f.fetchedData) as ReturnDebug extends true ? FetchedData[] : void;
-	if (arguments_.throwOnError !== true) process.exit(0);
+	if (arguments_.onError === "processExit") process.exit(0);
 	return undefined as ReturnDebug extends true ? FetchedData[] : void;
 }

@@ -16,6 +16,24 @@ import { PgTArrayBuilder } from "../../array.js";
 export interface PgTLineConfig<TMode extends "Line" | "string" = "Line" | "string"> {
 	mode?: TMode;
 }
+
+export type PgTLineType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Line" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Line" ? Line : string,
+	TDriverParameter = Line
+> = PgTLine<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+}>;
+
 export interface PgTLineBuilderHKT extends ColumnBuilderHKTBase {
 	_type: PgTLineBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
 	_columnHKT: PgTLineHKT;
@@ -25,10 +43,10 @@ export interface PgTLineHKT extends ColumnHKTBase {
 }
 
 //#region @postgresql-typed/parsers Line
-export type PgTLineBuilderInitial<TLine extends string> = PgTLineBuilder<{
-	name: TLine;
+export type PgTLineBuilderInitial<TName extends string> = PgTLineBuilder<{
+	name: TName;
 	data: Line;
-	driverParam: string;
+	driverParam: Line;
 	notNull: false;
 	hasDefault: false;
 }>;
@@ -69,10 +87,10 @@ export class PgTLine<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T>
 //#endregion
 
 //#region @postgresql-typed/parsers Line as string
-export type PgTLineStringBuilderInitial<TLine extends string> = PgTLineStringBuilder<{
-	name: TLine;
+export type PgTLineStringBuilderInitial<TName extends string> = PgTLineStringBuilder<{
+	name: TName;
 	data: string;
-	driverParam: string;
+	driverParam: Line;
 	notNull: false;
 	hasDefault: false;
 }>;

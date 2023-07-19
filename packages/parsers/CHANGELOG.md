@@ -1,5 +1,12 @@
 # postgresql-type-parsers
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [[`ccdfeda`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ccdfeda0889527bf1b20f5376f53f31cdd02ec4f), [`ccdfeda`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ccdfeda0889527bf1b20f5376f53f31cdd02ec4f)]:
+  - @postgresql-typed/util@0.8.0
+
 ## 0.9.0
 
 ### Minor Changes

@@ -111,10 +111,46 @@ describe("select", () => {
 
 			expect(result14).toEqual([{ int2: 1, text: null }]);
 
-			const result13b = database.$with("sq").as(() => database.select().from(table).where(eq(table.int2, 1))),
+			const result13b = database.$with("sq").as(qb => qb.select().from(table).where(eq(table.int2, 1))),
 				result14b = await database.with(result13b).select().from(result13b);
 
 			expect(result14b).toEqual([{ int2: 1, text: null }]);
+
+			const result13c = database.$with("sq").as(qb => qb.selectDistinct().from(table).where(eq(table.int2, 1))),
+				result14c = await database.with(result13c).select().from(result13c);
+
+			expect(result14c).toEqual([{ int2: 1, text: null }]);
+
+			const result13d = database.$with("sq").as(qb => qb.selectDistinctOn([table.int2]).from(table).where(eq(table.int2, 1))),
+				result14d = await database.with(result13d).select().from(result13d);
+
+			expect(result14d).toEqual([{ int2: 1, text: null }]);
+
+			// eslint-disable-next-line unicorn/prevent-abbreviations
+			const result13e = database.$with("sq").as(qb => {
+					const sq = qb.$with("sq2").as(qb2 => qb2.select().from(table));
+					return qb.with(sq).select().from(sq);
+				}),
+				// eslint-disable-next-line unicorn/prevent-abbreviations
+				result14e = await database.with(result13e).select().from(result13e);
+
+			expect(result14e).toEqual([{ int2: 1, text: null }]);
+
+			const result13f = database.$with("sq").as(qb => {
+					const sq = qb.$with("sq2").as(qb2 => qb2.select().from(table));
+					return qb.with(sq).selectDistinct().from(table);
+				}),
+				result14f = await database.with(result13f).select().from(result13f);
+
+			expect(result14f).toEqual([{ int2: 1, text: null }]);
+
+			const result13g = database.$with("sq").as(qb => {
+					const sq = qb.$with("sq2").as(qb2 => qb2.select().from(table));
+					return qb.with(sq).selectDistinctOn([table.int2]).from(table);
+				}),
+				result14g = await database.with(result13g).select().from(result13g);
+
+			expect(result14g).toEqual([{ int2: 1, text: null }]);
 
 			const result15 = await database
 				.select()

@@ -1,5 +1,15 @@
 # @postgresql-typed/util
 
+## 0.8.0
+
+### Minor Changes
+
+- [#64](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/64) [`ccdfeda`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ccdfeda0889527bf1b20f5376f53f31cdd02ec4f) Thanks [@Bas950](https://github.com/Bas950)! - remove bundle option (for now)
+
+### Patch Changes
+
+- [#64](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/64) [`ccdfeda`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ccdfeda0889527bf1b20f5376f53f31cdd02ec4f) Thanks [@Bas950](https://github.com/Bas950)! - Add support for pre-compiling in the CLI
+
 ## 0.7.0
 
 ### Minor Changes

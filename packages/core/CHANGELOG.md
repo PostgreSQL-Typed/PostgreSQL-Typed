@@ -1,5 +1,13 @@
 # @postgresql-typed/core
 
+## 0.9.0
+
+### Minor Changes
+
+- [`f990ac3`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/f990ac3af43fb1932eb28921d9a321583ea7fa3f) Thanks [@Bas950](https://github.com/Bas950)! - Use own mapResultRow function due to bug in drizzle-orm
+
+- [`362c6c5`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/362c6c5c1a7094bec5c65607ffa436582f96bd27) Thanks [@Bas950](https://github.com/Bas950)! - PgTError instead of PgTPError
+
 ## 0.8.2
 
 ### Patch Changes

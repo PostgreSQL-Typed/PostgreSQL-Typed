@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTCircleConfig<TMode extends "Circle" | "string" = "Circle" | "string"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTCircle<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Circle.from(value as string);
+		const result = Circle.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTCircleString<T extends ColumnBaseConfig> extends PgColumn<PgTCir
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Circle.from(value as string);
+		const result = Circle.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

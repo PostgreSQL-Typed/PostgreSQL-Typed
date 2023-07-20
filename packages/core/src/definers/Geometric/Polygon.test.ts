@@ -70,6 +70,14 @@ describe("definePolygon", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.polygon, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table polygon;
 		`);
@@ -131,6 +139,14 @@ describe("definePolygon", async () => {
 		const result4 = await database.select().from(table).where(sameAs(table.polygon, "((1,2),(3,5))")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.polygon, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table polygonstring;

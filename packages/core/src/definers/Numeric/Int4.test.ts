@@ -70,6 +70,14 @@ describe("defineInt4", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int4, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int4;
 		`);
@@ -132,6 +140,14 @@ describe("defineInt4", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int4, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int4string;
 		`);
@@ -193,6 +209,14 @@ describe("defineInt4", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int4, 2)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int4, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int4number;

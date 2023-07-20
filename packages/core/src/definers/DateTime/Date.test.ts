@@ -70,6 +70,14 @@ describe("defineDate", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.date, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table date;
 		`);
@@ -132,6 +140,14 @@ describe("defineDate", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.date, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table datestring;
 		`);
@@ -193,6 +209,14 @@ describe("defineDate", async () => {
 		const result4 = await database.select().from(table).where(eq(table.date, 1_704_067_200_000)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.date, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table dateunix;
@@ -264,6 +288,14 @@ describe("defineDate", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.date, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table dateluxon;
 		`);
@@ -333,6 +365,14 @@ describe("defineDate", async () => {
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.date, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table datejs;

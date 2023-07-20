@@ -70,6 +70,14 @@ describe("defineInt8Range", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8range, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int8range;
 		`);
@@ -131,6 +139,14 @@ describe("defineInt8Range", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int8range, "[11,13)")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8range, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int8rangestring;

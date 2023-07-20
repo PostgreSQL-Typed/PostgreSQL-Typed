@@ -70,6 +70,14 @@ describe("definePoint", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.point, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'nan' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table point;
 		`);
@@ -131,6 +139,14 @@ describe("definePoint", async () => {
 		const result4 = await database.select().from(table).where(sameAs(table.point, "(1,3)")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.point, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'nan' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table pointstring;

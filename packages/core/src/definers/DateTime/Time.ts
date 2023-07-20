@@ -13,6 +13,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimeConfig<
 	TMode extends "Time" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Time" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -96,7 +97,9 @@ export class PgTTime<T extends ColumnBaseConfig> extends PgColumn<PgTTimeHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Time.from(value as string);
+		const result = Time.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -145,7 +148,9 @@ export class PgTTimeString<T extends ColumnBaseConfig> extends PgColumn<PgTTimeH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Time.from(value as string);
+		const result = Time.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -194,7 +199,9 @@ export class PgTTimeGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Time.from(value as string);
+		const result = Time.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -243,7 +250,9 @@ export class PgTTimeLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<P
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Time.from(value as string);
+		const result = Time.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 
@@ -291,7 +300,9 @@ export class PgTTimeUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTimeHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Time.from(value as string);
+		const result = Time.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

@@ -14,6 +14,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTUUIDConfig<TMode extends "UUID" | "string" = "UUID" | "string"> {
 	mode?: TMode;
@@ -91,7 +92,9 @@ export class PgTUUID<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return UUID.from(value as string);
+		const result = UUID.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -143,7 +146,9 @@ export class PgTUUIDString<T extends ColumnBaseConfig> extends PgColumn<PgTUUIDH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return UUID.from(value as string);
+		const result = UUID.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

@@ -70,6 +70,14 @@ describe("defineCharacterVarying", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.charactervarying, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table charactervarying;
 		`);
@@ -132,6 +140,14 @@ describe("defineCharacterVarying", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.charactervarying, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table charactervaryingstring;
 		`);
@@ -188,6 +204,14 @@ describe("defineCharacterVarying", async () => {
 		const result4 = await database.select().from(table).where(eq(table.charactervarying2, "def")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.charactervarying1, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table charactervaryinglength;

@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTByteAConfig<TMode extends "ByteA" | "string" | "Buffer" = "ByteA" | "string" | "Buffer"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTByteA<T extends ColumnBaseConfig> extends PgColumn<PgTByteAHKT, 
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return ByteA.from(value as string);
+		const result = ByteA.safeFrom(value as Buffer);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTByteAString<T extends ColumnBaseConfig> extends PgColumn<PgTByte
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return ByteA.from(value as string);
+		const result = ByteA.safeFrom(value as Buffer);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -169,7 +174,9 @@ export class PgTByteABuffer<T extends ColumnBaseConfig> extends PgColumn<PgTByte
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return ByteA.from(value as Buffer);
+		const result = ByteA.safeFrom(value as Buffer);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

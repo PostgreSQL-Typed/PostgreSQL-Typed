@@ -70,6 +70,14 @@ describe("defineInterval", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.interval, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table interval;
 		`);
@@ -131,6 +139,14 @@ describe("defineInterval", async () => {
 		const result4 = await database.select().from(table).where(eq(table.interval, "2022 years 9 months 3 days")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.interval, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table intervalstring;

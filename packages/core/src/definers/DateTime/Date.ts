@@ -13,6 +13,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTDateConfig<
 	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -97,7 +98,9 @@ export class PgTDate<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Date.from(value as string);
+		const result = Date.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -146,7 +149,9 @@ export class PgTDateString<T extends ColumnBaseConfig> extends PgColumn<PgTDateH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Date.from(value as string);
+		const result = Date.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -195,7 +200,9 @@ export class PgTDateGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Date.from(value as string);
+		const result = Date.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -244,7 +251,9 @@ export class PgTDateLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<P
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Date.from(value as string);
+		const result = Date.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 
@@ -292,7 +301,9 @@ export class PgTDateUnix<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Date.from(value as string);
+		const result = Date.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

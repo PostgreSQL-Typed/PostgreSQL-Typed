@@ -73,6 +73,14 @@ describe("defineTimestampRange", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamprange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table timestamprange;
 		`);
@@ -134,6 +142,14 @@ describe("defineTimestampRange", async () => {
 		const result4 = await database.select().from(table).where(eq(table.timestamprange, "[2025-01-01T00:00:00Z,2027-01-01T00:00:00Z)")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamprange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timestamprangestring;

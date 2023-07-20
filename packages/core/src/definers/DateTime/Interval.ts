@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTIntervalConfig<TMode extends "Interval" | "string" = "Interval" | "string"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTInterval<T extends ColumnBaseConfig> extends PgColumn<PgTInterva
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Interval.from(value as string);
+		const result = Interval.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTIntervalString<T extends ColumnBaseConfig> extends PgColumn<PgTI
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Interval.from(value as string);
+		const result = Interval.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

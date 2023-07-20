@@ -70,6 +70,14 @@ describe("defineText", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.text, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table text;
 		`);
@@ -131,6 +139,14 @@ describe("defineText", async () => {
 		const result4 = await database.select().from(table).where(eq(table.text, "b")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.text, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table textstring;

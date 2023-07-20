@@ -70,6 +70,14 @@ describe("defineTime", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.time, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table time;
 		`);
@@ -131,6 +139,14 @@ describe("defineTime", async () => {
 		const result4 = await database.select().from(table).where(eq(table.time, "10:10:10")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.time, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timestring;
@@ -203,6 +219,14 @@ describe("defineTime", async () => {
 		const result4 = await database.select().from(table).where(eq(table.time, todayInMilliseconds)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.time, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timeunix;
@@ -297,6 +321,14 @@ describe("defineTime", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.time, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table timeluxon;
 		`);
@@ -389,6 +421,14 @@ describe("defineTime", async () => {
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.time, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timejs;

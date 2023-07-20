@@ -55,7 +55,6 @@ describe("defineJSONB", async () => {
 		const result3 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("1")}::jsonb::text`))
 			.execute();
 
@@ -67,11 +66,18 @@ describe("defineJSONB", async () => {
 		const result4 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("2")}::jsonb::text`))
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.jsonb, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'null' | 'array' | 'boolean', received 'symbol'");
 
 		await database.execute(sql`
 			drop table jsonb;
@@ -127,7 +133,6 @@ describe("defineJSONB", async () => {
 		const result3 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("1")}::jsonb::text`))
 			.execute();
 
@@ -139,11 +144,18 @@ describe("defineJSONB", async () => {
 		const result4 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("2")}::jsonb::text`))
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.jsonb, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'null' | 'array' | 'boolean', received 'symbol'");
 
 		await database.execute(sql`
 			drop table jsonbstring;
@@ -199,7 +211,6 @@ describe("defineJSONB", async () => {
 		const result3 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("1")}::jsonb::text`))
 			.execute();
 
@@ -211,11 +222,18 @@ describe("defineJSONB", async () => {
 		const result4 = await database
 			.select()
 			.from(table)
-			//@ts-expect-error - Workaround
 			.where(eq(sql`${table.jsonb}::jsonb::text`, sql`${JSON.from("2")}::jsonb::text`))
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.jsonb, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'null' | 'array' | 'boolean', received 'symbol'");
 
 		await database.execute(sql`
 			drop table jsonbvalue;

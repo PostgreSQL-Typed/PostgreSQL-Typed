@@ -13,6 +13,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimestampTZRangeConfig<TMode extends "TimestampTZRange" | "string" = "TimestampTZRange" | "string"> {
 	mode?: TMode;
@@ -84,7 +85,9 @@ export class PgTTimestampTZRange<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZRange.from(value as string);
+		const result = TimestampTZRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -130,7 +133,9 @@ export class PgTTimestampTZRangeString<T extends ColumnBaseConfig> extends PgCol
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZRange.from(value as string);
+		const result = TimestampTZRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

@@ -14,6 +14,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimeTZConfig<
 	TMode extends "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -98,7 +99,9 @@ export class PgTTimeTZ<T extends ColumnBaseConfig> extends PgColumn<PgTTimeTZHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string);
+		const result = TimeTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -147,7 +150,9 @@ export class PgTTimeTZString<T extends ColumnBaseConfig> extends PgColumn<PgTTim
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string);
+		const result = TimeTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -196,7 +201,9 @@ export class PgTTimeTZGlobalThisDate<T extends ColumnBaseConfig> extends PgColum
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string);
+		const result = TimeTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -245,7 +252,9 @@ export class PgTTimeTZLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string);
+		const result = TimeTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 
@@ -293,7 +302,9 @@ export class PgTTimeTZUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTimeT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimeTZ.from(value as string);
+		const result = TimeTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

@@ -70,6 +70,14 @@ describe("defineBox", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.box, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table box;
 		`);
@@ -131,6 +139,14 @@ describe("defineBox", async () => {
 		const result4 = await database.select().from(table).where(sameAs(table.box, "(3,4),(3,4)")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(sameAs(table.box, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table boxstring;

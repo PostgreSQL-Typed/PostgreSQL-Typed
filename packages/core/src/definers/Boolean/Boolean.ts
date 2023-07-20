@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTBooleanConfig<TMode extends "Boolean" | "string" | "boolean" | "number" = "Boolean" | "string" | "boolean" | "number"> {
 	mode?: TMode;
@@ -85,7 +86,9 @@ export class PgTBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBooleanH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as string);
+		const result = Boolean.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -130,7 +133,9 @@ export class PgTBooleanString<T extends ColumnBaseConfig> extends PgColumn<PgTBo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as string);
+		const result = Boolean.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -175,7 +180,9 @@ export class PgTJSBoolean<T extends ColumnBaseConfig> extends PgColumn<PgTBoolea
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as boolean);
+		const result = Boolean.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -220,7 +227,9 @@ export class PgTBooleanNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Boolean.from(value as number);
+		const result = Boolean.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

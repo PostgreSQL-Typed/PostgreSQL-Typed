@@ -70,6 +70,14 @@ describe("defineBoolean", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.boolean, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'boolean', received 'symbol'");
+
 		await database.execute(sql`
 			drop table boolean;
 		`);
@@ -131,6 +139,14 @@ describe("defineBoolean", async () => {
 		const result4 = await database.select().from(table).where(eq(table.boolean, "false")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.boolean, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'boolean', received 'symbol'");
 
 		await database.execute(sql`
 			drop table booleanstring;
@@ -194,6 +210,14 @@ describe("defineBoolean", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.boolean, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'boolean', received 'symbol'");
+
 		await database.execute(sql`
 			drop table booleannumber;
 		`);
@@ -255,6 +279,14 @@ describe("defineBoolean", async () => {
 		const result4 = await database.select().from(table).where(eq(table.boolean, false)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.boolean, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'boolean', received 'symbol'");
 
 		await database.execute(sql`
 			drop table booleanboolean;

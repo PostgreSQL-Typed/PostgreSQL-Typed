@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 // MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
 /* c8 ignore start */
@@ -86,7 +87,9 @@ export class PgTTimestampMultiRange<T extends ColumnBaseConfig> extends PgColumn
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampMultiRange.from(value as string);
+		const result = TimestampMultiRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -132,7 +135,9 @@ export class PgTTimestampMultiRangeString<T extends ColumnBaseConfig> extends Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampMultiRange.from(value as string);
+		const result = TimestampMultiRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

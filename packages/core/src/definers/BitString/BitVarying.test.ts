@@ -70,6 +70,14 @@ describe("defineBitVarying", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.varbit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+
 		await database.execute(sql`
 			drop table varbit;
 		`);
@@ -131,6 +139,14 @@ describe("defineBitVarying", async () => {
 		const result4 = await database.select().from(table).where(eq(table.varbit, "0")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.varbit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 
 		await database.execute(sql`
 			drop table varbitstring;
@@ -194,6 +210,14 @@ describe("defineBitVarying", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.varbit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+
 		await database.execute(sql`
 			drop table varbitnumber;
 		`);
@@ -256,6 +280,14 @@ describe("defineBitVarying", async () => {
 		const result4 = await database.select().from(table).where(eq(table.varbit3, 0)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.varbit1, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 
 		await database.execute(sql`
 			drop table varbitlength;

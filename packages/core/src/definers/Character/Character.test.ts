@@ -70,6 +70,14 @@ describe("defineCharacter", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.character, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table character;
 		`);
@@ -132,6 +140,14 @@ describe("defineCharacter", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.character, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table characterstring;
 		`);
@@ -188,6 +204,14 @@ describe("defineCharacter", async () => {
 		const result4 = await database.select().from(table).where(eq(table.character2, "def")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.character1, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table characterlength;

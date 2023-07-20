@@ -70,6 +70,14 @@ describe("defineInt2", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int2, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int2;
 		`);
@@ -132,6 +140,14 @@ describe("defineInt2", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int2, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int2string;
 		`);
@@ -193,6 +209,14 @@ describe("defineInt2", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int2, 2)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int2, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int2number;

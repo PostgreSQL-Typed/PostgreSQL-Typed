@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTBitVaryingConfig<TMode extends "BitVarying" | "string" | "number" = "BitVarying" | "string" | "number"> {
 	mode?: TMode;
@@ -90,8 +91,9 @@ export class PgTBitVarying<T extends ColumnBaseConfig> extends PgColumn<PgTBitVa
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string);
-		return BitVarying.from(value as string);
+		const result = this.config.length === undefined ? BitVarying.safeFrom(value as string) : BitVarying.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -143,8 +145,9 @@ export class PgTBitVaryingString<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as string);
-		return BitVarying.from(value as string);
+		const result = this.config.length === undefined ? BitVarying.safeFrom(value as string) : BitVarying.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -200,8 +203,9 @@ export class PgTBitVaryingNumber<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return BitVarying.setN(this.config.length).from(value as number);
-		return BitVarying.from(value as number);
+		const result = this.config.length === undefined ? BitVarying.safeFrom(value as string) : BitVarying.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

@@ -70,6 +70,14 @@ describe("defineBit", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+
 		await database.execute(sql`
 			drop table bit;
 		`);
@@ -131,6 +139,14 @@ describe("defineBit", async () => {
 		const result4 = await database.select().from(table).where(eq(table.bit, "0")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 
 		await database.execute(sql`
 			drop table bitstring;
@@ -194,6 +210,14 @@ describe("defineBit", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bit, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
+
 		await database.execute(sql`
 			drop table bitnumber;
 		`);
@@ -256,6 +280,14 @@ describe("defineBit", async () => {
 		const result4 = await database.select().from(table).where(eq(table.bit3, 0)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bit1, true as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'boolean'");
 
 		await database.execute(sql`
 			drop table bitlength;

@@ -71,6 +71,14 @@ describe("defineOID", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.oid, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table oid;
 		`);
@@ -133,6 +141,14 @@ describe("defineOID", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.oid, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table oidstring;
 		`);
@@ -194,6 +210,14 @@ describe("defineOID", async () => {
 		const result4 = await database.select().from(table).where(eq(table.oid, 2)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.oid, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table oidnumber;

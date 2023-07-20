@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTMoneyConfig<TMode extends "Money" | "string" | "BigNumber" | "number" = "Money" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, 
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as string);
+		const result = Money.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMone
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as string);
+		const result = Money.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -169,7 +174,9 @@ export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTM
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as BigNumber);
+		const result = Money.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -213,7 +220,9 @@ export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMone
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Money.from(value as number);
+		const result = Money.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

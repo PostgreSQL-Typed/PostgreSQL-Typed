@@ -84,6 +84,14 @@ describe("defineDateMultiRange", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.datemultirange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table datemultirange;
 		`);
@@ -167,6 +175,14 @@ describe("defineDateMultiRange", async () => {
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.datemultirange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table datemultirangestring;

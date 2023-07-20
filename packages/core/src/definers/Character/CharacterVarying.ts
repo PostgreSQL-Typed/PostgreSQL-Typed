@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTCharacterVaryingConfig<TMode extends "CharacterVarying" | "string" = "CharacterVarying" | "string"> {
 	mode?: TMode;
@@ -90,8 +91,10 @@ export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
-		return CharacterVarying.from(value as string);
+		const result =
+			this.config.length === undefined ? CharacterVarying.safeFrom(value as string) : CharacterVarying.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -147,8 +150,10 @@ export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgCol
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
-		return CharacterVarying.from(value as string);
+		const result =
+			this.config.length === undefined ? CharacterVarying.safeFrom(value as string) : CharacterVarying.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

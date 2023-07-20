@@ -71,6 +71,14 @@ describe("defineTimestampTZ", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamptz, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table timestamptz;
 		`);
@@ -133,6 +141,14 @@ describe("defineTimestampTZ", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamptz, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table timestamptzstring;
 		`);
@@ -167,8 +183,8 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z").value,
-				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z").value, TimestampTZ.from("2023-01-01T11:11:11Z").value],
+				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z").toNumber(),
+				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z").toNumber(), TimestampTZ.from("2023-01-01T11:11:11Z").toNumber()],
 			})
 			.returning();
 
@@ -194,6 +210,14 @@ describe("defineTimestampTZ", async () => {
 		const result4 = await database.select().from(table).where(eq(table.timestamptz, 1_672_531_300_000)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamptz, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timestamptzunix;
@@ -288,6 +312,14 @@ describe("defineTimestampTZ", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamptz, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
+
 		await database.execute(sql`
 			drop table timestamptzluxon;
 		`);
@@ -380,6 +412,14 @@ describe("defineTimestampTZ", async () => {
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.timestamptz, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'symbol'");
 
 		await database.execute(sql`
 			drop table timestamptzjs;

@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTBitConfig<TMode extends "Bit" | "string" | "number" = "Bit" | "string" | "number"> {
 	mode?: TMode;
@@ -90,8 +91,9 @@ export class PgTBit<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT, T, {
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
-		return Bit.from(value as string);
+		const result = this.config.length === undefined ? Bit.safeFrom(value as string) : Bit.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -143,8 +145,9 @@ export class PgTBitString<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
-		return Bit.from(value as string);
+		const result = this.config.length === undefined ? Bit.safeFrom(value as string) : Bit.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -200,8 +203,9 @@ export class PgTBitNumber<T extends ColumnBaseConfig> extends PgColumn<PgTBitHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		if (this.config.length !== undefined) return Bit.setN(this.config.length).from(value as string);
-		return Bit.from(value as string);
+		const result = this.config.length === undefined ? Bit.safeFrom(value as string) : Bit.setN(this.config.length).safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

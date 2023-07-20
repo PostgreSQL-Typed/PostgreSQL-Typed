@@ -71,6 +71,14 @@ describe("defineUUID", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.uuid, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table uuid;
 		`);
@@ -132,6 +140,14 @@ describe("defineUUID", async () => {
 		const result4 = await database.select().from(table).where(eq(table.uuid, "cd65d0c9-3818-4cdc-ad3c-52f5757a1b63")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.uuid, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table uuidstring;

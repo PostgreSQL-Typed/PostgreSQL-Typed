@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTFloat8Config<TMode extends "Float8" | "string" | "BigNumber" | "number" = "Float8" | "string" | "BigNumber" | "number"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTFloat8<T extends ColumnBaseConfig> extends PgColumn<PgTFloat8HKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float8.from(value as string);
+		const result = Float8.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTFloat8String<T extends ColumnBaseConfig> extends PgColumn<PgTFlo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float8.from(value as string);
+		const result = Float8.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -169,7 +174,9 @@ export class PgTFloat8BigNumber<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float8.from(value as BigNumber);
+		const result = Float8.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -213,7 +220,9 @@ export class PgTFloat8Number<T extends ColumnBaseConfig> extends PgColumn<PgTFlo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Float8.from(value as number);
+		const result = Float8.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

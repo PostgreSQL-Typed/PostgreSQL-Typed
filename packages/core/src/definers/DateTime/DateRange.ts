@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTDateRangeConfig<TMode extends "DateRange" | "string" = "DateRange" | "string"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTDateRange<T extends ColumnBaseConfig> extends PgColumn<PgTDateRa
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return DateRange.from(value as string);
+		const result = DateRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTDateRangeString<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return DateRange.from(value as string);
+		const result = DateRange.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

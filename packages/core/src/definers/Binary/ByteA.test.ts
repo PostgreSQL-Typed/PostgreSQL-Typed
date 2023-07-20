@@ -70,6 +70,14 @@ describe("defineByteA", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bytea, 1 as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'Buffer', received 'number'");
+
 		await database.execute(sql`
 			drop table bytea;
 		`);
@@ -131,6 +139,14 @@ describe("defineByteA", async () => {
 		const result4 = await database.select().from(table).where(eq(table.bytea, "\\x3456")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bytea, 1 as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'Buffer', received 'number'");
 
 		await database.execute(sql`
 			drop table byteastring;
@@ -201,6 +217,14 @@ describe("defineByteA", async () => {
 			.execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.bytea, 1 as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'Buffer', received 'number'");
 
 		await database.execute(sql`
 			drop table byteabuffer;

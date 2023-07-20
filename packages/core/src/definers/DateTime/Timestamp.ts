@@ -14,6 +14,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimestampConfig<
 	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
@@ -98,7 +99,9 @@ export class PgTTimestamp<T extends ColumnBaseConfig> extends PgColumn<PgTTimest
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string);
+		const result = Timestamp.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -147,7 +150,9 @@ export class PgTTimestampString<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string);
+		const result = Timestamp.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -196,7 +201,9 @@ export class PgTTimestampGlobalThisDate<T extends ColumnBaseConfig> extends PgCo
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string);
+		const result = Timestamp.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -245,7 +252,9 @@ export class PgTTimestampLuxonDateTime<T extends ColumnBaseConfig> extends PgCol
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string);
+		const result = Timestamp.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 
@@ -293,7 +302,9 @@ export class PgTTimestampUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTi
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Timestamp.from(value as string);
+		const result = Timestamp.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

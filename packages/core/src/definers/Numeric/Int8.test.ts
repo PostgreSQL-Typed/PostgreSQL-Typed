@@ -70,6 +70,14 @@ describe("defineInt8", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'bigint' | 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int8;
 		`);
@@ -131,6 +139,14 @@ describe("defineInt8", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int8, "2")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'bigint' | 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int8string;
@@ -202,6 +218,14 @@ describe("defineInt8", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'bigint' | 'number' | 'string' | 'object', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int8bignumber;
 		`);
@@ -263,6 +287,14 @@ describe("defineInt8", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int8, 2)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'bigint' | 'number' | 'string' | 'object', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int8number;

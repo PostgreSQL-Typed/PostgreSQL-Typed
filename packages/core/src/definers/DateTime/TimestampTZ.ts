@@ -14,6 +14,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimestampTZConfig<
 	TMode extends "TimestampTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" =
@@ -103,7 +104,9 @@ export class PgTTimestampTZ<T extends ColumnBaseConfig> extends PgColumn<PgTTime
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZ.from(value as string);
+		const result = TimestampTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -152,7 +155,9 @@ export class PgTTimestampTZString<T extends ColumnBaseConfig> extends PgColumn<P
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZ.from(value as string);
+		const result = TimestampTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -201,7 +206,9 @@ export class PgTTimestampTZGlobalThisDate<T extends ColumnBaseConfig> extends Pg
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZ.from(value as string);
+		const result = TimestampTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -250,7 +257,9 @@ export class PgTTimestampTZLuxonDateTime<T extends ColumnBaseConfig> extends PgC
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZ.from(value as string);
+		const result = TimestampTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 
@@ -298,7 +307,9 @@ export class PgTTimestampTZUnix<T extends ColumnBaseConfig> extends PgColumn<PgT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return TimestampTZ.from(value as string);
+		const result = TimestampTZ.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

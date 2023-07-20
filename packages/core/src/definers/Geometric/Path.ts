@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTPathConfig<TMode extends "Path" | "string" = "Path" | "string"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTPath<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Path.from(value as string);
+		const result = Path.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTPathString<T extends ColumnBaseConfig> extends PgColumn<PgTPathH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Path.from(value as string);
+		const result = Path.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion

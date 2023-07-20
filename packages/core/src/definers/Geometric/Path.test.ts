@@ -62,6 +62,14 @@ describe("definePath", async () => {
 		expect(Path.isPath(result3[0]._path[0])).toBe(true);
 		expect(Path.isPath(result3[0]._path[1])).toBe(true);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.path, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table path;
 		`);
@@ -119,6 +127,14 @@ describe("definePath", async () => {
 		expect(result3[0]._path.length).toBe(2);
 		expect(result3[0]._path[0]).toBe("((1,2),(3,4))");
 		expect(result3[0]._path[1]).toBe("((1,2),(4,5))");
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.path, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table pathstring;

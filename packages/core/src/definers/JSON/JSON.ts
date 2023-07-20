@@ -13,6 +13,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTJSONConfig<TMode extends "JSON" | "string" | "value" = "JSON" | "string" | "value"> {
 	mode?: TMode;
@@ -88,7 +89,9 @@ export class PgTJSON<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return JSON.from(value as string);
+		const result = JSON.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -132,7 +135,9 @@ export class PgTJSONString<T extends ColumnBaseConfig> extends PgColumn<PgTJSONH
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return JSON.from(value as string);
+		const result = JSON.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -176,7 +181,9 @@ export class PgTJSONValue<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHK
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return JSON.from(value as string);
+		const result = JSON.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

@@ -81,6 +81,14 @@ describe("defineInt4MultiRange", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int4multirange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table int4multirange;
 		`);
@@ -153,6 +161,14 @@ describe("defineInt4MultiRange", async () => {
 		const result4 = await database.select().from(table).where(eq(table.int4multirange, "{[1,3),[11,13),[21,25)}")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.int4multirange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table int4multirangestring;

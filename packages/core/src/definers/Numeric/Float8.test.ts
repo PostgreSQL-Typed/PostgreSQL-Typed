@@ -70,6 +70,14 @@ describe("defineFloat8", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.float8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'symbol'");
+
 		await database.execute(sql`
 			drop table float8;
 		`);
@@ -131,6 +139,14 @@ describe("defineFloat8", async () => {
 		const result4 = await database.select().from(table).where(eq(table.float8, "2")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.float8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'symbol'");
 
 		await database.execute(sql`
 			drop table float8string;
@@ -202,6 +218,14 @@ describe("defineFloat8", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.float8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'symbol'");
+
 		await database.execute(sql`
 			drop table float8bignumber;
 		`);
@@ -263,6 +287,14 @@ describe("defineFloat8", async () => {
 		const result4 = await database.select().from(table).where(eq(table.float8, 2)).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.float8, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'symbol'");
 
 		await database.execute(sql`
 			drop table float8number;

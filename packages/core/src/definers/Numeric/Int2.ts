@@ -12,6 +12,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTInt2Config<TMode extends "Int2" | "string" | "number" = "Int2" | "string" | "number"> {
 	mode?: TMode;
@@ -81,7 +82,9 @@ export class PgTInt2<T extends ColumnBaseConfig> extends PgColumn<PgTInt2HKT, T>
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int2.from(value as string);
+		const result = Int2.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -125,7 +128,9 @@ export class PgTInt2String<T extends ColumnBaseConfig> extends PgColumn<PgTInt2H
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int2.from(value as string);
+		const result = Int2.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -169,7 +174,9 @@ export class PgTInt2Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt2H
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return Int2.from(value as number);
+		const result = Int2.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

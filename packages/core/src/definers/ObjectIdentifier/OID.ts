@@ -13,6 +13,7 @@ import {
 import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
 import { PgTArrayBuilder } from "../../array.js";
+import { PgTError } from "../../PgTError.js";
 
 export interface PgTOIDConfig<TMode extends "OID" | "string" | "number" = "OID" | "string" | "number"> {
 	mode?: TMode;
@@ -82,7 +83,9 @@ export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as string);
+		const result = OID.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -126,7 +129,9 @@ export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as string);
+		const result = OID.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
@@ -170,7 +175,9 @@ export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT
 	}
 
 	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		return OID.from(value as number);
+		const result = OID.safeFrom(value as string);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
 	}
 }
 

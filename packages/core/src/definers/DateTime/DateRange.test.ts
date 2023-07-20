@@ -70,6 +70,14 @@ describe("defineDateRange", async () => {
 
 		expect(result4.length).toBe(0);
 
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.daterange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
+
 		await database.execute(sql`
 			drop table daterange;
 		`);
@@ -131,6 +139,14 @@ describe("defineDateRange", async () => {
 		const result4 = await database.select().from(table).where(eq(table.daterange, "[2025-01-01,2027-01-01)")).execute();
 
 		expect(result4.length).toBe(0);
+
+		expect(() =>
+			database
+				.select()
+				.from(table)
+				.where(eq(table.daterange, Symbol() as any))
+				.execute()
+		).toThrowError("Expected 'string' | 'object' | 'array', received 'symbol'");
 
 		await database.execute(sql`
 			drop table daterangestring;

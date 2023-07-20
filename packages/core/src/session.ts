@@ -1,12 +1,12 @@
 import type { PgTExtensionContext, PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
-//@ts-expect-error - It does have mapResultRow
-import { fillPlaceholders, Logger, mapResultRow, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, TablesRelationalConfig } from "drizzle-orm";
+import { fillPlaceholders, Logger, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, TablesRelationalConfig } from "drizzle-orm";
 import { NodePgClient, NodePgQueryResultHKT, NodePgSession, NodePgSessionOptions, NodePgTransaction } from "drizzle-orm/node-postgres";
 import { AnyPgColumn, PgDialect, PgSession, PgTransactionConfig, PreparedQuery, PreparedQueryConfig } from "drizzle-orm/pg-core";
 import type { QueryArrayConfig, QueryConfig } from "pg";
 
 import { PgTDriver } from "./driver.js";
 import { PgTExtensionManager } from "./extensions.js";
+import { mapResultRow } from "./functions/mapResultRow.js";
 
 export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {
 	private rawQuery: QueryConfig;
@@ -105,8 +105,9 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 		if (!override) await this.extensions.callHook("pgt:post-query", context as PostQueryHookData);
 
 		const result = this.mapValue(context.output);
-		/* c8 ignore next */
-		return customResultMapper ? customResultMapper(result.rows) : result.rows.map(row => mapResultRow<T["execute"]>(fields, row, joinsNotNullableMap));
+		/* c8 ignore next 2 */
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return customResultMapper ? customResultMapper(result.rows) : result.rows.map(row => mapResultRow<T["execute"]>(fields!, row, joinsNotNullableMap));
 	}
 
 	async all(

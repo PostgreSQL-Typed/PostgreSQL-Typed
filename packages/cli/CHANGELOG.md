@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.6.1
+
+### Patch Changes
+
+- Push value declaration not a type
+
 ## 0.6.0
 
 ### Minor Changes

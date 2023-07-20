@@ -41,7 +41,7 @@ export function printTable(type: ClassDetails, printer: Printer) {
 
 	if (!printer.config.files.preCompile) return { TableRecord };
 
-	const TableTypeRecord = printer.context.pushTypeDeclaration(
+	const TableTypeRecord = printer.context.pushValueDeclaration(
 		{
 			type: "tableType",
 			name: type.class_name,

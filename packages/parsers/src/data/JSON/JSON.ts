@@ -116,7 +116,7 @@ class JSONConstructorClass extends PgTPConstructorBase<JSON> implements JSONCons
 		try {
 			const parsed = globalThis.JSON.parse(globalThis.JSON.stringify(argument));
 			return OK(new JSONClass(parsed));
-			/* c8 ignore next 6 */
+			/* c8 ignore next 7 */
 		} catch {
 			this.setIssueForContext(context, {
 				code: "invalid_json",

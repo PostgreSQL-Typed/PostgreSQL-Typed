@@ -45,6 +45,7 @@ describe("ByteAConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -59,6 +60,7 @@ describe("ByteAConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

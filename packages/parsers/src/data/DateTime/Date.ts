@@ -87,12 +87,14 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -149,12 +151,14 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 							type: "arguments",
 							maximum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -311,6 +315,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (year % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: year,
 			});
 		}
 
@@ -320,6 +325,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				minimum: 1,
 				inclusive: true,
+				received: year,
 			});
 		}
 
@@ -329,6 +335,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				maximum: 9999,
 				inclusive: true,
+				received: year,
 			});
 		}
 
@@ -352,6 +359,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (month % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: month,
 			});
 		}
 
@@ -361,6 +369,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				minimum: 1,
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -370,6 +379,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				maximum: 12,
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -393,6 +403,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (day % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: day,
 			});
 		}
 
@@ -402,6 +413,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				minimum: 1,
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -411,6 +423,7 @@ class DateClass extends PgTPBase<Date> implements Date {
 				type: "number",
 				maximum: 31,
 				inclusive: true,
+				received: day,
 			});
 		}
 

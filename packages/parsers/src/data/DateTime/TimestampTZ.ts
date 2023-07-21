@@ -209,12 +209,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -562,12 +564,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 							type: "arguments",
 							maximum: 9,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 9,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -716,12 +720,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (year % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: year,
 			});
 		}
 
 		if (month % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: month,
 			});
 		}
 
@@ -731,6 +737,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -740,12 +747,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 12,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
 		if (day % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: day,
 			});
 		}
 
@@ -755,6 +764,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -764,12 +774,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 31,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
 		if (hour % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -780,6 +792,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -790,6 +803,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -797,6 +811,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (minute % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -807,6 +822,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -817,6 +833,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -827,6 +844,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -837,6 +855,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -854,6 +873,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (parsedOffset.obj.hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -863,6 +883,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -872,12 +893,14 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -887,6 +910,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -896,6 +920,7 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -1123,6 +1148,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (year % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: year,
 			});
 		}
 
@@ -1146,6 +1172,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (month % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: month,
 			});
 		}
 
@@ -1155,6 +1182,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -1164,6 +1192,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 12,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -1187,6 +1216,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (day % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: day,
 			});
 		}
 
@@ -1196,6 +1226,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -1205,6 +1236,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 31,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -1228,6 +1260,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: hour,
 			});
 		}
 
@@ -1237,6 +1270,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -1246,6 +1280,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -1269,6 +1304,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: minute,
 			});
 		}
 
@@ -1278,6 +1314,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -1287,6 +1324,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -1313,6 +1351,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -1322,6 +1361,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -1390,6 +1430,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (parsedOffset.obj.hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -1399,6 +1440,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -1408,12 +1450,14 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -1423,6 +1467,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -1432,6 +1477,7 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 

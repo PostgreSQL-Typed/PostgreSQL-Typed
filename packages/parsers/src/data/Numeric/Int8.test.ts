@@ -92,6 +92,7 @@ describe("Int8Constructor", () => {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
+				received: 0.5,
 			});
 		}
 
@@ -105,6 +106,7 @@ describe("Int8Constructor", () => {
 				maximum: BigInt("9223372036854775807"),
 				inclusive: true,
 				message: "BigInt must be less than or equal to 9223372036854775807",
+				received: BigInt("9223372036854775808"),
 			});
 		}
 
@@ -118,6 +120,7 @@ describe("Int8Constructor", () => {
 				minimum: BigInt("-9223372036854775808"),
 				inclusive: true,
 				message: "BigInt must be greater than or equal to -9223372036854775808",
+				received: BigInt("-9223372036854775809"),
 			});
 		}
 
@@ -132,6 +135,7 @@ describe("Int8Constructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -146,6 +150,7 @@ describe("Int8Constructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

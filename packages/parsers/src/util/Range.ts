@@ -121,12 +121,14 @@ const getRange = <
 								type: "arguments",
 								maximum: 1,
 								exact: true,
+								received: context.data.length,
 						  }
 						: {
 								code: "too_small",
 								type: "arguments",
 								minimum: 1,
 								exact: true,
+								received: context.data.length,
 						  }
 				);
 				return INVALID;
@@ -197,12 +199,14 @@ const getRange = <
 								type: "array",
 								maximum: 2,
 								exact: true,
+								received: value.length,
 						  }
 						: {
 								code: "too_small",
 								type: "array",
 								minimum: 2,
 								exact: true,
+								received: value.length,
 						  }
 				);
 				return INVALID;
@@ -254,12 +258,14 @@ const getRange = <
 								type: "array",
 								maximum: 2,
 								exact: true,
+								received: argument.length,
 						  }
 						: {
 								code: "too_small",
 								type: "array",
 								minimum: 2,
 								exact: true,
+								received: argument.length,
 						  }
 				);
 				return INVALID;
@@ -306,6 +312,7 @@ const getRange = <
 					type: "arguments",
 					maximum: 2,
 					inclusive: true,
+					received: context.data.length,
 				});
 				return INVALID;
 			}
@@ -318,6 +325,7 @@ const getRange = <
 						type: "arguments",
 						maximum: 1,
 						exact: true,
+						received: context.data.length,
 					});
 					return INVALID;
 				}
@@ -339,6 +347,7 @@ const getRange = <
 						type: "arguments",
 						minimum: 2,
 						exact: true,
+						received: 1,
 					});
 					return INVALID;
 				}
@@ -374,6 +383,7 @@ const getRange = <
 					type: "arguments",
 					maximum: 1,
 					exact: true,
+					received: context.data.length,
 				});
 				return INVALID;
 			}
@@ -590,12 +600,14 @@ const getRange = <
 								type: "array",
 								maximum: 2,
 								exact: true,
+								received: value.length,
 						  }
 						: {
 								code: "too_small",
 								type: "array",
 								minimum: 2,
 								exact: true,
+								received: value.length,
 						  }
 				);
 			}

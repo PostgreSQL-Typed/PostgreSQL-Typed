@@ -123,12 +123,14 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -357,12 +359,14 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 							type: "arguments",
 							maximum: 7,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 7,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -733,6 +737,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (years % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: years,
 			});
 		}
 
@@ -756,6 +761,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (months % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: months,
 			});
 		}
 
@@ -779,6 +785,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (days % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: days,
 			});
 		}
 
@@ -802,6 +809,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (hours % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: hours,
 			});
 		}
 
@@ -825,6 +833,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (minutes % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: minutes,
 			});
 		}
 
@@ -848,6 +857,7 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		if (seconds % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: seconds,
 			});
 		}
 

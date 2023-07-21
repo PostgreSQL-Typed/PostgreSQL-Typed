@@ -10,6 +10,7 @@ export const isValidDateTime = (date: unknown): IsValid<DateTime> => {
 			isValid: false,
 			error: {
 				code: "invalid_luxon_date",
+				received: date,
 			},
 		};
 	}

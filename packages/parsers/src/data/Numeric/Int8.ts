@@ -61,12 +61,14 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -101,6 +103,7 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 		if (argument % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -114,6 +117,7 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 				type: "bigint",
 				minimum: BigInt("-9223372036854775808"),
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -123,6 +127,7 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 				type: "bigint",
 				maximum: BigInt("9223372036854775807"),
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}

@@ -96,6 +96,7 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 				type: "number",
 				minimum: 1,
 				inclusive: true,
+				received: _n,
 			});
 		}
 
@@ -105,6 +106,7 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 				type: "number",
 				maximum: 10_485_760,
 				inclusive: true,
+				received: _n,
 			});
 		}
 
@@ -112,6 +114,7 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 			//If limit is not a whole number
 			throwPgTPError({
 				code: "not_whole",
+				received: _n,
 			});
 		}
 	}
@@ -126,12 +129,14 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -165,6 +170,7 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 				code: "invalid_n_length",
 				maximum: this._n,
 				received: argument.length,
+				input: argument,
 			});
 			return INVALID;
 		}
@@ -183,6 +189,7 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 					code: "invalid_n_length",
 					maximum: this._n,
 					received: argument.n,
+					input: argument.value,
 				});
 				return INVALID;
 			}

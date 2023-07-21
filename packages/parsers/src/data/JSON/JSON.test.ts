@@ -41,6 +41,7 @@ describe("JSONConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_json",
 				message: "Invalid JSON",
+				received: '{ "value: true }',
 			});
 		}
 		//#endregion
@@ -120,6 +121,7 @@ describe("JSON", () => {
 			expect(invalidObjectString.error.issue).toStrictEqual({
 				code: "invalid_json",
 				message: "Invalid JSON",
+				received: '{ "value: true }',
 			});
 		}
 
@@ -146,6 +148,7 @@ describe("JSON", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -160,6 +163,7 @@ describe("JSON", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

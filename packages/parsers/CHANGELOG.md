@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.9.2
+
+### Patch Changes
+
+- Improve error objects
+
 ## 0.9.1
 
 ### Patch Changes

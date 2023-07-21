@@ -8,6 +8,7 @@ export const isValidDate = (date: unknown): IsValid<globalThis.Date> => {
 			isValid: false,
 			error: {
 				code: "invalid_date",
+				received: date,
 			},
 		};
 	}

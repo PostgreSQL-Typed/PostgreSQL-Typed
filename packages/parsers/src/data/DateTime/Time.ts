@@ -88,12 +88,14 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -150,12 +152,14 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 							type: "arguments",
 							maximum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -240,6 +244,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (hour % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -250,6 +255,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -260,6 +266,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -267,6 +274,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (minute % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -277,6 +285,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -287,6 +296,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -297,6 +307,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -307,6 +318,7 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -389,6 +401,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		if (hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: hour,
 			});
 		}
 
@@ -398,6 +411,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -407,6 +421,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -430,6 +445,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		if (minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: minute,
 			});
 		}
 
@@ -439,6 +455,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -448,6 +465,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -474,6 +492,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -483,6 +502,7 @@ class TimeClass extends PgTPBase<Time> implements Time {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 

@@ -118,12 +118,14 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -180,12 +182,14 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 							type: "arguments",
 							maximum: 6,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 6,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -309,6 +313,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (hour % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -319,6 +324,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -329,6 +335,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -336,6 +343,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (minute % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -346,6 +354,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -356,6 +365,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -366,6 +376,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -376,6 +387,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -393,6 +405,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (parsedOffset.obj.hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -402,6 +415,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -411,12 +425,14 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -426,6 +442,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -435,6 +452,7 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -523,6 +541,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: hour,
 			});
 		}
 
@@ -532,6 +551,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -541,6 +561,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -564,6 +585,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: minute,
 			});
 		}
 
@@ -573,6 +595,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -582,6 +605,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -608,6 +632,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -617,6 +642,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -685,6 +711,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (parsedOffset.obj.hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -694,6 +721,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
@@ -703,12 +731,14 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.hour,
 			});
 		}
 
 		if (parsedOffset.obj.minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -718,6 +748,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 
@@ -727,6 +758,7 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: parsedOffset.obj.minute,
 			});
 		}
 

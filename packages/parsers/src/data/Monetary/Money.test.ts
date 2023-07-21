@@ -74,6 +74,7 @@ describe("MoneyConstructor", () => {
 				maximum: "92233720368547758.07",
 				inclusive: true,
 				message: "Number must be less than or equal to 92233720368547758.07",
+				received: "10e400",
 			});
 		}
 
@@ -87,6 +88,7 @@ describe("MoneyConstructor", () => {
 				minimum: "-92233720368547758.08",
 				inclusive: true,
 				message: "Number must be greater than or equal to -92233720368547758.08",
+				received: "-10e400",
 			});
 		}
 
@@ -101,6 +103,7 @@ describe("MoneyConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -115,6 +118,7 @@ describe("MoneyConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

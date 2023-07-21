@@ -46,14 +46,17 @@ export interface UnrecognizedKeysIssue {
 
 export interface InvalidDateIssue {
 	code: typeof IssueCode.invalid_date;
+	received: globalThis.Date;
 }
 
 export interface InvalidLuxonDateIssue {
 	code: typeof IssueCode.invalid_luxon_date;
+	received: luxon.DateTime;
 }
 
 export interface InvalidJsonIssue {
 	code: typeof IssueCode.invalid_json;
+	received: string;
 }
 
 export interface InvalidKeyTypeIssue extends Omit<InvalidTypeIssue, "code"> {
@@ -69,6 +72,7 @@ export interface InvalidRangeBoundIssue {
 
 export interface TooSmallIssue {
 	code: typeof IssueCode.too_small;
+	received: number | bigint | string;
 	minimum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
@@ -77,16 +81,28 @@ export interface TooSmallIssue {
 
 export interface TooBigIssue {
 	code: typeof IssueCode.too_big;
+	received: number | bigint | string;
 	maximum: number | bigint | string;
 	inclusive?: boolean;
 	exact?: boolean;
-	type: "array" | "number" | "bigint" | "arguments" | "bytes";
+	type: "array" | "number" | "bigint" | "arguments";
+}
+
+export interface TooBigIssueBytes {
+	code: typeof IssueCode.too_big;
+	received: number | bigint | string;
+	maximum: number | bigint | string;
+	inclusive?: boolean;
+	exact?: boolean;
+	type: "bytes";
+	input: string;
 }
 
 export interface InvalidNLengthIssue {
 	code: typeof IssueCode.invalid_n_length;
 	maximum: number;
 	received: number;
+	input: string;
 }
 
 export interface MissingKeysIssue {
@@ -96,10 +112,12 @@ export interface MissingKeysIssue {
 
 export interface NotFiniteIssue {
 	code: typeof IssueCode.not_finite;
+	received: number;
 }
 
 export interface NotWholeIssue {
 	code: typeof IssueCode.not_whole;
+	received: number;
 }
 
 export type IssueWithoutMessage =
@@ -116,6 +134,7 @@ export type IssueWithoutMessage =
 	| NotFiniteIssue
 	| NotWholeIssue
 	| TooBigIssue
+	| TooBigIssueBytes
 	| TooSmallIssue
 	| UnrecognizedKeysIssue;
 

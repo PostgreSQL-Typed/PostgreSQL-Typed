@@ -76,12 +76,14 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -148,6 +150,7 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 				type: "arguments",
 				maximum: 2,
 				inclusive: true,
+				received: context.data.length,
 			});
 			return INVALID;
 		}
@@ -163,6 +166,7 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 					type: "arguments",
 					maximum: 1,
 					exact: true,
+					received: context.data.length,
 				});
 				return INVALID;
 			}
@@ -178,6 +182,7 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 					type: "arguments",
 					minimum: 2,
 					exact: true,
+					received: context.data.length,
 				});
 				return INVALID;
 			}
@@ -198,6 +203,7 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 				type: "arguments",
 				maximum: 1,
 				exact: true,
+				received: context.data.length,
 			});
 			return INVALID;
 		}

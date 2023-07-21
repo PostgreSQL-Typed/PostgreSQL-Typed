@@ -66,12 +66,14 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -126,12 +128,14 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 							type: "arguments",
 							maximum: 4,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 4,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;

@@ -104,6 +104,7 @@ function parseNumber(argument: string, MIN: BigNumber, MAX: BigNumber): SafeFrom
 				type: "number",
 				minimum: MIN.toString(),
 				inclusive: true,
+				received: argument,
 			},
 		};
 	}
@@ -116,6 +117,7 @@ function parseNumber(argument: string, MIN: BigNumber, MAX: BigNumber): SafeFrom
 				type: "number",
 				maximum: MAX.toString(),
 				inclusive: true,
+				received: argument,
 			},
 		};
 	}

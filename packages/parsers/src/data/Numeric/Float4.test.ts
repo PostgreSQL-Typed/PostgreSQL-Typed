@@ -77,6 +77,7 @@ describe("Float4Constructor", () => {
 				maximum: "9.9999999999999999999999999999999999999e+37",
 				inclusive: true,
 				message: "Number must be less than or equal to 9.9999999999999999999999999999999999999e+37",
+				received: "10e400",
 			});
 		}
 
@@ -90,6 +91,7 @@ describe("Float4Constructor", () => {
 				minimum: "-9.9999999999999999999999999999999999999e+37",
 				inclusive: true,
 				message: "Number must be greater than or equal to -9.9999999999999999999999999999999999999e+37",
+				received: "-10e400",
 			});
 		}
 
@@ -104,6 +106,7 @@ describe("Float4Constructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -118,6 +121,7 @@ describe("Float4Constructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

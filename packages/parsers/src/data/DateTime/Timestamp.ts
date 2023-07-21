@@ -122,12 +122,14 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -194,12 +196,14 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 							type: "arguments",
 							maximum: 6,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 6,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;
@@ -310,12 +314,14 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 		if (year % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: year,
 			});
 		}
 
 		if (month % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: month,
 			});
 		}
 
@@ -325,6 +331,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -334,12 +341,14 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				maximum: 12,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
 		if (day % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: day,
 			});
 		}
 
@@ -349,6 +358,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -358,12 +368,14 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				maximum: 31,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
 		if (hour % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -374,6 +386,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -384,6 +397,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 			return INVALID;
 		}
@@ -391,6 +405,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 		if (minute % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -401,6 +416,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -411,6 +427,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 			return INVALID;
 		}
@@ -421,6 +438,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -431,6 +449,7 @@ class TimestampConstructorClass extends PgTPConstructorBase<Timestamp> implement
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 			return INVALID;
 		}
@@ -547,6 +566,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		if (year % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: year,
 			});
 		}
 
@@ -570,6 +590,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		if (month % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: month,
 			});
 		}
 
@@ -579,6 +600,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -588,6 +610,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				maximum: 12,
 				type: "number",
 				inclusive: true,
+				received: month,
 			});
 		}
 
@@ -611,6 +634,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		if (day % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: day,
 			});
 		}
 
@@ -620,6 +644,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				minimum: 1,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -629,6 +654,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				maximum: 31,
 				type: "number",
 				inclusive: true,
+				received: day,
 			});
 		}
 
@@ -652,6 +678,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		if (hour % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: hour,
 			});
 		}
 
@@ -661,6 +688,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -670,6 +698,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				maximum: 23,
 				type: "number",
 				inclusive: true,
+				received: hour,
 			});
 		}
 
@@ -693,6 +722,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 		if (minute % 1 !== 0) {
 			throwPgTPError({
 				code: "not_whole",
+				received: minute,
 			});
 		}
 
@@ -702,6 +732,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -711,6 +742,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: minute,
 			});
 		}
 
@@ -737,6 +769,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				minimum: 0,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 
@@ -746,6 +779,7 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 				maximum: 59,
 				type: "number",
 				inclusive: true,
+				received: second,
 			});
 		}
 

@@ -62,12 +62,14 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -124,12 +126,14 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 							type: "arguments",
 							maximum: 2,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 2,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;

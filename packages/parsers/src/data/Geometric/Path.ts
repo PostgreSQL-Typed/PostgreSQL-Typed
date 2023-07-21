@@ -85,12 +85,14 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -182,6 +184,7 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: argument.length,
 			});
 			return INVALID;
 		}
@@ -212,6 +215,7 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 					type: "arguments",
 					maximum: 1,
 					exact: true,
+					received: otherArguments.length,
 				});
 				return INVALID;
 			}
@@ -244,6 +248,7 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 				type: "arguments",
 				maximum: 1,
 				exact: true,
+				received: otherArguments.length,
 			});
 			return INVALID;
 		}
@@ -291,6 +296,7 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: parsedPoints.length,
 			});
 			return INVALID;
 		}
@@ -369,6 +375,7 @@ class PathClass extends PgTPBase<Path> implements Path {
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: points.length,
 			});
 		}
 

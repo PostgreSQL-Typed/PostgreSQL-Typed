@@ -81,6 +81,7 @@ describe("OIDConstructor", () => {
 			expect(notFinite2.error.issue).toStrictEqual({
 				code: "not_finite",
 				message: "Number must be finite",
+				received: Number.POSITIVE_INFINITY,
 			});
 		}
 
@@ -91,6 +92,7 @@ describe("OIDConstructor", () => {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
+				received: 0.5,
 			});
 		}
 
@@ -104,6 +106,7 @@ describe("OIDConstructor", () => {
 				maximum: 4_294_967_295,
 				inclusive: true,
 				message: "Number must be less than or equal to 4294967295",
+				received: 4_294_967_296,
 			});
 		}
 
@@ -117,6 +120,7 @@ describe("OIDConstructor", () => {
 				minimum: 0,
 				inclusive: true,
 				message: "Number must be greater than or equal to 0",
+				received: -1,
 			});
 		}
 
@@ -131,6 +135,7 @@ describe("OIDConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -145,6 +150,7 @@ describe("OIDConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

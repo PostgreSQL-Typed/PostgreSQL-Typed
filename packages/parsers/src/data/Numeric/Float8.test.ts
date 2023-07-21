@@ -77,6 +77,7 @@ describe("Float8Constructor", () => {
 				maximum: "1e+308",
 				inclusive: true,
 				message: "Number must be less than or equal to 1e+308",
+				received: "10e400",
 			});
 		}
 
@@ -90,6 +91,7 @@ describe("Float8Constructor", () => {
 				minimum: "-1e+308",
 				inclusive: true,
 				message: "Number must be greater than or equal to -1e+308",
+				received: "-10e400",
 			});
 		}
 
@@ -104,6 +106,7 @@ describe("Float8Constructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -118,6 +121,7 @@ describe("Float8Constructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

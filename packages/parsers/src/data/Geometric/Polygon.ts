@@ -73,12 +73,14 @@ class PolygonConstructorClass extends PgTPConstructorBase<Polygon> implements Po
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -146,6 +148,7 @@ class PolygonConstructorClass extends PgTPConstructorBase<Polygon> implements Po
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: argument.length,
 			});
 			return INVALID;
 		}
@@ -175,6 +178,7 @@ class PolygonConstructorClass extends PgTPConstructorBase<Polygon> implements Po
 					type: "arguments",
 					maximum: 1,
 					exact: true,
+					received: otherArguments.length,
 				});
 				return INVALID;
 			}
@@ -206,6 +210,7 @@ class PolygonConstructorClass extends PgTPConstructorBase<Polygon> implements Po
 				type: "arguments",
 				maximum: 1,
 				exact: true,
+				received: otherArguments.length,
 			});
 			return INVALID;
 		}
@@ -250,6 +255,7 @@ class PolygonConstructorClass extends PgTPConstructorBase<Polygon> implements Po
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: parsedPoints.length,
 			});
 			return INVALID;
 		}
@@ -317,6 +323,7 @@ class PolygonClass extends PgTPBase<Polygon> implements Polygon {
 				type: "array",
 				minimum: 1,
 				inclusive: true,
+				received: points.length,
 			});
 		}
 

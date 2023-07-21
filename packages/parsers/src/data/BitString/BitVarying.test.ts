@@ -81,6 +81,7 @@ describe("BitVaryingConstructor", () => {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
+				received: 1.5,
 			});
 		}
 
@@ -94,6 +95,7 @@ describe("BitVaryingConstructor", () => {
 				minimum: 0,
 				exact: true,
 				message: "Number must be exactly equal to 0",
+				received: -1,
 			});
 		}
 
@@ -108,6 +110,7 @@ describe("BitVaryingConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -122,6 +125,7 @@ describe("BitVaryingConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 
@@ -176,6 +180,7 @@ describe("BitVaryingConstructor", () => {
 				maximum: 1,
 				received: 2,
 				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
+				input: "10",
 			});
 		}
 		//#endregion

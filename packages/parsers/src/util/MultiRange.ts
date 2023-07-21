@@ -93,12 +93,14 @@ const getMultiRange = <
 								type: "arguments",
 								maximum: 1,
 								exact: true,
+								received: context.data.length,
 						  }
 						: {
 								code: "too_small",
 								type: "arguments",
 								minimum: 1,
 								exact: true,
+								received: context.data.length,
 						  }
 				);
 				return INVALID;
@@ -200,6 +202,7 @@ const getMultiRange = <
 						type: "arguments",
 						maximum: 1,
 						exact: true,
+						received: otherArguments.length,
 					});
 					return INVALID;
 				}
@@ -230,6 +233,7 @@ const getMultiRange = <
 					type: "arguments",
 					maximum: 1,
 					exact: true,
+					received: otherArguments.length,
 				});
 				return INVALID;
 			}

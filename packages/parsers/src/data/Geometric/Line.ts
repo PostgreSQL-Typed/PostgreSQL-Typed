@@ -64,12 +64,14 @@ class LineConstructorClass extends PgTPConstructorBase<Line> implements LineCons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -110,6 +112,7 @@ class LineConstructorClass extends PgTPConstructorBase<Line> implements LineCons
 					type: "number",
 					minimum: 1,
 					inclusive: true,
+					received: 0,
 				});
 				return INVALID;
 			}
@@ -136,12 +139,14 @@ class LineConstructorClass extends PgTPConstructorBase<Line> implements LineCons
 							type: "arguments",
 							maximum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;

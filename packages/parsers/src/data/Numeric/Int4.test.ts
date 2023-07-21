@@ -68,6 +68,7 @@ describe("Int4Constructor", () => {
 			expect(notFinite.error.issue).toStrictEqual({
 				code: "not_finite",
 				message: "Number must be finite",
+				received: Number.POSITIVE_INFINITY,
 			});
 		}
 
@@ -78,6 +79,7 @@ describe("Int4Constructor", () => {
 			expect(notWhole.error.issue).toStrictEqual({
 				code: "not_whole",
 				message: "Number must be whole",
+				received: 0.5,
 			});
 		}
 
@@ -91,6 +93,7 @@ describe("Int4Constructor", () => {
 				maximum: 2_147_483_647,
 				inclusive: true,
 				message: "Number must be less than or equal to 2147483647",
+				received: 2_147_483_648,
 			});
 		}
 
@@ -104,6 +107,7 @@ describe("Int4Constructor", () => {
 				minimum: -2_147_483_648,
 				inclusive: true,
 				message: "Number must be greater than or equal to -2147483648",
+				received: -2_147_483_649,
 			});
 		}
 
@@ -118,6 +122,7 @@ describe("Int4Constructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -132,6 +137,7 @@ describe("Int4Constructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 

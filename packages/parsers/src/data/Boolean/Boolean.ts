@@ -62,12 +62,14 @@ class BooleanConstructorClass extends PgTPConstructorBase<Boolean> implements Bo
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;

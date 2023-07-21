@@ -56,12 +56,14 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -102,12 +104,14 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 		if (!Number.isFinite(argument)) {
 			this.setIssueForContext(context, {
 				code: "not_finite",
+				received: argument,
 			});
 			return INVALID;
 		}
 		if (argument % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -117,6 +121,7 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 				type: "number",
 				minimum: -32_768,
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -126,6 +131,7 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 				type: "number",
 				maximum: 32_767,
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}

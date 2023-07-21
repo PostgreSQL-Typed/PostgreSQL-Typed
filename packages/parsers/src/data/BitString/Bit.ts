@@ -96,6 +96,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 				type: "number",
 				minimum: 1,
 				inclusive: true,
+				received: _n,
 			});
 		}
 
@@ -103,6 +104,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (_n % 1 !== 0 && _n !== Number.POSITIVE_INFINITY) {
 			throwPgTPError({
 				code: "not_whole",
+				received: _n,
 			});
 		}
 	}
@@ -117,12 +119,14 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -168,6 +172,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 				code: "invalid_n_length",
 				maximum: this._n,
 				received: argument.length,
+				input: argument,
 			});
 			return INVALID;
 		}
@@ -183,6 +188,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (argument % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -194,6 +200,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 				type: "number",
 				minimum: 0,
 				exact: true,
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -211,6 +218,7 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 					code: "invalid_n_length",
 					maximum: this._n,
 					received: argument.n,
+					input: argument.value,
 				});
 				return INVALID;
 			}

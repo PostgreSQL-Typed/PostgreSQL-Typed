@@ -1,5 +1,12 @@
 # @postgresql-typed/core
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @postgresql-typed/parsers@0.9.2
+
 ## 0.9.0
 
 ### Minor Changes

@@ -64,12 +64,14 @@ class CircleConstructorClass extends PgTPConstructorBase<Circle> implements Circ
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -138,12 +140,14 @@ class CircleConstructorClass extends PgTPConstructorBase<Circle> implements Circ
 							type: "arguments",
 							maximum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 3,
 							exact: true,
+							received: totalLength,
 					  }
 			);
 			return INVALID;

@@ -74,6 +74,7 @@ describe("CharacterVaryingConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -88,6 +89,7 @@ describe("CharacterVaryingConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 
@@ -142,6 +144,7 @@ describe("CharacterVaryingConstructor", () => {
 				maximum: 1,
 				received: 2,
 				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
+				input: "a",
 			});
 		}
 		//#endregion

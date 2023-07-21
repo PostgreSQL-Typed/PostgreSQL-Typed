@@ -57,12 +57,14 @@ class OIDConstructorClass extends PgTPConstructorBase<OID> implements OIDConstru
 							type: "arguments",
 							maximum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 					: {
 							code: "too_small",
 							type: "arguments",
 							minimum: 1,
 							exact: true,
+							received: context.data.length,
 					  }
 			);
 			return INVALID;
@@ -103,12 +105,14 @@ class OIDConstructorClass extends PgTPConstructorBase<OID> implements OIDConstru
 		if (!Number.isFinite(argument)) {
 			this.setIssueForContext(context, {
 				code: "not_finite",
+				received: argument,
 			});
 			return INVALID;
 		}
 		if (argument % 1 !== 0) {
 			this.setIssueForContext(context, {
 				code: "not_whole",
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -118,6 +122,7 @@ class OIDConstructorClass extends PgTPConstructorBase<OID> implements OIDConstru
 				type: "number",
 				minimum: 0,
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}
@@ -127,6 +132,7 @@ class OIDConstructorClass extends PgTPConstructorBase<OID> implements OIDConstru
 				type: "number",
 				maximum: 4_294_967_295,
 				inclusive: true,
+				received: argument,
 			});
 			return INVALID;
 		}

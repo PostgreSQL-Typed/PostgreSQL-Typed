@@ -72,6 +72,7 @@ describe("CharacterConstructor", () => {
 				maximum: 1,
 				received: 3,
 				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
+				input: "abc",
 			});
 		}
 
@@ -86,6 +87,7 @@ describe("CharacterConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -100,6 +102,7 @@ describe("CharacterConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 
@@ -154,6 +157,7 @@ describe("CharacterConstructor", () => {
 				maximum: 1,
 				received: 2,
 				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
+				input: "a ",
 			});
 		}
 		//#endregion

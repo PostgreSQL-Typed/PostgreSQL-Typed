@@ -52,6 +52,7 @@ describe("NameConstructor", () => {
 				maximum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 2,
 			});
 		}
 
@@ -66,6 +67,7 @@ describe("NameConstructor", () => {
 				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				received: 0,
 			});
 		}
 
@@ -121,6 +123,8 @@ describe("NameConstructor", () => {
 				maximum: 64,
 				inclusive: true,
 				message: "String must be at most 64 byte(s) long",
+				received: 65,
+				input: "a".repeat(65),
 			});
 		}
 		//#endregion

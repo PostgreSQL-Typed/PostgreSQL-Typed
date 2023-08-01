@@ -38,7 +38,7 @@
 		"@types/node": "^20.1.2",
 		"@types/splitpanes": "^2.2.1",
 		"@unocss/nuxt": "^0.51.12",
-		"@unocss/reset": "^0.50.6",
+		"@unocss/reset": "^0.54.0",
 		"@vueuse/core": "^10.1.2",
 		"@vueuse/nuxt": "^10.1.2",
 		"basic-auth": "^2.0.1",

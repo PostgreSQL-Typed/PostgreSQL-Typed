@@ -1,5 +1,12 @@
 # postgresql-type-parsers
 
+## 0.9.3
+
+### Patch Changes
+
+- Updated dependencies [[`220ad6b`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/220ad6bc61b8c8c734ec43977cd87eaa0f6db45b)]:
+  - @postgresql-typed/util@0.9.0
+
 ## 0.9.2
 
 ### Patch Changes

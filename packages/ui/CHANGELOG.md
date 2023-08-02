@@ -1,5 +1,12 @@
 # @postgresql-typed/ui
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies [[`220ad6b`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/220ad6bc61b8c8c734ec43977cd87eaa0f6db45b)]:
+  - @postgresql-typed/cli@0.7.0
+
 ## 0.4.1
 
 ### Patch Changes

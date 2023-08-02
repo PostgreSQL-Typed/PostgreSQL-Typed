@@ -331,17 +331,45 @@ export interface FilesConfig {
 	databaseFileName: string;
 
 	/**
-	 * Override column parsers for some columns. The name can be either:
+	 * Override generated definer typings for some types. The name can be either:
 	 *
+	 * - key of OID
+	 * - value of OID
 	 * - "table_name.column_name"
 	 * - "schema_name.table_name.column_name"
 	 *
 	 * @default {}
+	 *
+	 * OID:
+	 * @link https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/blob/main/packages/oids/src/OIDs.ts
+	 *
+	 * @example Defining a type for a JSONB column
+	 * ```ts
+	 * {
+	 * 	  "table_name.column_name": [
+	 * 			"PgTJSONBType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, MyCustomInterface>",
+	 * 			[
+	 *				{
+	 *					module: "@postgresql-typed/core/definers",
+	 *					name: "PgTJSONBType",
+	 *					type: "named",
+	 *					isType: true,
+	 *				},
+	 *				{
+	 *					module: "MyCustomModule",
+	 *					name: "MyCustomInterface",
+	 *					type: "named",
+	 *					isType: true,
+	 *				},
+	 *			],
+	 * 		],
+	 * }
+	 * ```
 	 */
-	columnDefinerOverrides: { [x: string]: [string, ImportStatement[]] | undefined };
+	definerTypeOverrides: { [x: string]: [string, ImportStatement[]] | undefined };
 
 	/**
-	 * Override generated parsers for some types. The name can be either:
+	 * Override generated definer instantiations for some types. The name can be either:
 	 *
 	 * - key of OID
 	 * - value of OID
@@ -437,7 +465,7 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "databases/{{ DATABASE_NAME | camel-case }}.ts",
 		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}.ts"),
 	},
-	columnDefinerOverrides: {
+	definerTypeOverrides: {
 		$default: {},
 		$resolve: value => {
 			if (typeof value === "object") return value;

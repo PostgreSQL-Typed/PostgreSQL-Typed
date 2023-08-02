@@ -45,48 +45,25 @@ export class Printer {
 		return this.config.files.definerOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.files.definerOverrides[`${type.type_name}`] ?? null;
 	}
 
-	public getDefiner(id: number, file: FileContext, options: { maxLength?: number; notNull?: boolean } = {}): string {
-		const override = this.config.files.definerOverrides[id];
-		if (override !== undefined) {
-			const [type, imports] = override;
-			for (const importStatement of imports) file.addImportStatement(importStatement);
-			return type;
-		}
-
-		if (id in OID) {
-			const string = OID[id],
-				override = this.config.files.definerOverrides[string];
-
-			if (override !== undefined) {
-				const [type, imports] = override;
-				for (const importStatement of imports) file.addImportStatement(importStatement);
-				return type;
-			}
-		}
-
-		const builtin = DefaultDefinerMappings.get(id, this.config, options);
-		if (builtin !== undefined) {
-			if (!Array.isArray(builtin)) return builtin;
-
-			const [type, imports] = builtin;
-			for (const importStatement of imports) file.addImportStatement(importStatement);
-			return type;
-		}
-
-		const type = this.types.get(id);
-		if (!type) return "unknown";
-
-		const globalOverride = this._getDefinerOverride(type);
-		if (globalOverride !== null) {
-			const [type, imports] = globalOverride;
-			for (const importStatement of imports) file.addImportStatement(importStatement);
-			return type;
-		}
-		return getDefiner(type, this, file, options);
+	private _getDefinerTypeOverride(type: DataType): [string, ImportStatement[]] | null {
+		return (
+			this.config.files.definerTypeOverrides[`${type.schema_name}.${type.type_name}`] ?? this.config.files.definerTypeOverrides[`${type.type_name}`] ?? null
+		);
 	}
 
-	public getDefinerType(id: number, file: FileContext, options: { maxLength?: number; notNull?: boolean } = {}): string {
-		const override = this.config.files.definerOverrides[id];
+	public getDefiner(
+		id: number,
+		file: FileContext,
+		info: {
+			schemaName: string;
+			tableName: string;
+			columnName: string;
+		}
+	): string {
+		const override =
+			this.config.files.definerOverrides[`${info.schemaName}.${info.tableName}.${info.columnName}`] ||
+			this.config.files.definerOverrides[`${info.tableName}.${info.columnName}`] ||
+			this.config.files.definerOverrides[id];
 		if (override !== undefined) {
 			const [type, imports] = override;
 			for (const importStatement of imports) file.addImportStatement(importStatement);
@@ -104,7 +81,7 @@ export class Printer {
 			}
 		}
 
-		const builtin = DefaultDefinerTypeMappings.get(id, this.config, options);
+		const builtin = DefaultDefinerMappings.get(id);
 		if (builtin !== undefined) {
 			if (!Array.isArray(builtin)) return builtin;
 
@@ -122,7 +99,58 @@ export class Printer {
 			for (const importStatement of imports) file.addImportStatement(importStatement);
 			return type;
 		}
-		return getDefiner(type, this, file, options);
+		return getDefiner(type, this, file);
+	}
+
+	public getDefinerType(
+		id: number,
+		file: FileContext,
+		info: {
+			schemaName: string;
+			tableName: string;
+			columnName: string;
+		}
+	): string {
+		const override =
+			this.config.files.definerTypeOverrides[`${info.schemaName}.${info.tableName}.${info.columnName}`] ||
+			this.config.files.definerTypeOverrides[`${info.tableName}.${info.columnName}`] ||
+			this.config.files.definerTypeOverrides[id];
+		if (override !== undefined) {
+			const [type, imports] = override;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+
+		if (id in OID) {
+			const string = OID[id],
+				override = this.config.files.definerTypeOverrides[string];
+
+			if (override !== undefined) {
+				const [type, imports] = override;
+				for (const importStatement of imports) file.addImportStatement(importStatement);
+				return type;
+			}
+		}
+
+		const builtin = DefaultDefinerTypeMappings.get(id);
+		if (builtin !== undefined) {
+			if (!Array.isArray(builtin)) return builtin;
+
+			const [type, imports] = builtin;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+
+		const type = this.types.get(id);
+		if (!type) return "unknown";
+
+		const globalOverride = this._getDefinerTypeOverride(type);
+		if (globalOverride !== null) {
+			const [type, imports] = globalOverride;
+			for (const importStatement of imports) file.addImportStatement(importStatement);
+			return type;
+		}
+		return getDefiner(type, this, file);
 	}
 
 	public async print() {

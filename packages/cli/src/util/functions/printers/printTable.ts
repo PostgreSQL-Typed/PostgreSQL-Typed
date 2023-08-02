@@ -4,6 +4,7 @@ import { ConstraintType } from "../../../types/enums/ConstraintType.js";
 import type { Attribute } from "../../../types/interfaces/Attribute.js";
 import type { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
 import type { FileContext } from "../../../types/interfaces/FileContext.js";
+import { getModeOfOid } from "../getters/getModeOfOid.js";
 import { printSchema } from "./printSchema.js";
 
 export function printTable(type: ClassDetails, printer: Printer) {
@@ -108,16 +109,6 @@ function printColumnType(type: ClassDetails, attribute: Attribute, printer: Prin
 }
 
 function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
-	const columnTypeOverride =
-		printer.config.files.columnDefinerOverrides[`${type.schema_name}.${type.class_name}.${attribute.attribute_name}`] ||
-		printer.config.files.columnDefinerOverrides[`${type.class_name}.${attribute.attribute_name}`];
-
-	if (columnTypeOverride) {
-		const [importString, importStatement] = columnTypeOverride;
-		for (const statement of importStatement) file.addImportStatement(statement);
-		return importString;
-	}
-
 	let maxLength = attribute.max_length ?? undefined;
 	if (maxLength === undefined) {
 		const matchResult = attribute.type_name.match(/\((\d+)\)(\[])?$/);
@@ -126,32 +117,30 @@ function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer
 
 	const definer = printer
 		.getDefiner(attribute.type_id, file, {
-			maxLength,
-			notNull: attribute.not_null,
+			schemaName: type.schema_name,
+			tableName: type.class_name,
+			columnName: attribute.attribute_name,
 		})
-		.replace("%ATTRIBUTE%", attribute.attribute_name);
+		.replace("%ATTRIBUTE%", attribute.attribute_name)
+		.replace("%NOTNULL%", attribute.not_null ? ".notNull()" : "")
+		.replace("%LENGTH%", `${maxLength}`)
+		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config));
 
 	return `${definer}${getDefault(attribute, file)}${getReference(type, attribute, printer, file)}`;
 }
 
 function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
-	const columnTypeOverride =
-		printer.config.files.columnDefinerOverrides[`${type.schema_name}.${type.class_name}.${attribute.attribute_name}`] ||
-		printer.config.files.columnDefinerOverrides[`${type.class_name}.${attribute.attribute_name}`];
-
-	if (columnTypeOverride) {
-		const [importString, importStatement] = columnTypeOverride;
-		for (const statement of importStatement) file.addImportStatement(statement);
-		return importString;
-	}
-
 	return printer
 		.getDefinerType(attribute.type_id, file, {
-			notNull: attribute.not_null,
+			schemaName: type.schema_name,
+			tableName: type.class_name,
+			columnName: attribute.attribute_name,
 		})
 		.replace("%ATTRIBUTE%", attribute.attribute_name)
 		.replace("%TABLE%", type.class_name)
-		.replace("%HASDEFAULT%", attribute.has_default ? "true" : "false");
+		.replace("%HASDEFAULT%", attribute.has_default ? "true" : "false")
+		.replace("%NOTNULL%", attribute.not_null ? "true" : "false")
+		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config));
 }
 
 function getReference(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {

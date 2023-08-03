@@ -38,26 +38,21 @@ describe("TzSwitcher", () => {
 			expect(row._time[0].equals(valuesInSeoul._time[0])).toBe(true);
 			expect(row._time[1].equals(valuesInSeoul._time[1])).toBe(true);
 
-			console.log("foo");
 			expect(row.timestamp.equals(valuesInSeoul.timestamp)).toBe(true);
 			expect(row._timestamp).toHaveLength(2);
 			expect(row._timestamp[0].equals(valuesInSeoul._timestamp[0])).toBe(true);
 			expect(row._timestamp[1].equals(valuesInSeoul._timestamp[1])).toBe(true);
 
-			console.log("bar");
-			console.log(row.timestamptz.safeEquals(valuesInSeoul.timestamptz), row.timestamptz, valuesInSeoul.timestamptz);
 			expect(row.timestamptz.equals(valuesInSeoul.timestamptz)).toBe(true);
 			expect(row._timestamptz).toHaveLength(2);
 			expect(row._timestamptz[0].equals(valuesInSeoul._timestamptz[0])).toBe(true);
 			expect(row._timestamptz[1].equals(valuesInSeoul._timestamptz[1])).toBe(true);
 
-			console.log("baz");
 			expect(row.timetz.equals(valuesInSeoul.timetz)).toBe(true);
 			expect(row._timetz).toHaveLength(2);
 			expect(row._timetz[0].equals(valuesInSeoul._timetz[0])).toBe(true);
 			expect(row._timetz[1].equals(valuesInSeoul._timetz[1])).toBe(true);
 
-			console.log("qux");
 			expect(row.not_a_time.equals(valuesInSeoul.not_a_time)).toBe(true);
 			expect(row.nullable_time).toBeNull();
 		} catch (error_) {

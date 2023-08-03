@@ -1,15 +1,15 @@
 <script setup lang="ts">
-	import { isDark, toggleDark } from "@/composables/dark";
-	import { tables, fetchData } from "@/composables/data";
-	import { dashboardVisible, showDashboard, activeTableId } from "@/composables/navigation";
 	import type { Table } from "@postgresql-typed/cli/lib/types/interfaces/Table";
 
-	const toggleMode = computed(() => (isDark.value ? "light" : "dark"));
+	import { isDark, toggleDark } from "@/composables/dark";
+	import { fetchData, tables } from "@/composables/data";
+	import { activeTableId, dashboardVisible, showDashboard } from "@/composables/navigation";
 
-	const onItemClick = (table: Table) => {
-		activeTableId.value = table.table_id.toString();
-		showDashboard(false);
-	};
+	const toggleMode = computed(() => (isDark.value ? "light" : "dark")),
+		onItemClick = (table: Table) => {
+			activeTableId.value = table.table_id.toString();
+			showDashboard(false);
+		};
 </script>
 
 <template>

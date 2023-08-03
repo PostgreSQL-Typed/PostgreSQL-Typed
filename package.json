@@ -27,7 +27,7 @@
 		"test:watch": "turbo run test:watch",
 		"test:ci": "turbo run test:ci --force --no-cache",
 		"lint": "turbo run lint",
-		"lint:ci": "turbo run lint:ci",
+		"lint:fix": "turbo run lint:fix",
 		"badges": "monorepo-coverage-badges",
 		"badges:ci": "monorepo-coverage-badges --ci",
 		"ci:version": "changeset version && pnpm install --frozen-lockfile false",

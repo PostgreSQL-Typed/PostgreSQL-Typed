@@ -5,27 +5,26 @@ export default defineEventHandler(async () => {
 		const result = await generateData();
 		return result.map(r => ({
 			...r,
-			...{
-				id: encodeURIComponent(`${r.hostPort}/${r.database}`),
-			},
+
+			id: encodeURIComponent(`${r.hostPort}/${r.database}`),
 		}));
-	} catch (e) {
-		if (!(e instanceof Error)) return;
+	} catch (error) {
+		if (!(error instanceof Error)) return;
 
 		throw createError({
+			message: error.message,
+			stack: "",
 			statusCode: 500,
 			statusMessage: "Internal Server Error",
-			message: e.message,
-			stack: "",
 		});
 	}
 });
 
 export async function generateData() {
 	return await generate({
-		silent: true,
+		noFiles: true,
 		onError: "throwNewError",
 		returnDebug: true,
-		noFiles: true,
+		silent: true,
 	});
 }

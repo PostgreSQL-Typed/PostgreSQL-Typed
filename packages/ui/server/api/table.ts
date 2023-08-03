@@ -1,4 +1,5 @@
 import { parseColumnComment } from "~~/util/functions";
+
 import { generateData } from "./data";
 
 export default defineEventHandler(async () => {
@@ -14,28 +15,29 @@ export default defineEventHandler(async () => {
 					schema_name: tables[0]?.schema_name,
 					tables: tables.map(table => {
 						return {
-							table_name: table.table_name,
-							columns: (database.classes.find(c => c.class_id === table.table_id)?.attributes || []).map(attr => {
-								if (!attr.comment)
+							columns: (database.classes.find(c => c.class_id === table.table_id)?.attributes || []).map(attribute => {
+								if (!attribute.comment) {
 									return {
-										column_name: attr.attribute_name,
-										data_type: attr.type_name,
-										column_default: attr.default,
-										is_nullable: !attr.not_null,
+										column_default: attribute.default,
+										column_name: attribute.attribute_name,
 										comment: "",
+										data_type: attribute.type_name,
+										is_nullable: !attribute.not_null,
 									};
+								}
 
-								const parsedComment = parseColumnComment(attr.comment);
+								const parsedComment = parseColumnComment(attribute.comment);
 
 								return {
-									column_name: attr.attribute_name,
-									data_type: attr.type_name,
-									column_default: attr.default,
-									is_nullable: !attr.not_null,
+									column_default: attribute.default,
+									column_name: attribute.attribute_name,
 									comment: parsedComment.description,
-									...(parsedComment.extraColumns || {}),
+									data_type: attribute.type_name,
+									is_nullable: !attribute.not_null,
+									...parsedComment.extraColumns,
 								};
 							}),
+							table_name: table.table_name,
 						};
 					}),
 				};

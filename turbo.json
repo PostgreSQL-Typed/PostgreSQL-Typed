@@ -6,9 +6,9 @@
 			"outputs": ["lib/**/*", "dist/**/*", ".output/**/*", ".nuxt/**/*"]
 		},
 		"lint": {},
-		"lint:ci": {},
+		"lint:fix": {},
 		"test": {
-			"dependsOn": ["lint:ci"],
+			"dependsOn": ["lint"],
 			"outputs": ["coverage/**/*"]
 		},
 		"test:watch": {

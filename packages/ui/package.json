@@ -26,7 +26,9 @@
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
 		"cy:run": "cypress run",
-		"test:ci": "cypress install && start-server-and-test preview http://localhost:3000 cy:run"
+		"test:ci": "cypress install && start-server-and-test preview http://localhost:3000 cy:run",
+		"lint": "eslint --ext .ts,.vue ./ && prettier --check .",
+		"lint:fix": "eslint --fix --ext .ts,.vue ./ && prettier -w ."
 	},
 	"devDependencies": {
 		"@iconify-json/carbon": "^1.1.16",
@@ -52,6 +54,7 @@
 		"ky": "^0.33.3",
 		"mermaid": "^10.1.0",
 		"nuxt": "^3.4.3",
+		"prettier": "^3.0.1",
 		"pretty-bytes": "^6.1.0",
 		"sass": "^1.62.1",
 		"splitpanes": "^3.1.5",

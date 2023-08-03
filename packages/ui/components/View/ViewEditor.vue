@@ -1,33 +1,14 @@
 <script setup lang="ts">
-	import { activeTable, activeTableClass } from "@/composables/data";
-	import { activeTableId } from "@/composables/navigation";
 	import type CodeMirror from "codemirror";
 
-	interface ParsedStack {
-		method: string;
-		file: string;
-		line: number;
-		column: number;
-	}
+	import { activeTable, activeTableClass } from "@/composables/data";
+	import { activeTableId } from "@/composables/navigation";
 
-	interface ErrorWithDiff extends Error {
-		name: string;
-		nameStr?: string;
-		stack?: string;
-		stackStr?: string;
-		stacks?: ParsedStack[];
-		showDiff?: boolean;
-		actual?: any;
-		expected?: any;
-		operator?: string;
-		type?: string;
-		frame?: string;
-	}
-
-	const emit = defineEmits<{ (event: "draft", value: boolean): void }>();
-	const code = ref("");
-	const serverCode = shallowRef<string | undefined>(undefined);
-	const draft = ref(false);
+	// eslint-disable-next-line func-call-spacing
+	const emit = defineEmits<{ (event: "draft", value: boolean): void }>(),
+		code = ref(""),
+		serverCode = shallowRef<string | undefined>(),
+		draft = ref(false);
 	watch(
 		activeTableId,
 		async () => {
@@ -51,14 +32,16 @@
 		},
 		{ immediate: true }
 	);
-	const editor = ref<any>();
-	const cm = computed<CodeMirror.EditorFromTextArea | undefined>(() => editor.value?.cm);
-	const hasBeenEdited = ref(false);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const editor = ref<any>(),
+		cm = computed<CodeMirror.EditorFromTextArea | undefined>(() => editor.value?.cm),
+		hasBeenEdited = ref(false);
 	useResizeObserver(editor, () => {
 		cm.value?.refresh();
 	});
 
 	function codemirrorChanges() {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		draft.value = serverCode.value !== cm.value!.getValue();
 	}
 
@@ -73,9 +56,8 @@
 	watch(
 		cm,
 		cmValue => {
-			if (!cmValue) {
-				return;
-			}
+			if (!cmValue) return;
+
 			setTimeout(() => {
 				cmValue.on("changes", codemirrorChanges);
 				if (!hasBeenEdited.value) cmValue.clearHistory(); // Prevent getting access to initial state

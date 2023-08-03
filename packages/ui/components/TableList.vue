@@ -1,33 +1,33 @@
 <script setup lang="ts">
-	import { activeTableId } from "@/composables/navigation";
 	import type { Table } from "@postgresql-typed/cli/lib/types/interfaces/Table";
 
-	const props = withDefaults(
-		defineProps<{
-			tables: Table[];
-			onItemClick?: (table: Table) => void;
-		}>(),
-		{}
-	);
-	const search = ref("");
-	const searchBox = ref<HTMLInputElement | undefined>();
-	const isFiltered = computed(() => search.value.trim() !== "");
-	const matchTable = (table: Table, search: string): boolean => {
-		const formatted = `${table.schema_name}.${table.table_name}`.toLowerCase();
-		return formatted.includes(search.toLowerCase());
-	};
-	const filtered = computed(() => {
-		if (!search.value.trim()) return props.tables;
-		return props.tables.filter(task => matchTable(task, search.value));
-	});
-	const filteredTests: ComputedRef<Table[]> = computed(() => (isFiltered.value ? filtered.value : []));
-	const clearSearch = (focus: boolean) => {
-		search.value = "";
-		focus && searchBox.value?.focus();
-	};
-	const disableClearSearch = computed(() => {
-		return search.value === "";
-	});
+	import { activeTableId } from "@/composables/navigation";
+
+	const properties = withDefaults(
+			defineProps<{
+				tables: Table[];
+			}>(),
+			{}
+		),
+		search = ref(""),
+		searchBox = ref<HTMLInputElement | undefined>(),
+		isFiltered = computed(() => search.value.trim() !== ""),
+		matchTable = (table: Table, search: string): boolean => {
+			const formatted = `${table.schema_name}.${table.table_name}`.toLowerCase();
+			return formatted.includes(search.toLowerCase());
+		},
+		filtered = computed(() => {
+			if (!search.value.trim()) return properties.tables;
+			return properties.tables.filter(task => matchTable(task, search.value));
+		}),
+		filteredTests: ComputedRef<Table[]> = computed(() => (isFiltered.value ? filtered.value : [])),
+		clearSearch = (focus: boolean) => {
+			search.value = "";
+			focus && searchBox.value?.focus();
+		},
+		disableClearSearch = computed(() => {
+			return search.value === "";
+		});
 </script>
 
 <script lang="ts">
@@ -54,7 +54,7 @@
 					text="sm"
 					flex-1
 					pl-1
-					:op="search.length ? '100' : '50'"
+					:op="search.length > 0 ? '100' : '50'"
 					@keydown.esc="clearSearch(false)"
 				/>
 				<IconButton
@@ -77,6 +77,7 @@
 			<template v-else>
 				<TableItem
 					v-for="table in filtered"
+					:key="table.table_id"
 					v-bind="$attrs"
 					:class="activeTableId === table.table_id.toString() ? 'bg-active' : ''"
 					:table="table"

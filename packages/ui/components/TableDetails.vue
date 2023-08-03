@@ -1,14 +1,14 @@
 <script setup lang="ts">
 	import { activeTable, activeTableClass, database } from "@/composables/data";
-	import { getRelationGraph, type RelationGraph } from "@/composables/graph";
 	import { getERD } from "@/composables/diagram";
+	import { getRelationGraph, type RelationGraph } from "@/composables/graph";
 	import { activeTableId } from "@/composables/navigation";
-	import { viewMode, type Params } from "@/composables/navigation";
+	import { type Params, viewMode } from "@/composables/navigation";
 
-	const graph = ref<RelationGraph>({ nodes: [], links: [] });
-	const erd = ref("");
-	const hasGraphBeenDisplayed = ref(false);
-	const hasDiagramBeenDisplayed = ref(false);
+	const graph = ref<RelationGraph>({ links: [], nodes: [] }),
+		erd = ref(""),
+		hasGraphBeenDisplayed = ref(false),
+		hasDiagramBeenDisplayed = ref(false);
 	debouncedWatch(
 		activeTableId,
 		async (c, o) => {
@@ -32,12 +32,11 @@
 	});
 
 	const comment = computed(() => {
-		const c = activeTableClass.value?.comment;
-		if (!c) return "";
-		return ` • ${c}`;
-	});
-
-	const editorDraft = ref(false);
+			const c = activeTableClass.value?.comment;
+			if (!c) return "";
+			return ` • ${c}`;
+		}),
+		editorDraft = ref(false);
 
 	function onDraft(value: boolean) {
 		editorDraft.value = value;
@@ -53,10 +52,10 @@
 				</div>
 			</div>
 			<div flex="~" items-center bg-header border="b-2 base" text-sm h-41px>
-				<button tab-button id="tableBtn" :class="{ 'tab-button-active': viewMode === undefined }" @click="changeViewMode(undefined)">Table</button>
-				<button tab-button id="graphBtn" :class="{ 'tab-button-active': viewMode === 'graph' }" @click="changeViewMode('graph')">Relation Graph</button>
-				<button tab-button id="diagramBtn" :class="{ 'tab-button-active': viewMode === 'diagram' }" @click="changeViewMode('diagram')">ER Diagram</button>
-				<button tab-button id="editorBtn" :class="{ 'tab-button-active': viewMode === 'editor' }" @click="changeViewMode('editor')">
+				<button id="tableBtn" tab-button :class="{ 'tab-button-active': viewMode === undefined }" @click="changeViewMode(undefined)">Table</button>
+				<button id="graphBtn" tab-button :class="{ 'tab-button-active': viewMode === 'graph' }" @click="changeViewMode('graph')">Relation Graph</button>
+				<button id="diagramBtn" tab-button :class="{ 'tab-button-active': viewMode === 'diagram' }" @click="changeViewMode('diagram')">ER Diagram</button>
+				<button id="editorBtn" tab-button :class="{ 'tab-button-active': viewMode === 'editor' }" @click="changeViewMode('editor')">
 					{{ editorDraft ? "*&#160;" : "" }}Editor
 				</button>
 			</div>

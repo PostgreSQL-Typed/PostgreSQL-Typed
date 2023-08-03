@@ -24,7 +24,7 @@ jobs:
         uses: ./.github/actions/prepareEnvironment
 
       - name: Run lint
-        run: pnpm lint:ci --filter ${{ inputs.package }}
+        run: pnpm lint --filter ${{ inputs.package }}
 
   build:
     runs-on: ubuntu-latest

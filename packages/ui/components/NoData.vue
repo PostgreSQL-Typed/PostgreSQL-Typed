@@ -1,8 +1,8 @@
 <script setup lang="ts">
-	import { hasData, fetchData, errorMessage, loading } from "@/composables/data";
+	import { errorMessage, fetchData, hasData, loading } from "@/composables/data";
 
 	const loadingText = ref("Loading");
-	let loadingInterval: NodeJS.Timer | null = setInterval(loadingMessage, 1000);
+	let loadingInterval: NodeJS.Timer | undefined = setInterval(loadingMessage, 1000);
 
 	watch(loading, value => {
 		if (value) {
@@ -10,7 +10,7 @@
 			loadingInterval = setInterval(loadingMessage, 1000);
 		} else if (loadingInterval) {
 			clearInterval(loadingInterval);
-			loadingInterval = null;
+			loadingInterval = undefined;
 		}
 	});
 
@@ -18,24 +18,21 @@
 	function loadingMessage() {
 		let loadingTextValue = loadingText.value;
 		loadingTextValue += ".";
-		if (loadingTextValue.length > 10) loadingText.value = "Loading";
-		else loadingText.value = loadingTextValue;
+		loadingText.value = loadingTextValue.length > 10 ? "Loading" : loadingTextValue;
 	}
 
 	const title = computed(() => {
-		if (loading.value) return loadingText.value;
-		return "No Data";
-	});
-
-	const description = computed(() => {
-		if (loading.value) return "Depending on the size of your database, this may take a while.";
-		return errorMessage.value;
-	});
-
-	const subtitle = computed(() => {
-		if (loading.value) return "Please wait";
-		return "Click to refresh";
-	});
+			if (loading.value) return loadingText.value;
+			return "No Data";
+		}),
+		description = computed(() => {
+			if (loading.value) return "Depending on the size of your database, this may take a while.";
+			return errorMessage.value;
+		}),
+		subtitle = computed(() => {
+			if (loading.value) return "Please wait";
+			return "Click to refresh";
+		});
 </script>
 
 <template>

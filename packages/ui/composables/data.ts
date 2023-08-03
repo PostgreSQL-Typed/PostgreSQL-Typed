@@ -1,7 +1,9 @@
 import type { FetchedData } from "@postgresql-typed/cli/lib/types/interfaces/FetchedData";
 import ky, { HTTPError } from "ky";
 import prettyBytes from "pretty-bytes";
+
 import { defaultCardinality, defaultRelationship, parseColumnComment } from "@/util/functions";
+
 import { activeDatabase, activeTableId } from "./navigation";
 
 export const data = ref<(FetchedData & { id: string })[]>([]);
@@ -21,10 +23,9 @@ export const fetchData = async () => {
 		);
 		initNavigation();
 		loading.value = false;
-	} catch (e) {
-		if (!(e instanceof HTTPError)) {
-			errorMessage.value = defaultError;
-		} else errorMessage.value = (await e.response.json()).message;
+	} catch (error) {
+		// eslint-disable-next-line unicorn/no-await-expression-member
+		errorMessage.value = error instanceof HTTPError ? (await error.response.json()).message : defaultError;
 		loading.value = false;
 	}
 };
@@ -68,12 +69,12 @@ export const schemaCount = computed(() => {
 	for (const table of database.tables) schemas.add(table.schema_name);
 	return schemas.size;
 });
-export const dbSize = computed(() => {
+export const databaseSize = computed(() => {
 	const database = data.value.find(d => d.id === activeDatabase.value);
 	if (!database) return prettyBytes(0);
 
 	let size = 0;
-	for (const table of database.tables) size += parseInt(table.size);
+	for (const table of database.tables) size += Number.parseInt(table.size);
 
 	return prettyBytes(size);
 });
@@ -86,75 +87,75 @@ export const databaseById = (id: string) =>
 	};
 export const findById = (id: string) => {
 	const database = data.value.find(d => d.id === activeDatabase.value);
-	if (!database) return undefined;
+	if (!database) return;
 	for (const table of database.tables) if (table.table_id.toString() === id) return table;
-	return undefined;
+	return;
 };
 export const activeTable = computed(() => (activeTableId.value ? findById(activeTableId.value) : undefined));
 export const activeTableClass = computed(() => {
 	const table = activeTable.value;
-	if (!table) return undefined;
+	if (!table) return;
 
 	const database = data.value.find(d => d.id === activeDatabase.value);
-	if (!database) return undefined;
+	if (!database) return;
 
 	return database.classes.find(c => c.class_id === table.table_id);
 });
 export const classById = (id: number) => {
 	const database = data.value.find(d => d.id === activeDatabase.value);
-	if (!database) return undefined;
+	if (!database) return;
 
 	const found = database.classes.find(c => c.class_id === id);
 	if (found) return found;
 
-	return undefined;
+	return;
 };
 export const classByPath = (path: string) => {
 	const database = data.value.find(d => d.id === activeDatabase.value);
-	if (!database) return undefined;
+	if (!database) return;
 
 	const [schema, table, column] = path.split(".");
-	if (!column || !table || !schema) return undefined;
+	if (!column || !table || !schema) return;
 
 	const found = database.classes.find(c => c.schema_name === schema && c.class_name === table);
 	if (found) return found;
 
-	return undefined;
+	return;
 };
 export const attByPath = (path: string) => {
 	const cls = classByPath(path);
-	if (!cls) return undefined;
+	if (!cls) return;
 
 	const [schema, table, column] = path.split(".");
-	if (!column || !table || !schema) return undefined;
+	if (!column || !table || !schema) return;
 
 	const found = cls.attributes.find(a => a.attribute_name === column);
 	if (found) return found;
 
-	return undefined;
+	return;
 };
-export const attIsPK = (attribute_number: number, class_id: number): boolean => {
-	const cls = classById(class_id);
+export const attIsPK = (attributeNumber: number, classId: number): boolean => {
+	const cls = classById(classId);
 	if (!cls) return false;
 
-	return cls.constraints.some(c => c.constraint_type === "p" && c.table_attribute_numbers.includes(attribute_number));
+	return cls.constraints.some(c => c.constraint_type === "p" && c.table_attribute_numbers.includes(attributeNumber));
 };
-export const attIsFK = (attribute_number: number, class_id: number): boolean => {
-	const cls = classById(class_id);
+export const attIsFK = (attributeNumber: number, classId: number): boolean => {
+	const cls = classById(classId);
 	if (!cls) return false;
 
-	const att = cls.attributes.find(a => a.attribute_number === attribute_number);
+	const att = cls.attributes.find(a => a.attribute_number === attributeNumber);
 	if (!att) return false;
 
 	const parsedComment = parseColumnComment(att.comment ?? "");
 
-	return cls.constraints.some(c => c.constraint_type === "f" && c.table_attribute_numbers.includes(attribute_number)) || parsedComment.link !== undefined;
+	return cls.constraints.some(c => c.constraint_type === "f" && c.table_attribute_numbers.includes(attributeNumber)) || parsedComment.link !== undefined;
 };
-export const attIsUnique = (attribute_number: number, class_id: number): boolean => {
-	const cls = classById(class_id);
+export const attIsUnique = (attributeNumber: number, classId: number): boolean => {
+	const cls = classById(classId);
 	if (!cls) return false;
 
-	return cls.constraints.some(c => c.constraint_type === "u" && c.table_attribute_numbers.includes(attribute_number));
+	return cls.constraints.some(c => c.constraint_type === "u" && c.table_attribute_numbers.includes(attributeNumber));
 };
 
 export const relations = computed(() => {
@@ -168,64 +169,65 @@ export const relations = computed(() => {
 			text: string;
 			cardinality: string;
 			relationship: string;
-		}[] = [];
-
-	const database = data.value.find(d => d.id === activeDatabase.value);
-	if (!database) return { nodes, links };
+		}[] = [],
+		database = data.value.find(d => d.id === activeDatabase.value);
+	if (!database) return { links, nodes };
 
 	for (const cls of database.classes) {
 		for (const constraint of cls.constraints) {
 			if (constraint.constraint_type !== "f") continue;
 
-			const refClass = classById(constraint.referenced_class_id);
-			if (!refClass) continue;
+			const referenceClass = classById(constraint.referenced_class_id);
+			if (!referenceClass) continue;
 
-			const refAttr = refClass.attributes.find(a => a.attribute_number === constraint.referenced_attribute_numbers[0]);
-			const attr = cls.attributes.find(a => a.attribute_number === constraint.table_attribute_numbers[0]);
-			if (!refAttr || !attr) continue;
+			const referenceAttribute = referenceClass.attributes.find(a => a.attribute_number === constraint.referenced_attribute_numbers[0]),
+				attribute = cls.attributes.find(a => a.attribute_number === constraint.table_attribute_numbers[0]);
+			if (!referenceAttribute || !attribute) continue;
 
 			if (!nodes.some(n => n.class_id === cls.class_id)) nodes.push({ class_id: cls.class_id, class_name: cls.class_name });
-			if (!nodes.some(n => n.class_id === refClass.class_id)) nodes.push({ class_id: refClass.class_id, class_name: refClass.class_name });
-			const text = `${attr.attribute_name} → ${refAttr.attribute_name}`;
-			if (!links.some(l => l.source === cls.class_id && l.target === refClass.class_id && l.text === text))
+			if (!nodes.some(n => n.class_id === referenceClass.class_id)) nodes.push({ class_id: referenceClass.class_id, class_name: referenceClass.class_name });
+			const text = `${attribute.attribute_name} → ${referenceAttribute.attribute_name}`;
+			if (!links.some(l => l.source === cls.class_id && l.target === referenceClass.class_id && l.text === text)) {
 				links.push({
-					source: cls.class_id,
-					target: refClass.class_id,
-					text,
 					cardinality: defaultCardinality,
 					relationship: defaultRelationship,
+					source: cls.class_id,
+					target: referenceClass.class_id,
+					text,
 				});
+			}
 		}
 
-		for (const attr of cls.attributes) {
-			if (!attr.comment) continue;
+		for (const attribute of cls.attributes) {
+			if (!attribute.comment) continue;
 
-			const commentData = parseColumnComment(attr.comment);
+			const commentData = parseColumnComment(attribute.comment);
 			if (!commentData.link) continue;
 
-			const refClass = classByPath(commentData.link);
-			if (!refClass) continue;
+			const referenceClass = classByPath(commentData.link);
+			if (!referenceClass) continue;
 
-			const refAttr = attByPath(commentData.link);
-			if (!refAttr) continue;
+			const referenceAttribute = attByPath(commentData.link);
+			if (!referenceAttribute) continue;
 
 			if (!nodes.some(n => n.class_id === cls.class_id)) nodes.push({ class_id: cls.class_id, class_name: cls.class_name });
-			if (!nodes.some(n => n.class_id === refClass.class_id)) nodes.push({ class_id: refClass.class_id, class_name: refClass.class_name });
-			const text = `${attr.attribute_name}* → ${refAttr.attribute_name}`;
-			if (!links.some(l => l.source === cls.class_id && l.target === refClass.class_id && l.text === text))
+			if (!nodes.some(n => n.class_id === referenceClass.class_id)) nodes.push({ class_id: referenceClass.class_id, class_name: referenceClass.class_name });
+			const text = `${attribute.attribute_name}* → ${referenceAttribute.attribute_name}`;
+			if (!links.some(l => l.source === cls.class_id && l.target === referenceClass.class_id && l.text === text)) {
 				links.push({
-					source: cls.class_id,
-					target: refClass.class_id,
-					text,
 					cardinality: commentData.cardinality ?? defaultCardinality,
 					relationship: commentData.relationship ?? defaultRelationship,
+					source: cls.class_id,
+					target: referenceClass.class_id,
+					text,
 				});
+			}
 		}
 	}
 
 	return {
-		nodes,
 		links,
+		nodes,
 	};
 });
 export const getRelationsRelatedTo = (
@@ -243,27 +245,27 @@ export const getRelationsRelatedTo = (
 		relationship: string;
 	}[];
 } => {
-	const rel = relations.value,
+	const relation = relations.value,
 		links: {
 			source: number;
 			target: number;
 			text: string;
 			cardinality: string;
 			relationship: string;
-		}[] = rel.links.filter(l => l.source === classId || l.target === classId),
+		}[] = relation.links.filter(l => l.source === classId || l.target === classId),
 		nodes: {
 			class_id: number;
 			class_name: string;
-		}[] = rel.nodes.filter(n => links.some(l => l.source === n.class_id || l.target === n.class_id));
+		}[] = relation.nodes.filter(n => links.some(l => l.source === n.class_id || l.target === n.class_id));
 
 	return {
-		nodes: nodes.map(n => ({ class_id: n.class_id.toString(), class_name: n.class_name })),
 		links: links.map(l => ({
+			cardinality: l.cardinality,
+			relationship: l.relationship,
 			source: l.source.toString(),
 			target: l.target.toString(),
 			text: l.text,
-			cardinality: l.cardinality,
-			relationship: l.relationship,
 		})),
+		nodes: nodes.map(n => ({ class_id: n.class_id.toString(), class_name: n.class_name })),
 	};
 };

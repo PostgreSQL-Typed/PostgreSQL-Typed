@@ -2,7 +2,7 @@
 	import type { MermaidConfig } from "mermaid";
 	import mermaid from "mermaid";
 
-	const el = ref<HTMLElement>();
+	const element = ref<HTMLElement>();
 
 	onMounted(() => {
 		mermaid.initialize({
@@ -13,9 +13,9 @@
 	});
 
 	watch(
-		() => props.diagram,
+		() => properties.diagram,
 		async () => {
-			el.value?.removeAttribute("data-processed");
+			element.value?.removeAttribute("data-processed");
 			await nextTick();
 			mermaid.initialize({
 				startOnLoad: false,
@@ -25,20 +25,19 @@
 		}
 	);
 
-	const props = defineProps<{
-		diagram: string;
-	}>();
-
-	const options = computed(
-		(): MermaidConfig => ({
-			fontFamily: "Readex Pro, sans-serif",
-		})
-	);
+	const properties = defineProps<{
+			diagram: string;
+		}>(),
+		options = computed(
+			(): MermaidConfig => ({
+				fontFamily: "Readex Pro, sans-serif",
+			})
+		);
 </script>
 
 <template>
 	<div h-full min-h-75 flex-1 relative overflow="hidden">
-		<pre class="mermaid" ref="el">{{ props.diagram }}</pre>
+		<pre ref="element" class="mermaid">{{ properties.diagram }}</pre>
 	</div>
 </template>
 

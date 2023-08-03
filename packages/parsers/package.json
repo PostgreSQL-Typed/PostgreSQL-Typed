@@ -36,8 +36,8 @@
 		"test": "vitest --run",
 		"test:watch": "vitest --ui --coverage",
 		"test:ci": "vitest --run --coverage",
-		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
-		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+		"lint": "eslint --ext .ts ./ && prettier --check .",
+		"lint:fix": "eslint --fix --ext .ts ./ && prettier -w ."
 	},
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",

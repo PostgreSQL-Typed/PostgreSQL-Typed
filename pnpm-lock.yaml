@@ -376,6 +376,9 @@ importers:
       nuxt:
         specifier: ^3.4.3
         version: 3.4.3(@types/node@20.1.2)(eslint@8.46.0)(sass@1.62.1)(typescript@5.1.6)
+      prettier:
+        specifier: ^3.0.1
+        version: 3.0.1
       pretty-bytes:
         specifier: ^6.1.0
         version: 6.1.0
@@ -7308,7 +7311,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.1.2
+      '@types/node': 20.4.6
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true

@@ -1,5 +1,17 @@
 # @postgresql-typed/core
 
+## 0.10.0
+
+### Minor Changes
+
+- [#75](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/75) [`9139f0f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/9139f0fa62bc0b67d198ed5cdf107c2c92811ef6) Thanks [@Bas950](https://github.com/Bas950)! - fix: enums should now work again
+
+### Patch Changes
+
+- Updated dependencies [[`9139f0f`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/9139f0fa62bc0b67d198ed5cdf107c2c92811ef6)]:
+  - @postgresql-typed/parsers@0.10.0
+  - @postgresql-typed/util@0.10.0
+
 ## 0.9.2
 
 ### Patch Changes

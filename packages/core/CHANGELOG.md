@@ -1,5 +1,16 @@
 # @postgresql-typed/core
 
+## 0.10.1
+
+### Patch Changes
+
+- [#78](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/78) [`e3d3734`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/e3d373494880ffd7e4f23430f962f1b3cb308d6e) Thanks [@Bas950](https://github.com/Bas950)! - update almost all dependencies to their latest versions
+
+- Updated dependencies [[`e3d3734`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/e3d373494880ffd7e4f23430f962f1b3cb308d6e)]:
+  - @postgresql-typed/parsers@0.10.1
+  - @postgresql-typed/oids@0.1.5
+  - @postgresql-typed/util@0.10.1
+
 ## 0.10.0
 
 ### Minor Changes

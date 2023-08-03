@@ -1,5 +1,14 @@
 # @postgresql-typed/ui
 
+## 0.4.4
+
+### Patch Changes
+
+- [#78](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/78) [`e3d3734`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/e3d373494880ffd7e4f23430f962f1b3cb308d6e) Thanks [@Bas950](https://github.com/Bas950)! - update almost all dependencies to their latest versions
+
+- Updated dependencies [[`e3d3734`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/e3d373494880ffd7e4f23430f962f1b3cb308d6e)]:
+  - @postgresql-typed/cli@0.8.1
+
 ## 0.4.3
 
 ### Patch Changes

@@ -296,14 +296,14 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@types/luxon':
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^3.3.1
+        version: 3.3.1
       '@types/node':
-        specifier: ^20.1.2
-        version: 20.1.2
+        specifier: ^20.4.6
+        version: 20.4.6
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.1.6
+        version: 5.1.6
 
   packages/ui:
     devDependencies:
@@ -2750,7 +2750,7 @@ packages:
   /@types/pg@8.6.6:
     resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
     dependencies:
-      '@types/node': 20.4.6
+      '@types/node': 20.1.2
       pg-protocol: 1.6.0
       pg-types: 2.2.0
     dev: true

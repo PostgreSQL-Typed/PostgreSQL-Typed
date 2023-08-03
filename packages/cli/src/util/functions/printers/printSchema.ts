@@ -4,9 +4,9 @@ import { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
 export function printSchema(type: ClassDetails, printer: Printer) {
 	const SchemaRecord = printer.context.pushValueDeclaration(
 		{
-			type: "schema",
-			name: type.schema_name,
 			databaseName: type.database_name,
+			name: type.schema_name,
+			type: "schema",
 		},
 		(identifier, { addImportStatement }) => {
 			addImportStatement({
@@ -20,12 +20,12 @@ export function printSchema(type: ClassDetails, printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "schema",
-				name: type.schema_name,
 				databaseName: type.database_name,
+				name: type.schema_name,
+				type: "schema",
 			},
+			type: "export",
 		},
 		SchemaRecord
 	);
@@ -34,16 +34,16 @@ export function printSchema(type: ClassDetails, printer: Printer) {
 
 	const SchemaTypeRecord = printer.context.pushValueDeclaration(
 		{
-			type: "schemaType",
-			name: type.schema_name,
 			databaseName: type.database_name,
+			name: type.schema_name,
+			type: "schemaType",
 		},
 		(identifier, { addImportStatement }) => {
 			addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/core",
 				name: "PgSchema",
 				type: "named",
-				isType: true,
 			});
 			return [`declare const ${identifier}: PgSchema<"${type.schema_name}">;`];
 		}
@@ -51,12 +51,12 @@ export function printSchema(type: ClassDetails, printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "schemaType",
-				name: type.schema_name,
 				databaseName: type.database_name,
+				name: type.schema_name,
+				type: "schemaType",
 			},
+			type: "export",
 		},
 		SchemaTypeRecord
 	);

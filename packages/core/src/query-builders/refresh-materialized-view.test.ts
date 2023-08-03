@@ -10,12 +10,12 @@ import { pgMaterializedView, sql, table as pgTable } from "../index.js";
 describe("refreshMaterializedView", () => {
 	test("refreshMaterializedView()", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "refresh_materialized_view_test.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("refresh_materialized_view_test", {

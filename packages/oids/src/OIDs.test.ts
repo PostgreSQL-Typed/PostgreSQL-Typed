@@ -28,12 +28,12 @@ describe("OID", () => {
       ORDER BY 1, 2;
     `,
 			client = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "OID.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			});
 
 		await client.connect();
@@ -82,12 +82,12 @@ describe("OID", () => {
       ORDER BY 1, 2;
     `,
 			client = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "OID.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			});
 
 		await client.connect();

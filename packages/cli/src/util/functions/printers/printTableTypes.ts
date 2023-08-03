@@ -9,34 +9,34 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 	const { TableRecord, TableTypeRecord } = printTable(type, printer),
 		TableInferTypeRecord = printer.context.pushTypeDeclaration(
 			{
-				type: "tableInferType",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "tableInferType",
 			},
 			(identifierName, { addImportStatement, getImport }) => {
 				addImportStatement({
+					isType: true,
 					module: "@postgresql-typed/core",
 					name: "InferModel",
 					type: "named",
-					isType: true,
 				});
 				return [`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}>;`];
 			}
 		),
 		TableInsertInferTypeRecord = printer.context.pushTypeDeclaration(
 			{
-				type: "tableInsertInferType",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "tableInsertInferType",
 			},
 			(identifierName, { addImportStatement, getImport }) => {
 				addImportStatement({
+					isType: true,
 					module: "@postgresql-typed/core",
 					name: "InferModel",
 					type: "named",
-					isType: true,
 				});
 				return [
 					`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}, "insert">;`,
@@ -46,26 +46,26 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "tableInferType",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "tableInferType",
 			},
+			type: "export",
 		},
 		TableInferTypeRecord
 	);
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "tableInsertInferType",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "tableInsertInferType",
 			},
+			type: "export",
 		},
 		TableInsertInferTypeRecord
 	);

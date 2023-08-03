@@ -97,10 +97,10 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 		if (_n < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: _n,
+				type: "number",
 			});
 		}
 
@@ -120,17 +120,17 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -174,9 +174,9 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 		if (argument.length > this._n) {
 			this.setIssueForContext(context, {
 				code: "invalid_n_length",
+				input: argument,
 				maximum: this._n,
 				received: argument.length,
-				input: argument,
 			});
 			return INVALID;
 		}
@@ -198,10 +198,10 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 		if (argument < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "number",
-				minimum: 0,
 				exact: true,
+				minimum: 0,
 				received: argument,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -217,9 +217,9 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
+					input: argument.value,
 					maximum: this._n,
 					received: argument.n,
-					input: argument.value,
 				});
 				return INVALID;
 			}
@@ -285,7 +285,10 @@ class BitVaryingConstructorClass<N extends number> extends PgTPConstructorBase<B
 const BitVarying: BitVaryingConstructor<number> = new BitVaryingConstructorClass(Number.POSITIVE_INFINITY);
 
 class BitVaryingClass<N extends number> extends PgTPBase<BitVarying<N>> implements BitVarying<N> {
-	constructor(private _bit: string, private _n: N = Number.POSITIVE_INFINITY as N) {
+	constructor(
+		private _bit: string,
+		private _n: N = Number.POSITIVE_INFINITY as N
+	) {
 		super();
 	}
 
@@ -293,8 +296,8 @@ class BitVaryingClass<N extends number> extends PgTPBase<BitVarying<N>> implemen
 		const parsed = new BitVaryingConstructorClass(this._n).safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

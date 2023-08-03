@@ -5,26 +5,26 @@ export function getTemplateValues(id: TypeId): Record<string, string> {
 		case "column":
 			return {
 				COLUMN_NAME: id.name,
-				TABLE_NAME: id.tableName,
 				DATABASE_NAME: id.databaseName,
 				SCHEMA_NAME: id.schemaName,
+				TABLE_NAME: id.tableName,
 			};
 		case "table":
 		case "tableType":
 		case "tableInferType":
 		case "tableInsertInferType":
 			return {
-				TABLE_NAME: id.name,
 				DATABASE_NAME: id.databaseName,
 				SCHEMA_NAME: id.schemaName,
+				TABLE_NAME: id.name,
 			};
 		case "schema":
 		case "schemaType":
 		case "schemaReexport":
 		case "schemaTypeReexport":
 			return {
-				SCHEMA_NAME: id.name,
 				DATABASE_NAME: id.databaseName,
+				SCHEMA_NAME: id.name,
 			};
 		case "databaseReexport":
 		case "databaseTypeReexport":
@@ -33,21 +33,21 @@ export function getTemplateValues(id: TypeId): Record<string, string> {
 			};
 		case "enum":
 		case "enumType":
-			return { TYPE_NAME: id.name, DATABASE_NAME: id.databaseName };
+			return { DATABASE_NAME: id.databaseName, TYPE_NAME: id.name };
 		case "domain":
 			return { TYPE_NAME: id.name };
 		case "debug":
 			return {
 				DATE: id.date,
+				DAY: id.day,
+				HOUR: id.hour,
+				MILLISECOND: id.millisecond,
+				MINUTE: id.minute,
+				MONTH: id.month,
+				SECOND: id.second,
 				TIME: id.time,
 				TIMESTAMP: id.timestamp,
 				YEAR: id.year,
-				MONTH: id.month,
-				DAY: id.day,
-				HOUR: id.hour,
-				MINUTE: id.minute,
-				SECOND: id.second,
-				MILLISECOND: id.millisecond,
 			};
 		case "export":
 			return getTemplateValues(id.of);

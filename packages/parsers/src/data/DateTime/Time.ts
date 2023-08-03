@@ -85,17 +85,17 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -126,8 +126,8 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE HH:MM:SS",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -149,17 +149,17 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 				totalLength > 3
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 3,
 							exact: true,
+							maximum: 3,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 3,
 							exact: true,
+							minimum: 3,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -252,10 +252,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (hour < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -263,10 +263,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (hour > 23) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -282,10 +282,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (minute < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -293,10 +293,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (minute > 59) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -304,10 +304,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (second < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -315,10 +315,10 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 		if (second >= 60) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -334,7 +334,11 @@ class TimeConstructorClass extends PgTPConstructorBase<Time> implements TimeCons
 const Time: TimeConstructor = new TimeConstructorClass();
 
 class TimeClass extends PgTPBase<Time> implements Time {
-	constructor(private _hour: number, private _minute: number, private _second: number) {
+	constructor(
+		private _hour: number,
+		private _minute: number,
+		private _second: number
+	) {
 		super();
 	}
 
@@ -343,8 +347,8 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		const parsed = Time.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -372,9 +376,9 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		return DateTime.fromObject(
 			{
 				hour: this._hour,
+				millisecond: Math.round((this._second % 1) * 1000),
 				minute: this._minute,
 				second: Math.trunc(this._second),
-				millisecond: Math.round((this._second % 1) * 1000),
 			},
 			{ zone }
 		);
@@ -408,20 +412,20 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		if (hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 		}
 
 		if (hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 		}
 
@@ -452,20 +456,20 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		if (minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 		}
 
 		if (minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 		}
 
@@ -489,20 +493,20 @@ class TimeClass extends PgTPBase<Time> implements Time {
 		if (second < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 		}
 
 		if (second >= 60) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 		}
 

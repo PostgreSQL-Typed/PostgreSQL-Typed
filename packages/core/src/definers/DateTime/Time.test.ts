@@ -9,17 +9,17 @@ import { defineTime } from "./Time";
 describe("defineTime", async () => {
 	test('defineTime({ mode: "Time" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "time.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("time", {
-				time: defineTime("time", { mode: "Time" }).notNull(),
 				_time: defineTime("_time", { mode: "Time" }).array().notNull(),
+				time: defineTime("time", { mode: "Time" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineTime", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				time: Time.from("11:11:11"),
 				_time: [Time.from("11:11:11"), Time.from("10:10:10")],
+				time: Time.from("11:11:11"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineTime", async () => {
 
 	test('defineTime({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestring", {
-				time: defineTime("time", { mode: "string" }).notNull(),
 				_time: defineTime("_time", { mode: "string" }).array().notNull(),
+				time: defineTime("time", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineTime", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				time: "11:11:11",
 				_time: ["11:11:11", "10:10:10"],
+				time: "11:11:11",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineTime", async () => {
 
 	test('defineTime({ mode: "unix" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timeunix.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timeunix", {
-				time: defineTime("time", { mode: "unix" }).notNull(),
 				_time: defineTime("_time", { mode: "unix" }).array().notNull(),
+				time: defineTime("time", { mode: "unix" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,9 +182,9 @@ describe("defineTime", async () => {
 		const todayInMilliseconds = DateTime.now()
 				.set({
 					hour: 0,
+					millisecond: 0,
 					minute: 0,
 					second: 0,
-					millisecond: 0,
 				})
 				.toMillis(),
 			elevenElevenElevenInMilliseconds = 39_600_000 + 666_000 + 11_000,
@@ -192,8 +192,8 @@ describe("defineTime", async () => {
 			result1 = await database
 				.insert(table)
 				.values({
-					time: todayInMilliseconds + elevenElevenElevenInMilliseconds,
 					_time: [todayInMilliseconds + elevenElevenElevenInMilliseconds, todayInMilliseconds + tenTenTenInMilliseconds],
+					time: todayInMilliseconds + elevenElevenElevenInMilliseconds,
 				})
 				.returning();
 
@@ -237,17 +237,17 @@ describe("defineTime", async () => {
 
 	test('defineTime({ mode: "luxon" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timeluxon.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timeluxon", {
-				time: defineTime("time", { mode: "luxon.DateTime" }).notNull(),
 				_time: defineTime("_time", { mode: "luxon.DateTime" }).array().notNull(),
+				time: defineTime("time", { mode: "luxon.DateTime" }).notNull(),
 			});
 
 		await database.connect();
@@ -262,9 +262,6 @@ describe("defineTime", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}),
 				_time: [
 					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 						setZone: true,
@@ -273,6 +270,9 @@ describe("defineTime", async () => {
 						setZone: true,
 					}),
 				],
+				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}),
 			})
 			.returning();
 
@@ -338,17 +338,17 @@ describe("defineTime", async () => {
 
 	test('defineTime({ mode: "js" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timejs.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timejs", {
-				time: defineTime("time", { mode: "globalThis.Date" }).notNull(),
 				_time: defineTime("_time", { mode: "globalThis.Date" }).array().notNull(),
+				time: defineTime("time", { mode: "globalThis.Date" }).notNull(),
 			});
 
 		await database.connect();
@@ -363,9 +363,6 @@ describe("defineTime", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}).toJSDate(),
 				_time: [
 					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 						setZone: true,
@@ -374,6 +371,9 @@ describe("defineTime", async () => {
 						setZone: true,
 					}).toJSDate(),
 				],
+				time: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}).toJSDate(),
 			})
 			.returning();
 

@@ -54,7 +54,7 @@ export function parseTemplate(string: string) {
 		}
 	}
 	return {
-		variables,
 		applyTemplate: (value: any) => result.map(r => r(value)).join(""),
+		variables,
 	};
 }

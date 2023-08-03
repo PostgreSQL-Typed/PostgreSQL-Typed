@@ -25,7 +25,7 @@ export type PgTBoxType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Box" ? Box : string,
-	TDriverParameter = Box
+	TDriverParameter = Box,
 > = PgTBox<{
 	tableName: TTableName;
 	name: TName;

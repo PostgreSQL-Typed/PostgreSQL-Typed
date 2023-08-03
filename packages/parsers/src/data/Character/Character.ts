@@ -93,20 +93,20 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 		if (_n < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: _n,
+				type: "number",
 			});
 		}
 
 		if (_n > 10_485_760 && _n !== Number.POSITIVE_INFINITY) {
 			throwPgTPError({
 				code: "too_big",
-				type: "number",
-				maximum: 10_485_760,
 				inclusive: true,
+				maximum: 10_485_760,
 				received: _n,
+				type: "number",
 			});
 		}
 
@@ -126,17 +126,17 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -168,9 +168,9 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 		if (argument.length > this._n) {
 			this.setIssueForContext(context, {
 				code: "invalid_n_length",
+				input: argument,
 				maximum: this._n,
 				received: argument.length,
-				input: argument,
 			});
 			return INVALID;
 		}
@@ -187,9 +187,9 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
+					input: argument.value,
 					maximum: this._n,
 					received: argument.n,
-					input: argument.value,
 				});
 				return INVALID;
 			}
@@ -256,7 +256,10 @@ class CharacterConstructorClass<N extends number> extends PgTPConstructorBase<Ch
 const Character: CharacterConstructor<1> = new CharacterConstructorClass(1);
 
 class CharacterClass<N extends number> extends PgTPBase<Character<N>> implements Character<N> {
-	constructor(private _character: string, private _n: N = 1 as N) {
+	constructor(
+		private _character: string,
+		private _n: N = 1 as N
+	) {
 		super();
 	}
 
@@ -264,8 +267,8 @@ class CharacterClass<N extends number> extends PgTPBase<Character<N>> implements
 		const parsed = new CharacterConstructorClass(this._n).safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

@@ -45,8 +45,8 @@ describe("OIDConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -57,8 +57,8 @@ describe("OIDConstructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "number",
-				received: "nan",
 				message: "Expected 'number', received 'nan'",
+				received: "nan",
 			});
 		}
 
@@ -102,11 +102,11 @@ describe("OIDConstructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "number",
-				maximum: 4_294_967_295,
 				inclusive: true,
+				maximum: 4_294_967_295,
 				message: "Number must be less than or equal to 4294967295",
 				received: 4_294_967_296,
+				type: "number",
 			});
 		}
 
@@ -116,11 +116,11 @@ describe("OIDConstructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: 0,
 				inclusive: true,
 				message: "Number must be greater than or equal to 0",
+				minimum: 0,
 				received: -1,
+				type: "number",
 			});
 		}
 
@@ -131,11 +131,11 @@ describe("OIDConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -146,17 +146,17 @@ describe("OIDConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = OID.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -189,10 +189,10 @@ describe("OIDConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "number",
-				received: "string",
 				message: "Expected 'number' for key 'value', received 'string'",
+				objectKey: "value",
+				received: "string",
 			});
 		}
 		//#endregion
@@ -272,8 +272,8 @@ describe("OID", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -367,12 +367,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a OID", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "oid.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		try {

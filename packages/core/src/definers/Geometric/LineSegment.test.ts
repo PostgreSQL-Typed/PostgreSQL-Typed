@@ -9,17 +9,17 @@ import { defineLineSegment } from "./LineSegment";
 describe("defineLineSegment", async () => {
 	test('defineLineSegment({ mode: "LineSegment" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "linesegment.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("linesegment", {
-				linesegment: defineLineSegment("linesegment", { mode: "LineSegment" }).notNull(),
 				_linesegment: defineLineSegment("_linesegment", { mode: "LineSegment" }).array().notNull(),
+				linesegment: defineLineSegment("linesegment", { mode: "LineSegment" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineLineSegment", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				linesegment: LineSegment.from("[(1,2),(3,4)]"),
 				_linesegment: [LineSegment.from("[(1,2),(3,4)]"), LineSegment.from("[(1,2),(4,5)]")],
+				linesegment: LineSegment.from("[(1,2),(3,4)]"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineLineSegment", async () => {
 
 	test('defineLineSegment({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "linesegmentstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("linesegmentstring", {
-				linesegment: defineLineSegment("linesegment", { mode: "string" }).notNull(),
 				_linesegment: defineLineSegment("_linesegment", { mode: "string" }).array().notNull(),
+				linesegment: defineLineSegment("linesegment", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineLineSegment", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				linesegment: "[(1,2),(3,4)]",
 				_linesegment: ["[(1,2),(3,4)]", "[(1,2),(4,5)]"],
+				linesegment: "[(1,2),(3,4)]",
 			})
 			.returning();
 

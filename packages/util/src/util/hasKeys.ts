@@ -32,8 +32,8 @@ export const hasKeys = <T>(
 					| undefined => {
 					if (!(k in object) && !t.includes("undefined")) {
 						return {
-							objectKey: k,
 							expected: t,
+							objectKey: k,
 							received: "undefined",
 						};
 					}
@@ -41,8 +41,8 @@ export const hasKeys = <T>(
 					if (Array.isArray(t) && t.includes(objectType)) return undefined;
 					else if (objectType === t) return undefined;
 					return {
-						objectKey: k,
 						expected: t,
+						objectKey: k,
 						received: objectType,
 					};
 				}
@@ -51,24 +51,24 @@ export const hasKeys = <T>(
 
 	if (otherKeys.length > 0 || missingKeys.length > 0 || invalidKeys.length > 0) {
 		return {
-			success: false,
-			otherKeys,
-			missingKeys,
 			invalidKeys,
+			missingKeys,
+			otherKeys,
+			success: false,
 		};
 	}
 
 	if (objectKeys.length === 0) {
 		return {
-			success: false,
-			otherKeys,
-			missingKeys: keys.map(([k]) => k),
 			invalidKeys,
+			missingKeys: keys.map(([k]) => k),
+			otherKeys,
+			success: false,
 		};
 	}
 
 	return {
-		success: true,
 		obj: object as T,
+		success: true,
 	};
 };

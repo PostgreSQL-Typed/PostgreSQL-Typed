@@ -28,7 +28,7 @@ export type PgTInt8MultiRangeType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Int8MultiRange" ? Int8MultiRange : string,
-	TDriverParameter = Int8MultiRange
+	TDriverParameter = Int8MultiRange,
 > = PgTInt8MultiRange<{
 	tableName: TTableName;
 	name: TName;

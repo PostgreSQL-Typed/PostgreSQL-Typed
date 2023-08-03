@@ -58,17 +58,17 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -114,20 +114,20 @@ class Int8ConstructorClass extends PgTPConstructorBase<Int8> implements Int8Cons
 		if (argument < BigInt("-9223372036854775808")) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "bigint",
-				minimum: BigInt("-9223372036854775808"),
 				inclusive: true,
+				minimum: BigInt("-9223372036854775808"),
 				received: argument,
+				type: "bigint",
 			});
 			return INVALID;
 		}
 		if (argument > BigInt("9223372036854775807")) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "bigint",
-				maximum: BigInt("9223372036854775807"),
 				inclusive: true,
+				maximum: BigInt("9223372036854775807"),
 				received: argument,
+				type: "bigint",
 			});
 			return INVALID;
 		}
@@ -192,8 +192,8 @@ class Int8Class extends PgTPBase<Int8> implements Int8 {
 		const parsed = Int8.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toBigint() === this.toBigint(),
 				data: parsed.data,
+				equals: parsed.data.toBigint() === this.toBigint(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

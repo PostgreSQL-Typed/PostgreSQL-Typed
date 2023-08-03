@@ -47,8 +47,8 @@ class TestClass extends PgTPRangeBase<TestClass, TestClass> {
 		const parsed = test.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		// This is to test the fallback if no issue is set in the context
@@ -63,8 +63,8 @@ class TestClass extends PgTPRangeBase<TestClass, TestClass> {
 		const parsed = test.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				isWithinRange: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				isWithinRange: parsed.data.toString() === this.toString(),
 			});
 		}
 		// This is to test the fallback if no issue is set in the context

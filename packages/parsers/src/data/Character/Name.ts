@@ -52,17 +52,17 @@ class NameConstructorClass extends PgTPConstructorBase<Name> implements NameCons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -96,11 +96,11 @@ class NameConstructorClass extends PgTPConstructorBase<Name> implements NameCons
 		if (bytes > 64) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "bytes",
-				maximum: 64,
 				inclusive: true,
-				received: bytes,
 				input: argument,
+				maximum: 64,
+				received: bytes,
+				type: "bytes",
 			});
 			return INVALID;
 		}
@@ -157,8 +157,8 @@ class NameClass extends PgTPBase<Name> implements Name {
 		const parsed = Name.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);

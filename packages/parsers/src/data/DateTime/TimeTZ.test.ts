@@ -17,8 +17,8 @@ describe("TimeTZConstructor", () => {
 			TimeTZ.safeFrom({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			}).success
 		).toBe(true);
 		expect(TimeTZ.safeFrom(1, 2, 3, 4, 5, "plus").success).toBe(true);
@@ -38,49 +38,49 @@ describe("TimeTZConstructor", () => {
 			TimeTZ.from({
 				hour: "1",
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			} as any)
 		).toThrowError("Expected 'number' for key 'hour', received 'string'");
 		expect(() =>
 			TimeTZ.from({
-				week: 0,
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				week: 0,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'week'");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
-				second: 3,
 				offset: {},
+				second: 3,
 			} as any)
 		).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "a" as any, hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "a" as any },
 			} as any)
 		).toThrowError("Expected 'minus' | 'plus', received 'a'");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0, second: 1 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus", second: 1 },
 			} as any)
 		).toThrowError("Unrecognized key in object: 'second'");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: "0" },
 				second: 3,
-				offset: { hour: 0, minute: "0", direction: "plus" },
 			} as any)
 		).toThrowError("Expected 'number' for key 'minute', received 'string'");
 		expect(() => TimeTZ.from(4, "5" as any, 6, 7, 8, "minus")).toThrowError("Expected 'number' for key 'minute', received 'string'");
@@ -131,112 +131,112 @@ describe("TimeTZConstructor", () => {
 			TimeTZ.from({
 				hour: 1.2,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimeTZ.from({
 				hour: 24,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be less than or equal to 23");
 		expect(() =>
 			TimeTZ.from({
 				hour: -1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 1.2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 60,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: -1,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: -1,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 60,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 1.2, minute: 0 },
 				second: 3,
-				offset: { hour: 1.2, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 24, minute: 0 },
 				second: 3,
-				offset: { hour: 24, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be less than or equal to 23");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: -1, minute: 0 },
 				second: 3,
-				offset: { hour: -1, minute: 0, direction: "plus" },
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 1.2 },
 				second: 3,
-				offset: { hour: 0, minute: 1.2, direction: "plus" },
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 60 },
 				second: 3,
-				offset: { hour: 0, minute: 60, direction: "plus" },
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimeTZ.from({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: -1 },
 				second: 3,
-				offset: { hour: 0, minute: -1, direction: "plus" },
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 	});
@@ -245,16 +245,16 @@ describe("TimeTZConstructor", () => {
 		const timetz = TimeTZ.from({
 			hour: 1,
 			minute: 2,
+			offset: { direction: "plus", hour: 0, minute: 0 },
 			second: 3,
-			offset: { hour: 0, minute: 0, direction: "plus" },
 		});
 		expect(TimeTZ.isTimeTZ(timetz)).toBe(true);
 		expect(
 			TimeTZ.isTimeTZ({
 				hour: 1,
 				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
 			})
 		).toBe(false);
 	});
@@ -289,8 +289,8 @@ describe("TimeTZ", () => {
 		expect(timestamptz.toJSON()).toEqual({
 			hour: 22,
 			minute: 10,
-			second: 9,
 			offset: { direction: "minus", hour: 2, minute: 0 },
+			second: 9,
 		});
 	});
 
@@ -391,33 +391,33 @@ describe("TimeTZ", () => {
 			timestamptz.offset = {} as any;
 		}).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: 1 } as any;
+			timestamptz.offset = { direction: 1, hour: 2, minute: 0 } as any;
 		}).toThrowError("Expected 'string' for key 'direction', received 'number'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: "plus", second: 1 } as any;
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 0, second: 1 } as any;
 		}).toThrowError("Unrecognized key in object: 'second'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: "+" as any };
+			timestamptz.offset = { direction: "+" as any, hour: 2, minute: 0 };
 		}).toThrowError("Expected 'minus' | 'plus', received '+'");
 		expect(() => {
-			timestamptz.offset = { hour: 2.5, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2.5, minute: 0 };
 		}).toThrowError("Number must be whole");
 		expect(() => {
-			timestamptz.offset = { hour: -1, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: -1, minute: 0 };
 		}).toThrowError("Number must be greater than or equal to 0");
 		expect(() => {
-			timestamptz.offset = { hour: 24, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 24, minute: 0 };
 		}).toThrowError("Number must be less than or equal to 23");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0.5, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 0.5 };
 		}).toThrowError("Number must be whole");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: -1, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: -1 };
 		}).toThrowError("Number must be greater than or equal to 0");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 60, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 60 };
 		}).toThrowError("Number must be less than or equal to 59");
-		timestamptz.offset = { hour: 2, minute: 0, direction: "plus" };
+		timestamptz.offset = { direction: "plus", hour: 2, minute: 0 };
 		expect(timestamptz.offset).toEqual({
 			direction: "plus",
 			hour: 2,
@@ -476,12 +476,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "timetz.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

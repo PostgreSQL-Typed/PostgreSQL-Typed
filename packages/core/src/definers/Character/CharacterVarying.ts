@@ -26,7 +26,7 @@ export type PgTCharacterVaryingType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "CharacterVarying" ? CharacterVarying<number> : string,
-	TDriverParameter = CharacterVarying<number>
+	TDriverParameter = CharacterVarying<number>,
 > = PgTCharacterVarying<{
 	tableName: TTableName;
 	name: TName;

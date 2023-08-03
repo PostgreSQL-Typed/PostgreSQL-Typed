@@ -10,17 +10,17 @@ import { defineJSON } from "./JSON";
 describe("defineJSON", async () => {
 	test('defineJSON({ mode: "JSON" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "json.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("json", {
-				json: defineJSON("json", { mode: "JSON" }).notNull(),
 				_json: defineJSON("_json", { mode: "JSON" }).array().notNull(),
+				json: defineJSON("json", { mode: "JSON" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineJSON", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				json: JSON.from("1"),
 				_json: [JSON.from("1"), JSON.from("2")],
+				json: JSON.from("1"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineJSON", async () => {
 
 	test('defineJSON({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "jsonstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("jsonstring", {
-				json: defineJSON("json", { mode: "string" }).notNull(),
 				_json: defineJSON("_json", { mode: "string" }).array().notNull(),
+				json: defineJSON("json", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineJSON", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				json: "1",
 				_json: ["1", "2"],
+				json: "1",
 			})
 			.returning();
 
@@ -166,17 +166,17 @@ describe("defineJSON", async () => {
 
 	test('defineJSON({ mode: "value" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "jsonvalue.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("jsonvalue", {
-				json: defineJSON("json", { mode: "value" }).notNull(),
 				_json: defineJSON("_json", { mode: "value" }).array().notNull(),
+				json: defineJSON("json", { mode: "value" }).notNull(),
 			});
 
 		await database.connect();
@@ -191,8 +191,8 @@ describe("defineJSON", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				json: 1,
 				_json: [1, 2],
+				json: 1,
 			})
 			.returning();
 

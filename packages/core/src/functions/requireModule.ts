@@ -1,7 +1,7 @@
 import jiti from "jiti";
 import { normalize } from "pathe";
 
-const _require = (jiti as unknown as typeof jiti.default)(process.cwd(), { interopDefault: true, esmResolve: true });
+const _require = (jiti as unknown as typeof jiti.default)(process.cwd(), { esmResolve: true, interopDefault: true });
 
 export function requireModule(id: string, options: RequireModuleOptions = {}) {
 	// Resolve id

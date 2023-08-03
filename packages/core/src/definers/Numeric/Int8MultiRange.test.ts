@@ -9,17 +9,17 @@ import { defineInt8MultiRange } from "./Int8MultiRange";
 describe("defineInt8MultiRange", async () => {
 	test('defineInt8MultiRange({ mode: "Int8MultiRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8multirange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8multirange", {
-				int8multirange: defineInt8MultiRange("int8multirange", { mode: "Int8MultiRange" }).notNull(),
 				_int8multirange: defineInt8MultiRange("_int8multirange", { mode: "Int8MultiRange" }).array().notNull(),
+				int8multirange: defineInt8MultiRange("int8multirange", { mode: "Int8MultiRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -45,8 +45,8 @@ describe("defineInt8MultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8multirange: Int8MultiRange.from("{[1,3),[11,13),[21,23)}"),
 				_int8multirange: [Int8MultiRange.from("{[1,3),[11,13),[21,23)}"), Int8MultiRange.from("{[3,5),[13,15),[23,25)}")],
+				int8multirange: Int8MultiRange.from("{[1,3),[11,13),[21,23)}"),
 			})
 			.returning();
 
@@ -98,17 +98,17 @@ describe("defineInt8MultiRange", async () => {
 
 	test('defineInt8MultiRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8multirangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8multirangestring", {
-				int8multirange: defineInt8MultiRange("int8multirange", { mode: "string" }).notNull(),
 				_int8multirange: defineInt8MultiRange("_int8multirange", { mode: "string" }).array().notNull(),
+				int8multirange: defineInt8MultiRange("int8multirange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -134,8 +134,8 @@ describe("defineInt8MultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8multirange: "{[1,3),[11,13),[21,23)}",
 				_int8multirange: ["{[1,3),[11,13),[21,23)}", "{[3,5),[13,15),[23,25)}"],
+				int8multirange: "{[1,3),[11,13),[21,23)}",
 			})
 			.returning();
 

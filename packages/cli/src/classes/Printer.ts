@@ -27,7 +27,11 @@ export class Printer {
 	public readonly types: Map<number, DataType>;
 	public readonly context: PrinterContext;
 	private LOGGER = LOGGER?.extend("Printer");
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, readonly data: FetchedData[], readonly arguments_: Record<string, any>) {
+	constructor(
+		public readonly config: PostgreSQLTypedCLIConfig,
+		readonly data: FetchedData[],
+		readonly arguments_: Record<string, any>
+	) {
 		this.classes = new Map(
 			data
 				.flatMap(d => d.classes.filter(c => d.tables.map(t => `${t.schema_name}.${t.table_name}`).includes(`${c.schema_name}.${c.class_name}`)))
@@ -317,20 +321,20 @@ export class Printer {
 			);
 
 		return {
-			type: "debug" as const,
 			date: `${this.pad(now.getFullYear(), 4)}-${this.pad(now.getMonth() + 1, 2)}-${this.pad(now.getDate(), 2)}`,
+			day: this.pad(now.getDate(), 2),
+			hour: this.pad(now.getHours(), 2),
+			millisecond: this.pad(now.getMilliseconds(), 3),
+			minute: this.pad(now.getMinutes(), 2),
+			month: this.pad(now.getMonth() + 1, 2),
+			second: this.pad(now.getSeconds(), 2),
 			time: `${this.pad(now.getHours(), 2)}-${this.pad(now.getMinutes(), 2)}-${this.pad(now.getSeconds(), 2)}.${this.pad(now.getMilliseconds(), 3)}`,
 			timestamp: `${this.pad(now.getFullYear(), 4)}-${this.pad(now.getMonth() + 1, 2)}-${this.pad(now.getDate(), 2)}_${this.pad(now.getHours(), 2)}-${this.pad(
 				now.getMinutes(),
 				2
 			)}-${this.pad(now.getSeconds(), 2)}.${this.pad(now.getMilliseconds(), 3)}`,
+			type: "debug" as const,
 			year: this.pad(now.getFullYear(), 4),
-			month: this.pad(now.getMonth() + 1, 2),
-			day: this.pad(now.getDate(), 2),
-			hour: this.pad(now.getHours(), 2),
-			minute: this.pad(now.getMinutes(), 2),
-			second: this.pad(now.getSeconds(), 2),
-			millisecond: this.pad(now.getMilliseconds(), 3),
 		};
 	}
 }

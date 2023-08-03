@@ -27,7 +27,7 @@ export type PgTBooleanType<
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	TData = TMode extends "Boolean" ? Boolean : TMode extends "string" ? string : TMode extends "boolean" ? boolean : number,
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	TDriverParameter = Boolean
+	TDriverParameter = Boolean,
 > = PgTBoolean<{
 	tableName: TTableName;
 	name: TName;

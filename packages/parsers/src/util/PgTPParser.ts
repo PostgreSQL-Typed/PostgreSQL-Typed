@@ -12,7 +12,10 @@ export const PgTPParser = <Parser extends Parsers | "unknown">(parser: Parser, i
 export class PgTPParserClass<Parser extends Parsers | "unknown"> {
 	_nullable = false;
 	_optional = false;
-	constructor(public parser: Parser, public isArray: boolean) {}
+	constructor(
+		public parser: Parser,
+		public isArray: boolean
+	) {}
 
 	nullable(): PgTPParserClass<Parser> {
 		this._nullable = true;
@@ -28,42 +31,42 @@ export class PgTPParserClass<Parser extends Parsers | "unknown"> {
 		if (data === null) {
 			return !inner && this._nullable
 				? {
-						success: true,
 						data,
+						success: true,
 				  }
 				: {
-						success: false,
 						error: getPgTPError({
 							code: "invalid_type",
 							expected: "not null",
 							received: "null",
 						}),
+						success: false,
 				  };
 		}
 		if (data === undefined) {
 			return !inner && this._optional
 				? {
-						success: true,
 						data,
+						success: true,
 				  }
 				: {
-						success: false,
 						error: getPgTPError({
 							code: "invalid_type",
 							expected: "not undefined",
 							received: "undefined",
 						}),
+						success: false,
 				  };
 		}
 		if (!inner && this.isArray) {
 			if (!Array.isArray(data)) {
 				return {
-					success: false,
 					error: getPgTPError({
 						code: "invalid_type",
 						expected: "array",
 						received: typeof data,
 					}),
+					success: false,
 				};
 			}
 
@@ -75,14 +78,14 @@ export class PgTPParserClass<Parser extends Parsers | "unknown"> {
 			}
 
 			return {
-				success: true,
 				data: successfull,
+				success: true,
 			};
 		}
 		if (this.parser === "unknown") {
 			return {
-				success: true,
 				data: data as any,
+				success: true,
 			};
 		}
 		return this.parser.safeFrom(data as any);

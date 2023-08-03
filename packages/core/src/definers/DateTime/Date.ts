@@ -16,7 +16,7 @@ import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
 
 export interface PgTDateConfig<
-	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
+	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
 > {
 	mode?: TMode;
 }
@@ -36,7 +36,7 @@ export type PgTDateType<
 		: TMode extends "unix"
 		? number
 		: string,
-	TDriverParameter = Date
+	TDriverParameter = Date,
 > = PgTDate<{
 	tableName: TTableName;
 	name: TName;

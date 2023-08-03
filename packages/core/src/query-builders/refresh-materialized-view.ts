@@ -16,7 +16,11 @@ export class PgTRefreshMaterializedView<TQueryResult extends QueryResultHKT> ext
 		withNoData?: boolean;
 	};
 
-	constructor(view: PgMaterializedView, private session: PgTSession, private dialect: PgDialect) {
+	constructor(
+		view: PgMaterializedView,
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {
 		super();
 		this.config = { view };
 	}

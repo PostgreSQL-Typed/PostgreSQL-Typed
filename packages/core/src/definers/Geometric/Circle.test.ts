@@ -9,17 +9,17 @@ import { defineCircle } from "./Circle";
 describe("defineCircle", async () => {
 	test('defineCircle({ mode: "Circle" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "circle.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("circle", {
-				circle: defineCircle("circle", { mode: "Circle" }).notNull(),
 				_circle: defineCircle("_circle", { mode: "Circle" }).array().notNull(),
+				circle: defineCircle("circle", { mode: "Circle" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineCircle", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				circle: Circle.from("<(1,2),3>"),
 				_circle: [Circle.from("<(1,2),3>"), Circle.from("<(1,2),4>")],
+				circle: Circle.from("<(1,2),3>"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineCircle", async () => {
 
 	test('defineCircle({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "circlestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("circlestring", {
-				circle: defineCircle("circle", { mode: "string" }).notNull(),
 				_circle: defineCircle("_circle", { mode: "string" }).array().notNull(),
+				circle: defineCircle("circle", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineCircle", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				circle: "<(1,2),3>",
 				_circle: ["<(1,2),3>", "<(1,2),4>"],
+				circle: "<(1,2),3>",
 			})
 			.returning();
 

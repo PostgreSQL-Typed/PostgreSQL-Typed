@@ -17,7 +17,7 @@ import { PgTError } from "../../PgTError.js";
 export interface PgTEnumConfig<
 	TMode extends "Enum" | "string" = "Enum" | "string",
 	TEnumType extends string = string,
-	TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]> = [TEnumType, ...TEnumType[]]
+	TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]> = [TEnumType, ...TEnumType[]],
 > {
 	mode?: TMode;
 	enumValues: TEnumValues;
@@ -31,7 +31,7 @@ export type PgTEnumType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Enum" ? Enum<string, [string, ...string[]]> : string,
-	TDriverParameter = Enum<string, [string, ...string[]]>
+	TDriverParameter = Enum<string, [string, ...string[]]>,
 > = PgTEnum<{
 	tableName: TTableName;
 	name: TName;
@@ -112,7 +112,7 @@ export class PgTEnum<T extends ColumnBaseConfig> extends PgColumn<PgTEnumHKT, T,
 export type PgTEnumStringBuilderInitial<
 	TName extends string,
 	TEnumType extends string,
-	TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>
+	TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>,
 > = PgTEnumStringBuilder<{
 	name: TName;
 	data: TEnumValues[number];
@@ -176,7 +176,7 @@ export function defineEnum<
 	TEnumType extends string,
 	TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>,
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	TMode extends PgTEnumConfig["mode"] & {}
+	TMode extends PgTEnumConfig["mode"] & {},
 >(
 	name: TName,
 	config: PgTEnumConfig<TMode, TEnumType, TEnumValues>
@@ -185,9 +185,9 @@ export function defineEnum(name: string, config: PgTEnumConfig) {
 	const { enumValues, mode, enumName } = config;
 	if (mode === "Enum") {
 		return new PgTEnumBuilder(name, {
-			enumValues,
 			enumName,
+			enumValues,
 		});
 	}
-	return new PgTEnumStringBuilder(name, { enumValues, enumName });
+	return new PgTEnumStringBuilder(name, { enumName, enumValues });
 }

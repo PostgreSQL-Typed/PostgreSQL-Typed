@@ -85,8 +85,8 @@ class TestClass extends PgTPBase<TestClass> {
 		const parsed = testClass.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		// This is to test the fallback if no issue is set in the context
@@ -328,10 +328,10 @@ describe("RangeConstructor", () => {
 		expect(invalidObject5.error.message).toBe("Function must have exactly 1 argument(s)");
 
 		const invalidObject6 = TestRange.safeFrom({
+			g: "h",
 			lower: "[",
 			upper: ")",
 			values: [testClass.from("a"), testClass.from("c")],
-			g: "h",
 		} as any);
 		expect(invalidObject6.success).toBe(false);
 		if (invalidObject6.success) expect.fail();

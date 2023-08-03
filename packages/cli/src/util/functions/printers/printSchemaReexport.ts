@@ -5,9 +5,9 @@ import { printTableTypes } from "./printTableTypes.js";
 export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 	const SchemaReexportRecord = printer.context.pushTypeDeclaration(
 		{
-			type: "schemaReexport",
-			name: types[0].schema_name,
 			databaseName: types[0].database_name,
+			name: types[0].schema_name,
+			type: "schemaReexport",
 		},
 		(_, { getRelativePath }) => [
 			types
@@ -28,12 +28,12 @@ export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "schemaReexport",
-				name: types[0].schema_name,
 				databaseName: types[0].database_name,
+				name: types[0].schema_name,
+				type: "schemaReexport",
 			},
+			type: "export",
 		},
 		SchemaReexportRecord
 	);
@@ -42,9 +42,9 @@ export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 
 	const SchemaTypeReexportRecord = printer.context.pushTypeDeclaration(
 		{
-			type: "schemaTypeReexport",
-			name: types[0].schema_name,
 			databaseName: types[0].database_name,
+			name: types[0].schema_name,
+			type: "schemaTypeReexport",
 		},
 		(_, { getRelativePath }) => [
 			types
@@ -65,12 +65,12 @@ export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "schemaTypeReexport",
-				name: types[0].schema_name,
 				databaseName: types[0].database_name,
+				name: types[0].schema_name,
+				type: "schemaTypeReexport",
 			},
+			type: "export",
 		},
 		SchemaTypeReexportRecord
 	);

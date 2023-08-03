@@ -9,17 +9,17 @@ import { definePolygon } from "./Polygon";
 describe("definePolygon", async () => {
 	test('definePolygon({ mode: "Polygon" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "polygon.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("polygon", {
-				polygon: definePolygon("polygon", { mode: "Polygon" }).notNull(),
 				_polygon: definePolygon("_polygon", { mode: "Polygon" }).array().notNull(),
+				polygon: definePolygon("polygon", { mode: "Polygon" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("definePolygon", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				polygon: Polygon.from("((1,2),(3,4))"),
 				_polygon: [Polygon.from("((1,2),(3,4))"), Polygon.from("((1,2),(4,5))")],
+				polygon: Polygon.from("((1,2),(3,4))"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("definePolygon", async () => {
 
 	test('definePolygon({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "polygonstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("polygonstring", {
-				polygon: definePolygon("polygon", { mode: "string" }).notNull(),
 				_polygon: definePolygon("_polygon", { mode: "string" }).array().notNull(),
+				polygon: definePolygon("polygon", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("definePolygon", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				polygon: "((1,2),(3,4))",
 				_polygon: ["((1,2),(3,4))", "((1,2),(4,5))"],
+				polygon: "((1,2),(3,4))",
 			})
 			.returning();
 

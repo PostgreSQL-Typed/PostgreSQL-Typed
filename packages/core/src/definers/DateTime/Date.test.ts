@@ -9,17 +9,17 @@ import { defineDate } from "./Date";
 describe("defineDate", async () => {
 	test('defineDate({ mode: "Date" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "date.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("date", {
-				date: defineDate("date", { mode: "Date" }).notNull(),
 				_date: defineDate("_date", { mode: "Date" }).array().notNull(),
+				date: defineDate("date", { mode: "Date" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineDate", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				date: Date.from("2023-01-01"),
 				_date: [Date.from("2023-01-01"), Date.from("2023-01-02")],
+				date: Date.from("2023-01-01"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineDate", async () => {
 
 	test('defineDate({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "datestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("datestring", {
-				date: defineDate("date", { mode: "string" }).notNull(),
 				_date: defineDate("_date", { mode: "string" }).array().notNull(),
+				date: defineDate("date", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineDate", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				date: "2023-01-01",
 				_date: ["2023-01-01", "2023-01-02"],
+				date: "2023-01-01",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineDate", async () => {
 
 	test('defineDate({ mode: "unix" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "dateunix.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("dateunix", {
-				date: defineDate("date", { mode: "unix" }).notNull(),
 				_date: defineDate("_date", { mode: "unix" }).array().notNull(),
+				date: defineDate("date", { mode: "unix" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineDate", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				date: 1_672_531_200_000,
 				_date: [1_672_531_200_000, 1_672_617_600_000],
+				date: 1_672_531_200_000,
 			})
 			.returning();
 
@@ -227,17 +227,17 @@ describe("defineDate", async () => {
 
 	test('defineDate({ mode: "luxon" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "dateluxon.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("dateluxon", {
-				date: defineDate("date", { mode: "luxon.DateTime" }).notNull(),
 				_date: defineDate("_date", { mode: "luxon.DateTime" }).array().notNull(),
+				date: defineDate("date", { mode: "luxon.DateTime" }).notNull(),
 			});
 
 		await database.connect();
@@ -252,8 +252,8 @@ describe("defineDate", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				date: DateTime.fromISO("2023-01-01T00:00:00.000Z"),
 				_date: [DateTime.fromISO("2023-01-01T00:00:00.000Z"), DateTime.fromISO("2023-01-02T00:00:00.000Z")],
+				date: DateTime.fromISO("2023-01-01T00:00:00.000Z"),
 			})
 			.returning();
 
@@ -305,17 +305,17 @@ describe("defineDate", async () => {
 
 	test('defineDate({ mode: "js" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "datejs.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("datejs", {
-				date: defineDate("date", { mode: "globalThis.Date" }).notNull(),
 				_date: defineDate("_date", { mode: "globalThis.Date" }).array().notNull(),
+				date: defineDate("date", { mode: "globalThis.Date" }).notNull(),
 			});
 
 		await database.connect();
@@ -330,8 +330,8 @@ describe("defineDate", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				date: DateTime.fromISO("2023-01-01T00:00:00.000Z").toJSDate(),
 				_date: [DateTime.fromISO("2023-01-01T00:00:00.000Z").toJSDate(), DateTime.fromISO("2023-01-02T00:00:00.000Z").toJSDate()],
+				date: DateTime.fromISO("2023-01-01T00:00:00.000Z").toJSDate(),
 			})
 			.returning();
 

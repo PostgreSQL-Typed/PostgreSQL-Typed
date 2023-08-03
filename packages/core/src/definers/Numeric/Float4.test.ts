@@ -9,17 +9,17 @@ import { defineFloat4 } from "./Float4";
 describe("defineFloat4", async () => {
 	test('defineFloat4({ mode: "Float4" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float4.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float4", {
-				float4: defineFloat4("float4", { mode: "Float4" }).notNull(),
 				_float4: defineFloat4("_float4", { mode: "Float4" }).array().notNull(),
+				float4: defineFloat4("float4", { mode: "Float4" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineFloat4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float4: Float4.from("1"),
 				_float4: [Float4.from("1"), Float4.from("2")],
+				float4: Float4.from("1"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineFloat4", async () => {
 
 	test('defineFloat4({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float4string.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float4string", {
-				float4: defineFloat4("float4", { mode: "string" }).notNull(),
 				_float4: defineFloat4("_float4", { mode: "string" }).array().notNull(),
+				float4: defineFloat4("float4", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineFloat4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float4: "1",
 				_float4: ["1", "2"],
+				float4: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineFloat4", async () => {
 
 	test('defineFloat4({ mode: "BigNumber" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float4bignumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float4bignumber", {
-				float4: defineFloat4("float4", { mode: "BigNumber" }).notNull(),
 				_float4: defineFloat4("_float4", { mode: "BigNumber" }).array().notNull(),
+				float4: defineFloat4("float4", { mode: "BigNumber" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineFloat4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float4: BigNumber(1),
 				_float4: [BigNumber(1), BigNumber(2)],
+				float4: BigNumber(1),
 			})
 			.returning();
 
@@ -235,17 +235,17 @@ describe("defineFloat4", async () => {
 
 	test('defineFloat4({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float4number.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float4number", {
-				float4: defineFloat4("float4", { mode: "number" }).notNull(),
 				_float4: defineFloat4("_float4", { mode: "number" }).array().notNull(),
+				float4: defineFloat4("float4", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -260,8 +260,8 @@ describe("defineFloat4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float4: 1,
 				_float4: [1, 2],
+				float4: 1,
 			})
 			.returning();
 

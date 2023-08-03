@@ -50,8 +50,8 @@ describe("Float4Constructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -62,8 +62,8 @@ describe("Float4Constructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_string",
 				expected: "LIKE 1.23",
-				received: "abc",
 				message: "Expected 'LIKE 1.23', received 'abc'",
+				received: "abc",
 			});
 		}
 
@@ -73,11 +73,11 @@ describe("Float4Constructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "number",
-				maximum: "9.9999999999999999999999999999999999999e+37",
 				inclusive: true,
+				maximum: "9.9999999999999999999999999999999999999e+37",
 				message: "Number must be less than or equal to 9.9999999999999999999999999999999999999e+37",
 				received: "10e400",
+				type: "number",
 			});
 		}
 
@@ -87,11 +87,11 @@ describe("Float4Constructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: "-9.9999999999999999999999999999999999999e+37",
 				inclusive: true,
 				message: "Number must be greater than or equal to -9.9999999999999999999999999999999999999e+37",
+				minimum: "-9.9999999999999999999999999999999999999e+37",
 				received: "-10e400",
+				type: "number",
 			});
 		}
 
@@ -102,11 +102,11 @@ describe("Float4Constructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -117,17 +117,17 @@ describe("Float4Constructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Float4.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -160,10 +160,10 @@ describe("Float4Constructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 		//#endregion
@@ -243,8 +243,8 @@ describe("Float4", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -373,12 +373,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Float4", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "float4.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

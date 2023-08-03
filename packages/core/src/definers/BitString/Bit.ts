@@ -26,7 +26,7 @@ export type PgTBitType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Bit" ? Bit<number> : TMode extends "string" ? string : number,
-	TDriverParameter = Bit<number>
+	TDriverParameter = Bit<number>,
 > = PgTBit<{
 	tableName: TTableName;
 	name: TName;

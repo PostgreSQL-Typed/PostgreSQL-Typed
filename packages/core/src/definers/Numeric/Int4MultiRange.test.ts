@@ -9,17 +9,17 @@ import { defineInt4MultiRange } from "./Int4MultiRange";
 describe("defineInt4MultiRange", async () => {
 	test('defineInt4MultiRange({ mode: "Int4MultiRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4multirange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4multirange", {
-				int4multirange: defineInt4MultiRange("int4multirange", { mode: "Int4MultiRange" }).notNull(),
 				_int4multirange: defineInt4MultiRange("_int4multirange", { mode: "Int4MultiRange" }).array().notNull(),
+				int4multirange: defineInt4MultiRange("int4multirange", { mode: "Int4MultiRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -45,8 +45,8 @@ describe("defineInt4MultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4multirange: Int4MultiRange.from("{[1,3),[11,13),[21,23)}"),
 				_int4multirange: [Int4MultiRange.from("{[1,3),[11,13),[21,23)}"), Int4MultiRange.from("{[3,5),[13,15),[23,25)}")],
+				int4multirange: Int4MultiRange.from("{[1,3),[11,13),[21,23)}"),
 			})
 			.returning();
 
@@ -98,17 +98,17 @@ describe("defineInt4MultiRange", async () => {
 
 	test('defineInt4MultiRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4multirangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4multirangestring", {
-				int4multirange: defineInt4MultiRange("int4multirange", { mode: "string" }).notNull(),
 				_int4multirange: defineInt4MultiRange("_int4multirange", { mode: "string" }).array().notNull(),
+				int4multirange: defineInt4MultiRange("int4multirange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -134,8 +134,8 @@ describe("defineInt4MultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4multirange: "{[1,3),[11,13),[21,23)}",
 				_int4multirange: ["{[1,3),[11,13),[21,23)}", "{[3,5),[13,15),[23,25)}"],
+				int4multirange: "{[1,3),[11,13),[21,23)}",
 			})
 			.returning();
 

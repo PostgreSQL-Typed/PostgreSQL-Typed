@@ -26,7 +26,7 @@ export type PgTOIDType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "OID" ? OID : TMode extends "string" ? string : number,
-	TDriverParameter = OID
+	TDriverParameter = OID,
 > = PgTOID<{
 	tableName: TTableName;
 	name: TName;

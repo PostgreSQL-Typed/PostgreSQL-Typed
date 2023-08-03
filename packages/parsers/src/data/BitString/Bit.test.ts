@@ -57,8 +57,8 @@ describe("BitConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -69,8 +69,8 @@ describe("BitConstructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_string",
 				expected: "LIKE 010101",
-				received: "abc",
 				message: "Expected 'LIKE 010101', received 'abc'",
+				received: "abc",
 			});
 		}
 
@@ -91,10 +91,10 @@ describe("BitConstructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				maximum: 1,
-				received: 3,
-				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
 				input: "101",
+				maximum: 1,
+				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
+				received: 3,
 			});
 		}
 
@@ -104,11 +104,11 @@ describe("BitConstructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: 0,
 				exact: true,
 				message: "Number must be exactly equal to 0",
+				minimum: 0,
 				received: -1,
+				type: "number",
 			});
 		}
 
@@ -119,11 +119,11 @@ describe("BitConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -134,17 +134,17 @@ describe("BitConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Bit.safeFrom({
-			value: "1",
 			unrecognized: true,
+			value: "1",
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -177,10 +177,10 @@ describe("BitConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 
@@ -190,10 +190,10 @@ describe("BitConstructor", () => {
 		else {
 			expect(invalidBitLength.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				maximum: 1,
-				received: 2,
-				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
 				input: "10",
+				maximum: 1,
+				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
+				received: 2,
 			});
 		}
 		//#endregion
@@ -309,8 +309,8 @@ describe("Bit", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -392,12 +392,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Bit", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "bit.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

@@ -44,12 +44,12 @@ export class PrinterContext {
 	public getFiles() {
 		return [
 			...[...this._files.values()].map(file => ({
-				filename: file.file,
 				content: file.getContent(),
+				filename: file.file,
 			})),
 			...[...this._rawFiles].map(([filename, content]) => ({
-				filename,
 				content,
+				filename,
 			})),
 		];
 	}

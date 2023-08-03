@@ -6,13 +6,13 @@ export const isValidDateTime = (date: unknown): IsValid<DateTime> => {
 	if (!(date instanceof DateTime)) return { isOfSameType: false };
 	if (!date.isValid) {
 		return {
-			isOfSameType: true,
-			isValid: false,
 			error: {
 				code: "invalid_luxon_date",
 				received: date,
 			},
+			isOfSameType: true,
+			isValid: false,
 		};
 	}
-	return { isOfSameType: true, isValid: true, data: date };
+	return { data: date, isOfSameType: true, isValid: true };
 };

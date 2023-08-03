@@ -12,16 +12,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBitType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -29,16 +29,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTBooleanType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBooleanType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -46,16 +46,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTBoxType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBoxType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -63,16 +63,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -80,16 +80,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTByteAType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTByteAType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -97,16 +97,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -116,16 +116,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTCircleType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCircleType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -134,16 +134,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTDateType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -151,16 +151,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTDateMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -168,16 +168,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTDateRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -185,16 +185,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTFloat4Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTFloat4Type",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -202,16 +202,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTFloat8Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTFloat8Type",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -221,16 +221,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt2Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt2Type",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -239,16 +239,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt4Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4Type",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -256,16 +256,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt4MultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4MultiRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -273,16 +273,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt4RangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4RangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -290,16 +290,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt8Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8Type",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -307,16 +307,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt8MultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8MultiRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -324,16 +324,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTInt8RangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8RangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -341,16 +341,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTIntervalType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTIntervalType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -358,16 +358,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTJSONType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTJSONType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -375,16 +375,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTJSONBType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTJSONBType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -393,16 +393,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTLineType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTLineType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -410,16 +410,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTLineSegmentType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTLineSegmentType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -429,16 +429,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTMoneyType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTMoneyType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -446,16 +446,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTNameType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTNameType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -466,16 +466,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTOIDType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTOIDType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -484,16 +484,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTPathType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPathType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -503,16 +503,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTPointType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPointType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -520,16 +520,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTPolygonType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPolygonType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -551,16 +551,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTextType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTextType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -569,16 +569,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -586,16 +586,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -603,16 +603,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampTZType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -620,16 +620,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimeTZType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimeTZType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -639,16 +639,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -656,16 +656,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -673,16 +673,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampTZMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -690,16 +690,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTTimestampTZRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZRangeType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -709,16 +709,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTUUIDType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "defineUUID",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -726,16 +726,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBitVaryingType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -743,16 +743,16 @@ export const DefaultDefinerTypeMappings = {
 				'PgTArrayOfType<PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterVaryingType",
 						type: "named",
-						isType: true,
 					},
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTArrayOfType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -777,10 +777,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBitType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -788,10 +788,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTBooleanType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBooleanType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -799,10 +799,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTBoxType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBoxType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -810,10 +810,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -821,10 +821,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTByteAType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTByteAType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -833,10 +833,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -847,10 +847,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTCircleType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCircleType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -859,10 +859,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTDateType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -870,10 +870,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTDateMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -881,10 +881,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTDateRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTDateRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -894,10 +894,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTFloat4Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTFloat4Type",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -905,10 +905,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTFloat8Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTFloat8Type",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -919,10 +919,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt2Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt2Type",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -931,10 +931,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt4Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4Type",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -942,10 +942,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt4MultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4MultiRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -953,10 +953,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt4RangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt4RangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -964,10 +964,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt8Type<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8Type",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -975,10 +975,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt8MultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8MultiRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -986,10 +986,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTInt8RangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTInt8RangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -998,10 +998,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTIntervalType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTIntervalType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1009,10 +1009,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTJSONType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTJSONType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1020,10 +1020,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTJSONBType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTJSONBType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1033,10 +1033,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTLineType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTLineType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1044,10 +1044,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTLineSegmentType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTLineSegmentType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1057,10 +1057,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTMoneyType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTMoneyType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1068,10 +1068,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTNameType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTNameType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1082,10 +1082,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTOIDType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTOIDType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1095,10 +1095,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTPathType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPathType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1115,10 +1115,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTPointType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPointType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1126,10 +1126,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTPolygonType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTPolygonType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1153,10 +1153,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTextType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTextType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1165,10 +1165,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1176,10 +1176,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1187,10 +1187,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampTZType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1198,10 +1198,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimeTZType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimeTZType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1212,10 +1212,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1224,10 +1224,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1235,11 +1235,11 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampTZMultiRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
-						module: "@postgresql-typed/core/definers",
+						isType: true,
 
+						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZMultiRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1247,10 +1247,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTTimestampTZRangeType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTTimestampTZRangeType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1261,10 +1261,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTUUIDType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTUUIDType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1272,10 +1272,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTBitVaryingType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],
@@ -1283,10 +1283,10 @@ export const DefaultDefinerTypeMappings = {
 				'PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
+						isType: true,
 						module: "@postgresql-typed/core/definers",
 						name: "PgTCharacterVaryingType",
 						type: "named",
-						isType: true,
 					},
 				],
 			],

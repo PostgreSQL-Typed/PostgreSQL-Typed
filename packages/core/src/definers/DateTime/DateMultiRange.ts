@@ -28,7 +28,7 @@ export type PgTDateMultiRangeType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "DateMultiRange" ? DateMultiRange : string,
-	TDriverParameter = DateMultiRange
+	TDriverParameter = DateMultiRange,
 > = PgTDateMultiRange<{
 	tableName: TTableName;
 	name: TName;

@@ -22,7 +22,7 @@ export interface PgTTimestampTZConfig<
 		| "globalThis.Date"
 		| "luxon.DateTime"
 		| "unix"
-		| "string"
+		| "string",
 > {
 	mode?: TMode;
 }
@@ -42,7 +42,7 @@ export type PgTTimestampTZType<
 		: TMode extends "unix"
 		? number
 		: string,
-	TDriverParameter = TimestampTZ
+	TDriverParameter = TimestampTZ,
 > = PgTTimestampTZ<{
 	tableName: TTableName;
 	name: TName;

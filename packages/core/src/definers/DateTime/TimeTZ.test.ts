@@ -10,17 +10,17 @@ import { defineTimeTZ } from "./TimeTZ";
 describe("defineTimeTZ", async () => {
 	test('defineTimeTZ({ mode: "TimeTZ" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timetz.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timetz", {
-				timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 				_timetz: defineTimeTZ("_timetz", { mode: "TimeTZ" }).array().notNull(),
+				timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineTimeTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timetz: TimeTZ.from("11:11:11"),
 				_timetz: [TimeTZ.from("11:11:11"), TimeTZ.from("10:10:10")],
+				timetz: TimeTZ.from("11:11:11"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineTimeTZ", async () => {
 
 	test('defineTimeTZ({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timetzstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timetzstring", {
-				timetz: defineTimeTZ("timetz", { mode: "string" }).notNull(),
 				_timetz: defineTimeTZ("_timetz", { mode: "string" }).array().notNull(),
+				timetz: defineTimeTZ("timetz", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineTimeTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timetz: "11:11:11",
 				_timetz: ["11:11:11", "10:10:10"],
+				timetz: "11:11:11",
 			})
 			.returning();
 
@@ -158,17 +158,17 @@ describe("defineTimeTZ", async () => {
 
 	test('defineTimeTZ({ mode: "unix" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timetzunix.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timetzunix", {
-				timetz: defineTimeTZ("timetz", { mode: "unix" }).notNull(),
 				_timetz: defineTimeTZ("_timetz", { mode: "unix" }).array().notNull(),
+				timetz: defineTimeTZ("timetz", { mode: "unix" }).notNull(),
 			});
 
 		await database.connect();
@@ -183,9 +183,9 @@ describe("defineTimeTZ", async () => {
 		const todayInMilliseconds = DateTime.now()
 				.set({
 					hour: 0,
+					millisecond: 0,
 					minute: 0,
 					second: 0,
-					millisecond: 0,
 				})
 				.toMillis(),
 			elevenElevenElevenInMilliseconds = 39_600_000 + 666_000 + 11_000,
@@ -193,8 +193,8 @@ describe("defineTimeTZ", async () => {
 			result1 = await database
 				.insert(table)
 				.values({
-					timetz: todayInMilliseconds + elevenElevenElevenInMilliseconds,
 					_timetz: [todayInMilliseconds + elevenElevenElevenInMilliseconds, todayInMilliseconds + tenTenTenInMilliseconds],
+					timetz: todayInMilliseconds + elevenElevenElevenInMilliseconds,
 				})
 				.returning();
 
@@ -238,17 +238,17 @@ describe("defineTimeTZ", async () => {
 
 	test('defineTimeTZ({ mode: "luxon" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timetzluxon.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timetzluxon", {
-				timetz: defineTimeTZ("timetz", { mode: "luxon.DateTime" }).notNull(),
 				_timetz: defineTimeTZ("_timetz", { mode: "luxon.DateTime" }).array().notNull(),
+				timetz: defineTimeTZ("timetz", { mode: "luxon.DateTime" }).notNull(),
 			});
 
 		await database.connect();
@@ -263,9 +263,6 @@ describe("defineTimeTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timetz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}),
 				_timetz: [
 					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 						setZone: true,
@@ -274,6 +271,9 @@ describe("defineTimeTZ", async () => {
 						setZone: true,
 					}),
 				],
+				timetz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}),
 			})
 			.returning();
 
@@ -339,17 +339,17 @@ describe("defineTimeTZ", async () => {
 
 	test('defineTimeTZ({ mode: "js" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timetzjs.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timetzjs", {
-				timetz: defineTimeTZ("timetz", { mode: "globalThis.Date" }).notNull(),
 				_timetz: defineTimeTZ("_timetz", { mode: "globalThis.Date" }).array().notNull(),
+				timetz: defineTimeTZ("timetz", { mode: "globalThis.Date" }).notNull(),
 			});
 
 		await database.connect();
@@ -364,9 +364,6 @@ describe("defineTimeTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timetz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}).toJSDate(),
 				_timetz: [
 					DateTime.fromISO("2023-01-01T11:11:11.000Z", {
 						setZone: true,
@@ -375,6 +372,9 @@ describe("defineTimeTZ", async () => {
 						setZone: true,
 					}).toJSDate(),
 				],
+				timetz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}).toJSDate(),
 			})
 			.returning();
 

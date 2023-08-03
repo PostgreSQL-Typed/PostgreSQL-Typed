@@ -54,7 +54,7 @@ describe("PolygonConstructor", () => {
 		expect(() => Polygon.from("()")).toThrowError("Expected 'LIKE ((x,y),...)', received '()'");
 		expect(() => Polygon.from({} as any)).toThrowError("Missing key in object: 'points'");
 		expect(() => Polygon.from({ points: BigInt(1) } as any)).toThrowError("Expected 'array' for key 'points', received 'bigint'");
-		expect(() => Polygon.from({ points: [], extra: "" } as any)).toThrowError("Unrecognized key in object: 'extra'");
+		expect(() => Polygon.from({ extra: "", points: [] } as any)).toThrowError("Unrecognized key in object: 'extra'");
 		expect(() => Polygon.from({ points: [] })).toThrowError("Array must contain at least 1 element(s)");
 		expect(() => Polygon.from({ points: [Point.from("(1,2)"), "brr"] } as any)).toThrowError("Expected 'LIKE (x,y)', received 'brr'");
 		expect(() => Polygon.from([])).toThrowError("Array must contain at least 1 element(s)");
@@ -234,12 +234,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "polygon.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

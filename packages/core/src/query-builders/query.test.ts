@@ -11,17 +11,17 @@ import { isNotNull } from "../operators.js";
 describe("query", () => {
 	test("PgTRelationalQuery", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "relational_query_test.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			users = pgTable("users", {
 				id: defineInt2("id").notNull(),
-				name: defineText("name"),
 				invitedBy: defineInt2("invited_by"),
+				name: defineText("name"),
 			}),
 			userRelation = relations(users, ({ one }) => ({
 				invitee: one(users, {
@@ -31,8 +31,8 @@ describe("query", () => {
 			})),
 			database = pgt(postgres, {
 				schema: {
-					users,
 					userRelation,
+					users,
 				},
 			});
 
@@ -52,20 +52,20 @@ describe("query", () => {
 				.insert(users)
 				.values([
 					{ id: 1, name: "test1" },
-					{ id: 2, name: "test2", invitedBy: 1 },
+					{ id: 2, invitedBy: 1, name: "test2" },
 				])
 				.execute();
 
 			const result1 = await database.query.users.findMany();
 
 			expect(result1).toEqual([
-				{ id: 1, name: "test1", invitedBy: null },
-				{ id: 2, name: "test2", invitedBy: 1 },
+				{ id: 1, invitedBy: null, name: "test1" },
+				{ id: 2, invitedBy: 1, name: "test2" },
 			]);
 
 			const result2 = await database.query.users.findFirst();
 
-			expect(result2).toEqual({ id: 1, name: "test1", invitedBy: null });
+			expect(result2).toEqual({ id: 1, invitedBy: null, name: "test1" });
 
 			const result3 = await database.query.users
 				.findFirst({
@@ -73,7 +73,7 @@ describe("query", () => {
 				})
 				.execute();
 
-			expect(result3).toEqual({ id: 2, name: "test2", invitedBy: 1 });
+			expect(result3).toEqual({ id: 2, invitedBy: 1, name: "test2" });
 
 			const result4 = await database.query.users
 				.findMany({
@@ -82,7 +82,7 @@ describe("query", () => {
 				.prepare("test")
 				.all();
 
-			expect(result4).toEqual([{ id: 2, name: "test2", invited_by: 1 }]);
+			expect(result4).toEqual([{ id: 2, invited_by: 1, name: "test2" }]);
 
 			const result5 = await database.transaction(async transaction => {
 				const result = await transaction.query.users.findMany();
@@ -90,8 +90,8 @@ describe("query", () => {
 			});
 
 			expect(result5).toEqual([
-				{ id: 1, name: "test1", invitedBy: null },
-				{ id: 2, name: "test2", invitedBy: 1 },
+				{ id: 1, invitedBy: null, name: "test1" },
+				{ id: 2, invitedBy: 1, name: "test2" },
 			]);
 		} catch (error) {
 			finalError = error;

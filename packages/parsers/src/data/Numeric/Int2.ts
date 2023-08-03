@@ -53,17 +53,17 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -118,20 +118,20 @@ class Int2ConstructorClass extends PgTPConstructorBase<Int2> implements Int2Cons
 		if (argument < -32_768) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "number",
-				minimum: -32_768,
 				inclusive: true,
+				minimum: -32_768,
 				received: argument,
+				type: "number",
 			});
 			return INVALID;
 		}
 		if (argument > 32_767) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "number",
-				maximum: 32_767,
 				inclusive: true,
+				maximum: 32_767,
 				received: argument,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -188,8 +188,8 @@ class Int2Class extends PgTPBase<Int2> implements Int2 {
 		const parsed = Int2.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toNumber() === this.toNumber(),
 				data: parsed.data,
+				equals: parsed.data.toNumber() === this.toNumber(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

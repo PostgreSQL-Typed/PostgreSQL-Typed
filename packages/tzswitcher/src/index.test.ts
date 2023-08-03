@@ -8,11 +8,11 @@ import { createTable, dropTable, insertQuery, insertQueryValues, TzSwitcherTable
 describe("TzSwitcher", () => {
 	it("should switch timezone from one to another", async () => {
 		const client = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
 				database: "postgres",
+				host: "localhost",
+				password: "password",
 				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(client);
 

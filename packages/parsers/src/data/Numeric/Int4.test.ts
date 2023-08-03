@@ -44,8 +44,8 @@ describe("Int4Constructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -56,8 +56,8 @@ describe("Int4Constructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "number",
-				received: "nan",
 				message: "Expected 'number', received 'nan'",
+				received: "nan",
 			});
 		}
 
@@ -89,11 +89,11 @@ describe("Int4Constructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "number",
-				maximum: 2_147_483_647,
 				inclusive: true,
+				maximum: 2_147_483_647,
 				message: "Number must be less than or equal to 2147483647",
 				received: 2_147_483_648,
+				type: "number",
 			});
 		}
 
@@ -103,11 +103,11 @@ describe("Int4Constructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: -2_147_483_648,
 				inclusive: true,
 				message: "Number must be greater than or equal to -2147483648",
+				minimum: -2_147_483_648,
 				received: -2_147_483_649,
+				type: "number",
 			});
 		}
 
@@ -118,11 +118,11 @@ describe("Int4Constructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -133,17 +133,17 @@ describe("Int4Constructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Int4.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -176,10 +176,10 @@ describe("Int4Constructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "number",
-				received: "string",
 				message: "Expected 'number' for key 'value', received 'string'",
+				objectKey: "value",
+				received: "string",
 			});
 		}
 		//#endregion
@@ -259,8 +259,8 @@ describe("Int4", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -336,12 +336,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Int4", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "int4.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		try {

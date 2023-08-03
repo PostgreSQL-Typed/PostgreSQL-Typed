@@ -53,7 +53,7 @@ type CreatePgSelectFromBuilderMode<
 	TBuilderMode extends "db" | "qb",
 	TTableName extends string | undefined,
 	TSelection extends ColumnsSelection,
-	TSelectMode extends SelectMode
+	TSelectMode extends SelectMode,
 > = TBuilderMode extends "db"
 	? PgTSelect<TTableName, TSelection, TSelectMode>
 	: PgTSelectQueryBuilder<PgSelectQueryBuilderHKT, TTableName, TSelection, TSelectMode>;
@@ -122,13 +122,13 @@ export class PgTSelectBuilder<TSelection extends SelectedFields | undefined, TBu
 		else fields = getTableColumns<AnyPgTable>(source);
 
 		return new PgTSelect({
-			table: source,
+			dialect: this.dialect,
+			distinct: this.distinct,
 			fields,
 			isPartialSelect,
 			session: this.session,
-			dialect: this.dialect,
+			table: source,
 			withList: this.withList,
-			distinct: this.distinct,
 		}) as any;
 	}
 }
@@ -139,7 +139,7 @@ export abstract class PgTSelectQueryBuilder<
 	TSelection extends ColumnsSelection,
 	TSelectMode extends SelectMode,
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {}
+	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {},
 	/* eslint-disable brace-style */
 > implements TypedQueryBuilder<BuildSubquerySelection<TSelection, TNullabilityMap>, SelectResult<TSelection, TSelectMode, TNullabilityMap>[]>
 {
@@ -183,14 +183,14 @@ export abstract class PgTSelectQueryBuilder<
 			| undefined;
 	}) {
 		this.config = {
-			withList,
-			table,
-			fields: { ...fields },
-			joins: [],
-			orderBy: [],
-			groupBy: [],
-			lockingClauses: [],
 			distinct,
+			fields: { ...fields },
+			groupBy: [],
+			joins: [],
+			lockingClauses: [],
+			orderBy: [],
+			table,
+			withList,
 		};
 		this.isPartialSelect = isPartialSelect;
 		this.session = session;
@@ -233,7 +233,7 @@ export abstract class PgTSelectQueryBuilder<
 			if (typeof on === "function")
 				on = on(new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })) as TSelection);
 
-			this.config.joins.push({ on, table, joinType, alias: tableName });
+			this.config.joins.push({ alias: tableName, joinType, on, table });
 
 			if (typeof tableName === "string") {
 				switch (joinType) {
@@ -426,7 +426,7 @@ export abstract class PgTSelectQueryBuilder<
 	 * {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE|Postgres locking clause documentation}
 	 */
 	for(strength: LockStrength, config: LockConfig = {}) {
-		this.config.lockingClauses.push({ strength, config });
+		this.config.lockingClauses.push({ config, strength });
 		return this;
 	}
 
@@ -458,7 +458,7 @@ export interface PgTSelect<
 	TSelection extends ColumnsSelection,
 	TSelectMode extends SelectMode,
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {}
+	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {},
 > extends PgTSelectQueryBuilder<PgSelectHKT, TTableName, TSelection, TSelectMode, TNullabilityMap>,
 		QueryPromise<SelectResult<TSelection, TSelectMode, TNullabilityMap>[]> {}
 
@@ -467,7 +467,7 @@ export class PgTSelect<
 	TSelection extends ColumnsSelection,
 	TSelectMode extends SelectMode,
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {}
+	TNullabilityMap extends Record<string, JoinNullability> = TTableName extends string ? Record<TTableName, "not-null"> : {},
 > extends PgTSelectQueryBuilder<PgSelectHKT, TTableName, TSelection, TSelectMode, TNullabilityMap> {
 	static readonly [entityKind]: string = "PgTSelect";
 

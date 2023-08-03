@@ -10,8 +10,8 @@ describe("hasKeys", () => {
 			["b", ParsedType.number],
 		]);
 		expect(test1).toStrictEqual({
-			success: true,
 			obj: { a: 1, b: 2 },
+			success: true,
 		});
 		if (test1.success) expectTypeOf(test1.obj).toEqualTypeOf<{ a: 1; b: 2 }>();
 		else expect.fail();
@@ -23,10 +23,10 @@ describe("hasKeys", () => {
 			["b", ParsedType.number],
 		]);
 		expect(test1).toStrictEqual({
-			success: false,
-			otherKeys: ["c"],
-			missingKeys: [],
 			invalidKeys: [],
+			missingKeys: [],
+			otherKeys: ["c"],
+			success: false,
 		});
 		if (test1.success) expect.fail();
 		else expectTypeOf(test1.otherKeys).toEqualTypeOf<string[]>();
@@ -38,9 +38,6 @@ describe("hasKeys", () => {
 			["b", ParsedType.number],
 		]);
 		expect(test1).toStrictEqual({
-			success: false,
-			otherKeys: [],
-			missingKeys: ["b"],
 			invalidKeys: [
 				{
 					expected: "number",
@@ -48,6 +45,9 @@ describe("hasKeys", () => {
 					received: "undefined",
 				},
 			],
+			missingKeys: ["b"],
+			otherKeys: [],
+			success: false,
 		});
 		if (test1.success) expect.fail();
 		else expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
@@ -57,10 +57,10 @@ describe("hasKeys", () => {
 			["b", [ParsedType.number, ParsedType.undefined]],
 		]);
 		expect(test2).toStrictEqual({
-			success: false,
-			otherKeys: [],
-			missingKeys: ["a", "b"],
 			invalidKeys: [],
+			missingKeys: ["a", "b"],
+			otherKeys: [],
+			success: false,
 		});
 		if (test1.success) expect.fail();
 		else expectTypeOf(test1.missingKeys).toEqualTypeOf<string[]>();
@@ -72,9 +72,6 @@ describe("hasKeys", () => {
 			["b", ParsedType.number],
 		]);
 		expect(test1).toStrictEqual({
-			success: false,
-			otherKeys: [],
-			missingKeys: [],
 			invalidKeys: [
 				{
 					expected: "number",
@@ -82,6 +79,9 @@ describe("hasKeys", () => {
 					received: "string",
 				},
 			],
+			missingKeys: [],
+			otherKeys: [],
+			success: false,
 		});
 		if (test1.success) expect.fail();
 		else {
@@ -99,8 +99,8 @@ describe("hasKeys", () => {
 			["b", [ParsedType.number, ParsedType.string]],
 		]);
 		expect(test2).toStrictEqual({
-			success: true,
 			obj: { a: 1, b: 2 },
+			success: true,
 		});
 
 		const test3 = hasKeys<{ a: 1; b: 2 | string }>({ a: 1, b: "2" }, [
@@ -108,8 +108,8 @@ describe("hasKeys", () => {
 			["b", [ParsedType.number, ParsedType.string]],
 		]);
 		expect(test3).toStrictEqual({
-			success: true,
 			obj: { a: 1, b: "2" },
+			success: true,
 		});
 
 		const test4 = hasKeys<{ a: 1; b: 2 | string }>({ a: 1, b: true }, [
@@ -117,9 +117,6 @@ describe("hasKeys", () => {
 			["b", [ParsedType.number, ParsedType.string]],
 		]);
 		expect(test4).toStrictEqual({
-			success: false,
-			otherKeys: [],
-			missingKeys: [],
 			invalidKeys: [
 				{
 					expected: ["number", "string"],
@@ -127,6 +124,9 @@ describe("hasKeys", () => {
 					received: "boolean",
 				},
 			],
+			missingKeys: [],
+			otherKeys: [],
+			success: false,
 		});
 	});
 
@@ -136,9 +136,6 @@ describe("hasKeys", () => {
 			["b", ParsedType.number],
 		]);
 		expect(test1).toStrictEqual({
-			success: false,
-			otherKeys: ["c"],
-			missingKeys: ["b"],
 			invalidKeys: [
 				{
 					expected: "number",
@@ -151,6 +148,9 @@ describe("hasKeys", () => {
 					received: "undefined",
 				},
 			],
+			missingKeys: ["b"],
+			otherKeys: ["c"],
+			success: false,
 		});
 		if (test1.success) expect.fail();
 		else {

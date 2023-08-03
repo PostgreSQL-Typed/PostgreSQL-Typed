@@ -25,7 +25,7 @@ export type PgTCircleType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Circle" ? Circle : TMode extends "string" ? string : number,
-	TDriverParameter = Circle
+	TDriverParameter = Circle,
 > = PgTCircle<{
 	tableName: TTableName;
 	name: TName;

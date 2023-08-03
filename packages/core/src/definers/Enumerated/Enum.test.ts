@@ -9,19 +9,19 @@ import { defineEnum } from "./Enum";
 describe("defineEnum", async () => {
 	test('defineEnum({ mode: "Enum" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "enum.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("enum", {
-				enum: defineEnum("enum", { mode: "Enum", enumName: "mood", enumValues: ["sad", "ok", "happy"] }).notNull(),
-				_enum: defineEnum("_enum", { mode: "Enum", enumName: "mood", enumValues: ["sad", "ok", "happy"] })
+				_enum: defineEnum("_enum", { enumName: "mood", enumValues: ["sad", "ok", "happy"], mode: "Enum" })
 					.array()
 					.notNull(),
+				enum: defineEnum("enum", { enumName: "mood", enumValues: ["sad", "ok", "happy"], mode: "Enum" }).notNull(),
 			});
 
 		await database.connect();
@@ -39,8 +39,8 @@ describe("defineEnum", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				enum: Enum.setEnums(["sad", "ok", "happy"]).from("sad"),
 				_enum: [Enum.setEnums(["sad", "ok", "happy"]).from("ok"), Enum.setEnums(["sad", "ok", "happy"]).from("happy")],
+				enum: Enum.setEnums(["sad", "ok", "happy"]).from("sad"),
 			})
 			.returning();
 
@@ -93,19 +93,19 @@ describe("defineEnum", async () => {
 
 	test('defineEnum({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "enumstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("enumstring", {
-				enum: defineEnum("enum", { mode: "string", enumName: "rgb", enumValues: ["red", "green", "blue"] }).notNull(),
-				_enum: defineEnum("_enum", { mode: "string", enumName: "rgb", enumValues: ["red", "green", "blue"] })
+				_enum: defineEnum("_enum", { enumName: "rgb", enumValues: ["red", "green", "blue"], mode: "string" })
 					.array()
 					.notNull(),
+				enum: defineEnum("enum", { enumName: "rgb", enumValues: ["red", "green", "blue"], mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -123,8 +123,8 @@ describe("defineEnum", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				enum: "red",
 				_enum: ["green", "blue"],
+				enum: "red",
 			})
 			.returning();
 

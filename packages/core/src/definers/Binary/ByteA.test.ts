@@ -9,17 +9,17 @@ import { defineByteA } from "./ByteA";
 describe("defineByteA", async () => {
 	test('defineByteA({ mode: "ByteA" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "bytea.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("bytea", {
-				bytea: defineByteA("bytea", { mode: "ByteA" }).notNull(),
 				_bytea: defineByteA("_bytea", { mode: "ByteA" }).array().notNull(),
+				bytea: defineByteA("bytea", { mode: "ByteA" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineByteA", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bytea: ByteA.from("\\x1234"),
 				_bytea: [ByteA.from(Buffer.from([0x12, 0x34])), ByteA.from("\\153\\154\\155")],
+				bytea: ByteA.from("\\x1234"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineByteA", async () => {
 
 	test('defineByteA({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "byteastring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("byteastring", {
-				bytea: defineByteA("bytea", { mode: "string" }).notNull(),
 				_bytea: defineByteA("_bytea", { mode: "string" }).array().notNull(),
+				bytea: defineByteA("bytea", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineByteA", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bytea: "\\x1234",
 				_bytea: ["\\x3456", "\\153\\154\\155"],
+				bytea: "\\x1234",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineByteA", async () => {
 
 	test('defineByteA({ mode: "Buffer" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "byteabuffer.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("byteabuffer", {
-				bytea: defineByteA("bytea", { mode: "Buffer" }).notNull(),
 				_bytea: defineByteA("_bytea", { mode: "Buffer" }).array().notNull(),
+				bytea: defineByteA("bytea", { mode: "Buffer" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineByteA", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bytea: ByteA.from("\\x1234").toBuffer(),
 				_bytea: [Buffer.from([0x34, 0x56]), ByteA.from("\\153\\154\\155").toBuffer()],
+				bytea: ByteA.from("\\x1234").toBuffer(),
 			})
 			.returning();
 

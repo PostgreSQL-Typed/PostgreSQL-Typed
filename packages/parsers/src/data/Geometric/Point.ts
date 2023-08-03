@@ -59,17 +59,17 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -109,8 +109,8 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE (x,y)",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -123,17 +123,17 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 				totalLength > 2
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 2,
 							exact: true,
+							maximum: 2,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 2,
 							exact: true,
+							minimum: 2,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -196,7 +196,10 @@ class PointConstructorClass extends PgTPConstructorBase<Point> implements PointC
 const Point: PointConstructor = new PointConstructorClass();
 
 class PointClass extends PgTPBase<Point> implements Point {
-	constructor(private _x: number, private _y: number) {
+	constructor(
+		private _x: number,
+		private _y: number
+	) {
 		super();
 	}
 
@@ -205,8 +208,8 @@ class PointClass extends PgTPBase<Point> implements Point {
 		const parsed = Point.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);

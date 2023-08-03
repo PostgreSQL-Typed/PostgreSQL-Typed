@@ -10,7 +10,7 @@ import { Circle } from "./Circle";
 describe("CircleConstructor", () => {
 	test("_parse(...)", () => {
 		expect(Circle.safeFrom("<(1,2),3>").success).toBe(true);
-		expect(Circle.safeFrom({ x: 1, y: 2, radius: 3 }).success).toBe(true);
+		expect(Circle.safeFrom({ radius: 3, x: 1, y: 2 }).success).toBe(true);
 		expect(Circle.safeFrom(1, 2, 3).success).toBe(true);
 		expect(Circle.safeFrom(Circle.from("<(1,2),3>")).success).toBe(true);
 
@@ -24,17 +24,17 @@ describe("CircleConstructor", () => {
 		expect(() => Circle.from({} as any)).toThrowError("Missing keys in object: 'x', 'y', 'radius'");
 		expect(() =>
 			Circle.from({
+				radius: "a",
 				x: 1,
 				y: 2,
-				radius: "a",
 			} as any)
 		).toThrowError("Expected 'number' for key 'radius', received 'string'");
 		expect(() =>
 			Circle.from({
+				r: 4,
+				radius: 3,
 				x: 1,
 				y: 2,
-				radius: 3,
-				r: 4,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'r'");
 		expect(() => Circle.from(1, 2, "a" as any)).toThrowError("Expected 'number', received 'string'");
@@ -45,43 +45,43 @@ describe("CircleConstructor", () => {
 	});
 
 	test("isCircle(...)", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(Circle.isCircle(circle)).toBe(true);
-		expect(Circle.isCircle({ x: 1, y: 2, radius: 3 })).toBe(false);
+		expect(Circle.isCircle({ radius: 3, x: 1, y: 2 })).toBe(false);
 	});
 });
 
 describe("Circle", () => {
 	test("_equals(...)", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 3 }))).toBe(true);
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 4 }))).toBe(false);
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 3 }).toJSON())).toBe(true);
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 4 }).toJSON())).toBe(false);
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 3 }).toString())).toBe(true);
-		expect(circle.equals(Circle.from({ x: 1, y: 2, radius: 4 }).toString())).toBe(false);
+		expect(circle.equals(Circle.from({ radius: 3, x: 1, y: 2 }))).toBe(true);
+		expect(circle.equals(Circle.from({ radius: 4, x: 1, y: 2 }))).toBe(false);
+		expect(circle.equals(Circle.from({ radius: 3, x: 1, y: 2 }).toJSON())).toBe(true);
+		expect(circle.equals(Circle.from({ radius: 4, x: 1, y: 2 }).toJSON())).toBe(false);
+		expect(circle.equals(Circle.from({ radius: 3, x: 1, y: 2 }).toString())).toBe(true);
+		expect(circle.equals(Circle.from({ radius: 4, x: 1, y: 2 }).toString())).toBe(false);
 		//@ts-expect-error - this is a test
 		expect(() => circle.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object', received 'bigint'");
 	});
 
 	test("toString()", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(circle.toString()).toBe("<(1,2),3>");
 	});
 
 	test("toJSON()", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
-		expect(circle.toJSON()).toEqual({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
+		expect(circle.toJSON()).toEqual({ radius: 3, x: 1, y: 2 });
 	});
 
 	test("get x()", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(circle.x).toBe(1);
 	});
 
 	test("set x(...)", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(() => {
 			circle.x = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -90,12 +90,12 @@ describe("Circle", () => {
 	});
 
 	test("get y()", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(circle.y).toBe(2);
 	});
 
 	test("set y(...)", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(() => {
 			circle.y = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -104,12 +104,12 @@ describe("Circle", () => {
 	});
 
 	test("get radius()", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(circle.radius).toBe(3);
 	});
 
 	test("set radius(...)", () => {
-		const circle = Circle.from({ x: 1, y: 2, radius: 3 });
+		const circle = Circle.from({ radius: 3, x: 1, y: 2 });
 		expect(() => {
 			circle.radius = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -168,12 +168,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "circle.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();
@@ -188,8 +188,8 @@ describe("PostgreSQL", () => {
 			`);
 
 			const [singleInput, arrayInput] = [
-				serializer<Circle>(Circle)(Circle.from({ x: 1, y: 2, radius: 3 })),
-				arraySerializer<Circle>(Circle)([Circle.from({ x: 1.1, y: 2.2, radius: 3.3 }), Circle.from({ x: 4, y: 5, radius: 6 })]),
+				serializer<Circle>(Circle)(Circle.from({ radius: 3, x: 1, y: 2 })),
+				arraySerializer<Circle>(Circle)([Circle.from({ radius: 3.3, x: 1.1, y: 2.2 }), Circle.from({ radius: 6, x: 4, y: 5 })]),
 			];
 
 			expect(singleInput).toStrictEqual("<(1,2),3>");
@@ -213,10 +213,10 @@ describe("PostgreSQL", () => {
 			result.rows[0].circle = parser<Circle>(Circle)(result.rows[0].circle);
 			result.rows[0]._circle = arrayParser<Circle>(Circle)(result.rows[0]._circle);
 
-			expect(result.rows[0].circle.toString()).toStrictEqual(Circle.from({ x: 1, y: 2, radius: 3 }).toString());
+			expect(result.rows[0].circle.toString()).toStrictEqual(Circle.from({ radius: 3, x: 1, y: 2 }).toString());
 			expect(result.rows[0]._circle).toHaveLength(2);
-			expect(result.rows[0]._circle[0].toString()).toStrictEqual(Circle.from({ x: 1.1, y: 2.2, radius: 3.3 }).toString());
-			expect(result.rows[0]._circle[1].toString()).toStrictEqual(Circle.from({ x: 4, y: 5, radius: 6 }).toString());
+			expect(result.rows[0]._circle[0].toString()).toStrictEqual(Circle.from({ radius: 3.3, x: 1.1, y: 2.2 }).toString());
+			expect(result.rows[0]._circle[1].toString()).toStrictEqual(Circle.from({ radius: 6, x: 4, y: 5 }).toString());
 		} catch (error_) {
 			error = error_;
 			// eslint-disable-next-line no-console

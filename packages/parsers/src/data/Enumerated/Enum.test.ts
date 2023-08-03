@@ -43,8 +43,8 @@ describe("EnumConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
-				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -67,11 +67,11 @@ describe("EnumConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -82,17 +82,17 @@ describe("EnumConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Enum1.safeFrom({
-			value: "a",
 			unrecognized: true,
+			value: "a",
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -125,10 +125,10 @@ describe("EnumConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 		//#endregion
@@ -229,8 +229,8 @@ describe("Enum", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
-				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 

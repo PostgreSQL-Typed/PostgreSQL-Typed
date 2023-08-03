@@ -38,7 +38,7 @@ export function orderSelectedFields<TColumn extends AnyColumn>(fields: Record<st
 		if (typeof name !== "string") return result;
 
 		const newPath = pathPrefix ? [...pathPrefix, name] : [name];
-		if (is(field, Column) || is(field, SQL) || is(field, SQL.Aliased)) result.push({ path: newPath, field });
+		if (is(field, Column) || is(field, SQL) || is(field, SQL.Aliased)) result.push({ field, path: newPath });
 		//@ts-expect-error TODO: fix this
 		else if (is(field, Table)) result.push(...orderSelectedFields(field[Table.Symbol.Columns], newPath));
 		else result.push(...orderSelectedFields(field as Record<string, unknown>, newPath));

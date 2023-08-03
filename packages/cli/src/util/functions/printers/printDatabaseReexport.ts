@@ -13,8 +13,8 @@ export function printDatabaseReexport(types: ClassDetails[], printer: Printer) {
 
 	const DatabaseReexportRecord = printer.context.pushTypeDeclaration(
 		{
-			type: "databaseReexport",
 			name: types[0].database_name,
+			type: "databaseReexport",
 		},
 		(_, { getRelativePath }) => [
 			schemaClassList
@@ -28,11 +28,11 @@ export function printDatabaseReexport(types: ClassDetails[], printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "databaseReexport",
 				name: types[0].database_name,
+				type: "databaseReexport",
 			},
+			type: "export",
 		},
 		DatabaseReexportRecord
 	);
@@ -41,8 +41,8 @@ export function printDatabaseReexport(types: ClassDetails[], printer: Printer) {
 
 	const DatabaseTypeReexportRecord = printer.context.pushTypeDeclaration(
 		{
-			type: "databaseTypeReexport",
 			name: types[0].database_name,
+			type: "databaseTypeReexport",
 		},
 		(_, { getRelativePath }) => [
 			schemaClassList
@@ -58,11 +58,11 @@ export function printDatabaseReexport(types: ClassDetails[], printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "databaseTypeReexport",
 				name: types[0].database_name,
+				type: "databaseTypeReexport",
 			},
+			type: "export",
 		},
 		DatabaseTypeReexportRecord
 	);

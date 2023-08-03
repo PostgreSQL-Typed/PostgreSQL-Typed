@@ -29,9 +29,9 @@ export abstract class PgTPBase<DataType> {
 
 	safeEquals(...data: unknown[]): SafeEquals<DataType> {
 		const context: ParseContext = {
-				issue: null,
-				errorMap: getErrorMap(),
 				data,
+				errorMap: getErrorMap(),
+				issue: null,
 			},
 			result = this._equals(context);
 
@@ -47,14 +47,14 @@ export abstract class PgTPBase<DataType> {
 	): SafeEquals<DataType> {
 		if (isValid(result)) {
 			return {
-				success: true,
-				equals: result.value.equals,
 				data: result.value.data,
+				equals: result.value.equals,
+				success: true,
 			};
 		}
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
 		const error = new PgTPError(context.issue);
-		return { success: false, error };
+		return { error, success: false };
 	}
 
 	setIssueForContext(context: ParseContext, issueData: IssueWithoutMessage): void {

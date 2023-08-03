@@ -9,17 +9,17 @@ import { defineCharacter } from "./Character";
 describe("defineCharacter", async () => {
 	test('defineCharacter({ mode: "Character" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "character.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("character", {
-				character: defineCharacter("character", { mode: "Character" }).notNull(),
 				_character: defineCharacter("_character", { mode: "Character" }).array().notNull(),
+				character: defineCharacter("character", { mode: "Character" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineCharacter", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				character: Character.from("a"),
 				_character: [Character.from("a"), Character.from("b")],
+				character: Character.from("a"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineCharacter", async () => {
 
 	test('defineCharacter({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "characterstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("characterstring", {
-				character: defineCharacter("character", { mode: "string" }).notNull(),
 				_character: defineCharacter("_character", { mode: "string" }).array().notNull(),
+				character: defineCharacter("character", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineCharacter", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				character: "a",
 				_character: ["a", "b"],
+				character: "a",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineCharacter", async () => {
 
 	test("defineCharacter({ length: 3 })", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "characterlength.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("characterlength", {
-				character1: defineCharacter("character1", { mode: "Character", length: 3 }).notNull(),
-				character2: defineCharacter("character2", { mode: "string", length: 3 }).notNull(),
+				character1: defineCharacter("character1", { length: 3, mode: "Character" }).notNull(),
+				character2: defineCharacter("character2", { length: 3, mode: "string" }).notNull(),
 			});
 
 		await database.connect();

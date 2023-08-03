@@ -11,9 +11,9 @@ import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js"
 const LOGGER = logger?.extend("Command").extend("UI");
 
 export const UI: Command = {
-	name: "ui",
-	description: "Visualize your PostgreSQL database",
 	arguments: [],
+	description: "Visualize your PostgreSQL database",
+	name: "ui",
 	run: async () => {
 		LOGGER?.("Running UI Command");
 

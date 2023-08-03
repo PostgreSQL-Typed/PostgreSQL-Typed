@@ -25,28 +25,28 @@ export const getBigNumber = (
 		if (/^[+-]?infinity$/i.test(argument)) {
 			// Capitalize the first "i" in Infinity
 			return options?.allowInfinity
-				? { success: true, data: BigNumber(argument.toLowerCase().replace(/i/i, "I")) }
+				? { data: BigNumber(argument.toLowerCase().replace(/i/i, "I")), success: true }
 				: {
-						success: false,
 						error: {
 							code: "invalid_type",
 							expected: "string",
 							received: "infinity",
 						},
+						success: false,
 				  };
 		}
 
 		// NaN with a regex
 		if (/^nan$/i.test(argument)) {
 			return options?.allowNaN
-				? { success: true, data: BigNumber(Number.NaN) }
+				? { data: BigNumber(Number.NaN), success: true }
 				: {
-						success: false,
 						error: {
 							code: "invalid_type",
 							expected: "string",
 							received: "nan",
 						},
+						success: false,
 				  };
 		}
 
@@ -84,12 +84,12 @@ export const getBigNumber = (
 		}
 
 		return {
-			success: false,
 			error: {
 				code: "invalid_string",
 				expected: "LIKE 1.23",
 				received: argument,
 			},
+			success: false,
 		};
 	};
 };
@@ -98,28 +98,28 @@ function parseNumber(argument: string, MIN: BigNumber, MAX: BigNumber): SafeFrom
 	const bigNumber = BigNumber(argument);
 	if (bigNumber.isLessThan(MIN)) {
 		return {
-			success: false,
 			error: {
 				code: "too_small",
-				type: "number",
-				minimum: MIN.toString(),
 				inclusive: true,
+				minimum: MIN.toString(),
 				received: argument,
+				type: "number",
 			},
+			success: false,
 		};
 	}
 
 	if (bigNumber.isGreaterThan(MAX)) {
 		return {
-			success: false,
 			error: {
 				code: "too_big",
-				type: "number",
-				maximum: MAX.toString(),
 				inclusive: true,
+				maximum: MAX.toString(),
 				received: argument,
+				type: "number",
 			},
+			success: false,
 		};
 	}
-	return { success: true, data: bigNumber };
+	return { data: bigNumber, success: true };
 }

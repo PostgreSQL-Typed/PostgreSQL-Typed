@@ -9,17 +9,17 @@ import { defineName } from "./Name";
 describe("defineName", async () => {
 	test('defineName({ mode: "Name" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "name.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("name", {
-				name: defineName("name", { mode: "Name" }).notNull(),
 				_name: defineName("_name", { mode: "Name" }).array().notNull(),
+				name: defineName("name", { mode: "Name" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineName", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				name: Name.from("a"),
 				_name: [Name.from("a"), Name.from("b")],
+				name: Name.from("a"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineName", async () => {
 
 	test('defineName({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "namestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("namestring", {
-				name: defineName("name", { mode: "string" }).notNull(),
 				_name: defineName("_name", { mode: "string" }).array().notNull(),
+				name: defineName("name", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineName", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				name: "a",
 				_name: ["a", "b"],
+				name: "a",
 			})
 			.returning();
 

@@ -385,22 +385,40 @@ export interface FilesConfig {
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
-	directory: {
-		$default: "__generated__",
-		$resolve: value => (typeof value === "string" ? value : "__generated__"),
+	columnName: {
+		$default: "{{ COLUMN_NAME | camel-case }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ COLUMN_NAME | camel-case }}"),
+	},
+	databaseFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}.ts",
+		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}.ts"),
 	},
 	debug: {
 		$default: false,
 		$resolve: Boolean,
 	},
-	preCompile: {
-		$default: false,
-		$resolve: Boolean,
-	},
-	definerModes: definerSchema,
 	debugFileName: {
 		$default: "debug_{{ TIMESTAMP }}.json",
 		$resolve: value => (typeof value === "string" ? value : "debug_{{ TIMESTAMP }}.json"),
+	},
+	definerModes: definerSchema,
+	definerOverrides: {
+		$default: {},
+		$resolve: value => {
+			if (typeof value === "object") return value;
+			return {};
+		},
+	},
+	definerTypeOverrides: {
+		$default: {},
+		$resolve: value => {
+			if (typeof value === "object") return value;
+			return {};
+		},
+	},
+	directory: {
+		$default: "__generated__",
+		$resolve: value => (typeof value === "string" ? value : "__generated__"),
 	},
 	domainFileName: {
 		$default: "_custom_types.ts",
@@ -410,44 +428,21 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "{{ TYPE_NAME | camel-case }}",
 		$resolve: value => (typeof value === "string" ? value : "{{ TYPE_NAME | camel-case }}"),
 	},
-	enumName: {
-		$default: "{{ TYPE_NAME | pascal-case }}",
-		$resolve: value => (typeof value === "string" ? value : "{{ TYPE_NAME | pascal-case }}"),
-	},
 	enumFileName: {
 		$default: "databases/{{ DATABASE_NAME | camel-case }}/enums/{{ TYPE_NAME | pascal-case }}.ts",
 		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/enums/{{ TYPE_NAME | pascal-case }}.ts"),
 	},
-	columnName: {
-		$default: "{{ COLUMN_NAME | camel-case }}",
-		$resolve: value => (typeof value === "string" ? value : "{{ COLUMN_NAME | camel-case }}"),
+	enumName: {
+		$default: "{{ TYPE_NAME | pascal-case }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ TYPE_NAME | pascal-case }}"),
 	},
-	tableTypeName: {
-		$default: "{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}",
-		$resolve: value => (typeof value === "string" ? value : "{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}"),
+	preCompile: {
+		$default: false,
+		$resolve: Boolean,
 	},
-	tableTypeFileName: {
-		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
-		$resolve: value =>
-			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
-	},
-	tableInsertTypeName: {
-		$default: "New{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}",
-		$resolve: value => (typeof value === "string" ? value : "New{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}"),
-	},
-	tableInsertTypeFileName: {
-		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
-		$resolve: value =>
-			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
-	},
-	tableName: {
-		$default: "{{ SCHEMA_NAME | camel-case }}{{ TABLE_NAME | pascal-case }}",
-		$resolve: value => (typeof value === "string" ? value : "{{ SCHEMA_NAME | camel-case }}{{ TABLE_NAME | pascal-case }}"),
-	},
-	tableFileName: {
-		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
-		$resolve: value =>
-			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
+	schemaFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}.ts",
+		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}.ts"),
 	},
 	schemaName: {
 		$default: "{{ SCHEMA_NAME | camel-case }}",
@@ -457,27 +452,32 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts",
 		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts"),
 	},
-	schemaFileName: {
-		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}.ts",
-		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}.ts"),
+	tableFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
+		$resolve: value =>
+			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
 	},
-	databaseFileName: {
-		$default: "databases/{{ DATABASE_NAME | camel-case }}.ts",
-		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}.ts"),
+	tableInsertTypeFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
+		$resolve: value =>
+			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
 	},
-	definerTypeOverrides: {
-		$default: {},
-		$resolve: value => {
-			if (typeof value === "object") return value;
-			return {};
-		},
+	tableInsertTypeName: {
+		$default: "New{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}",
+		$resolve: value => (typeof value === "string" ? value : "New{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}"),
 	},
-	definerOverrides: {
-		$default: {},
-		$resolve: value => {
-			if (typeof value === "object") return value;
-			return {};
-		},
+	tableName: {
+		$default: "{{ SCHEMA_NAME | camel-case }}{{ TABLE_NAME | pascal-case }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ SCHEMA_NAME | camel-case }}{{ TABLE_NAME | pascal-case }}"),
+	},
+	tableTypeFileName: {
+		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
+		$resolve: value =>
+			typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",
+	},
+	tableTypeName: {
+		$default: "{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}",
+		$resolve: value => (typeof value === "string" ? value : "{{ SCHEMA_NAME | pascal-case }}{{ TABLE_NAME | pascal-case }}"),
 	},
 });
 export default schema;

@@ -9,17 +9,17 @@ import { defineBitVarying } from "./BitVarying";
 describe("defineBitVarying", async () => {
 	test('defineBitVarying({ mode: "BitVarying" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "varbit.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("varbit", {
-				varbit: defineBitVarying("varbit", { mode: "BitVarying" }).notNull(),
 				_varbit: defineBitVarying("_varbit", { mode: "BitVarying" }).array().notNull(),
+				varbit: defineBitVarying("varbit", { mode: "BitVarying" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineBitVarying", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				varbit: BitVarying.from(1),
 				_varbit: [BitVarying.from(1), BitVarying.from(0)],
+				varbit: BitVarying.from(1),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineBitVarying", async () => {
 
 	test('defineBitVarying({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "varbitstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("varbitstring", {
-				varbit: defineBitVarying("varbit", { mode: "string" }).notNull(),
 				_varbit: defineBitVarying("_varbit", { mode: "string" }).array().notNull(),
+				varbit: defineBitVarying("varbit", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineBitVarying", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				varbit: "1",
 				_varbit: ["1", "0"],
+				varbit: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineBitVarying", async () => {
 
 	test('defineBitVarying({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "varbitnumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("varbitnumber", {
-				varbit: defineBitVarying("varbit", { mode: "number" }).notNull(),
 				_varbit: defineBitVarying("_varbit", { mode: "number" }).array().notNull(),
+				varbit: defineBitVarying("varbit", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineBitVarying", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				varbit: 1,
 				_varbit: [1, 0],
+				varbit: 1,
 			})
 			.returning();
 
@@ -227,18 +227,18 @@ describe("defineBitVarying", async () => {
 
 	test("defineBitVarying({ length: 3 })", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "varbitlength.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("varbitlength", {
-				varbit1: defineBitVarying("varbit1", { mode: "BitVarying", length: 3 }).notNull(),
-				varbit2: defineBitVarying("varbit2", { mode: "string", length: 3 }).notNull(),
-				varbit3: defineBitVarying("varbit3", { mode: "number", length: 3 }).notNull(),
+				varbit1: defineBitVarying("varbit1", { length: 3, mode: "BitVarying" }).notNull(),
+				varbit2: defineBitVarying("varbit2", { length: 3, mode: "string" }).notNull(),
+				varbit3: defineBitVarying("varbit3", { length: 3, mode: "number" }).notNull(),
 			});
 
 		await database.connect();

@@ -84,17 +84,17 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -124,8 +124,8 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 		if (parsedTimestamp.success) return OK(new DateClass(parsedTimestamp.data.year, parsedTimestamp.data.month, parsedTimestamp.data.day));
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE YYYY-MM-DD",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -148,17 +148,17 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 				totalLength > 3
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 3,
 							exact: true,
+							maximum: 3,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 3,
 							exact: true,
+							minimum: 3,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -250,7 +250,11 @@ class DateConstructorClass extends PgTPConstructorBase<Date> implements DateCons
 const Date: DateConstructor = new DateConstructorClass();
 
 class DateClass extends PgTPBase<Date> implements Date {
-	constructor(private _year: number, private _month: number, private _day: number) {
+	constructor(
+		private _year: number,
+		private _month: number,
+		private _day: number
+	) {
 		super();
 	}
 
@@ -259,8 +263,8 @@ class DateClass extends PgTPBase<Date> implements Date {
 		const parsed = Date.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -277,18 +281,18 @@ class DateClass extends PgTPBase<Date> implements Date {
 
 	toJSON(): DateObject {
 		return {
-			year: this._year,
-			month: this._month,
 			day: this._day,
+			month: this._month,
+			year: this._year,
 		};
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
 		return DateTime.fromObject(
 			{
-				year: this._year,
-				month: this._month,
 				day: this._day,
+				month: this._month,
+				year: this._year,
 			},
 			{ zone }
 		);
@@ -322,20 +326,20 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (year < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: year,
+				type: "number",
 			});
 		}
 
 		if (year > 9999) {
 			throwPgTPError({
 				code: "too_big",
-				type: "number",
-				maximum: 9999,
 				inclusive: true,
+				maximum: 9999,
 				received: year,
+				type: "number",
 			});
 		}
 
@@ -366,20 +370,20 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (month < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: month,
+				type: "number",
 			});
 		}
 
 		if (month > 12) {
 			throwPgTPError({
 				code: "too_big",
-				type: "number",
-				maximum: 12,
 				inclusive: true,
+				maximum: 12,
 				received: month,
+				type: "number",
 			});
 		}
 
@@ -410,20 +414,20 @@ class DateClass extends PgTPBase<Date> implements Date {
 		if (day < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: day,
+				type: "number",
 			});
 		}
 
 		if (day > 31) {
 			throwPgTPError({
 				code: "too_big",
-				type: "number",
-				maximum: 31,
 				inclusive: true,
+				maximum: 31,
 				received: day,
+				type: "number",
 			});
 		}
 

@@ -25,7 +25,7 @@ export type PgTByteAType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "ByteA" ? ByteA : TMode extends "string" ? string : Buffer,
-	TDriverParameter = ByteA
+	TDriverParameter = ByteA,
 > = PgTByteA<{
 	tableName: TTableName;
 	name: TName;

@@ -4,20 +4,20 @@ import type { FileContext } from "../../../types/interfaces/FileContext.js";
 
 export function printEnumType(type: EnumDataType, printer: Printer, file: FileContext): string {
 	file.addImportStatement({
+		isType: true,
 		module: "@postgresql-typed/core/definers",
 		name: "PgTEnumType",
 		type: "named",
-		isType: true,
 	});
 	if (printer.config.files.definerModes.enum === "Enum") {
 		file.addImportStatement({
+			isType: true,
 			module: "@postgresql-typed/parsers",
 			name: "Enum",
 			type: "named",
-			isType: true,
 		});
 	}
-	printer.context.pushTypeDeclaration({ type: "enumType", name: type.type_name, databaseName: type.database_name }, identifierName => [
+	printer.context.pushTypeDeclaration({ databaseName: type.database_name, name: type.type_name, type: "enumType" }, identifierName => [
 		`declare const ${identifierName} = {`,
 		...type.values.map(value => `  ${value}: "${value}",`),
 		"} as const;",

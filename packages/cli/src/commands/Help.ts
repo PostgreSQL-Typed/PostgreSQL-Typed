@@ -8,11 +8,11 @@ import { DESCRIPTION, LOGGER as logger, MODULE_NAME } from "../util/constants.js
 import { getConsoleHeader } from "../util/functions/getters/getConsoleHeader.js";
 
 export const Help: Argument = {
-	name: "help",
-	description: "Print out helpful usage information",
-	type: Boolean,
 	alias: "h",
+	description: "Print out helpful usage information",
+	name: "help",
 	run: runner,
+	type: Boolean,
 };
 
 const LOGGER = logger?.extend("Argument").extend("Help");
@@ -31,11 +31,11 @@ function runner(_: unknown, command?: Command) {
 				raw: true,
 			},
 			{
-				header: "Available Commands",
 				content: commands.map(c => ({
 					name: c.name,
 					summary: c.description,
 				})),
+				header: "Available Commands",
 			},
 			{
 				header: "Global Options",
@@ -59,8 +59,8 @@ function commandHelp(command: Command) {
 				raw: true,
 			},
 			{
-				header: `${command.name} Options`,
 				content: command.arguments.length > 0 ? command.arguments : "This command has no extra options.",
+				header: `${command.name} Options`,
 			},
 			{
 				header: "Global Options",

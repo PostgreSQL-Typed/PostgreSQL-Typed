@@ -34,14 +34,14 @@ describe("DateMultiRangeConstructor", () => {
 					upper: UpperRange.exclude,
 					values: [
 						{
-							year: 2021,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2021,
 						},
 						{
-							year: 2022,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2022,
 						},
 					],
 				},
@@ -50,14 +50,14 @@ describe("DateMultiRangeConstructor", () => {
 					upper: "]",
 					values: [
 						{
-							year: 2023,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2023,
 						},
 						{
-							year: 2024,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2024,
 						},
 					],
 				},
@@ -66,14 +66,14 @@ describe("DateMultiRangeConstructor", () => {
 					upper: "]",
 					values: [
 						{
-							year: 2025,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2025,
 						},
 						{
-							year: 2026,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2026,
 						},
 					],
 				},
@@ -169,14 +169,14 @@ describe("DateMultiRange", () => {
 					upper: ")",
 					values: [
 						{
+							day: 1,
+							month: 1,
 							year: 2021,
-							month: 1,
-							day: 1,
 						},
 						{
+							day: 1,
+							month: 1,
 							year: 2022,
-							month: 1,
-							day: 1,
 						},
 					],
 				},
@@ -185,14 +185,14 @@ describe("DateMultiRange", () => {
 					upper: ")",
 					values: [
 						{
+							day: 1,
+							month: 1,
 							year: 2023,
-							month: 1,
-							day: 1,
 						},
 						{
-							year: 2024,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2024,
 						},
 					],
 				},
@@ -201,14 +201,14 @@ describe("DateMultiRange", () => {
 					upper: ")",
 					values: [
 						{
-							year: 2025,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2025,
 						},
 						{
-							year: 2026,
-							month: 1,
 							day: 1,
+							month: 1,
+							year: 2026,
 						},
 					],
 				},
@@ -293,12 +293,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "datemultirange.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

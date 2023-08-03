@@ -13,9 +13,9 @@ describe("DateConstructor", () => {
 		expect(Date.safeFrom("2022-09-02").success).toBe(true);
 		expect(
 			Date.safeFrom({
-				year: 2022,
-				month: 9,
 				day: 2,
+				month: 9,
+				year: 2022,
 			}).success
 		).toBe(true);
 		expect(Date.safeFrom(2022, 9, 2).success).toBe(true);
@@ -33,17 +33,17 @@ describe("DateConstructor", () => {
 		expect(() => Date.from({} as any)).toThrowError("Missing keys in object: 'year', 'month', 'day'");
 		expect(() =>
 			Date.from({
-				year: 2022,
-				month: 9,
 				day: "2",
+				month: 9,
+				year: 2022,
 			} as any)
 		).toThrowError("Expected 'number' for key 'day', received 'string'");
 		expect(() =>
 			Date.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				minute: 0,
+				month: 9,
+				year: 2022,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'minute'");
 		expect(() => Date.from(1, 2, "a" as any)).toThrowError("Expected 'number', received 'string'");
@@ -57,16 +57,16 @@ describe("DateConstructor", () => {
 
 	test("isDate(...)", () => {
 		const date = Date.from({
-			year: 2022,
-			month: 9,
 			day: 2,
+			month: 9,
+			year: 2022,
 		});
 		expect(Date.isDate(date)).toBe(true);
 		expect(
 			Date.isDate({
-				year: 2022,
-				month: 9,
 				day: 2,
+				month: 9,
+				year: 2022,
 			})
 		).toBe(false);
 	});
@@ -74,20 +74,20 @@ describe("DateConstructor", () => {
 
 describe("Date", () => {
 	test("_equals(...)", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 2 }))).toBe(true);
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 3 }))).toBe(false);
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 2 }).toJSON())).toBe(true);
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 3 }).toJSON())).toBe(false);
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 2 }).toString())).toBe(true);
-		expect(date.equals(Date.from({ year: 2022, month: 9, day: 3 }).toString())).toBe(false);
+		expect(date.equals(Date.from({ day: 2, month: 9, year: 2022 }))).toBe(true);
+		expect(date.equals(Date.from({ day: 3, month: 9, year: 2022 }))).toBe(false);
+		expect(date.equals(Date.from({ day: 2, month: 9, year: 2022 }).toJSON())).toBe(true);
+		expect(date.equals(Date.from({ day: 3, month: 9, year: 2022 }).toJSON())).toBe(false);
+		expect(date.equals(Date.from({ day: 2, month: 9, year: 2022 }).toString())).toBe(true);
+		expect(date.equals(Date.from({ day: 3, month: 9, year: 2022 }).toString())).toBe(false);
 		//@ts-expect-error - this is a test
 		expect(() => date.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object' | 'globalThis.Date' | 'luxon.DateTime', received 'bigint'");
 	});
 
 	test("toString()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.toString()).toBe("2022-09-02");
 	});
 
@@ -97,27 +97,27 @@ describe("Date", () => {
 	});
 
 	test("toJSON()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
-		expect(date.toJSON()).toEqual({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
+		expect(date.toJSON()).toEqual({ day: 2, month: 9, year: 2022 });
 	});
 
 	test("toDateTime(...)", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.toDateTime().toISODate()).toBe("2022-09-02");
 	});
 
 	test("toJSDate(...)", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.toJSDate().toDateString()).toBe("Fri Sep 02 2022");
 	});
 
 	test("get year()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.year).toBe(2022);
 	});
 
 	test("set year(...)", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(() => {
 			date.year = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -135,12 +135,12 @@ describe("Date", () => {
 	});
 
 	test("get month()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.month).toBe(9);
 	});
 
 	test("set month()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(() => {
 			date.month = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -158,12 +158,12 @@ describe("Date", () => {
 	});
 
 	test("get day()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(date.day).toBe(2);
 	});
 
 	test("set day()", () => {
-		const date = Date.from({ year: 2022, month: 9, day: 2 });
+		const date = Date.from({ day: 2, month: 9, year: 2022 });
 		expect(() => {
 			date.day = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -218,12 +218,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "date.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();
@@ -269,24 +269,24 @@ describe("PostgreSQL", () => {
 
 			expect(result.rows[0].date.toString()).toStrictEqual(
 				Date.from({
-					year: 2022,
-					month: 9,
 					day: 2,
+					month: 9,
+					year: 2022,
 				}).toString()
 			);
 			expect(result.rows[0]._date).toHaveLength(2);
 			expect(result.rows[0]._date[0].toString()).toStrictEqual(
 				Date.from({
-					year: 1997,
-					month: 8,
 					day: 24,
+					month: 8,
+					year: 1997,
 				}).toString()
 			);
 			expect(result.rows[0]._date[1].toString()).toStrictEqual(
 				Date.from({
-					year: 2022,
-					month: 9,
 					day: 2,
+					month: 9,
+					year: 2022,
 				}).toString()
 			);
 		} catch (error_) {

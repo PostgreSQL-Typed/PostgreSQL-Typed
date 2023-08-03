@@ -17,11 +17,11 @@ describe("Cache", () => {
 		const spy = vitest.spyOn(spiedOn, "useless"),
 			spy2 = vitest.spyOn(spiedOn, "useless2"),
 			client = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
 				database: "postgres",
+				host: "localhost",
+				password: "password",
 				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(client);
 
@@ -63,10 +63,10 @@ describe("Cache", () => {
 			spy2.mockClear();
 
 			let context: (PgTExtensionContext & { cache?: PgTCacheContext }) | PostQueryHookData = {
-				nonce: "test",
 				cache: {
 					enabled: false,
 				},
+				nonce: "test",
 			};
 			const response3 = await database.select().from(TestTable).execute({}, context);
 
@@ -83,11 +83,11 @@ describe("Cache", () => {
 			spy2.mockClear();
 
 			context = {
-				nonce: "test2",
 				cache: {
 					enabled: true,
 					key: "test",
 				},
+				nonce: "test2",
 			};
 
 			const response4 = await database.select().from(TestTable).execute({}, context);

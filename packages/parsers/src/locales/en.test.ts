@@ -66,24 +66,24 @@ describe("locales/en", () => {
 			errorMap({
 				code: "invalid_key_type",
 				expected: "boolean",
-				received: "string",
 				objectKey: "test",
+				received: "string",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "invalid_key_type",
 				expected: ["boolean", "number"],
-				received: "string",
 				objectKey: "test",
+				received: "string",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "invalid_key_type",
 				expected: "boolean",
-				received: "undefined",
 				objectKey: "test",
+				received: "undefined",
 			})
 		).not.toThrowError();
 	});
@@ -158,24 +158,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "array",
 				minimum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "array",
-				minimum: 1,
 				exact: true,
+				minimum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "array",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 
@@ -183,24 +183,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "number",
 				minimum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				exact: true,
+				minimum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 
@@ -208,24 +208,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "bigint",
 				minimum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "bigint",
-				minimum: 1,
 				exact: true,
+				minimum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "bigint",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 
@@ -233,24 +233,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "arguments",
 				minimum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
+				minimum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 
@@ -258,8 +258,8 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_small",
-				type: "unknown" as any,
 				minimum: 1,
+				type: "unknown" as any,
 			})
 		).toThrowError();
 	});
@@ -269,24 +269,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "array",
 				maximum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "array",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "array",
-				maximum: 1,
 				inclusive: true,
+				maximum: 1,
+				type: "array",
 			})
 		).not.toThrowError();
 
@@ -294,24 +294,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "number",
 				maximum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "number",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "number",
-				maximum: 1,
 				inclusive: true,
+				maximum: 1,
+				type: "number",
 			})
 		).not.toThrowError();
 
@@ -319,24 +319,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bigint",
 				maximum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bigint",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bigint",
-				maximum: 1,
 				inclusive: true,
+				maximum: 1,
+				type: "bigint",
 			})
 		).not.toThrowError();
 
@@ -344,24 +344,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "arguments",
 				maximum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				inclusive: true,
+				maximum: 1,
+				type: "arguments",
 			})
 		).not.toThrowError();
 
@@ -369,24 +369,24 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bytes",
 				maximum: 1,
+				type: "bytes",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bytes",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
+				type: "bytes",
 			})
 		).not.toThrowError();
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "bytes",
-				maximum: 1,
 				inclusive: true,
+				maximum: 1,
+				type: "bytes",
 			})
 		).not.toThrowError();
 
@@ -394,8 +394,8 @@ describe("locales/en", () => {
 		expect(() =>
 			errorMap({
 				code: "too_big",
-				type: "unknown" as any,
 				maximum: 1,
+				type: "unknown" as any,
 			})
 		).toThrowError();
 	});

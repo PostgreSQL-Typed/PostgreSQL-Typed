@@ -94,7 +94,7 @@ const getRange = <
 		toString(): string;
 		toJSON(): DataTypeObject;
 	},
-	DataTypeObject
+	DataTypeObject,
 >(
 	object: any,
 	isObjectFunction: (object: any) => object is DataType,
@@ -118,17 +118,17 @@ const getRange = <
 					context.data.length > 1
 						? {
 								code: "too_big",
-								type: "arguments",
-								maximum: 1,
 								exact: true,
+								maximum: 1,
 								received: context.data.length,
+								type: "arguments",
 						  }
 						: {
 								code: "too_small",
-								type: "arguments",
-								minimum: 1,
 								exact: true,
+								minimum: 1,
 								received: context.data.length,
+								type: "arguments",
 						  }
 				);
 				return INVALID;
@@ -196,17 +196,17 @@ const getRange = <
 					value.length > 2
 						? {
 								code: "too_big",
-								type: "array",
-								maximum: 2,
 								exact: true,
+								maximum: 2,
 								received: value.length,
+								type: "array",
 						  }
 						: {
 								code: "too_small",
-								type: "array",
-								minimum: 2,
 								exact: true,
+								minimum: 2,
 								received: value.length,
+								type: "array",
 						  }
 				);
 				return INVALID;
@@ -255,17 +255,17 @@ const getRange = <
 					argument.length > 2
 						? {
 								code: "too_big",
-								type: "array",
-								maximum: 2,
 								exact: true,
+								maximum: 2,
 								received: argument.length,
+								type: "array",
 						  }
 						: {
 								code: "too_small",
-								type: "array",
-								minimum: 2,
 								exact: true,
+								minimum: 2,
 								received: argument.length,
+								type: "array",
 						  }
 				);
 				return INVALID;
@@ -309,10 +309,10 @@ const getRange = <
 			if (context.data.length > 2) {
 				this.setIssueForContext(context, {
 					code: "too_big",
-					type: "arguments",
-					maximum: 2,
 					inclusive: true,
+					maximum: 2,
 					received: context.data.length,
+					type: "arguments",
 				});
 				return INVALID;
 			}
@@ -322,10 +322,10 @@ const getRange = <
 				if (parsedType !== "undefined") {
 					this.setIssueForContext(context, {
 						code: "too_big",
-						type: "arguments",
-						maximum: 1,
 						exact: true,
+						maximum: 1,
 						received: context.data.length,
+						type: "arguments",
 					});
 					return INVALID;
 				}
@@ -344,10 +344,10 @@ const getRange = <
 				if (parsedType === "undefined") {
 					this.setIssueForContext(context, {
 						code: "too_small",
-						type: "arguments",
-						minimum: 2,
 						exact: true,
+						minimum: 2,
 						received: 1,
+						type: "arguments",
 					});
 					return INVALID;
 				}
@@ -380,10 +380,10 @@ const getRange = <
 			if (parsedType !== "undefined") {
 				this.setIssueForContext(context, {
 					code: "too_big",
-					type: "arguments",
-					maximum: 1,
 					exact: true,
+					maximum: 1,
 					received: context.data.length,
+					type: "arguments",
 				});
 				return INVALID;
 			}
@@ -494,8 +494,8 @@ const getRange = <
 			const parsed = Range.safeFrom(...input.data);
 			if (parsed.success) {
 				return OK({
-					equals: parsed.data.toString() === this.toString(),
 					data: parsed.data,
+					equals: parsed.data.toString() === this.toString(),
 				});
 			}
 			this.setIssueForContext(input, parsed.error.issue);
@@ -516,10 +516,10 @@ const getRange = <
 				}
 
 				return OK({
+					data: parsed.data,
 					isWithinRange:
 						(this._lower === LowerRange.include ? greaterThanOrEqual(parsed.data, this._values[0]) : greaterThan(parsed.data, this._values[0])) &&
 						(this._upper === UpperRange.include ? lessThanOrEqual(parsed.data, this._values[1]) : lessThan(parsed.data, this._values[1])),
-					data: parsed.data,
 				});
 			}
 			this.setIssueForContext(input, parsed.error.issue);
@@ -597,17 +597,17 @@ const getRange = <
 					value.length > 2
 						? {
 								code: "too_big",
-								type: "array",
-								maximum: 2,
 								exact: true,
+								maximum: 2,
 								received: value.length,
+								type: "array",
 						  }
 						: {
 								code: "too_small",
-								type: "array",
-								minimum: 2,
 								exact: true,
+								minimum: 2,
 								received: value.length,
+								type: "array",
 						  }
 				);
 			}

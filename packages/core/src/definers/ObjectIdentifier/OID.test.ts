@@ -10,17 +10,17 @@ import { defineOID } from "./OID";
 describe("defineOID", async () => {
 	test('defineOID({ mode: "OID" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "oid.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("oid", {
-				oid: defineOID("oid", { mode: "OID" }).notNull(),
 				_oid: defineOID("_oid", { mode: "OID" }).array().notNull(),
+				oid: defineOID("oid", { mode: "OID" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineOID", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				oid: OID.from("1"),
 				_oid: [OID.from("1"), OID.from("2")],
+				oid: OID.from("1"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineOID", async () => {
 
 	test('defineOID({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "oidstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("oidstring", {
-				oid: defineOID("oid", { mode: "string" }).notNull(),
 				_oid: defineOID("_oid", { mode: "string" }).array().notNull(),
+				oid: defineOID("oid", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineOID", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				oid: "1",
 				_oid: ["1", "2"],
+				oid: "1",
 			})
 			.returning();
 
@@ -158,17 +158,17 @@ describe("defineOID", async () => {
 
 	test('defineOID({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "oidnumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("oidnumber", {
-				oid: defineOID("oid", { mode: "number" }).notNull(),
 				_oid: defineOID("_oid", { mode: "number" }).array().notNull(),
+				oid: defineOID("oid", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -183,8 +183,8 @@ describe("defineOID", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				oid: 1,
 				_oid: [1, 2],
+				oid: 1,
 			})
 			.returning();
 

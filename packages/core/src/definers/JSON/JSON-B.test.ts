@@ -10,17 +10,17 @@ import { defineJSONB } from "./JSON-B";
 describe("defineJSONB", async () => {
 	test('defineJSONB({ mode: "JSONB" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "jsonb.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("jsonb", {
-				jsonb: defineJSONB("jsonb", { mode: "JSON" }).notNull(),
 				_jsonb: defineJSONB("_jsonb", { mode: "JSON" }).array().notNull(),
+				jsonb: defineJSONB("jsonb", { mode: "JSON" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineJSONB", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				jsonb: JSON.from("1"),
 				_jsonb: [JSON.from("1"), JSON.from("2")],
+				jsonb: JSON.from("1"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineJSONB", async () => {
 
 	test('defineJSONB({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "jsonbstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("jsonbstring", {
-				jsonb: defineJSONB("jsonb", { mode: "string" }).notNull(),
 				_jsonb: defineJSONB("_jsonb", { mode: "string" }).array().notNull(),
+				jsonb: defineJSONB("jsonb", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineJSONB", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				jsonb: "1",
 				_jsonb: ["1", "2"],
+				jsonb: "1",
 			})
 			.returning();
 
@@ -166,17 +166,17 @@ describe("defineJSONB", async () => {
 
 	test('defineJSONB({ mode: "value" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "jsonbvalue.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("jsonbvalue", {
-				jsonb: defineJSONB("jsonb", { mode: "value" }).notNull(),
 				_jsonb: defineJSONB("_jsonb", { mode: "value" }).array().notNull(),
+				jsonb: defineJSONB("jsonb", { mode: "value" }).notNull(),
 			});
 
 		await database.connect();
@@ -191,8 +191,8 @@ describe("defineJSONB", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				jsonb: 1,
 				_jsonb: [1, 2],
+				jsonb: 1,
 			})
 			.returning();
 

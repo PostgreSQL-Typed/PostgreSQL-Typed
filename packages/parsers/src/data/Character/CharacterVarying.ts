@@ -141,20 +141,20 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 		if (_n < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: _n,
+				type: "number",
 			});
 		}
 
 		if (_n > 10_485_760 && _n !== Number.POSITIVE_INFINITY) {
 			throwPgTPError({
 				code: "too_big",
-				type: "number",
-				maximum: 10_485_760,
 				inclusive: true,
+				maximum: 10_485_760,
 				received: _n,
+				type: "number",
 			});
 		}
 
@@ -174,17 +174,17 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -216,9 +216,9 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 		if (argument.length > this._n) {
 			this.setIssueForContext(context, {
 				code: "invalid_n_length",
+				input: argument,
 				maximum: this._n,
 				received: argument.length,
-				input: argument,
 			});
 			return INVALID;
 		}
@@ -232,9 +232,9 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
+					input: argument.value,
 					maximum: this._n,
 					received: argument.n,
-					input: argument.value,
 				});
 				return INVALID;
 			}
@@ -301,7 +301,10 @@ class CharacterVaryingConstructorClass<N extends number> extends PgTPConstructor
 const CharacterVarying: CharacterVaryingConstructor<number> = new CharacterVaryingConstructorClass(Number.POSITIVE_INFINITY);
 
 class CharacterVaryingClass<N extends number> extends PgTPBase<CharacterVarying<N>> implements CharacterVarying<N> {
-	constructor(private _character: string, private _n: N = Number.POSITIVE_INFINITY as N) {
+	constructor(
+		private _character: string,
+		private _n: N = Number.POSITIVE_INFINITY as N
+	) {
 		super();
 	}
 
@@ -309,8 +312,8 @@ class CharacterVaryingClass<N extends number> extends PgTPBase<CharacterVarying<
 		const parsed = new CharacterVaryingConstructorClass(this._n).safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

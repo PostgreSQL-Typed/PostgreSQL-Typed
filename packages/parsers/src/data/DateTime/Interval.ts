@@ -120,17 +120,17 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -218,18 +218,18 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 				}
 
 				result = {
-					millennium: "millennium" in match && typeof match.millennium === "string" ? Number.parseFloat(match.millennium) : 0,
 					century: "century" in match && typeof match.century === "string" ? Number.parseFloat(match.century) : 0,
-					decade: "decade" in match && typeof match.decade === "string" ? Number.parseFloat(match.decade) : 0,
-					year: "year" in match && typeof match.year === "string" ? Number.parseFloat(match.year) : 0,
-					month: "month" in match && typeof match.month === "string" ? Number.parseFloat(match.month) : 0,
-					week: "week" in match && typeof match.week === "string" ? Number.parseFloat(match.week) : 0,
 					day: "day" in match && typeof match.day === "string" ? Number.parseFloat(match.day) : 0,
+					decade: "decade" in match && typeof match.decade === "string" ? Number.parseFloat(match.decade) : 0,
 					hour: "hour" in match && typeof match.hour === "string" ? Number.parseFloat(match.hour) : 0,
-					minute: "minute" in match && typeof match.minute === "string" ? Number.parseFloat(match.minute) : 0,
-					second: "second" in match && typeof match.second === "string" ? Number.parseFloat(match.second) : 0,
-					millisecond: "millisecond" in match && typeof match.millisecond === "string" ? Number.parseFloat(match.millisecond) : 0,
 					microsecond: "microsecond" in match && typeof match.microsecond === "string" ? Number.parseFloat(match.microsecond) : 0,
+					millennium: "millennium" in match && typeof match.millennium === "string" ? Number.parseFloat(match.millennium) : 0,
+					millisecond: "millisecond" in match && typeof match.millisecond === "string" ? Number.parseFloat(match.millisecond) : 0,
+					minute: "minute" in match && typeof match.minute === "string" ? Number.parseFloat(match.minute) : 0,
+					month: "month" in match && typeof match.month === "string" ? Number.parseFloat(match.month) : 0,
+					second: "second" in match && typeof match.second === "string" ? Number.parseFloat(match.second) : 0,
+					week: "week" in match && typeof match.week === "string" ? Number.parseFloat(match.week) : 0,
+					year: "year" in match && typeof match.year === "string" ? Number.parseFloat(match.year) : 0,
 				};
 				break;
 			}
@@ -238,20 +238,20 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 		if (!result) {
 			this.setIssueForContext(context, {
 				code: "invalid_string",
-				received: argument,
 				expected: "LIKE P1Y2M3W4DT5H6M7S",
+				received: argument,
 			});
 			return INVALID;
 		}
 
 		const finalResult = {
-			years: result.year,
-			months: result.month,
 			days: result.day,
 			hours: result.hour,
-			minutes: result.minute,
-			seconds: result.second,
 			milliseconds: result.millisecond,
+			minutes: result.minute,
+			months: result.month,
+			seconds: result.second,
+			years: result.year,
 		} satisfies IntervalObject;
 
 		//#region Convertations
@@ -356,17 +356,17 @@ class IntervalConstructorClass extends PgTPConstructorBase<Interval> implements 
 				totalLength > 7
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 7,
 							exact: true,
+							maximum: 7,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 7,
 							exact: true,
+							minimum: 7,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -466,8 +466,8 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 		const parsed = Interval.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -627,12 +627,12 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 
 	private _buildISOProperty(property: IntervalProperties, short = false): string {
 		const propertiesISOEquivalent = {
-			years: "Y",
-			months: "M",
 			days: "D",
 			hours: "H",
 			minutes: "M",
+			months: "M",
 			seconds: "S",
+			years: "Y",
 		};
 
 		let value: string | number = this[property];
@@ -691,13 +691,13 @@ class IntervalClass extends PgTPBase<Interval> implements Interval {
 
 	private _buildPostgreSQLProperty(property: FullIntervalProperties, short = false): string {
 		const propertiesISOEquivalent = {
-				years: "yrs",
-				months: "mons",
 				days: "days",
 				hours: "hrs",
-				minutes: "mins",
-				seconds: "secs",
 				milliseconds: "msecs",
+				minutes: "mins",
+				months: "mons",
+				seconds: "secs",
+				years: "yrs",
 			},
 			value = this[property];
 

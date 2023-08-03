@@ -27,7 +27,7 @@ export type PgTUUIDType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "UUID" ? UUID : string,
-	TDriverParameter = UUID
+	TDriverParameter = UUID,
 > = PgTUUID<{
 	tableName: TTableName;
 	name: TName;

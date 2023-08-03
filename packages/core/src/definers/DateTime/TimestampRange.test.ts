@@ -9,17 +9,17 @@ import { defineTimestampRange } from "./TimestampRange";
 describe("defineTimestampRange", async () => {
 	test('defineTimestampRange({ mode: "TimestampRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamprange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamprange", {
-				timestamprange: defineTimestampRange("timestamprange", { mode: "TimestampRange" }).notNull(),
 				_timestamprange: defineTimestampRange("_timestamprange", { mode: "TimestampRange" }).array().notNull(),
+				timestamprange: defineTimestampRange("timestamprange", { mode: "TimestampRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,11 +34,11 @@ describe("defineTimestampRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamprange: TimestampRange.from("[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)"),
 				_timestamprange: [
 					TimestampRange.from("[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)"),
 					TimestampRange.from("[2025-01-01T00:00:00Z,2027-01-01T00:00:00Z)"),
 				],
+				timestamprange: TimestampRange.from("[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)"),
 			})
 			.returning();
 
@@ -90,17 +90,17 @@ describe("defineTimestampRange", async () => {
 
 	test('defineTimestampRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamprangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamprangestring", {
-				timestamprange: defineTimestampRange("timestamprange", { mode: "string" }).notNull(),
 				_timestamprange: defineTimestampRange("_timestamprange", { mode: "string" }).array().notNull(),
+				timestamprange: defineTimestampRange("timestamprange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -115,8 +115,8 @@ describe("defineTimestampRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamprange: "[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)",
 				_timestamprange: ["[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)", "[2025-01-01T00:00:00Z,2027-01-01T00:00:00Z)"],
+				timestamprange: "[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)",
 			})
 			.returning();
 

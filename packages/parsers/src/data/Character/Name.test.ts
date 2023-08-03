@@ -36,8 +36,8 @@ describe("NameConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
-				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -48,11 +48,11 @@ describe("NameConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -63,17 +63,17 @@ describe("NameConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Name.safeFrom({
-			value: "abc",
 			unrecognized: true,
+			value: "abc",
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -106,10 +106,10 @@ describe("NameConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 
@@ -119,12 +119,12 @@ describe("NameConstructor", () => {
 		else {
 			expect(moreThan64Bytes.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "bytes",
-				maximum: 64,
 				inclusive: true,
+				input: "a".repeat(65),
+				maximum: 64,
 				message: "String must be at most 64 byte(s) long",
 				received: 65,
-				input: "a".repeat(65),
+				type: "bytes",
 			});
 		}
 		//#endregion
@@ -222,12 +222,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "name.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

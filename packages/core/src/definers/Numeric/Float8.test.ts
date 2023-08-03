@@ -9,17 +9,17 @@ import { defineFloat8 } from "./Float8";
 describe("defineFloat8", async () => {
 	test('defineFloat8({ mode: "Float8" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float8.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float8", {
-				float8: defineFloat8("float8", { mode: "Float8" }).notNull(),
 				_float8: defineFloat8("_float8", { mode: "Float8" }).array().notNull(),
+				float8: defineFloat8("float8", { mode: "Float8" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineFloat8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float8: Float8.from("1"),
 				_float8: [Float8.from("1"), Float8.from("2")],
+				float8: Float8.from("1"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineFloat8", async () => {
 
 	test('defineFloat8({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float8string.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float8string", {
-				float8: defineFloat8("float8", { mode: "string" }).notNull(),
 				_float8: defineFloat8("_float8", { mode: "string" }).array().notNull(),
+				float8: defineFloat8("float8", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineFloat8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float8: "1",
 				_float8: ["1", "2"],
+				float8: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineFloat8", async () => {
 
 	test('defineFloat8({ mode: "BigNumber" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float8bignumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float8bignumber", {
-				float8: defineFloat8("float8", { mode: "BigNumber" }).notNull(),
 				_float8: defineFloat8("_float8", { mode: "BigNumber" }).array().notNull(),
+				float8: defineFloat8("float8", { mode: "BigNumber" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineFloat8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float8: BigNumber(1),
 				_float8: [BigNumber(1), BigNumber(2)],
+				float8: BigNumber(1),
 			})
 			.returning();
 
@@ -235,17 +235,17 @@ describe("defineFloat8", async () => {
 
 	test('defineFloat8({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "float8number.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("float8number", {
-				float8: defineFloat8("float8", { mode: "number" }).notNull(),
 				_float8: defineFloat8("_float8", { mode: "number" }).array().notNull(),
+				float8: defineFloat8("float8", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -260,8 +260,8 @@ describe("defineFloat8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				float8: 1,
 				_float8: [1, 2],
+				float8: 1,
 			})
 			.returning();
 

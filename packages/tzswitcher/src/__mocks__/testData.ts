@@ -3,16 +3,16 @@ import { defineText, defineTime, defineTimestamp, defineTimestampTZ, defineTimeT
 import { Text, Time, Timestamp, TimestampTZ, TimeTZ } from "@postgresql-typed/parsers";
 
 export const TzSwitcherTable = table("tzswitcher_testing", {
-	time: defineTime("time", { mode: "Time" }).notNull(),
 	_time: defineTime("_time", { mode: "Time" }).array().notNull(),
-	timestamp: defineTimestamp("timestamp", { mode: "Timestamp" }).notNull(),
 	_timestamp: defineTimestamp("_timestamp", { mode: "Timestamp" }).array().notNull(),
-	timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
 	_timestamptz: defineTimestampTZ("_timestamptz", { mode: "TimestampTZ" }).array().notNull(),
-	timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 	_timetz: defineTimeTZ("_timetz", { mode: "TimeTZ" }).array().notNull(),
 	not_a_time: defineText("not_a_time", { mode: "Text" }).notNull(),
 	nullable_time: defineTime("nullable_time", { mode: "Time" }),
+	time: defineTime("time", { mode: "Time" }).notNull(),
+	timestamp: defineTimestamp("timestamp", { mode: "Timestamp" }).notNull(),
+	timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
+	timetz: defineTimeTZ("timetz", { mode: "TimeTZ" }).notNull(),
 });
 
 export const createTable = `
@@ -74,15 +74,19 @@ export const insertQueryValues = [
 ];
 
 export const valuesInSeoul = {
-	time: Time.from("21:34:56"),
 	_time: [Time.from("21:34:56"), Time.from("21:56:12")],
-	timestamp: Timestamp.from("2021-01-01 21:34:56"),
 	_timestamp: [Timestamp.from("2021-01-01 21:34:56.123"), Timestamp.from("2021-01-01 21:56:12")],
-	timestamptz: TimestampTZ.from("2021-01-01 21:34:56 Asia/Seoul"),
 	_timestamptz: [TimestampTZ.from("2021-01-01 21:34:56 Asia/Seoul"), TimestampTZ.from("2021-01-01 21:56:12 Asia/Seoul")],
-	timetz: TimeTZ.from("21:34:56 Asia/Seoul"),
 	_timetz: [TimeTZ.from("21:34:56 Asia/Seoul"), TimeTZ.from("21:56:12 Asia/Seoul")],
 	not_a_time: Text.from("not a time"),
 	// eslint-disable-next-line unicorn/no-null
 	nullable_time: null,
+
+	time: Time.from("21:34:56"),
+
+	timestamp: Timestamp.from("2021-01-01 21:34:56"),
+
+	timestamptz: TimestampTZ.from("2021-01-01 21:34:56 Asia/Seoul"),
+
+	timetz: TimeTZ.from("21:34:56 Asia/Seoul"),
 };

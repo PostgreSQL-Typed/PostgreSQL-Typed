@@ -19,7 +19,10 @@ export class FileContent {
 		type: { source: string; dest: string }[];
 		value: { source: string; dest: string }[];
 	} = { type: [], value: [] };
-	constructor(public readonly config: PostgreSQLTypedCLIConfig, file: FileName) {
+	constructor(
+		public readonly config: PostgreSQLTypedCLIConfig,
+		file: FileName
+	) {
 		this.file = file;
 	}
 
@@ -60,9 +63,9 @@ export class FileContent {
 		if (!this._declarationNames.has(identifierName)) {
 			this._declarationNames.add(identifierName);
 			const declarationLines = declaration(identifierName, {
-				getImport: (id: FileExport) => this._getImportState(id.file).getImport(id),
 				addImportStatement: (importStatement: ImportStatement) => this._addImportStatement(importStatement),
 				getDeclarationName: (id: TypeId) => resolveExportName(this.config, id),
+				getImport: (id: FileExport) => this._getImportState(id.file).getImport(id),
 				getRelativePath: (id: FileExport) => {
 					const relativePath = relative(dirname(this.file), id.file);
 					return `${relativePath[0] === "." ? "" : "./"}${relativePath.replace(/(\.d)?\.(t|j)sx?$/, "").replaceAll("\\", "/")}.js`;
@@ -73,10 +76,10 @@ export class FileContent {
 		}
 
 		return {
-			mode,
+			exportName: identifierName,
 			file: this.file,
 			hasPrimaryKey: this._declarations.some(line => line().some(l => l.startsWith("export const PrimaryKey"))),
-			exportName: identifierName,
+			mode,
 		};
 	}
 	public pushReExport(destination: TypeId, source: FileExport) {
@@ -86,8 +89,8 @@ export class FileContent {
 		const importedName = this._getImportState(source.file).getImport(source);
 		this._declarationNames.add(identifierName);
 		this._reExports[source.mode].push({
-			source: importedName,
 			dest: identifierName,
+			source: importedName,
 		});
 	}
 

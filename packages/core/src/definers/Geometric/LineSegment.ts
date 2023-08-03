@@ -25,7 +25,7 @@ export type PgTLineSegmentType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "LineSegment" ? LineSegment : string,
-	TDriverParameter = string
+	TDriverParameter = string,
 > = PgTLineSegment<{
 	tableName: TTableName;
 	name: TName;

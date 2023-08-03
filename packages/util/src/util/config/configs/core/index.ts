@@ -78,13 +78,16 @@ export interface PostgreSQLTypedCoreConfig {
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
-	rootDir: {
-		$default: process.cwd(),
-		$resolve: value => (typeof value === "string" ? resolve(value) : process.cwd()),
+	alias: {
+		$default: {},
+		$resolve: async (value, get) => ({
+			"@": await get("core.srcDir"),
+			"~": await get("core.srcDir"),
+			...value,
+		}),
 	},
-	srcDir: {
-		$default: "src/",
-		$resolve: async (value, get) => resolve(await get("core.rootDir"), value || "."),
+	extensions: {
+		$resolve: values => (Array.isArray(values) ? values.filter(Boolean) : []),
 	},
 	modulesDir: {
 		$default: ["node_modules"],
@@ -93,16 +96,13 @@ const schema: SchemaDefinition = defineUntypedSchema({
 			resolve(process.cwd(), "node_modules"),
 		],
 	},
-	extensions: {
-		$resolve: values => (Array.isArray(values) ? values.filter(Boolean) : []),
+	rootDir: {
+		$default: process.cwd(),
+		$resolve: value => (typeof value === "string" ? resolve(value) : process.cwd()),
 	},
-	alias: {
-		$default: {},
-		$resolve: async (value, get) => ({
-			"~": await get("core.srcDir"),
-			"@": await get("core.srcDir"),
-			...value,
-		}),
+	srcDir: {
+		$default: "src/",
+		$resolve: async (value, get) => resolve(await get("core.rootDir"), value || "."),
 	},
 });
 export default schema;

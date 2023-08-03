@@ -9,17 +9,17 @@ import { defineInt8Range } from "./Int8Range";
 describe("defineInt8Range", async () => {
 	test('defineInt8Range({ mode: "Int8Range" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8range.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8range", {
-				int8range: defineInt8Range("int8range", { mode: "Int8Range" }).notNull(),
 				_int8range: defineInt8Range("_int8range", { mode: "Int8Range" }).array().notNull(),
+				int8range: defineInt8Range("int8range", { mode: "Int8Range" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineInt8Range", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8range: Int8Range.from("[1,3)"),
 				_int8range: [Int8Range.from("[1,3)"), Int8Range.from("[3,5)")],
+				int8range: Int8Range.from("[1,3)"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineInt8Range", async () => {
 
 	test('defineInt8Range({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8rangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8rangestring", {
-				int8range: defineInt8Range("int8range", { mode: "string" }).notNull(),
 				_int8range: defineInt8Range("_int8range", { mode: "string" }).array().notNull(),
+				int8range: defineInt8Range("int8range", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineInt8Range", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8range: "[1,3)",
 				_int8range: ["[1,3)", "[3,5)"],
+				int8range: "[1,3)",
 			})
 			.returning();
 

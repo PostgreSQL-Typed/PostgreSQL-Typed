@@ -13,7 +13,11 @@ export class PgTDelete<TTable extends AnyPgTable, TQueryResult extends QueryResu
 
 	private config: PgDeleteConfig;
 
-	constructor(table: TTable, private session: PgTSession, private dialect: PgDialect) {
+	constructor(
+		table: TTable,
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {
 		super();
 		this.config = { table };
 	}

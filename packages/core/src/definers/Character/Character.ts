@@ -26,7 +26,7 @@ export type PgTCharacterType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Character" ? Character<number> : string,
-	TDriverParameter = Character<number>
+	TDriverParameter = Character<number>,
 > = PgTCharacter<{
 	tableName: TTableName;
 	name: TName;

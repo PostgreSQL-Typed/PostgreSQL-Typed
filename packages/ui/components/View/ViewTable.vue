@@ -1,3 +1,4 @@
+<!-- eslint-disable sort-keys-fix/sort-keys-fix -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 	import { activeTableClass } from "@/composables/data";
@@ -29,11 +30,11 @@
 			});
 		}),
 		defaultHeaders = {
-			column_default: "Default",
 			column_name: "Column Name",
-			comment: "Comment",
 			data_type: "Data Type",
+			column_default: "Default",
 			is_nullable: "Nullable",
+			comment: "Comment",
 		},
 		headers = computed(() => {
 			if (columns.value.length === 0) return defaultHeaders;

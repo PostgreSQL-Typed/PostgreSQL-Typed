@@ -231,11 +231,11 @@ importers:
   packages/oids:
     devDependencies:
       '@types/pg':
-        specifier: ^8.6.6
-        version: 8.6.6
+        specifier: ^8.10.2
+        version: 8.10.2
       pg:
-        specifier: ^8.10.0
-        version: 8.11.1
+        specifier: ^8.11.2
+        version: 8.11.2
 
   packages/parsers:
     dependencies:
@@ -8752,7 +8752,6 @@ packages:
 
   /pg-connection-string@2.6.2:
     resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
-    dev: false
 
   /pg-int8@1.0.1:
     resolution: {integrity: sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==}
@@ -8776,7 +8775,6 @@ packages:
       pg: '>=8.0'
     dependencies:
       pg: 8.11.2
-    dev: false
 
   /pg-protocol@1.6.0:
     resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
@@ -8841,7 +8839,6 @@ packages:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
-    dev: false
 
   /pgpass@1.0.5:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}

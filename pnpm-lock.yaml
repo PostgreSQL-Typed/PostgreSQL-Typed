@@ -191,26 +191,26 @@ importers:
         specifier: workspace:*
         version: link:../util
       c12:
-        specifier: ^1.4.1
+        specifier: ^1.4.2
         version: 1.4.2
       drizzle-orm:
         specifier: 0.27.2
-        version: 0.27.2(@types/pg@8.6.6)(pg@8.11.1)
+        version: 0.27.2(@types/pg@8.10.2)(pg@8.11.2)
       hookable:
         specifier: ^5.5.3
         version: 5.5.3
       jiti:
-        specifier: ^1.18.2
-        version: 1.18.2
+        specifier: ^1.19.1
+        version: 1.19.1
       mlly:
-        specifier: ^1.2.1
-        version: 1.2.1
+        specifier: ^1.4.0
+        version: 1.4.0
       pathe:
-        specifier: ^1.1.0
-        version: 1.1.0
+        specifier: ^1.1.1
+        version: 1.1.1
       pg:
-        specifier: ^8.11.1
-        version: 8.11.1
+        specifier: ^8.11.2
+        version: 8.11.2
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -219,14 +219,14 @@ importers:
         specifier: workspace:*
         version: link:../cli
       '@types/node':
-        specifier: ^20.1.2
-        version: 20.1.2
+        specifier: ^20.4.6
+        version: 20.4.6
       '@types/pg':
-        specifier: ^8.6.6
-        version: 8.6.6
+        specifier: ^8.10.2
+        version: 8.10.2
       typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
+        specifier: ^5.1.6
+        version: 5.1.6
 
   packages/oids:
     devDependencies:
@@ -2048,7 +2048,7 @@ packages:
       globby: 13.2.0
       hash-sum: 2.0.0
       ignore: 5.2.4
-      jiti: 1.18.2
+      jiti: 1.19.1
       knitwork: 1.0.0
       mlly: 1.4.0
       pathe: 1.1.1
@@ -2091,7 +2091,7 @@ packages:
       pkg-types: 1.0.3
       postcss-import-resolver: 2.0.0
       std-env: 3.3.3
-      ufo: 1.1.2
+      ufo: 1.2.0
       unimport: 3.0.11(rollup@3.26.0)
       untyped: 1.3.2
     transitivePeerDependencies:
@@ -2115,7 +2115,7 @@ packages:
       git-url-parse: 13.1.0
       inquirer: 9.2.7
       is-docker: 3.0.0
-      jiti: 1.18.2
+      jiti: 1.19.1
       mri: 1.2.0
       nanoid: 4.0.2
       node-fetch: 3.3.1
@@ -2155,7 +2155,7 @@ packages:
       h3: 1.6.5
       knitwork: 1.0.0
       magic-string: 0.30.2
-      mlly: 1.2.1
+      mlly: 1.4.0
       ohash: 1.1.2
       pathe: 1.1.1
       perfect-debounce: 0.1.3
@@ -2723,10 +2723,10 @@ packages:
 
   /@types/node@20.1.2:
     resolution: {integrity: sha512-CTO/wa8x+rZU626cL2BlbCDzydgnFNgc19h4YvizpTO88MFQxab8wqisxaofQJ/9bLGugRdWIuX/TbIs6VVF6g==}
+    dev: true
 
   /@types/node@20.4.6:
     resolution: {integrity: sha512-q0RkvNgMweWWIvSMDiXhflGUKMdIxBo2M2tYM/0kEGDueQByFzK4KZAgu5YHGFNxziTlppNpTIBcqHQAxlfHdA==}
-    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -2742,14 +2742,14 @@ packages:
       '@types/node': 20.4.6
       pg-protocol: 1.6.0
       pg-types: 4.0.1
-    dev: true
 
   /@types/pg@8.6.6:
     resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
     dependencies:
-      '@types/node': 20.1.2
+      '@types/node': 20.4.6
       pg-protocol: 1.6.0
       pg-types: 2.2.0
+    dev: true
 
   /@types/pluralize@0.0.30:
     resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
@@ -3224,7 +3224,7 @@ packages:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.10
       '@rollup/pluginutils': 4.2.1
-      acorn: 8.9.0
+      acorn: 8.10.0
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -3673,12 +3673,6 @@ packages:
     resolution: {integrity: sha512-F0SAmZ8iUtS//m8DmCTA0jlh6TDKkHQyK6xc6V4KDTyZKA9dnvX9/3sRTVQrWm79glUAZbnmmNcdYwUIHWVybw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
-    dev: true
-
-  /acorn@8.9.0:
-    resolution: {integrity: sha512-jaVNAFBHNLXspO543WnNNPZFRtavh3skAkITqD0/2aeMkKZTN+254PyhwxFYrk3vQ1xfY+2wbesJMs/JC8/PwQ==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
 
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -4123,8 +4117,8 @@ packages:
       defu: 6.1.2
       dotenv: 16.3.1
       giget: 1.1.2
-      jiti: 1.18.2
-      mlly: 1.2.1
+      jiti: 1.19.1
+      mlly: 1.4.0
       ohash: 1.1.2
       pathe: 1.1.0
       perfect-debounce: 0.1.3
@@ -4141,7 +4135,7 @@ packages:
       defu: 6.1.2
       dotenv: 16.3.1
       giget: 1.1.2
-      jiti: 1.18.2
+      jiti: 1.19.1
       mlly: 1.4.0
       ohash: 1.1.2
       pathe: 1.1.1
@@ -5396,7 +5390,7 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /drizzle-orm@0.27.2(@types/pg@8.6.6)(pg@8.11.1):
+  /drizzle-orm@0.27.2(@types/pg@8.10.2)(pg@8.11.2):
     resolution: {integrity: sha512-ZvBvceff+JlgP7FxHKe0zOU9CkZ4RcOtibumIrqfYzDGuOeF0YUY0F9iMqYpRM7pxnLRfC+oO7rWOUH3T5oFQA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -5458,8 +5452,8 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@types/pg': 8.6.6
-      pg: 8.11.1
+      '@types/pg': 8.10.2
+      pg: 8.11.2
     dev: false
 
   /duplexer@0.1.2:
@@ -6651,7 +6645,7 @@ packages:
       deepmerge: 4.3.1
       hookable: 5.5.3
       ofetch: 1.1.1
-      ufo: 1.1.2
+      ufo: 1.2.0
     dev: true
 
   /gopd@1.0.1:
@@ -7328,8 +7322,8 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /jiti@1.18.2:
-    resolution: {integrity: sha512-QAdOptna2NYiSSpv0O/BwoHBSmz4YhpzJHyi+fnMRTXFjp7B8i/YG5Z8IfusxB1ufjcD2Sre1F3R+nX3fvy7gg==}
+  /jiti@1.19.1:
+    resolution: {integrity: sha512-oVhqoRDaBXf7sjkll95LHVS6Myyyb1zaunVwk4Z0+WPSW4gjS0pl01zYKHScTuyEhQsFxV5L4DR5r+YqSyqyyg==}
     hasBin: true
 
   /joi@17.9.2:
@@ -8056,21 +8050,13 @@ packages:
     hasBin: true
     dev: false
 
-  /mlly@1.2.1:
-    resolution: {integrity: sha512-1aMEByaWgBPEbWV2BOPEMySRrzl7rIHXmQxam4DM8jVjalTQDjpN2ZKOLUrwyhfZQO7IXHml2StcHMhooDeEEQ==}
-    dependencies:
-      acorn: 8.9.0
-      pathe: 1.1.0
-      pkg-types: 1.0.3
-      ufo: 1.1.2
-
   /mlly@1.4.0:
     resolution: {integrity: sha512-ua8PAThnTwpprIaU47EPeZ/bPUVp2QYBbWMphUQpVdBI3Lgqzm5KZQ45Agm3YJedHXaIHl6pBGabaLSUPPSptg==}
     dependencies:
-      acorn: 8.9.0
+      acorn: 8.10.0
       pathe: 1.1.1
       pkg-types: 1.0.3
-      ufo: 1.1.2
+      ufo: 1.2.0
 
   /monorepo-coverage-badges@1.0.3(@types/node@20.4.6)(ts-node@10.9.1)(typescript@5.1.6):
     resolution: {integrity: sha512-OYTzFE599RMFt3QwXxAhLGWPoIXAksZ3oYVFz3EWRdwLFsIOsfaXwygcamIb0VydWB6LAGZ8KA06kU+EnuUVuA==}
@@ -8188,7 +8174,7 @@ packages:
       http-graceful-shutdown: 3.1.13
       http-proxy: 1.18.1
       is-primitive: 3.0.1
-      jiti: 1.18.2
+      jiti: 1.19.1
       klona: 2.0.6
       knitwork: 1.0.0
       listhen: 1.0.4
@@ -8388,12 +8374,12 @@ packages:
       globby: 13.2.0
       h3: 1.6.5
       hookable: 5.5.3
-      jiti: 1.18.2
+      jiti: 1.19.1
       klona: 2.0.6
       knitwork: 1.0.0
       local-pkg: 0.4.3
       magic-string: 0.30.0
-      mlly: 1.2.1
+      mlly: 1.4.0
       nitropack: 2.5.2
       nuxi: 3.4.3
       nypm: 0.2.2
@@ -8476,7 +8462,6 @@ packages:
 
   /obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
-    dev: true
 
   /ofetch@1.1.1:
     resolution: {integrity: sha512-SSMoktrp9SNLi20BWfB/BnnKcL0RDigXThD/mZBeQxkIRv1xrd9183MtLdsqRYLYSqW0eTr5t8w8MqjNhvoOQQ==}
@@ -8727,6 +8712,7 @@ packages:
 
   /pathe@1.1.0:
     resolution: {integrity: sha512-ODbEPR0KKHqECXW1GoxdDb+AZvULmXjVPy4rt+pGo2+TnjJTIPJQSVS6N63n8T2Ip+syHhbn52OewKicV0373w==}
+    dev: false
 
   /pathe@1.1.1:
     resolution: {integrity: sha512-d+RQGp0MAYTIaDBIMmOfMwz3E+LOZnxx1HZd5R18mmCZY0QBlK0LDZfPc8FW8Ed2DlvsuE6PRjroDY+wg4+j/Q==}
@@ -8762,6 +8748,7 @@ packages:
 
   /pg-connection-string@2.6.1:
     resolution: {integrity: sha512-w6ZzNu6oMmIzEAYVw+RLK0+nqHPt8K3ZnknKi+g48Ak2pr3dtljJW3o+D/n2zzCG07Zoe9VOX3aiKpj+BN0pjg==}
+    dev: true
 
   /pg-connection-string@2.6.2:
     resolution: {integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA==}
@@ -8774,7 +8761,6 @@ packages:
   /pg-numeric@1.0.2:
     resolution: {integrity: sha512-BM/Thnrw5jm2kKLE5uJkXqqExRUY/toLHda65XgFTBTFYZyopbKjBe29Ii3RbkvlsMoFwD+tHeGaCjjv0gHlyw==}
     engines: {node: '>=4'}
-    dev: true
 
   /pg-pool@3.6.1(pg@8.11.1):
     resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
@@ -8782,6 +8768,7 @@ packages:
       pg: '>=8.0'
     dependencies:
       pg: 8.11.1
+    dev: true
 
   /pg-pool@3.6.1(pg@8.11.2):
     resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
@@ -8815,7 +8802,6 @@ packages:
       postgres-date: 2.0.1
       postgres-interval: 3.0.0
       postgres-range: 1.1.3
-    dev: true
 
   /pg@8.11.1:
     resolution: {integrity: sha512-utdq2obft07MxaDg0zBJI+l/M3mBRfIpEN3iSemsz0G5F2/VXx+XzqF4oxrbIZXQxt2AZzIUzyVg/YM6xOP/WQ==}
@@ -8835,6 +8821,7 @@ packages:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
+    dev: true
 
   /pg@8.11.2:
     resolution: {integrity: sha512-l4rmVeV8qTIrrPrIR3kZQqBgSN93331s9i6wiUiLOSk0Q7PmUxZD/m1rQI622l3NfqBby9Ar5PABfS/SulfieQ==}
@@ -9252,7 +9239,6 @@ packages:
   /postgres-array@3.0.2:
     resolution: {integrity: sha512-6faShkdFugNQCLwucjPcY5ARoW1SlbnrZjmGl0IrrqewpvxvhSLHimCVzqeuULCbG0fQv7Dtk1yDbG3xv7Veog==}
     engines: {node: '>=12'}
-    dev: true
 
   /postgres-bytea@1.0.0:
     resolution: {integrity: sha512-xy3pmLuQqRBZBXDULy7KbaitYqLcmxigw14Q5sj8QBVLqEwXfeybIKVWiqAXTlcvdvb0+xkOtDbfQMOf4lST1w==}
@@ -9263,7 +9249,6 @@ packages:
     engines: {node: '>= 6'}
     dependencies:
       obuf: 1.1.2
-    dev: true
 
   /postgres-date@1.0.7:
     resolution: {integrity: sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==}
@@ -9272,7 +9257,6 @@ packages:
   /postgres-date@2.0.1:
     resolution: {integrity: sha512-YtMKdsDt5Ojv1wQRvUhnyDJNSr2dGIC96mQVKz7xufp07nfuFONzdaowrMHjlAzY6GDLd4f+LUHHAAM1h4MdUw==}
     engines: {node: '>=12'}
-    dev: true
 
   /postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
@@ -9283,11 +9267,9 @@ packages:
   /postgres-interval@3.0.0:
     resolution: {integrity: sha512-BSNDnbyZCXSxgA+1f5UU2GmwhoI0aU5yMxRGO8CdFEcY2BQF9xm/7MqKnYoM1nJDk8nONNWDk9WeSmePFhQdlw==}
     engines: {node: '>=12'}
-    dev: true
 
   /postgres-range@1.1.3:
     resolution: {integrity: sha512-VdlZoocy5lCP0c/t66xAfclglEapXPCIVhqqJRncYpvbCgImF0w67aPKfbqUMr72tO2k5q0TdTZwCLjPTI6C9g==}
-    dev: true
 
   /preferred-pm@3.0.3:
     resolution: {integrity: sha512-+wZgbxNES/KlJs9q40F/1sfOd/j7f1O9JaHcW5Dsn3aUUOZg3L2bjpVUcKV2jvtElYfoTuQiNeMfQJ4kwUAhCQ==}
@@ -10245,7 +10227,7 @@ packages:
   /strip-literal@1.0.1:
     resolution: {integrity: sha512-QZTsipNpa2Ppr6v1AmJHESqJ3Uz247MUS0OjrnnZjFAvEoWqxuyFuXn2xLgMtRnijJShAa1HL0gtJyUs7u7n3Q==}
     dependencies:
-      acorn: 8.9.0
+      acorn: 8.10.0
     dev: true
 
   /strip-literal@1.3.0:
@@ -10395,7 +10377,7 @@ packages:
     hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.4
-      acorn: 8.9.0
+      acorn: 8.10.0
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -10760,6 +10742,10 @@ packages:
 
   /ufo@1.1.2:
     resolution: {integrity: sha512-TrY6DsjTQQgyS3E3dBaOXf0TpPD8u9FVrVYmKVegJuFw51n/YB9XPt+U6ydzFG5ZIN7+DIjPbNmXoBj9esYhgQ==}
+    dev: true
+
+  /ufo@1.2.0:
+    resolution: {integrity: sha512-RsPyTbqORDNDxqAdQPQBpgqhWle1VcTSou/FraClYlHf6TZnQcGslpLcAphNR+sQW4q5lLWLbOsRlh9j24baQg==}
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -10775,7 +10761,7 @@ packages:
     dependencies:
       '@antfu/utils': 0.7.4
       defu: 6.1.2
-      jiti: 1.18.2
+      jiti: 1.19.1
     dev: true
 
   /uncrypto@0.1.3:
@@ -10785,7 +10771,7 @@ packages:
   /unctx@2.3.1:
     resolution: {integrity: sha512-PhKke8ZYauiqh3FEMVNm7ljvzQiph0Mt3GBRve03IJm7ukfaON2OBK795tLwhbyfzknuRRkW0+Ze+CQUmzOZ+A==}
     dependencies:
-      acorn: 8.9.0
+      acorn: 8.10.0
       estree-walker: 3.0.3
       magic-string: 0.30.2
       unplugin: 1.3.1
@@ -10885,7 +10871,7 @@ packages:
   /unplugin@1.3.1:
     resolution: {integrity: sha512-h4uUTIvFBQRxUKS2Wjys6ivoeofGhxzTe2sRWlooyjHXVttcVfV/JiavNd3d4+jty0SVV0dxGw9AkY9MwiaCEw==}
     dependencies:
-      acorn: 8.9.0
+      acorn: 8.10.0
       chokidar: 3.5.3
       webpack-sources: 3.2.3
       webpack-virtual-modules: 0.5.0
@@ -10951,7 +10937,7 @@ packages:
       '@babel/standalone': 7.22.5
       '@babel/types': 7.22.5
       defu: 6.1.2
-      jiti: 1.18.2
+      jiti: 1.19.1
       mri: 1.2.0
       scule: 1.0.0
     transitivePeerDependencies:

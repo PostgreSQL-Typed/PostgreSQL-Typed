@@ -19,6 +19,7 @@ export function getExportNameTemplate(config: PostgreSQLTypedCLIConfig, id: Type
 		case "schemaType":
 			return filesConfig.schemaName;
 		case "enum":
+		case "enumType":
 			return filesConfig.enumName;
 		case "domain":
 			return filesConfig.domainName;

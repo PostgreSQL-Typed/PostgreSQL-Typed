@@ -19,6 +19,7 @@ export * from "./DateTime/TimestampTZ.js";
 export * from "./DateTime/TimestampTZMultiRange.js";
 export * from "./DateTime/TimestampTZRange.js";
 export * from "./DateTime/TimeTZ.js";
+export * from "./Enumerated/Enum.js";
 export * from "./Geometric/Box.js";
 export * from "./Geometric/Circle.js";
 export * from "./Geometric/Line.js";

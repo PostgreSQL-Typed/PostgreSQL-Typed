@@ -24,6 +24,8 @@ import type { TimestampTZ } from "../data/DateTime/TimestampTZ.js";
 import type { TimestampTZMultiRange } from "../data/DateTime/TimestampTZMultiRange.js";
 import type { TimestampTZRange } from "../data/DateTime/TimestampTZRange.js";
 import type { TimeTZ } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import type { Enum } from "../data/Enumerated/Enum.js";
 //* Geometric
 import type { Box } from "../data/Geometric/Box.js";
 import type { Circle } from "../data/Geometric/Circle.js";
@@ -81,6 +83,8 @@ export type Parsers =
 	| TimestampTZMultiRange
 	| TimestampTZRange
 	| TimeTZ
+	//* Enumerated
+	| Enum<string, [string, ...string[]]>
 	//* Geometric
 	| Box
 	| Circle

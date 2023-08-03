@@ -19,6 +19,7 @@ import type { PgTTimestampTZType } from "./DateTime/TimestampTZ.js";
 import type { PgTTimestampTZMultiRangeType } from "./DateTime/TimestampTZMultiRange.js";
 import type { PgTTimestampTZRangeType } from "./DateTime/TimestampTZRange.js";
 import type { PgTTimeTZType } from "./DateTime/TimeTZ.js";
+import type { PgTEnumType } from "./Enumerated/Enum.js";
 import type { PgTBoxType } from "./Geometric/Box.js";
 import type { PgTCircleType } from "./Geometric/Circle.js";
 import type { PgTLineType } from "./Geometric/Line.js";
@@ -221,6 +222,15 @@ export type PgTArrayOfType<TType> = TType extends PgTByteAType<
 			driverParam: TDriverParameter[] | string;
 	  }>
 	: TType extends PgTTimeTZType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
+	? PgTArray<{
+			tableName: TTableName;
+			name: TName;
+			notNull: TNotNull;
+			hasDefault: THasDefault;
+			data: TData[];
+			driverParam: TDriverParameter[] | string;
+	  }>
+	: TType extends PgTEnumType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
 	? PgTArray<{
 			tableName: TTableName;
 			name: TName;

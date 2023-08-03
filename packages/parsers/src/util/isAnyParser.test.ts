@@ -25,6 +25,8 @@ import { TimestampTZ } from "../data/DateTime/TimestampTZ.js";
 import { TimestampTZMultiRange } from "../data/DateTime/TimestampTZMultiRange.js";
 import { TimestampTZRange } from "../data/DateTime/TimestampTZRange.js";
 import { TimeTZ } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import { Enum } from "../data/Enumerated/Enum.js";
 //* Geometric
 import { Box } from "../data/Geometric/Box.js";
 import { Circle } from "../data/Geometric/Circle.js";
@@ -96,6 +98,7 @@ describe("isAnyParser", () => {
 		).toBe(true);
 		expect(isAnyParser(TimestampTZRange.from([TimestampTZ.from("2021-01-01 00:00:00"), TimestampTZ.from("2022-01-01 00:00:00")]))).toBe(true);
 		expect(isAnyParser(TimeTZ.from("00:00:00"))).toBe(true);
+		expect(isAnyParser(Enum.setEnums(["a"]).from("a"))).toBe(true);
 		expect(isAnyParser(Box.from("(0,0),(1,1)"))).toBe(true);
 		expect(isAnyParser(Circle.from("<(0,0),1>"))).toBe(true);
 		expect(isAnyParser(Line.from("{0,1,2}"))).toBe(true);

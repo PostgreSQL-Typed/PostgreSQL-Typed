@@ -1,3 +1,5 @@
+import { OID } from "@postgresql-typed/oids";
+
 import type { Printer } from "../../../classes/Printer.js";
 import { ClassKind } from "../../../types/enums/ClassKind.js";
 import { ConstraintType } from "../../../types/enums/ConstraintType.js";
@@ -124,12 +126,18 @@ function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer
 		.replace("%ATTRIBUTE%", attribute.attribute_name)
 		.replace("%NOTNULL%", attribute.not_null ? ".notNull()" : "")
 		.replace("%LENGTH%", `${maxLength}`)
-		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config));
+		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config, printer.types.get(attribute.type_id)));
 
 	return `${definer}${getDefault(attribute, file)}${getReference(type, attribute, printer, file)}`;
 }
 
 function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
+	let maxLength = attribute.max_length ?? undefined;
+	if (maxLength === undefined) {
+		const matchResult = attribute.type_name.match(/\((\d+)\)(\[])?$/);
+		if (matchResult) maxLength = Number.parseInt(matchResult[1]);
+	}
+
 	return printer
 		.getDefinerType(attribute.type_id, file, {
 			schemaName: type.schema_name,
@@ -140,7 +148,58 @@ function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Pri
 		.replace("%TABLE%", type.class_name)
 		.replace("%HASDEFAULT%", attribute.has_default ? "true" : "false")
 		.replace("%NOTNULL%", attribute.not_null ? "true" : "false")
-		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config));
+		.replace("%MODE%", getModeOfOid(attribute.type_id, printer.config, printer.types.get(attribute.type_id)))
+		.replace(", %LENGTHMAYBE%", getLenghtMaybe(attribute, printer, file))
+		.replace("%LENGTH%", `${maxLength}`);
+}
+
+function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContext): string {
+	switch (attribute.type_id) {
+		case OID._bit:
+		case OID.bit:
+			if (!printer.config.files.definerModes.bit) return "";
+			file.addImportStatement({
+				module: "@postgresql-typed/parsers",
+				name: "Bit",
+				type: "named",
+				isType: true,
+			});
+			return ", Bit<%LENGTH%>";
+		case OID._varbit:
+		case OID.varbit:
+			if (!printer.config.files.definerModes.bitVarying) return "";
+			file.addImportStatement({
+				module: "@postgresql-typed/parsers",
+				name: "BitVarying",
+				type: "named",
+				isType: true,
+			});
+			return ", BitVarying<%LENGTH%>";
+		case OID._bpchar:
+		case OID.bpchar:
+		case OID._char:
+		case OID.char:
+			if (!printer.config.files.definerModes.character) return "";
+			file.addImportStatement({
+				module: "@postgresql-typed/parsers",
+				name: "Character",
+				type: "named",
+				isType: true,
+			});
+			return ", Character<%LENGTH%>";
+		case OID._varchar:
+		case OID.varchar:
+			if (!printer.config.files.definerModes.characterVarying) return "";
+			file.addImportStatement({
+				module: "@postgresql-typed/parsers",
+				name: "CharacterVarying",
+				type: "named",
+				isType: true,
+			});
+			return ", CharacterVarying<%LENGTH%>";
+		default:
+			return "";
+	}
 }
 
 function getReference(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {

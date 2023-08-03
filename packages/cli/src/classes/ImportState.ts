@@ -13,6 +13,6 @@ export class ImportState {
 	}
 	public getImportStatement(relativePath: string) {
 		const namedImports = [...this._namedImports.values()].map(v => v.exportName);
-		return `import { ${namedImports.sort().join(", ")} } from '${relativePath}';`;
+		return `import { ${namedImports.sort().join(", ")} } from "${relativePath}";`;
 	}
 }

@@ -39,6 +39,8 @@ import type {
 } from "../data/DateTime/TimestampTZMultiRange.js";
 import type { RawTimestampTZRangeObject, TimestampTZRange, TimestampTZRangeConstructor, TimestampTZRangeObject } from "../data/DateTime/TimestampTZRange.js";
 import type { TimeTZ, TimeTZConstructor, TimeTZObject } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import type { Enum, EnumConstructor, EnumObject } from "../data/Enumerated/Enum.js";
 //* Geometric
 import type { Box, BoxConstructor, BoxObject } from "../data/Geometric/Box.js";
 import type { Circle, CircleConstructor, CircleObject } from "../data/Geometric/Circle.js";
@@ -234,6 +236,13 @@ describe("FromParameters", () => {
 	test("TimeTZ", () => {
 		let a: FromParameters<TimeTZConstructor> | undefined;
 		expectTypeOf(a).toEqualTypeOf<string | number | TimeTZ | globalThis.Date | DateTime | TimeTZObject | undefined>();
+	});
+
+	test("Enum", () => {
+		let a: FromParameters<EnumConstructor<string, ["foo"]>> | undefined;
+		expectTypeOf(a).toEqualTypeOf<
+			string | Character<number> | CharacterVarying<number> | Enum<string, [string, ...string[]]> | Name | Text | UUID | EnumObject | undefined
+		>();
 	});
 
 	test("FromParameters<BoxConstructor>", () => {

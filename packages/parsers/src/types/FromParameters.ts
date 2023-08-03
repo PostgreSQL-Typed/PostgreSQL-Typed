@@ -38,6 +38,8 @@ import type {
 } from "../data/DateTime/TimestampTZMultiRange.js";
 import type { RawTimestampTZRangeObject, TimestampTZRange, TimestampTZRangeConstructor, TimestampTZRangeObject } from "../data/DateTime/TimestampTZRange.js";
 import type { TimeTZ, TimeTZConstructor, TimeTZObject } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import type { Enum, EnumConstructor, EnumObject } from "../data/Enumerated/Enum.js";
 //* Geometric
 import type { Box, BoxConstructor, BoxObject } from "../data/Geometric/Box.js";
 import type { Circle, CircleConstructor, CircleObject } from "../data/Geometric/Circle.js";
@@ -142,6 +144,9 @@ export type FromParameters<T extends Constructors | null> =
 		? string | DateRange | DateRangeObject | RawDateRangeObject | [Date, Date]
 		: T extends IntervalConstructor
 		? string | Interval | IntervalObject
+		: //* Enumerated
+		T extends EnumConstructor<string, [string, ...string[]]>
+		? string | Character<number> | CharacterVarying<number> | Enum<string, [string, ...string[]]> | Name | Text | UUID | EnumObject
 		: //* Geometric
 		T extends BoxConstructor
 		? string | Box | BoxObject

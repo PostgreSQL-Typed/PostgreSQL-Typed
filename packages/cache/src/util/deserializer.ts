@@ -48,8 +48,9 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 
 	if (!("__pgtParserType" in object)) return Object.fromEntries(Object.entries(object).map(([key, value]) => [key, deserializer(value)])) as T;
 
-	const { __pgtParserType, ...rest } = object as {
+	const { __pgtParserType, __pgtParserExtraData, ...rest } = object as {
 		__pgtParserType: string;
+		__pgtParserExtraData?: any;
 		[key: string]: any;
 	};
 
@@ -57,17 +58,17 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 		case "bytea":
 			return ByteA.from(rest as any) as T;
 		case "bit":
-			return Bit.setN(Number.POSITIVE_INFINITY).from(rest as any) as T;
+			return Bit.setN(Number(__pgtParserExtraData)).from(rest as any) as T;
 		case "bitVarying":
-			return BitVarying.setN(Number.POSITIVE_INFINITY).from(rest as any) as T;
+			return BitVarying.setN(Number(__pgtParserExtraData)).from(rest as any) as T;
 		case "boolean":
 			return Boolean.from(rest as any) as T;
 		case "box":
 			return Box.from(rest as any) as T;
 		case "character":
-			return Character.setN(Number.POSITIVE_INFINITY).from(rest as any) as T;
+			return Character.setN(Number(__pgtParserExtraData)).from(rest as any) as T;
 		case "characterVarying":
-			return CharacterVarying.setN(Number.POSITIVE_INFINITY).from(rest as any) as T;
+			return CharacterVarying.setN(Number(__pgtParserExtraData)).from(rest as any) as T;
 		case "circle":
 			return Circle.from(rest as any) as T;
 		case "date":
@@ -144,10 +145,11 @@ export function deserializer<T>(object: Record<string, any> | Record<string, any
 			return TimeTZ.from(rest as any) as T;
 		case "uuid":
 			return UUID.from(rest as any) as T;
-		/* c8 ignore next 4 */
+		/* c8 ignore next 5 */
 		//! It should be impossible to reach this point, but we need to handle it to satisfy TypeScript.
 		default:
 			delete object.__pgtParserType;
+			delete object.__pgtParserExtraData;
 			return object as T;
 	}
 }

@@ -9,6 +9,7 @@ import {
 	defineCharacterVarying,
 	defineCircle,
 	defineDate,
+	defineEnum,
 	defineFloat4,
 	defineFloat8,
 	defineInt2,
@@ -52,6 +53,16 @@ export const TestTable = table("cache_testing", {
 	date: defineDate("date", { mode: "string" }).notNull(),
 	_date: defineDate("_date", {
 		mode: "string",
+	})
+		.array()
+		.notNull(),
+	enum: defineEnum("enum", {
+		enumName: "mood",
+		enumValues: ["sad", "ok", "happy"],
+	}).notNull(),
+	_enum: defineEnum("_enum", {
+		enumName: "mood",
+		enumValues: ["sad", "ok", "happy"],
 	})
 		.array()
 		.notNull(),
@@ -102,6 +113,8 @@ export const TestTable = table("cache_testing", {
 });
 
 export const createTable = `
+DROP TYPE IF EXISTS mood;
+CREATE TYPE mood as ENUM ('sad', 'ok', 'happy');
 CREATE TABLE IF NOT EXISTS cache_testing (
 	bytea BYTEA NOT NULL,
 	_bytea BYTEA[] NOT NULL,
@@ -121,6 +134,8 @@ CREATE TABLE IF NOT EXISTS cache_testing (
   _circle CIRCLE[] NOT NULL,
   date DATE NOT NULL,
   _date DATE[] NOT NULL,
+	enum mood NOT NULL,
+	_enum mood[] NOT NULL,
   float4 FLOAT4 NOT NULL,
   _float4 FLOAT4[] NOT NULL,
   float8 FLOAT8 NOT NULL,
@@ -169,6 +184,7 @@ CREATE TABLE IF NOT EXISTS cache_testing (
 
 export const dropTable = `
 DROP TABLE IF EXISTS cache_testing;
+DROP TYPE IF EXISTS mood;
 `;
 
 export const insertQuery: PgInsertValue<typeof TestTable> = {
@@ -190,6 +206,8 @@ export const insertQuery: PgInsertValue<typeof TestTable> = {
 	_circle: ["<(0,0),1>", "<(0,0),1>"],
 	date: "2020-01-01",
 	_date: ["2020-01-01", "2020-01-02"],
+	enum: "sad",
+	_enum: ["ok", "happy"],
 	float4: 1.1,
 	_float4: [1.1, 2.2],
 	float8: 1.1,

@@ -23,6 +23,8 @@ import { TimestampTZ } from "../data/DateTime/TimestampTZ.js";
 import { TimestampTZMultiRange } from "../data/DateTime/TimestampTZMultiRange.js";
 import { TimestampTZRange } from "../data/DateTime/TimestampTZRange.js";
 import { TimeTZ } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import { Enum } from "../data/Enumerated/Enum.js";
 //* Geometric
 import { Box } from "../data/Geometric/Box.js";
 import { Circle } from "../data/Geometric/Circle.js";
@@ -76,6 +78,7 @@ export function isAnyParser(parser: any): parser is ParserFromConstructor<Constr
 	if (TimestampTZMultiRange.isMultiRange(parser)) return true;
 	if (TimestampTZRange.isRange(parser)) return true;
 	if (TimeTZ.isTimeTZ(parser)) return true;
+	if (Enum.isAnyEnum(parser)) return true;
 	if (Box.isBox(parser)) return true;
 	if (Circle.isCircle(parser)) return true;
 	if (Line.isLine(parser)) return true;

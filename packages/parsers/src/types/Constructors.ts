@@ -24,6 +24,8 @@ import type { TimestampTZConstructor } from "../data/DateTime/TimestampTZ.js";
 import type { TimestampTZMultiRangeConstructor } from "../data/DateTime/TimestampTZMultiRange.js";
 import type { TimestampTZRangeConstructor } from "../data/DateTime/TimestampTZRange.js";
 import type { TimeTZConstructor } from "../data/DateTime/TimeTZ.js";
+//* Enumerated
+import type { EnumConstructor } from "../data/Enumerated/Enum.js";
 //* Geometric
 import type { BoxConstructor } from "../data/Geometric/Box.js";
 import type { CircleConstructor } from "../data/Geometric/Circle.js";
@@ -81,6 +83,8 @@ export type Constructors =
 	| TimestampTZMultiRangeConstructor
 	| TimestampTZRangeConstructor
 	| TimeTZConstructor
+	//* Enumerated
+	| EnumConstructor<string, [string, ...string[]]>
 	//* Geometric
 	| BoxConstructor
 	| CircleConstructor

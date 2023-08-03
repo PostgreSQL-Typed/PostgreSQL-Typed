@@ -25,6 +25,8 @@ export * from "./data/DateTime/TimestampTZ.js";
 export * from "./data/DateTime/TimestampTZMultiRange.js";
 export * from "./data/DateTime/TimestampTZRange.js";
 export * from "./data/DateTime/TimeTZ.js";
+//* Enumerated
+export * from "./data/Enumerated/Enum.js";
 //* Geometric
 export * from "./data/Geometric/Box.js";
 export * from "./data/Geometric/Circle.js";

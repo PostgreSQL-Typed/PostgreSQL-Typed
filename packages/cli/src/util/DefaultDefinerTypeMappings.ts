@@ -9,7 +9,7 @@ export const DefaultDefinerTypeMappings = {
 			[OID._abstime]: "undefined",
 			[OID._aclitem]: "undefined",
 			[OID._bit]: [
-				'PgTArrayOfType<PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
+				'PgTArrayOfType<PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -60,7 +60,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID._bpchar]: [
-				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
+				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -94,7 +94,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID._char]: [
-				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
+				'PgTArrayOfType<PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -723,7 +723,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID._varbit]: [
-				'PgTArrayOfType<PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
+				'PgTArrayOfType<PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -740,7 +740,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID._varchar]: [
-				'PgTArrayOfType<PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>>',
+				'PgTArrayOfType<PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -774,7 +774,7 @@ export const DefaultDefinerTypeMappings = {
 			[OID.anynonarray]: "undefined",
 			[OID.anyrange]: "undefined",
 			[OID.bit]: [
-				'PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
+				'PgTBitType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -807,7 +807,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID.bpchar]: [
-				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
+				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -830,7 +830,7 @@ export const DefaultDefinerTypeMappings = {
 			],
 			[OID.cardinal_number]: "undefined",
 			[OID.char]: [
-				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
+				'PgTCharacterType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -1269,7 +1269,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID.varbit]: [
-				'PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
+				'PgTBitVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",
@@ -1280,7 +1280,7 @@ export const DefaultDefinerTypeMappings = {
 				],
 			],
 			[OID.varchar]: [
-				'PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%>',
+				'PgTCharacterVaryingType<"%TABLE%", "%ATTRIBUTE%", "%MODE%", %NOTNULL%, %HASDEFAULT%, %LENGTHMAYBE%>',
 				[
 					{
 						module: "@postgresql-typed/core/definers",

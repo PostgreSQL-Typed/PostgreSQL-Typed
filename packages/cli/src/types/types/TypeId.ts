@@ -1,6 +1,7 @@
 export type TypeId =
 	| { type: "domain"; name: string }
 	| { type: "enum"; name: string; databaseName: string }
+	| { type: "enumType"; name: string; databaseName: string }
 	| {
 			type: "debug";
 			date: string;

@@ -32,6 +32,7 @@ export function getTemplateValues(id: TypeId): Record<string, string> {
 				DATABASE_NAME: id.name,
 			};
 		case "enum":
+		case "enumType":
 			return { TYPE_NAME: id.name, DATABASE_NAME: id.databaseName };
 		case "domain":
 			return { TYPE_NAME: id.name };

@@ -33,6 +33,8 @@ export function getFilenameTemplate(config: PostgreSQLTypedCLIConfig, id: TypeId
 			return formatFileType(filesConfig.domainFileName, extension);
 		case "enum":
 			return formatFileType(filesConfig.enumFileName, extension);
+		case "enumType":
+			return formatFileType(filesConfig.enumFileName, ".d.ts");
 		case "debug":
 			return formatFileType(filesConfig.debugFileName, ".json");
 		case "export":

@@ -105,10 +105,12 @@ function toJSON(
 	parser: Parsers
 ): {
 	__pgtParserType: string;
+	__pgtParserExtraData?: any;
 	[key: string]: any;
 } {
 	return {
 		__pgtParserType: parserType,
+		__pgtParserExtraData: "n" in parser ? parser.n.toString() : undefined,
 		...parser.toJSON(),
 	};
 }

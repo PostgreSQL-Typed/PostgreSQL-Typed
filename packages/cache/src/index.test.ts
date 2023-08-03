@@ -3,6 +3,7 @@ import { PgTExtensionContext, PostQueryHookData } from "@postgresql-typed/util";
 import { describe, expect, it, vitest } from "vitest";
 
 import { createTable, dropTable, insertQuery, TestTable } from "./__mocks__/testData";
+import type { PgTCacheContext } from "./index.js";
 
 const spiedOn = {
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -61,7 +62,7 @@ describe("Cache", () => {
 			spy.mockClear();
 			spy2.mockClear();
 
-			let context: PgTExtensionContext | PostQueryHookData = {
+			let context: (PgTExtensionContext & { cache?: PgTCacheContext }) | PostQueryHookData = {
 				nonce: "test",
 				cache: {
 					enabled: false,

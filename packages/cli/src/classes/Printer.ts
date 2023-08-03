@@ -17,6 +17,7 @@ import { GENERATED_STATEMENT, LOGGER } from "../util/constants.js";
 import { DefaultDefinerMappings } from "../util/DefaultDefinerMappings.js";
 import { DefaultDefinerTypeMappings } from "../util/DefaultDefinerTypeMappings.js";
 import { getDefiner } from "../util/functions/getters/getDefiner.js";
+import { getDefinerType } from "../util/functions/getters/getDefinerType.js";
 import { isDebugEnabled } from "../util/functions/isDebugEnabled.js";
 import { printDatabaseReexport } from "../util/functions/printers/printDatabaseReexport.js";
 import { resolveFilename } from "../util/functions/resolveFileName.js";
@@ -150,7 +151,7 @@ export class Printer {
 			for (const importStatement of imports) file.addImportStatement(importStatement);
 			return type;
 		}
-		return getDefiner(type, this, file);
+		return getDefinerType(type, this, file);
 	}
 
 	public async print() {

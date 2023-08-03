@@ -1,10 +1,14 @@
 import { OID } from "@postgresql-typed/oids";
-import { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
+import type { PostgreSQLTypedCLIConfig } from "@postgresql-typed/util";
 
-export function getModeOfOid(oid: number, config: PostgreSQLTypedCLIConfig): string {
+import { DataTypeKind } from "../../../types/enums/DataTypeKind.js";
+import type { DataType } from "../../../types/types/DataType.js";
+
+export function getModeOfOid(oid: number, config: PostgreSQLTypedCLIConfig, type?: DataType): string {
 	const {
 		files: { definerModes },
 	} = config;
+	if (type?.kind === DataTypeKind.Enum) return definerModes.enum;
 	switch (oid) {
 		case OID._bit:
 		case OID.bit:

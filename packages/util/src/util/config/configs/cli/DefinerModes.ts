@@ -121,6 +121,12 @@ export interface DefinerModes {
 	 * @default "globalThis.Date"
 	 */
 	timetz: "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string";
+	/**
+	 * The enum definer mode.
+	 *
+	 * @default "string"
+	 */
+	enum: "Enum" | "string";
 	//* Geometric
 	/**
 	 * The box definer mode.
@@ -340,6 +346,10 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "globalThis.Date",
 		$resolve: (value: any) =>
 			typeof value === "string" && ["TimeTZ", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
+	},
+	enum: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Enum", "string"].includes(value) ? value : "string"),
 	},
 	box: {
 		$default: "string",

@@ -1,3 +1,4 @@
+<!-- eslint-disable func-call-spacing -->
 <script lang="ts" setup>
 	import { useSelect } from "@/composables/select";
 
@@ -9,14 +10,14 @@
 				id: string;
 			}[];
 		}>(),
-		// eslint-disable-next-line func-call-spacing
-		emit = defineEmits<{
-			(event: "update:modelValue", value: string): void;
-		}>(),
 		open = ref(false),
-		element = ref<HTMLElement>();
+		selectElement = ref<HTMLElement>();
 
-	useSelect({ el: element, onBlur });
+	useSelect({ el: selectElement, onBlur });
+
+	const emit = defineEmits<{
+		(event: "update:modelValue", value: string): void;
+	}>();
 
 	function onBlur() {
 		open.value = false;
@@ -29,7 +30,7 @@
 </script>
 
 <template>
-	<div ref="element" class="selector" @mouseenter="open = true" @mouseleave="open = false">
+	<div ref="selectElement" class="selector" @mouseenter="open = true" @mouseleave="open = false">
 		<button type="button" class="button" aria-haspopup="true" :aria-expanded="open" @click="open = !open">
 			<span class="text">
 				<slot name="selected" :item="modelValue" />

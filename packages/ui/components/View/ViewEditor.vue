@@ -1,10 +1,12 @@
+<!-- eslint-disable func-call-spacing -->
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
 <script setup lang="ts">
 	import type CodeMirror from "codemirror";
 
 	import { activeTable, activeTableClass } from "@/composables/data";
 	import { activeTableId } from "@/composables/navigation";
 
-	// eslint-disable-next-line func-call-spacing
 	const emit = defineEmits<{ (event: "draft", value: boolean): void }>(),
 		code = ref(""),
 		serverCode = shallowRef<string | undefined>(),
@@ -32,7 +34,7 @@
 		},
 		{ immediate: true }
 	);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 	const editor = ref<any>(),
 		cm = computed<CodeMirror.EditorFromTextArea | undefined>(() => editor.value?.cm),
 		hasBeenEdited = ref(false);

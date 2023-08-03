@@ -3,7 +3,7 @@
 	import { getERD } from "@/composables/diagram";
 	import { getRelationGraph, type RelationGraph } from "@/composables/graph";
 	import { activeTableId } from "@/composables/navigation";
-	import { type Params, viewMode } from "@/composables/navigation";
+	import { type NavigationParameters, viewMode } from "@/composables/navigation";
 
 	const graph = ref<RelationGraph>({ links: [], nodes: [] }),
 		erd = ref(""),
@@ -19,7 +19,7 @@
 		},
 		{ debounce: 100, immediate: true }
 	);
-	const changeViewMode = (view: Params["view"]) => {
+	const changeViewMode = (view: NavigationParameters["view"]) => {
 		if (view === "graph") hasGraphBeenDisplayed.value = true;
 		if (view === "diagram") hasDiagramBeenDisplayed.value = true;
 		viewMode.value = view;

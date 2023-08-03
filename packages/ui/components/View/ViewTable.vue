@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 	import { activeTableClass } from "@/composables/data";
 	import { parseColumnComment } from "@/util/functions";

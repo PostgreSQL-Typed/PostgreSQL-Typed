@@ -1,3 +1,5 @@
+<!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 	import "d3-graph-controller/default.css";
 
@@ -45,7 +47,6 @@
 		controller.value?.shutdown();
 		if (!graph.value || !element.value) return;
 		controller.value = new GraphController<RelationType, RelationNode, RelationLink>(
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			element.value!,
 			graph.value,
 			// See https://graph-controller.yeger.eu/config/ for more options

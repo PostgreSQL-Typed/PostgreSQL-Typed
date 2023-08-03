@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-default-prop -->
 <script setup lang="ts">
 	import type { Table } from "@postgresql-typed/cli/lib/types/interfaces/Table";
 
@@ -6,6 +7,8 @@
 	const properties = withDefaults(
 			defineProps<{
 				tables: Table[];
+				// eslint-disable-next-line func-call-spacing
+				onItemClick?: (table: Table) => void;
 			}>(),
 			{}
 		),
@@ -81,7 +84,7 @@
 					v-bind="$attrs"
 					:class="activeTableId === table.table_id.toString() ? 'bg-active' : ''"
 					:table="table"
-					@click="onItemClick && onItemClick(table)"
+					@click="properties.onItemClick && properties.onItemClick(table)"
 				/>
 			</template>
 		</div>

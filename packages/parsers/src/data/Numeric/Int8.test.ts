@@ -44,8 +44,8 @@ describe("Int8Constructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -56,8 +56,8 @@ describe("Int8Constructor", () => {
 			expect(invalidString.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: "bigint",
-				received: "string",
 				message: "Expected 'bigint', received 'string'",
+				received: "string",
 			});
 		}
 
@@ -68,8 +68,8 @@ describe("Int8Constructor", () => {
 			expect(nanNumber.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
-				received: "nan",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'nan'",
+				received: "nan",
 			});
 		}
 
@@ -102,11 +102,11 @@ describe("Int8Constructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "bigint",
-				maximum: BigInt("9223372036854775807"),
 				inclusive: true,
+				maximum: BigInt("9223372036854775807"),
 				message: "BigInt must be less than or equal to 9223372036854775807",
 				received: BigInt("9223372036854775808"),
+				type: "bigint",
 			});
 		}
 
@@ -116,11 +116,11 @@ describe("Int8Constructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "bigint",
-				minimum: BigInt("-9223372036854775808"),
 				inclusive: true,
 				message: "BigInt must be greater than or equal to -9223372036854775808",
+				minimum: BigInt("-9223372036854775808"),
 				received: BigInt("-9223372036854775809"),
+				type: "bigint",
 			});
 		}
 
@@ -131,11 +131,11 @@ describe("Int8Constructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -146,17 +146,17 @@ describe("Int8Constructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Int8.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -189,10 +189,10 @@ describe("Int8Constructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "bigint",
 				message: "Expected 'string' for key 'value', received 'bigint'",
+				objectKey: "value",
+				received: "bigint",
 			});
 		}
 		//#endregion
@@ -284,8 +284,8 @@ describe("Int8", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["bigint", "number", "string", "object"],
-				received: "boolean",
 				message: "Expected 'bigint' | 'number' | 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -361,12 +361,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Int8", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "int8.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

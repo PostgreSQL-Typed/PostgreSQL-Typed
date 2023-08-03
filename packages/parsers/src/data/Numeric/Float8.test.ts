@@ -50,8 +50,8 @@ describe("Float8Constructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -62,8 +62,8 @@ describe("Float8Constructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_string",
 				expected: "LIKE 1.23",
-				received: "abc",
 				message: "Expected 'LIKE 1.23', received 'abc'",
+				received: "abc",
 			});
 		}
 
@@ -73,11 +73,11 @@ describe("Float8Constructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "number",
-				maximum: "1e+308",
 				inclusive: true,
+				maximum: "1e+308",
 				message: "Number must be less than or equal to 1e+308",
 				received: "10e400",
+				type: "number",
 			});
 		}
 
@@ -87,11 +87,11 @@ describe("Float8Constructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: "-1e+308",
 				inclusive: true,
 				message: "Number must be greater than or equal to -1e+308",
+				minimum: "-1e+308",
 				received: "-10e400",
+				type: "number",
 			});
 		}
 
@@ -102,11 +102,11 @@ describe("Float8Constructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -117,17 +117,17 @@ describe("Float8Constructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Float8.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -160,10 +160,10 @@ describe("Float8Constructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 		//#endregion
@@ -243,8 +243,8 @@ describe("Float8", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "nan", "infinity", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'nan' | 'infinity' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -366,12 +366,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Float8", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "float8.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

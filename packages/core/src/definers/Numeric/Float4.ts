@@ -25,7 +25,7 @@ export type PgTFloat4Type<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Float4" ? Float4 : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
-	TDriverParameter = Float4
+	TDriverParameter = Float4,
 > = PgTFloat4<{
 	tableName: TTableName;
 	name: TName;

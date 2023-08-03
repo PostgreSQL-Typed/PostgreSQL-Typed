@@ -115,17 +115,17 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -156,8 +156,8 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 			return OK(new TimeTZClass(parsedTimestamp.data.hour, parsedTimestamp.data.minute, parsedTimestamp.data.second, parsedTimestamp.data.offset));
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE HH:MM:SS+HH:MM",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -179,17 +179,17 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				totalLength > 6
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 6,
 							exact: true,
+							maximum: 6,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 6,
 							exact: true,
+							minimum: 6,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -200,12 +200,12 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		return this._parseObject(context, {
 			hour: argument,
 			minute: otherArguments[0],
-			second: otherArguments[1],
 			offset: {
+				direction: otherArguments[4],
 				hour: otherArguments[2],
 				minute: otherArguments[3],
-				direction: otherArguments[4],
 			},
+			second: otherArguments[1],
 		});
 	}
 
@@ -220,11 +220,13 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				const [hour, minute, second, offset] = [jsDate.data.getHours(), jsDate.data.getMinutes(), jsDate.data.getSeconds(), jsDate.data.getTimezoneOffset()];
 				return OK(
 					new TimeTZClass(hour, minute, second, {
-						hour: offset / 60,
-						minute: offset % 60,
 						/* c8 ignore next 2 */
 						// globalThis.Date.getTimezoneOffset() returns system timezone offset, so it's always positive or negative depending on the system timezone
 						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
+
+						hour: offset / 60,
+
+						minute: offset % 60,
 					})
 				);
 			}
@@ -239,9 +241,9 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 				const [hour, minute, second, offset] = [luxonDate.data.hour, luxonDate.data.minute, luxonDate.data.second, luxonDate.data.offset];
 				return OK(
 					new TimeTZClass(hour, minute, second, {
+						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
 						hour: offset / 60,
 						minute: offset % 60,
-						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
 					})
 				);
 			}
@@ -321,10 +323,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (hour < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -332,10 +334,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (hour > 23) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -351,10 +353,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (minute < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -362,10 +364,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (minute > 59) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -373,10 +375,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (second < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -384,10 +386,10 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (second >= 60) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -412,20 +414,20 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (parsedOffset.obj.hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
@@ -439,20 +441,20 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 		if (parsedOffset.obj.minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
@@ -467,7 +469,12 @@ class TimeTZConstructorClass extends PgTPConstructorBase<TimeTZ> implements Time
 const TimeTZ: TimeTZConstructor = new TimeTZConstructorClass();
 
 class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
-	constructor(private _hour: number, private _minute: number, private _second: number, private _offset: Offset) {
+	constructor(
+		private _hour: number,
+		private _minute: number,
+		private _second: number,
+		private _offset: Offset
+	) {
 		super();
 	}
 
@@ -476,8 +483,8 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		const parsed = TimeTZ.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toDateTime("UTC").toString() === this.toDateTime("UTC").toString(),
 				data: parsed.data,
+				equals: parsed.data.toDateTime("UTC").toString() === this.toDateTime("UTC").toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -497,8 +504,8 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		return {
 			hour: this._hour,
 			minute: this._minute,
-			second: this._second,
 			offset: this._offset,
+			second: this._second,
 		};
 	}
 
@@ -548,20 +555,20 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 		}
 
 		if (hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 		}
 
@@ -592,20 +599,20 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 		}
 
 		if (minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 		}
 
@@ -629,20 +636,20 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (second < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 		}
 
 		if (second >= 60) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 		}
 
@@ -718,20 +725,20 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (parsedOffset.obj.hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
@@ -745,20 +752,20 @@ class TimeTZClass extends PgTPBase<TimeTZ> implements TimeTZ {
 		if (parsedOffset.obj.minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 

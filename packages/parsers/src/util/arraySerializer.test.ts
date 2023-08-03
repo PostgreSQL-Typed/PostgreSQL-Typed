@@ -8,16 +8,16 @@ const testObjectNumber = {
 			const parsed = Number.parseInt(value);
 			if (Number.isNaN(parsed)) throw new Error("Not a number");
 			return {
-				value: parsed,
 				postgres: parsed.toString(),
+				value: parsed,
 			};
 		},
 		safeFrom: (value: string) => {
 			const parsed = Number.parseInt(value);
 			if (Number.isNaN(parsed)) return null;
 			return {
-				value: parsed,
 				postgres: parsed.toString(),
+				value: parsed,
 			};
 		},
 	} as unknown as ObjectFunction<number>,
@@ -26,16 +26,16 @@ const testObjectNumber = {
 			const parsed = Number.parseInt(value);
 			if (!Number.isNaN(parsed)) throw new Error("Input should not be a number");
 			return {
-				value,
 				postgres: value,
+				value,
 			};
 		},
 		safeFrom: (value: string) => {
 			const parsed = Number.parseInt(value);
 			if (!Number.isNaN(parsed)) return null;
 			return {
-				value,
 				postgres: value,
+				value,
 			};
 		},
 	} as unknown as ObjectFunction<string>;

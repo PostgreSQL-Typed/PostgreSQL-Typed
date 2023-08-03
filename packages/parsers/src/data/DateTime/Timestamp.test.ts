@@ -15,12 +15,12 @@ describe("TimestampConstructor", () => {
 		expect(Timestamp.safeFrom("2023-01-01T22:10:09Z").success).toBe(true);
 		expect(
 			Timestamp.safeFrom({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			}).success
 		).toBe(true);
 		expect(Timestamp.safeFrom(2022, 9, 2, 1, 2, 3).success).toBe(true);
@@ -38,23 +38,23 @@ describe("TimestampConstructor", () => {
 		expect(() => Timestamp.from({} as any)).toThrowError("Missing keys in object: 'year', 'month', 'day', 'hour', 'minute', 'second'");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: "2",
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			} as any)
 		).toThrowError("Expected 'number' for key 'day', received 'string'");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
-				week: 0,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				week: 0,
+				year: 2022,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'week'");
 		expect(() => Timestamp.from(1, 2, "a" as any, 4, 5, 6)).toThrowError("Expected 'number', received 'string'");
@@ -80,174 +80,174 @@ describe("TimestampConstructor", () => {
 
 		expect(() =>
 			Timestamp.from({
-				year: 2022.2,
+				day: 2,
+				hour: 1,
+				minute: 2,
 				month: 9,
-				day: 2,
-				hour: 1,
-				minute: 2,
 				second: 3,
+				year: 2022.2,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
+				day: 2,
+				hour: 1,
+				minute: 2,
 				month: 9.2,
-				day: 2,
-				hour: 1,
-				minute: 2,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 0,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 0,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 1");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 13,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 13,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 12");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2.2,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 0,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 1");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 32,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 31");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1.2,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 24,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 23");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: -1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 1.2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 60,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: -1,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: -1,
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			Timestamp.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 60,
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 59");
 	});
 
 	test("isTimestamp(...)", () => {
 		const timestamp = Timestamp.from({
-			year: 2022,
-			month: 9,
 			day: 2,
 			hour: 1,
 			minute: 2,
+			month: 9,
 			second: 3,
+			year: 2022,
 		});
 		expect(Timestamp.isTimestamp(timestamp)).toBe(true);
 		expect(
 			Timestamp.isTimestamp({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
 				second: 3,
+				year: 2022,
 			})
 		).toBe(false);
 	});
@@ -296,12 +296,12 @@ describe("Timestamp", () => {
 	test("toJSON()", () => {
 		const timestamp = Timestamp.from("2023-01-01T22:10:09Z");
 		expect(timestamp.toJSON()).toEqual({
-			year: 2023,
-			month: 1,
 			day: 1,
 			hour: 22,
 			minute: 10,
+			month: 1,
 			second: 9,
+			year: 2023,
 		});
 	});
 
@@ -564,12 +564,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "timestamp.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();
@@ -615,33 +615,33 @@ describe("PostgreSQL", () => {
 
 			expect(result.rows[0].timestamp.toString()).toStrictEqual(
 				Timestamp.from({
-					year: 2004,
-					month: 10,
 					day: 19,
 					hour: 10,
 					minute: 23,
+					month: 10,
 					second: 54.678,
+					year: 2004,
 				}).toString()
 			);
 			expect(result.rows[0]._timestamp).toHaveLength(2);
 			expect(result.rows[0]._timestamp[0].toString()).toStrictEqual(
 				Timestamp.from({
-					year: 2019,
-					month: 1,
 					day: 2,
 					hour: 3,
 					minute: 4,
+					month: 1,
 					second: 5.678,
+					year: 2019,
 				}).toString()
 			);
 			expect(result.rows[0]._timestamp[1].toString()).toStrictEqual(
 				Timestamp.from({
-					year: 2022,
-					month: 9,
 					day: 8,
 					hour: 7,
 					minute: 6,
+					month: 9,
 					second: 5,
+					year: 2022,
 				}).toString()
 			);
 		} catch (error_) {

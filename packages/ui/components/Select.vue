@@ -1,23 +1,23 @@
+<!-- eslint-disable func-call-spacing -->
 <script lang="ts" setup>
 	import { useSelect } from "@/composables/select";
 
-	const props = defineProps<{
-		modelValue?: string;
-		options: {
-			database: string;
-			hostPort: string;
-			id: string;
-		}[];
-	}>();
+	const properties = defineProps<{
+			modelValue?: string;
+			options: {
+				database: string;
+				hostPort: string;
+				id: string;
+			}[];
+		}>(),
+		open = ref(false),
+		selectElement = ref<HTMLElement>();
+
+	useSelect({ el: selectElement, onBlur });
 
 	const emit = defineEmits<{
 		(event: "update:modelValue", value: string): void;
 	}>();
-
-	const open = ref(false);
-	const el = ref<HTMLElement>();
-
-	useSelect({ el, onBlur });
 
 	function onBlur() {
 		open.value = false;
@@ -30,7 +30,7 @@
 </script>
 
 <template>
-	<div class="selector" ref="el" @mouseenter="open = true" @mouseleave="open = false">
+	<div ref="selectElement" class="selector" @mouseenter="open = true" @mouseleave="open = false">
 		<button type="button" class="button" aria-haspopup="true" :aria-expanded="open" @click="open = !open">
 			<span class="text">
 				<slot name="selected" :item="modelValue" />
@@ -40,11 +40,11 @@
 
 		<div class="menu">
 			<div class="menu-inner">
-				<div v-for="option in props.options" :key="option" class="button" @click="click(option.id)">
+				<div v-for="option in properties.options" :key="option.id" class="button" @click="click(option.id)">
 					<span v-if="option.id === modelValue" class="text" op20>
 						<slot name="item" :item="option" />
 					</span>
-					<span class="text" v-else>
+					<span v-else class="text">
 						<slot name="item" :item="option" />
 					</span>
 				</div>
@@ -82,7 +82,10 @@
 		right: 0;
 		opacity: 0;
 		visibility: hidden;
-		transition: opacity 0.25s, visibility 0.25s, transform 0.25s;
+		transition:
+			opacity 0.25s,
+			visibility 0.25s,
+			transform 0.25s;
 		z-index: 1;
 	}
 
@@ -92,7 +95,9 @@
 		min-width: 128px;
 		border: 1px solid var(--vp-c-divider);
 		background-color: var(--background-color);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08);
+		box-shadow:
+			0 12px 32px rgba(0, 0, 0, 0.1),
+			0 2px 6px rgba(0, 0, 0, 0.08);
 		transition: background-color 0.5s;
 		max-height: 200px;
 		overflow-x: hidden;

@@ -25,7 +25,7 @@ export type PgTPolygonType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Polygon" ? Polygon : string,
-	TDriverParameter = string
+	TDriverParameter = string,
 > = PgTPolygon<{
 	tableName: TTableName;
 	name: TName;

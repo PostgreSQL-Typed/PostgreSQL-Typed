@@ -25,7 +25,7 @@ export type PgTMoneyType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Money" ? Money : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
-	TDriverParameter = Money
+	TDriverParameter = Money,
 > = PgTMoney<{
 	tableName: TTableName;
 	name: TName;

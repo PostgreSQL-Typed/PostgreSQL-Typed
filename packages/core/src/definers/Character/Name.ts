@@ -25,7 +25,7 @@ export type PgTNameType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Name" ? Name : string,
-	TDriverParameter = Name
+	TDriverParameter = Name,
 > = PgTName<{
 	tableName: TTableName;
 	name: TName;

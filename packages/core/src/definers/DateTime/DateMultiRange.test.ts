@@ -9,17 +9,17 @@ import { defineDateMultiRange } from "./DateMultiRange";
 describe("defineDateMultiRange", async () => {
 	test('defineDateMultiRange({ mode: "DateMultiRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "datemultirange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("datemultirange", {
-				datemultirange: defineDateMultiRange("datemultirange", { mode: "DateMultiRange" }).notNull(),
 				_datemultirange: defineDateMultiRange("_datemultirange", { mode: "DateMultiRange" }).array().notNull(),
+				datemultirange: defineDateMultiRange("datemultirange", { mode: "DateMultiRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -45,11 +45,11 @@ describe("defineDateMultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				datemultirange: DateMultiRange.from("{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}"),
 				_datemultirange: [
 					DateMultiRange.from("{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}"),
 					DateMultiRange.from("{[2022-01-01,2023-01-01),[2024-01-01,2025-01-01),[2026-01-01,2027-01-01)}"),
 				],
+				datemultirange: DateMultiRange.from("{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}"),
 			})
 			.returning();
 
@@ -101,17 +101,17 @@ describe("defineDateMultiRange", async () => {
 
 	test('defineDateMultiRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "datemultirangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("datemultirangestring", {
-				datemultirange: defineDateMultiRange("datemultirange", { mode: "string" }).notNull(),
 				_datemultirange: defineDateMultiRange("_datemultirange", { mode: "string" }).array().notNull(),
+				datemultirange: defineDateMultiRange("datemultirange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -137,11 +137,11 @@ describe("defineDateMultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				datemultirange: "{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}",
 				_datemultirange: [
 					"{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}",
 					"{[2022-01-01,2023-01-01),[2024-01-01,2025-01-01),[2026-01-01,2027-01-01)}",
 				],
+				datemultirange: "{[2021-01-01,2022-01-01),[2023-01-01,2024-01-01),[2025-01-01,2026-01-01)}",
 			})
 			.returning();
 

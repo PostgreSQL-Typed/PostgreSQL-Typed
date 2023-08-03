@@ -8,17 +8,46 @@ import { serializer } from "./util/serializer.js";
 
 export default definePgTExtension<PgTCacheOptions>({
 	meta: {
-		name: "cache",
 		configKey: "cache",
+		name: "cache",
 	},
+	/* c8 ignore next 27 */
+	//? Can't really test the config schema, since it's only used in the setup function
+	schema: {
+		namespace: {
+			$default: "pgt",
+			$resolve: value => (typeof value === "string" ? value : "pgt"),
+		},
+		ttl: {
+			$default: 1000 * 60 * 15,
+			$resolve: value => (typeof value === "number" ? value : 1000 * 60 * 15),
+		},
+		types: {
+			$default: ["select"],
+			$resolve: value => {
+				if (!Array.isArray(value)) return ["select"];
+				const allowed = new Set(["select", "insert", "update", "delete"]);
+				value = value.filter(Boolean).map(type => type.toLowerCase());
+				for (const type of value) if (!allowed.has(type)) return ["select"];
+				return value;
+			},
+		},
+		uri: {
+			$resolve: value => (typeof value === "string" ? value : undefined),
+			$schema: {
+				type: "string",
+			},
+		},
+	},
+
 	setup(resolvedOptions, manager) {
 		const { uri, namespace, ttl, types } = resolvedOptions,
 			keyv = new Keyv<PostQueryHookData["output"]>({
-				uri,
-				namespace,
-				ttl,
-				serialize: data => stringify(serializer(data)),
 				deserialize: data => deserializer(parse(data)),
+				namespace,
+				serialize: data => stringify(serializer(data)),
+				ttl,
+				uri,
 			});
 
 		manager.hook("pgt:pre-query", async data => {
@@ -55,34 +84,6 @@ export default definePgTExtension<PgTCacheOptions>({
 			context.cache.key = key;
 			context.cache.cache = data.output;
 		});
-	},
-	/* c8 ignore next 27 */
-	//? Can't really test the config schema, since it's only used in the setup function
-	schema: {
-		uri: {
-			$schema: {
-				type: "string",
-			},
-			$resolve: value => (typeof value === "string" ? value : undefined),
-		},
-		namespace: {
-			$default: "pgt",
-			$resolve: value => (typeof value === "string" ? value : "pgt"),
-		},
-		ttl: {
-			$default: 1000 * 60 * 15,
-			$resolve: value => (typeof value === "number" ? value : 1000 * 60 * 15),
-		},
-		types: {
-			$default: ["select"],
-			$resolve: value => {
-				if (!Array.isArray(value)) return ["select"];
-				const allowed = new Set(["select", "insert", "update", "delete"]);
-				value = value.filter(Boolean).map(type => type.toLowerCase());
-				for (const type of value) if (!allowed.has(type)) return ["select"];
-				return value;
-			},
-		},
 	},
 });
 

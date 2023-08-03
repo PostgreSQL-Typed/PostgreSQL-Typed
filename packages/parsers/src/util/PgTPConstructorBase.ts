@@ -22,9 +22,9 @@ export abstract class PgTPConstructorBase<DataType> {
 
 	safeFrom(...data: unknown[]): SafeFrom<DataType> {
 		const context: ParseContext = {
-				issue: null,
-				errorMap: getErrorMap(),
 				data,
+				errorMap: getErrorMap(),
+				issue: null,
 			},
 			result = this._parse(context);
 
@@ -32,10 +32,10 @@ export abstract class PgTPConstructorBase<DataType> {
 	}
 
 	private _handleResult(context: ParseContext, result: ParseReturnType<DataType>): SafeFrom<DataType> {
-		if (isValid(result)) return { success: true, data: result.value };
+		if (isValid(result)) return { data: result.value, success: true };
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
 		const error = new PgTPError(context.issue);
-		return { success: false, error };
+		return { error, success: false };
 	}
 
 	setIssueForContext(context: ParseContext, issueData: IssueWithoutMessage): void {

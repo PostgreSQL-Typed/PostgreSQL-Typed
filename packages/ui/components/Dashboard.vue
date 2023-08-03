@@ -1,5 +1,5 @@
 <script setup lang="ts">
-	import { dbSize, tableCount, schemaCount, hasMultipleDatabases, databases, database, databaseById } from "@/composables/data";
+	import { database, databaseById, databases, databaseSize, hasMultipleDatabases, schemaCount, tableCount } from "@/composables/data";
 	import { activeDatabase } from "@/composables/navigation";
 </script>
 
@@ -50,7 +50,7 @@
 
 						<div i-carbon-maximize />
 						<div>Size</div>
-						<div id="dbSize" class="number">{{ dbSize }}</div>
+						<div id="dbSize" class="number">{{ databaseSize }}</div>
 					</div>
 				</div>
 			</div>

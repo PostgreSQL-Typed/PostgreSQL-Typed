@@ -40,10 +40,10 @@ describe("TimeConstructor", () => {
 		).toThrowError("Expected 'number' for key 'hour', received 'string'");
 		expect(() =>
 			Time.from({
-				week: 0,
 				hour: 1,
 				minute: 2,
 				second: 3,
+				week: 0,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'week'");
 		expect(() => Time.from(1, 2, "a" as any)).toThrowError("Expected 'number', received 'string'");
@@ -291,12 +291,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "time.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

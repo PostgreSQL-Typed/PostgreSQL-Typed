@@ -9,17 +9,17 @@ import { defineInt8 } from "./Int8";
 describe("defineInt8", async () => {
 	test('defineInt8({ mode: "Int8" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8", {
-				int8: defineInt8("int8", { mode: "Int8" }).notNull(),
 				_int8: defineInt8("_int8", { mode: "Int8" }).array().notNull(),
+				int8: defineInt8("int8", { mode: "Int8" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineInt8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8: Int8.from("1"),
 				_int8: [Int8.from("1"), Int8.from("2")],
+				int8: Int8.from("1"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineInt8", async () => {
 
 	test('defineInt8({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8string.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8string", {
-				int8: defineInt8("int8", { mode: "string" }).notNull(),
 				_int8: defineInt8("_int8", { mode: "string" }).array().notNull(),
+				int8: defineInt8("int8", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineInt8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8: "1",
 				_int8: ["1", "2"],
+				int8: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineInt8", async () => {
 
 	test('defineInt8({ mode: "BigInt" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8bignumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8bignumber", {
-				int8: defineInt8("int8", { mode: "BigInt" }).notNull(),
 				_int8: defineInt8("_int8", { mode: "BigInt" }).array().notNull(),
+				int8: defineInt8("int8", { mode: "BigInt" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineInt8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8: BigInt(1),
 				_int8: [BigInt(1), BigInt(2)],
+				int8: BigInt(1),
 			})
 			.returning();
 
@@ -235,17 +235,17 @@ describe("defineInt8", async () => {
 
 	test('defineInt8({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int8number.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int8number", {
-				int8: defineInt8("int8", { mode: "number" }).notNull(),
 				_int8: defineInt8("_int8", { mode: "number" }).array().notNull(),
+				int8: defineInt8("int8", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -260,8 +260,8 @@ describe("defineInt8", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int8: 1,
 				_int8: [1, 2],
+				int8: 1,
 			})
 			.returning();
 

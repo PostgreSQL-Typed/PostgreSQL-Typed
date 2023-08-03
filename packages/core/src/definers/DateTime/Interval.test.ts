@@ -9,17 +9,17 @@ import { defineInterval } from "./Interval";
 describe("defineInterval", async () => {
 	test('defineInterval({ mode: "Interval" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "interval.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("interval", {
-				interval: defineInterval("interval", { mode: "Interval" }).notNull(),
 				_interval: defineInterval("_interval", { mode: "Interval" }).array().notNull(),
+				interval: defineInterval("interval", { mode: "Interval" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineInterval", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				interval: Interval.from("2022 years 9 months 2 days"),
 				_interval: [Interval.from("2022 years 9 months 2 days"), Interval.from("2022 years 9 months 3 days")],
+				interval: Interval.from("2022 years 9 months 2 days"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineInterval", async () => {
 
 	test('defineInterval({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "intervalstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("intervalstring", {
-				interval: defineInterval("interval", { mode: "string" }).notNull(),
 				_interval: defineInterval("_interval", { mode: "string" }).array().notNull(),
+				interval: defineInterval("interval", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineInterval", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				interval: "2022 years 9 months 2 days",
 				_interval: ["2022 years 9 months 2 days", "2022 years 9 months 3 days"],
+				interval: "2022 years 9 months 2 days",
 			})
 			.returning();
 

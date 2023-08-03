@@ -4,7 +4,7 @@ import { TimestampTZ } from "../data/DateTime/TimestampTZ.js";
 export const greaterThanOrEqual = <
 	DataType extends {
 		toString(): string;
-	}
+	},
 >(
 	value1: DataType,
 	value2: DataType

@@ -25,7 +25,7 @@ export type PgTTimestampRangeType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "TimestampRange" ? TimestampRange : string,
-	TDriverParameter = TimestampRange
+	TDriverParameter = TimestampRange,
 > = PgTTimestampRange<{
 	tableName: TTableName;
 	name: TName;

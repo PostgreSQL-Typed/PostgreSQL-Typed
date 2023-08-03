@@ -9,17 +9,17 @@ import { defineMoney } from "./Money";
 describe("defineMoney", async () => {
 	test('defineMoney({ mode: "Money" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "money.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("money", {
-				money: defineMoney("money", { mode: "Money" }).notNull(),
 				_money: defineMoney("_money", { mode: "Money" }).array().notNull(),
+				money: defineMoney("money", { mode: "Money" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineMoney", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				money: Money.from("1"),
 				_money: [Money.from("1"), Money.from("2")],
+				money: Money.from("1"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineMoney", async () => {
 
 	test('defineMoney({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "moneystring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("moneystring", {
-				money: defineMoney("money", { mode: "string" }).notNull(),
 				_money: defineMoney("_money", { mode: "string" }).array().notNull(),
+				money: defineMoney("money", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineMoney", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				money: "1",
 				_money: ["1", "2"],
+				money: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineMoney", async () => {
 
 	test('defineMoney({ mode: "BigNumber" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "moneybignumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("moneybignumber", {
-				money: defineMoney("money", { mode: "BigNumber" }).notNull(),
 				_money: defineMoney("_money", { mode: "BigNumber" }).array().notNull(),
+				money: defineMoney("money", { mode: "BigNumber" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineMoney", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				money: BigNumber(1),
 				_money: [BigNumber(1), BigNumber(2)],
+				money: BigNumber(1),
 			})
 			.returning();
 
@@ -235,17 +235,17 @@ describe("defineMoney", async () => {
 
 	test('defineMoney({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "moneynumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("moneynumber", {
-				money: defineMoney("money", { mode: "number" }).notNull(),
 				_money: defineMoney("_money", { mode: "number" }).array().notNull(),
+				money: defineMoney("money", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -260,8 +260,8 @@ describe("defineMoney", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				money: 1,
 				_money: [1, 2],
+				money: 1,
 			})
 			.returning();
 

@@ -9,17 +9,17 @@ import { defineInt4 } from "./Int4";
 describe("defineInt4", async () => {
 	test('defineInt4({ mode: "Int4" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4", {
-				int4: defineInt4("int4", { mode: "Int4" }).notNull(),
 				_int4: defineInt4("_int4", { mode: "Int4" }).array().notNull(),
+				int4: defineInt4("int4", { mode: "Int4" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineInt4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4: Int4.from("1"),
 				_int4: [Int4.from("1"), Int4.from("2")],
+				int4: Int4.from("1"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineInt4", async () => {
 
 	test('defineInt4({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4string.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4string", {
-				int4: defineInt4("int4", { mode: "string" }).notNull(),
 				_int4: defineInt4("_int4", { mode: "string" }).array().notNull(),
+				int4: defineInt4("int4", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineInt4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4: "1",
 				_int4: ["1", "2"],
+				int4: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineInt4", async () => {
 
 	test('defineInt4({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4number.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4number", {
-				int4: defineInt4("int4", { mode: "number" }).notNull(),
 				_int4: defineInt4("_int4", { mode: "number" }).array().notNull(),
+				int4: defineInt4("int4", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineInt4", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4: 1,
 				_int4: [1, 2],
+				int4: 1,
 			})
 			.returning();
 

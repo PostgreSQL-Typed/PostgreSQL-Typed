@@ -9,17 +9,17 @@ import { defineLine } from "./Line";
 describe("defineLine", async () => {
 	test('defineLine({ mode: "Line" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "line.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("line", {
-				line: defineLine("line", { mode: "Line" }).notNull(),
 				_line: defineLine("_line", { mode: "Line" }).array().notNull(),
+				line: defineLine("line", { mode: "Line" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineLine", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				line: Line.from("{1,2,3}"),
 				_line: [Line.from("{1,2,3}"), Line.from("{1,2,4}")],
+				line: Line.from("{1,2,3}"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineLine", async () => {
 
 	test('defineLine({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "linestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("linestring", {
-				line: defineLine("line", { mode: "string" }).notNull(),
 				_line: defineLine("_line", { mode: "string" }).array().notNull(),
+				line: defineLine("line", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineLine", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				line: "{1,2,3}",
 				_line: ["{1,2,3}", "{1,2,4}"],
+				line: "{1,2,3}",
 			})
 			.returning();
 

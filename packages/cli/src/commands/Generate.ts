@@ -22,9 +22,9 @@ export interface GenerateArguments<ReturnDebug extends boolean> {
 }
 
 export const Generate = {
-	name: "gen",
-	description: "Generates the types",
 	arguments: [],
+	description: "Generates the types",
+	name: "gen",
 	run,
 } satisfies Command;
 
@@ -41,8 +41,8 @@ async function run<ReturnDebug extends boolean>(arguments_: GenerateArguments<Re
 			progress: {
 				line1: g("Fetching data"),
 				spinnerColor: g,
-				totalSteps,
 				steps: ["Fetching tables", "Fetching data types", "Fetching classes", "Fetching attributes", "Fetching constraints", "Writing to files"],
+				totalSteps,
 			},
 			waiter: {
 				line1: connections.length > 1 ? g(`Connecting to ${connections.length} databases`) : g("Connecting to the database"),

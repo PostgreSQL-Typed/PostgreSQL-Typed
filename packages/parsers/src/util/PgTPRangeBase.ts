@@ -27,9 +27,9 @@ export abstract class PgTPRangeBase<RangeDataType, DataType> extends PgTPBase<Ra
 
 	safeIsWithinRange(...data: unknown[]): SafeIsWithinRange<DataType> {
 		const context: ParseContext = {
-				issue: null,
-				errorMap: getErrorMap(),
 				data,
+				errorMap: getErrorMap(),
+				issue: null,
 			},
 			result = this._isWithinRange(context);
 
@@ -45,13 +45,13 @@ export abstract class PgTPRangeBase<RangeDataType, DataType> extends PgTPBase<Ra
 	): SafeIsWithinRange<DataType> {
 		if (isValid(result)) {
 			return {
-				success: true,
-				isWithinRange: result.value.isWithinRange,
 				data: result.value.data,
+				isWithinRange: result.value.isWithinRange,
+				success: true,
 			};
 		}
 		if (!context.issue) throw new Error("Validation failed but no issue detected.");
 		const error = new PgTPError(context.issue);
-		return { success: false, error };
+		return { error, success: false };
 	}
 }

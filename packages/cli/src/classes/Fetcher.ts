@@ -121,8 +121,8 @@ export class Fetcher {
 	async fetchClasses(): Promise<void> {
 		this.LOGGER?.("Fetching classes...");
 		const classes = await getClasses(this.client, {
-			schema_names: this.schema_names,
 			kind: [ClassKind.OrdinaryTable, ClassKind.View, ClassKind.MaterializedView],
+			schema_names: this.schema_names,
 		});
 		this.LOGGER?.("Fetched %d classes", classes.length);
 		if (classes.length === 0) {
@@ -140,8 +140,8 @@ export class Fetcher {
 	async fetchAttributes(): Promise<void> {
 		this.LOGGER?.("Fetching attributes...");
 		const attributes = await getAttributes(this.client, {
-			schema_names: this.schema_names,
 			database_name: this.dbName,
+			schema_names: this.schema_names,
 		});
 		this.LOGGER?.("Fetched %d attributes", attributes.length);
 		if (attributes.length === 0) {
@@ -169,10 +169,6 @@ export class Fetcher {
 
 	public get fetchedData(): FetchedData {
 		return {
-			database: this.dbName,
-			hostPort: this.hostPort,
-			tables: this.tables,
-			types: this.dataTypes,
 			classes: this.classes.map(
 				(cls): ClassDetails => ({
 					...cls,
@@ -180,6 +176,10 @@ export class Fetcher {
 					constraints: this.constraints.filter(con => con.class_id === cls.class_id),
 				})
 			),
+			database: this.dbName,
+			hostPort: this.hostPort,
+			tables: this.tables,
+			types: this.dataTypes,
 		};
 	}
 

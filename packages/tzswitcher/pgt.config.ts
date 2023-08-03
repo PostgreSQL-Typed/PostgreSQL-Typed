@@ -6,15 +6,15 @@ export default definePgTConfig({
 	},
 	//@ts-expect-error - This is a valid config
 	tzswitcher: {
+		time: {
+			from: "UTC",
+			to: "Asia/Seoul",
+		},
 		timestamp: {
 			from: "UTC",
 			to: "Asia/Seoul",
 		},
 		timestamptz: {
-			from: "UTC",
-			to: "Asia/Seoul",
-		},
-		time: {
 			from: "UTC",
 			to: "Asia/Seoul",
 		},

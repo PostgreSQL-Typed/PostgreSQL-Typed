@@ -8,8 +8,8 @@ interface SelectOptions {
 
 export const focusedElement = ref<HTMLElement>();
 
-let active = false;
-let listeners = 0;
+let active = false,
+	listeners = 0;
 
 export function useSelect(options: SelectOptions) {
 	const focus = ref(false);
@@ -19,8 +19,9 @@ export function useSelect(options: SelectOptions) {
 
 		listeners++;
 
-		const unwatch = watch(focusedElement, el => {
-			if (el === options.el.value || options.el.value?.contains(el!)) {
+		const unwatch = watch(focusedElement, element => {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+			if (element === options.el.value || options.el.value?.contains(element!)) {
 				focus.value = true;
 				options.onFocus?.();
 			} else {
@@ -34,9 +35,7 @@ export function useSelect(options: SelectOptions) {
 
 			listeners--;
 
-			if (!listeners) {
-				deactivateFocusTracking();
-			}
+			if (!listeners) deactivateFocusTracking();
 		});
 	}
 

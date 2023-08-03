@@ -35,7 +35,7 @@ import { PgTSession } from "./session.js";
 export class PgTDatabase<
 	TQueryResult extends QueryResultHKT,
 	TFullSchema extends Record<string, unknown> = Record<string, never>,
-	TSchema extends TablesRelationalConfig = ExtractTablesWithRelations<TFullSchema>
+	TSchema extends TablesRelationalConfig = ExtractTablesWithRelations<TFullSchema>,
 > {
 	static readonly [entityKind]: string = "PgDatabase";
 
@@ -99,9 +99,9 @@ export class PgTDatabase<
 		function select<TSelection extends SelectedFields>(fields: TSelection): PgTSelectBuilder<TSelection>;
 		function select(fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
 			return new PgTSelectBuilder({
+				dialect: self.dialect,
 				fields: fields ?? undefined,
 				session: self.session as PgTSession,
-				dialect: self.dialect,
 				withList: queries,
 			});
 		}
@@ -113,9 +113,9 @@ export class PgTDatabase<
 	select<TSelection extends SelectedFields>(fields: TSelection): PgTSelectBuilder<TSelection>;
 	select(fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
 		return new PgTSelectBuilder({
+			dialect: this.dialect,
 			fields: fields ?? undefined,
 			session: this.session as PgTSession,
-			dialect: this.dialect,
 		});
 	}
 
@@ -123,10 +123,10 @@ export class PgTDatabase<
 	selectDistinct<TSelection extends SelectedFields>(fields: TSelection): PgTSelectBuilder<TSelection>;
 	selectDistinct(fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
 		return new PgTSelectBuilder({
-			fields: fields ?? undefined,
-			session: this.session as PgTSession,
 			dialect: this.dialect,
 			distinct: true,
+			fields: fields ?? undefined,
+			session: this.session as PgTSession,
 		});
 	}
 
@@ -134,10 +134,10 @@ export class PgTDatabase<
 	selectDistinctOn<TSelection extends SelectedFields>(on: (AnyPgColumn | SQLWrapper)[], fields: TSelection): PgTSelectBuilder<TSelection>;
 	selectDistinctOn(on: (AnyPgColumn | SQLWrapper)[], fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
 		return new PgTSelectBuilder({
-			fields: fields ?? undefined,
-			session: this.session as PgTSession,
 			dialect: this.dialect,
 			distinct: { on },
+			fields: fields ?? undefined,
+			session: this.session as PgTSession,
 		});
 	}
 

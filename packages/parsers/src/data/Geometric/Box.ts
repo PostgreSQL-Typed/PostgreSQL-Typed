@@ -63,17 +63,17 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -111,8 +111,8 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE (x1,y1),(x2,y2)",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -125,17 +125,17 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 				totalLength > 4
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 4,
 							exact: true,
+							maximum: 4,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 4,
 							exact: true,
+							minimum: 4,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -200,7 +200,12 @@ class BoxConstructorClass extends PgTPConstructorBase<Box> implements BoxConstru
 const Box: BoxConstructor = new BoxConstructorClass();
 
 class BoxClass extends PgTPBase<Box> implements Box {
-	constructor(private _x1: number, private _y1: number, private _x2: number, private _y2: number) {
+	constructor(
+		private _x1: number,
+		private _y1: number,
+		private _x2: number,
+		private _y2: number
+	) {
 		super();
 	}
 
@@ -209,8 +214,8 @@ class BoxClass extends PgTPBase<Box> implements Box {
 		const parsed = Box.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -224,8 +229,8 @@ class BoxClass extends PgTPBase<Box> implements Box {
 	toJSON(): BoxObject {
 		return {
 			x1: this._x1,
-			y1: this._y1,
 			x2: this._x2,
+			y1: this._y1,
 			y2: this._y2,
 		};
 	}

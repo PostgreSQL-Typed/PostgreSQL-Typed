@@ -25,7 +25,7 @@ export type PgTPathType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Path" ? Path : string,
-	TDriverParameter = Path
+	TDriverParameter = Path,
 > = PgTPath<{
 	tableName: TTableName;
 	name: TName;

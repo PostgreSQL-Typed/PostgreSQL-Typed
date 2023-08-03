@@ -9,17 +9,17 @@ import { defineTimestampMultiRange } from "./TimestampMultiRange";
 describe("defineTimestampMultiRange", async () => {
 	test('defineTimestampMultiRange({ mode: "TimestampMultiRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestampmultirange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestampmultirange", {
-				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "TimestampMultiRange" }).notNull(),
 				_timestampmultirange: defineTimestampMultiRange("_timestampmultirange", { mode: "TimestampMultiRange" }).array().notNull(),
+				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "TimestampMultiRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -45,9 +45,6 @@ describe("defineTimestampMultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestampmultirange: TimestampMultiRange.from(
-					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
-				),
 				_timestampmultirange: [
 					TimestampMultiRange.from(
 						"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
@@ -56,6 +53,9 @@ describe("defineTimestampMultiRange", async () => {
 						"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}"
 					),
 				],
+				timestampmultirange: TimestampMultiRange.from(
+					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}"
+				),
 			})
 			.returning();
 
@@ -121,17 +121,17 @@ describe("defineTimestampMultiRange", async () => {
 
 	test('defineTimestampMultiRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestampmultirangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestampmultirangestring", {
-				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "string" }).notNull(),
 				_timestampmultirange: defineTimestampMultiRange("_timestampmultirange", { mode: "string" }).array().notNull(),
+				timestampmultirange: defineTimestampMultiRange("timestampmultirange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -157,12 +157,12 @@ describe("defineTimestampMultiRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestampmultirange:
-					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}",
 				_timestampmultirange: [
 					"{[2027-01-01T00:00:00Z,2028-01-01T00:00:00Z),[2029-01-01T00:00:00Z,2030-01-01T00:00:00Z),[2031-01-01T00:00:00Z,2032-01-01T00:00:00Z)}",
 					"{[2033-01-01T00:00:00Z,2034-01-01T00:00:00Z),[2035-01-01T00:00:00Z,2036-01-01T00:00:00Z),[2037-01-01T00:00:00Z,2038-01-01T00:00:00Z)}",
 				],
+				timestampmultirange:
+					"{[2021-01-01T00:00:00Z,2022-01-01T00:00:00Z),[2023-01-01T00:00:00Z,2024-01-01T00:00:00Z),[2025-01-01T00:00:00Z,2026-01-01T00:00:00Z)}",
 			})
 			.returning();
 

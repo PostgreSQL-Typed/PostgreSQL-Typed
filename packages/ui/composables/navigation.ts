@@ -1,12 +1,12 @@
 import { databases, findById } from "./data";
 
-export interface Params {
+export interface NavigationParameters {
 	database: string | undefined;
 	table: string | undefined;
 	view: undefined | "graph" | "diagram" | "editor";
 }
 
-export const params = useUrlSearchParams<Params>("hash-params", {
+export const navigationParameters = useUrlSearchParams<NavigationParameters>("hash-params", {
 	initialValue: {
 		database: undefined,
 		table: undefined,
@@ -14,9 +14,9 @@ export const params = useUrlSearchParams<Params>("hash-params", {
 	},
 });
 
-export const activeDatabase = toRef(params, "database");
-export const activeTableId = toRef(params, "table");
-export const viewMode = toRef(params, "view");
+export const activeDatabase = toRef(navigationParameters, "database");
+export const activeTableId = toRef(navigationParameters, "table");
+export const viewMode = toRef(navigationParameters, "view");
 
 export const dashboardVisible = ref(true);
 

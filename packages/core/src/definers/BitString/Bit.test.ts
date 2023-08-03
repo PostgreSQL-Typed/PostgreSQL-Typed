@@ -9,17 +9,17 @@ import { defineBit } from "./Bit";
 describe("defineBit", async () => {
 	test('defineBit({ mode: "Bit" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "bit.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("bit", {
-				bit: defineBit("bit", { mode: "Bit" }).notNull(),
 				_bit: defineBit("_bit", { mode: "Bit" }).array().notNull(),
+				bit: defineBit("bit", { mode: "Bit" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineBit", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bit: Bit.from(1),
 				_bit: [Bit.from(1), Bit.from(0)],
+				bit: Bit.from(1),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineBit", async () => {
 
 	test('defineBit({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "bitstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("bitstring", {
-				bit: defineBit("bit", { mode: "string" }).notNull(),
 				_bit: defineBit("_bit", { mode: "string" }).array().notNull(),
+				bit: defineBit("bit", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineBit", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bit: "1",
 				_bit: ["1", "0"],
+				bit: "1",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineBit", async () => {
 
 	test('defineBit({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "bitnumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("bitnumber", {
-				bit: defineBit("bit", { mode: "number" }).notNull(),
 				_bit: defineBit("_bit", { mode: "number" }).array().notNull(),
+				bit: defineBit("bit", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineBit", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				bit: 1,
 				_bit: [1, 0],
+				bit: 1,
 			})
 			.returning();
 
@@ -227,18 +227,18 @@ describe("defineBit", async () => {
 
 	test("defineBit({ length: 3 })", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "bitlength.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("bitlength", {
-				bit1: defineBit("bit1", { mode: "Bit", length: 3 }).notNull(),
-				bit2: defineBit("bit2", { mode: "string", length: 3 }).notNull(),
-				bit3: defineBit("bit3", { mode: "number", length: 3 }).notNull(),
+				bit1: defineBit("bit1", { length: 3, mode: "Bit" }).notNull(),
+				bit2: defineBit("bit2", { length: 3, mode: "string" }).notNull(),
+				bit3: defineBit("bit3", { length: 3, mode: "number" }).notNull(),
 			});
 
 		await database.connect();

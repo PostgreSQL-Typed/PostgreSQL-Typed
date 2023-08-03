@@ -82,17 +82,17 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -171,8 +171,8 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE ((x,y),...) || [(x,y),...]",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -181,10 +181,10 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 		if (argument.length === 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "array",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: argument.length,
+				type: "array",
 			});
 			return INVALID;
 		}
@@ -212,10 +212,10 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 			if (otherArguments.length > 0) {
 				this.setIssueForContext(context, {
 					code: "too_big",
-					type: "arguments",
-					maximum: 1,
 					exact: true,
+					maximum: 1,
 					received: otherArguments.length,
+					type: "arguments",
 				});
 				return INVALID;
 			}
@@ -245,10 +245,10 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 		if (otherArguments.length > 0) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				received: otherArguments.length,
+				type: "arguments",
 			});
 			return INVALID;
 		}
@@ -293,10 +293,10 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 		if (parsedPoints.length === 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "array",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: parsedPoints.length,
+				type: "array",
 			});
 			return INVALID;
 		}
@@ -327,7 +327,10 @@ class PathConstructorClass extends PgTPConstructorBase<Path> implements PathCons
 const Path: PathConstructor = new PathConstructorClass();
 
 class PathClass extends PgTPBase<Path> implements Path {
-	constructor(private _points: Point[], private _connection: Connection | ConnectionType) {
+	constructor(
+		private _points: Point[],
+		private _connection: Connection | ConnectionType
+	) {
 		super();
 	}
 
@@ -336,8 +339,8 @@ class PathClass extends PgTPBase<Path> implements Path {
 		const parsed = Path.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -350,8 +353,8 @@ class PathClass extends PgTPBase<Path> implements Path {
 
 	toJSON(): RawPathObject {
 		return {
-			points: this._points.map(p => p.toJSON()),
 			connection: this._connection,
+			points: this._points.map(p => p.toJSON()),
 		};
 	}
 
@@ -372,10 +375,10 @@ class PathClass extends PgTPBase<Path> implements Path {
 		if (points.length === 0) {
 			throwPgTPError({
 				code: "too_small",
-				type: "array",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: points.length,
+				type: "array",
 			});
 		}
 

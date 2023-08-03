@@ -11,7 +11,7 @@ import { Box, isBox } from "./Box.js";
 describe("BoxConstructor", () => {
 	test("_parse(...)", () => {
 		expect(Box.safeFrom("(1,2),(3,4)").success).toBe(true);
-		expect(Box.safeFrom({ x1: 1, y1: 2, x2: 3, y2: 4 }).success).toBe(true);
+		expect(Box.safeFrom({ x1: 1, x2: 3, y1: 2, y2: 4 }).success).toBe(true);
 		expect(Box.safeFrom(1, 2, 3, 4).success).toBe(true);
 		expect(Box.safeFrom(Box.from("(1,2),(3,4)")).success).toBe(true);
 
@@ -26,18 +26,18 @@ describe("BoxConstructor", () => {
 		expect(() =>
 			Box.from({
 				x1: 1,
-				y1: 2,
 				x2: 3,
+				y1: 2,
 				y2: "a",
 			} as any)
 		).toThrowError("Expected 'number' for key 'y2', received 'string'");
 		expect(() =>
 			Box.from({
 				x1: 1,
-				y1: 2,
 				x2: 3,
-				y2: 4,
 				x3: 5,
+				y1: 2,
+				y2: 4,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'x3'");
 		expect(() => Box.from(1, 2, 3, "a" as any)).toThrowError("Expected 'number', received 'string'");
@@ -48,43 +48,43 @@ describe("BoxConstructor", () => {
 	});
 
 	test("isBox(...)", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(Box.isBox(box)).toBe(true);
-		expect(Box.isBox({ x1: 1, y1: 2, x2: 3, y2: 4 })).toBe(false);
+		expect(Box.isBox({ x1: 1, x2: 3, y1: 2, y2: 4 })).toBe(false);
 	});
 });
 
 describe("Box", () => {
 	test("_equals(...)", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 }))).toBe(true);
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 5 }))).toBe(false);
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 }).toJSON())).toBe(true);
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 5 }).toJSON())).toBe(false);
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 }).toString())).toBe(true);
-		expect(box.equals(Box.from({ x1: 1, y1: 2, x2: 3, y2: 5 }).toString())).toBe(false);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 }))).toBe(true);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 5 }))).toBe(false);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 }).toJSON())).toBe(true);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 5 }).toJSON())).toBe(false);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 }).toString())).toBe(true);
+		expect(box.equals(Box.from({ x1: 1, x2: 3, y1: 2, y2: 5 }).toString())).toBe(false);
 		//@ts-expect-error - this is a test
 		expect(() => box.equals(BigInt(1))).toThrowError("Expected 'number' | 'string' | 'object', received 'bigint'");
 	});
 
 	test("toString()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(box.toString()).toBe("(1,2),(3,4)");
 	});
 
 	test("toJSON()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
-		expect(box.toJSON()).toEqual({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
+		expect(box.toJSON()).toEqual({ x1: 1, x2: 3, y1: 2, y2: 4 });
 	});
 
 	test("get x1()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(box.x1).toBe(1);
 	});
 
 	test("set x1(...)", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(() => {
 			box.x1 = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -93,12 +93,12 @@ describe("Box", () => {
 	});
 
 	test("get y1()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(box.y1).toBe(2);
 	});
 
 	test("set y1()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(() => {
 			box.y1 = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -107,12 +107,12 @@ describe("Box", () => {
 	});
 
 	test("get x2()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(box.x2).toBe(3);
 	});
 
 	test("set x2()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(() => {
 			box.x2 = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -121,12 +121,12 @@ describe("Box", () => {
 	});
 
 	test("get y2()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(box.y2).toBe(4);
 	});
 
 	test("set y2()", () => {
-		const box = Box.from({ x1: 1, y1: 2, x2: 3, y2: 4 });
+		const box = Box.from({ x1: 1, x2: 3, y1: 2, y2: 4 });
 		expect(() => {
 			box.y2 = "a" as any;
 		}).toThrowError("Expected 'number', received 'string'");
@@ -200,12 +200,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "box.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();
@@ -245,10 +245,10 @@ describe("PostgreSQL", () => {
 			result.rows[0].box = parser<Box>(Box)(result.rows[0].box);
 			result.rows[0]._box = arrayParser<Box>(Box, ";")(result.rows[0]._box);
 
-			expect(result.rows[0].box.toString()).toStrictEqual(Box.from({ x1: 3, y1: 4, x2: 1, y2: 2 }).toString());
+			expect(result.rows[0].box.toString()).toStrictEqual(Box.from({ x1: 3, x2: 1, y1: 4, y2: 2 }).toString());
 			expect(result.rows[0]._box).toHaveLength(2);
-			expect(result.rows[0]._box[0].toString()).toStrictEqual(Box.from({ x1: 3.3, y1: 4.4, x2: 1.1, y2: 2.2 }).toString());
-			expect(result.rows[0]._box[1].toString()).toStrictEqual(Box.from({ x1: 7.7, y1: 8.8, x2: 5.5, y2: 6.6 }).toString());
+			expect(result.rows[0]._box[0].toString()).toStrictEqual(Box.from({ x1: 3.3, x2: 1.1, y1: 4.4, y2: 2.2 }).toString());
+			expect(result.rows[0]._box[1].toString()).toStrictEqual(Box.from({ x1: 7.7, x2: 5.5, y1: 8.8, y2: 6.6 }).toString());
 		} catch (error_) {
 			error = error_;
 			// eslint-disable-next-line no-console

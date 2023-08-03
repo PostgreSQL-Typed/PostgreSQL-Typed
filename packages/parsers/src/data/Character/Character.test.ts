@@ -58,8 +58,8 @@ describe("CharacterConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
-				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -69,10 +69,10 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				maximum: 1,
-				received: 3,
-				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
 				input: "abc",
+				maximum: 1,
+				message: "Invalid 'n' length: 3, 'n' must be less than or equal to 1",
+				received: 3,
 			});
 		}
 
@@ -83,11 +83,11 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -98,17 +98,17 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Character.safeFrom({
-			value: "a",
 			unrecognized: true,
+			value: "a",
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -141,10 +141,10 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 
@@ -154,10 +154,10 @@ describe("CharacterConstructor", () => {
 		else {
 			expect(invalidCharLength.error.issue).toStrictEqual({
 				code: "invalid_n_length",
-				maximum: 1,
-				received: 2,
-				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
 				input: "a ",
+				maximum: 1,
+				message: "Invalid 'n' length: 2, 'n' must be less than or equal to 1",
+				received: 2,
 			});
 		}
 		//#endregion
@@ -262,8 +262,8 @@ describe("Character", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object"],
-				received: "boolean",
 				message: "Expected 'string' | 'object', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -338,12 +338,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Character", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "char.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

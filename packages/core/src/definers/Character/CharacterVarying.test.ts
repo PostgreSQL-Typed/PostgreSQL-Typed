@@ -9,17 +9,17 @@ import { defineCharacterVarying } from "./CharacterVarying";
 describe("defineCharacterVarying", async () => {
 	test('defineCharacterVarying({ mode: "CharacterVarying" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "charactervarying.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("charactervarying", {
-				charactervarying: defineCharacterVarying("charactervarying", { mode: "CharacterVarying" }).notNull(),
 				_charactervarying: defineCharacterVarying("_charactervarying", { mode: "CharacterVarying" }).array().notNull(),
+				charactervarying: defineCharacterVarying("charactervarying", { mode: "CharacterVarying" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineCharacterVarying", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				charactervarying: CharacterVarying.from("a"),
 				_charactervarying: [CharacterVarying.from("a"), CharacterVarying.from("b")],
+				charactervarying: CharacterVarying.from("a"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineCharacterVarying", async () => {
 
 	test('defineCharacterVarying({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "charactervaryingstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("charactervaryingstring", {
-				charactervarying: defineCharacterVarying("charactervarying", { mode: "string" }).notNull(),
 				_charactervarying: defineCharacterVarying("_charactervarying", { mode: "string" }).array().notNull(),
+				charactervarying: defineCharacterVarying("charactervarying", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineCharacterVarying", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				charactervarying: "a",
 				_charactervarying: ["a", "b"],
+				charactervarying: "a",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineCharacterVarying", async () => {
 
 	test("defineCharacterVarying({ length: 3 })", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "charactervaryinglength.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("charactervaryinglength", {
-				charactervarying1: defineCharacterVarying("charactervarying1", { mode: "CharacterVarying", length: 3 }).notNull(),
-				charactervarying2: defineCharacterVarying("charactervarying2", { mode: "string", length: 3 }).notNull(),
+				charactervarying1: defineCharacterVarying("charactervarying1", { length: 3, mode: "CharacterVarying" }).notNull(),
+				charactervarying2: defineCharacterVarying("charactervarying2", { length: 3, mode: "string" }).notNull(),
 			});
 
 		await database.connect();

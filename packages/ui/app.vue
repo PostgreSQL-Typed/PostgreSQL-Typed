@@ -1,26 +1,23 @@
 <script lang="ts" setup>
 	import { Pane, Splitpanes } from "splitpanes";
-	import { dashboardVisible } from "@/composables/navigation";
+
 	import { fetchData } from "@/composables/data";
+	import { dashboardVisible } from "@/composables/navigation";
 
 	onMounted(async () => {
 		fetchData();
 	});
 
-	const mainSizes = reactive([33, 67]);
-
-	const onMainResized = useDebounceFn((event: { size: number }[]) => {
-		event.forEach((e, i) => {
-			mainSizes[i] = e.size;
-		});
-	}, 0);
-
-	const resizeMain = () => {
-		const width = window.innerWidth;
-		const panelWidth = Math.min(width / 3, 450);
-		mainSizes[0] = (100 * panelWidth) / width;
-		mainSizes[1] = 100 - mainSizes[0];
-	};
+	const mainSizes = reactive([33, 67]),
+		onMainResized = useDebounceFn((event: { size: number }[]) => {
+			for (const [index, event_] of event.entries()) mainSizes[index] = event_.size;
+		}, 0),
+		resizeMain = () => {
+			const width = window.innerWidth,
+				panelWidth = Math.min(width / 3, 450);
+			mainSizes[0] = (100 * panelWidth) / width;
+			mainSizes[1] = 100 - mainSizes[0];
+		};
 </script>
 
 <template>

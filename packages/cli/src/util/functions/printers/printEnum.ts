@@ -9,7 +9,7 @@ export function printEnum(type: EnumDataType, printer: Printer, file: FileContex
 		type: "named",
 	});
 	return `defineEnum("%ATTRIBUTE%", { mode: "%MODE%", enumName: "${type.type_name}", enumValues: Object.keys(${file.getImport(
-		printer.context.pushValueDeclaration({ type: "enum", name: type.type_name, databaseName: type.database_name }, identifierName => [
+		printer.context.pushValueDeclaration({ databaseName: type.database_name, name: type.type_name, type: "enum" }, identifierName => [
 			`const ${identifierName} = {`,
 			...type.values.map(value => `  ${value}: "${value}",`),
 			"};",

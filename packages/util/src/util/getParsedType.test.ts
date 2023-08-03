@@ -92,14 +92,15 @@ describe("getParsedType", () => {
 describe("ParsedType", () => {
 	it("should be an enum", () => {
 		expect(ParsedType).toEqual({
+			Buffer: "Buffer",
 			array: "array",
-			bigint: "bigint",
 			bigNumber: "bigNumber",
+			bigint: "bigint",
 			boolean: "boolean",
+			function: "function",
 			"globalThis.Date": "globalThis.Date",
 			infinity: "infinity",
 			"luxon.DateTime": "luxon.DateTime",
-			function: "function",
 			map: "map",
 			nan: "nan",
 			null: "null",
@@ -111,7 +112,6 @@ describe("ParsedType", () => {
 			symbol: "symbol",
 			undefined: "undefined",
 			unknown: "unknown",
-			Buffer: "Buffer",
 		});
 	});
 

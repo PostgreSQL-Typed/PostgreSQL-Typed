@@ -9,17 +9,17 @@ import { definePath } from "./Path";
 describe("definePath", async () => {
 	test('definePath({ mode: "Path" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "path.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("path", {
-				path: definePath("path", { mode: "Path" }).notNull(),
 				_path: definePath("_path", { mode: "Path" }).array().notNull(),
+				path: definePath("path", { mode: "Path" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("definePath", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				path: Path.from("((1,2),(3,4))"),
 				_path: [Path.from("((1,2),(3,4))"), Path.from("((1,2),(4,5))")],
+				path: Path.from("((1,2),(3,4))"),
 			})
 			.returning();
 
@@ -79,17 +79,17 @@ describe("definePath", async () => {
 
 	test('definePath({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "pathstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("pathstring", {
-				path: definePath("path", { mode: "string" }).notNull(),
 				_path: definePath("_path", { mode: "string" }).array().notNull(),
+				path: definePath("path", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -104,8 +104,8 @@ describe("definePath", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				path: "((1,2),(3,4))",
 				_path: ["((1,2),(3,4))", "((1,2),(4,5))"],
+				path: "((1,2),(3,4))",
 			})
 			.returning();
 

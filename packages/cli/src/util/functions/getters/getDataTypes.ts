@@ -40,14 +40,14 @@ export async function getDataTypes(client: Client, schemaNames: string[]) {
 	return Promise.all(
 		typeRecords.map(async (tr): Promise<DataType> => {
 			const base: DataTypeBase = {
+				category: tr.category,
+				comment: tr.comment,
 				database_name: tr.database_name,
+				kind: tr.kind,
 				schema_id: tr.schema_id,
 				schema_name: tr.schema_name,
 				type_id: tr.type_id,
 				type_name: tr.type_name,
-				kind: tr.kind,
-				category: tr.category,
-				comment: tr.comment,
 			};
 			switch (base.kind) {
 				case DataTypeKind.Array:
@@ -71,19 +71,19 @@ export async function getDataTypes(client: Client, schemaNames: string[]) {
 				case DataTypeKind.Composite:
 					return {
 						...base,
-						kind: DataTypeKind.Composite,
-						class_id: tr.class_id!,
 						attributes: await getAttributes(client, {
 							class_id: tr.class_id,
 							database_name: tr.database_name,
 						}),
+						class_id: tr.class_id!,
+						kind: DataTypeKind.Composite,
 					};
 				case DataTypeKind.Domain:
 					return {
 						...base,
-						kind: DataTypeKind.Domain,
 						base_type_id: tr.base_type_id!,
 						base_type_name: tr.base_type_name!,
+						kind: DataTypeKind.Domain,
 					};
 				case DataTypeKind.Enum: {
 					const enumValues = await getEnumValues(client, tr.type_id);

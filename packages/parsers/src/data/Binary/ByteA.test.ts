@@ -29,8 +29,8 @@ describe("ByteAConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object", "Buffer"],
-				received: "boolean",
 				message: "Expected 'string' | 'object' | 'Buffer', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -41,11 +41,11 @@ describe("ByteAConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -56,17 +56,17 @@ describe("ByteAConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = ByteA.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -99,10 +99,10 @@ describe("ByteAConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "Buffer",
-				received: "number",
 				message: "Expected 'Buffer' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 		//#endregion
@@ -181,8 +181,8 @@ describe("ByteA", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["string", "object", "Buffer"],
-				received: "boolean",
 				message: "Expected 'string' | 'object' | 'Buffer', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -258,12 +258,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a ByteA", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "bytea.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

@@ -9,17 +9,17 @@ import { defineText } from "./Text";
 describe("defineText", async () => {
 	test('defineText({ mode: "Text" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "text.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("text", {
-				text: defineText("text", { mode: "Text" }).notNull(),
 				_text: defineText("_text", { mode: "Text" }).array().notNull(),
+				text: defineText("text", { mode: "Text" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineText", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				text: Text.from("a"),
 				_text: [Text.from("a"), Text.from("b")],
+				text: Text.from("a"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineText", async () => {
 
 	test('defineText({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "textstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("textstring", {
-				text: defineText("text", { mode: "string" }).notNull(),
 				_text: defineText("_text", { mode: "string" }).array().notNull(),
+				text: defineText("text", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineText", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				text: "a",
 				_text: ["a", "b"],
+				text: "a",
 			})
 			.returning();
 

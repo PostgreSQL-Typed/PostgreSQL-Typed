@@ -74,6 +74,7 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	connections: {
 		$default: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable",
 	},
+	files: filesSchema,
 	schemas: {
 		$default: "*",
 		$resolve: value =>
@@ -96,6 +97,5 @@ const schema: SchemaDefinition = defineUntypedSchema({
 					: "*"
 				: "*",
 	},
-	files: filesSchema,
 });
 export default schema;

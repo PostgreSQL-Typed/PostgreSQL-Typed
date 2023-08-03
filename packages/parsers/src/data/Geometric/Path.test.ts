@@ -14,6 +14,7 @@ describe("PathConstructor", () => {
 		expect(Path.safeFrom("[(1,2),(3,4)]").success).toBe(true);
 		expect(
 			Path.safeFrom({
+				connection: "open",
 				points: [
 					{
 						x: 1,
@@ -24,13 +25,12 @@ describe("PathConstructor", () => {
 						y: 4,
 					},
 				],
-				connection: "open",
 			}).success
 		).toBe(true);
 		expect(
 			Path.safeFrom({
-				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				connection: "open",
+				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			}).success
 		).toBe(true);
 		expect(Path.safeFrom(Point.from("(1,2)"), Point.from("(3,4)")).success).toBe(true);
@@ -46,9 +46,9 @@ describe("PathConstructor", () => {
 		expect(() =>
 			Path.from(
 				{
+					connection: "open",
 					//@ts-expect-error - this is a test
 					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
-					connection: "open",
 				},
 				"b"
 			)
@@ -57,19 +57,19 @@ describe("PathConstructor", () => {
 		expect(() => Path.from(BigInt("1"))).toThrowError("Expected 'string' | 'object' | 'array', received 'bigint'");
 		expect(() => Path.from("()")).toThrowError("Expected 'LIKE ((x,y),...) || [(x,y),...]', received '()'");
 		expect(() => Path.from({} as any)).toThrowError("Missing keys in object: 'points', 'connection'");
-		expect(() => Path.from({ points: BigInt(1), connection: "" } as any)).toThrowError("Expected 'array' for key 'points', received 'bigint'");
-		expect(() => Path.from({ points: [], connection: "", extra: "" } as any)).toThrowError("Unrecognized key in object: 'extra'");
-		expect(() => Path.from({ points: [], connection: "open" })).toThrowError("Array must contain at least 1 element(s)");
+		expect(() => Path.from({ connection: "", points: BigInt(1) } as any)).toThrowError("Expected 'array' for key 'points', received 'bigint'");
+		expect(() => Path.from({ connection: "", extra: "", points: [] } as any)).toThrowError("Unrecognized key in object: 'extra'");
+		expect(() => Path.from({ connection: "open", points: [] })).toThrowError("Array must contain at least 1 element(s)");
 		expect(() =>
 			Path.from({
-				points: [Point.from("(1,2)"), "brr"],
 				connection: "open",
+				points: [Point.from("(1,2)"), "brr"],
 			} as any)
 		).toThrowError("Expected 'LIKE (x,y)', received 'brr'");
 		expect(() =>
 			Path.from({
-				points: [Point.from("(1,2)"), Point.from("(3,4)")],
 				connection: "brr",
+				points: [Point.from("(1,2)"), Point.from("(3,4)")],
 			} as any)
 		).toThrowError("Expected 'open' | 'closed', received 'brr'");
 		expect(() => Path.from([])).toThrowError("Array must contain at least 1 element(s)");
@@ -79,14 +79,14 @@ describe("PathConstructor", () => {
 
 	test("isPath(...)", () => {
 		const path = Path.from({
-			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			connection: "open",
+			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 		});
 		expect(Path.isPath(path)).toBe(true);
 		expect(
 			Path.isPath({
-				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				connection: "open",
+				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			})
 		).toBe(false);
 	});
@@ -95,55 +95,55 @@ describe("PathConstructor", () => {
 describe("Path", () => {
 	test("_equals(...)", () => {
 		const path = Path.from({
-			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			connection: "open",
+			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 		});
 
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				})
 			)
 		).toBe(true);
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 				})
 			)
 		).toBe(false);
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				}).toJSON()
 			)
 		).toBe(true);
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 				}).toJSON()
 			)
 		).toBe(false);
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				}).toString()
 			)
 		).toBe(true);
 		expect(
 			path.equals(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 					connection: "open",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 5, y: 6 })],
 				}).toString()
 			)
 		).toBe(false);
@@ -154,24 +154,25 @@ describe("Path", () => {
 	test("toString()", () => {
 		expect(
 			Path.from({
-				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				connection: "closed",
+				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			}).toString()
 		).toBe("((1,2),(3,4))");
 		expect(
 			Path.from({
-				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				connection: "open",
+				points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			}).toString()
 		).toBe("[(1,2),(3,4)]");
 	});
 
 	test("toJSON()", () => {
 		const path = Path.from({
-			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 			connection: "open",
+			points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 		});
 		expect(path.toJSON()).toEqual({
+			connection: "open",
 			points: [
 				{
 					x: 1,
@@ -182,7 +183,6 @@ describe("Path", () => {
 					y: 4,
 				},
 			],
-			connection: "open",
 		});
 	});
 
@@ -282,12 +282,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "path.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();
@@ -329,21 +329,21 @@ describe("PostgreSQL", () => {
 
 			expect(result.rows[0].path.toString()).toStrictEqual(
 				Path.from({
-					points: [Point.from({ x: 1.1, y: 2.2 }), Point.from({ x: 3.3, y: 4.4 })],
 					connection: "closed",
+					points: [Point.from({ x: 1.1, y: 2.2 }), Point.from({ x: 3.3, y: 4.4 })],
 				}).toString()
 			);
 			expect(result.rows[0]._path).toHaveLength(2);
 			expect(result.rows[0]._path[0].toString()).toStrictEqual(
 				Path.from({
-					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 					connection: "closed",
+					points: [Point.from({ x: 1, y: 2 }), Point.from({ x: 3, y: 4 })],
 				}).toString()
 			);
 			expect(result.rows[0]._path[1].toString()).toStrictEqual(
 				Path.from({
-					points: [Point.from({ x: 5.5, y: 6.6 }), Point.from({ x: 7.7, y: 8.8 })],
 					connection: "open",
+					points: [Point.from({ x: 5.5, y: 6.6 }), Point.from({ x: 7.7, y: 8.8 })],
 				}).toString()
 			);
 		} catch (error_) {

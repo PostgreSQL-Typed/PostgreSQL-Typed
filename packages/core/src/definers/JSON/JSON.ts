@@ -32,7 +32,7 @@ export type PgTJSONType<
 		: TMode extends "value"
 		? Record<string, unknown> | unknown[] | string | number | boolean | null
 		: JSON,
-	TDriverParameter = JSON
+	TDriverParameter = JSON,
 > = PgTJSON<{
 	tableName: TTableName;
 	name: TName;

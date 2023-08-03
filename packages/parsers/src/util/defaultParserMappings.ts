@@ -49,343 +49,345 @@ import { serializer } from "./serializer.js";
 
 export const defaultParserMappings = {
 	[OID.bytea]: {
-		serialize: serializer<ByteA>(ByteA),
 		parse: parser<ByteA>(ByteA),
+		serialize: serializer<ByteA>(ByteA),
 	},
 	[OID._bytea]: {
-		serialize: arraySerializer<ByteA>(ByteA, undefined, "\\"),
 		parse: arrayParser<ByteA>(ByteA, undefined, "\\"),
+		serialize: arraySerializer<ByteA>(ByteA, undefined, "\\"),
 	},
 	[OID.bit]: {
-		serialize: serializer<Bit<number>>(Bit),
 		parse: parser<Bit<number>>(Bit),
+		serialize: serializer<Bit<number>>(Bit),
 	},
 	[OID._bit]: {
-		serialize: arraySerializer<Bit<number>>(Bit, ","),
 		parse: arrayParser<Bit<number>>(Bit, ","),
+		serialize: arraySerializer<Bit<number>>(Bit, ","),
 	},
 	[OID.varbit]: {
-		serialize: serializer<BitVarying<number>>(BitVarying),
 		parse: parser<BitVarying<number>>(BitVarying),
+		serialize: serializer<BitVarying<number>>(BitVarying),
 	},
 	[OID._varbit]: {
-		serialize: arraySerializer<BitVarying<number>>(BitVarying, ","),
 		parse: arrayParser<BitVarying<number>>(BitVarying, ","),
+		serialize: arraySerializer<BitVarying<number>>(BitVarying, ","),
 	},
 	[OID.bool]: {
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		serialize: serializer<Boolean>(Boolean),
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		parse: parser<Boolean>(Boolean),
+
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		serialize: serializer<Boolean>(Boolean),
 	},
 	[OID._bool]: {
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		serialize: arraySerializer<Boolean>(Boolean, ","),
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		parse: arrayParser<Boolean>(Boolean, ","),
+
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		serialize: arraySerializer<Boolean>(Boolean, ","),
 	},
 	[OID.char]: {
-		serialize: serializer<Character<number>>(Character),
 		parse: parser<Character<number>>(Character),
+		serialize: serializer<Character<number>>(Character),
 	},
 	[OID._char]: {
-		serialize: arraySerializer<Character<number>>(Character, ","),
 		parse: arrayParser<Character<number>>(Character, ","),
+		serialize: arraySerializer<Character<number>>(Character, ","),
 	},
 	[OID.bpchar]: {
-		serialize: serializer<Character<number>>(Character),
 		parse: parser<Character<number>>(Character),
+		serialize: serializer<Character<number>>(Character),
 	},
 	[OID._bpchar]: {
-		serialize: arraySerializer<Character<number>>(Character, ","),
 		parse: arrayParser<Character<number>>(Character, ","),
+		serialize: arraySerializer<Character<number>>(Character, ","),
 	},
 	[OID.varchar]: {
-		serialize: serializer<CharacterVarying<number>>(CharacterVarying),
 		parse: parser<CharacterVarying<number>>(CharacterVarying),
+		serialize: serializer<CharacterVarying<number>>(CharacterVarying),
 	},
 	[OID._varchar]: {
-		serialize: arraySerializer<CharacterVarying<number>>(CharacterVarying, ","),
 		parse: arrayParser<CharacterVarying<number>>(CharacterVarying, ","),
+		serialize: arraySerializer<CharacterVarying<number>>(CharacterVarying, ","),
 	},
 	[OID.name]: {
-		serialize: serializer<Name>(Name),
 		parse: parser<Name>(Name),
+		serialize: serializer<Name>(Name),
 	},
 	[OID._name]: {
-		serialize: arraySerializer<Name>(Name, ","),
 		parse: arrayParser<Name>(Name, ","),
+		serialize: arraySerializer<Name>(Name, ","),
 	},
 	[OID.text]: {
-		serialize: serializer<Text>(Text),
 		parse: parser<Text>(Text),
+		serialize: serializer<Text>(Text),
 	},
 	[OID._text]: {
-		serialize: arraySerializer<Text>(Text, ","),
 		parse: arrayParser<Text>(Text, ","),
+		serialize: arraySerializer<Text>(Text, ","),
 	},
 	[OID.date]: {
-		serialize: serializer<Date>(Date),
 		parse: parser<Date>(Date),
+		serialize: serializer<Date>(Date),
 	},
 	[OID._date]: {
-		serialize: arraySerializer<Date>(Date, ","),
 		parse: arrayParser<Date>(Date, ","),
+		serialize: arraySerializer<Date>(Date, ","),
 	},
 	[OID.datemultirange]: {
-		serialize: serializer<DateMultiRange>(DateMultiRange),
 		parse: parser<DateMultiRange>(DateMultiRange),
+		serialize: serializer<DateMultiRange>(DateMultiRange),
 	},
 	[OID._datemultirange]: {
-		serialize: arraySerializer<DateMultiRange>(DateMultiRange),
 		parse: arrayParser<DateMultiRange>(DateMultiRange),
+		serialize: arraySerializer<DateMultiRange>(DateMultiRange),
 	},
 	[OID.daterange]: {
-		serialize: serializer<DateRange>(DateRange),
 		parse: parser<DateRange>(DateRange),
+		serialize: serializer<DateRange>(DateRange),
 	},
 	[OID._daterange]: {
-		serialize: arraySerializer<DateRange>(DateRange),
 		parse: arrayParser<DateRange>(DateRange),
+		serialize: arraySerializer<DateRange>(DateRange),
 	},
 	[OID.interval]: {
-		serialize: serializer<Interval>(Interval),
 		parse: parser<Interval>(Interval),
+		serialize: serializer<Interval>(Interval),
 	},
 	[OID._interval]: {
-		serialize: arraySerializer<Interval>(Interval),
 		parse: arrayParser<Interval>(Interval),
+		serialize: arraySerializer<Interval>(Interval),
 	},
 	[OID.time]: {
-		serialize: serializer<Time>(Time),
 		parse: parser<Time>(Time),
+		serialize: serializer<Time>(Time),
 	},
 	[OID._time]: {
-		serialize: arraySerializer<Time>(Time, ","),
 		parse: arrayParser<Time>(Time, ","),
+		serialize: arraySerializer<Time>(Time, ","),
 	},
 	[OID.timestamp]: {
-		serialize: serializer<Timestamp>(Timestamp),
 		parse: parser<Timestamp>(Timestamp),
+		serialize: serializer<Timestamp>(Timestamp),
 	},
 	[OID._timestamp]: {
-		serialize: arraySerializer<Timestamp>(Timestamp),
 		parse: arrayParser<Timestamp>(Timestamp),
+		serialize: arraySerializer<Timestamp>(Timestamp),
 	},
 	[OID.tsmultirange]: {
-		serialize: serializer<TimestampMultiRange>(TimestampMultiRange),
 		parse: parser<TimestampMultiRange>(TimestampMultiRange),
+		serialize: serializer<TimestampMultiRange>(TimestampMultiRange),
 	},
 	[OID._tsmultirange]: {
-		serialize: arraySerializer<TimestampMultiRange>(TimestampMultiRange),
 		parse: arrayParser<TimestampMultiRange>(TimestampMultiRange),
+		serialize: arraySerializer<TimestampMultiRange>(TimestampMultiRange),
 	},
 	[OID.tsrange]: {
-		serialize: serializer<TimestampRange>(TimestampRange),
 		parse: parser<TimestampRange>(TimestampRange),
+		serialize: serializer<TimestampRange>(TimestampRange),
 	},
 	[OID._tsrange]: {
-		serialize: arraySerializer<TimestampRange>(TimestampRange),
 		parse: arrayParser<TimestampRange>(TimestampRange),
+		serialize: arraySerializer<TimestampRange>(TimestampRange),
 	},
 	[OID.timestamptz]: {
-		serialize: serializer<TimestampTZ>(TimestampTZ),
 		parse: parser<TimestampTZ>(TimestampTZ),
+		serialize: serializer<TimestampTZ>(TimestampTZ),
 	},
 	[OID._timestamptz]: {
-		serialize: arraySerializer<TimestampTZ>(TimestampTZ),
 		parse: arrayParser<TimestampTZ>(TimestampTZ),
+		serialize: arraySerializer<TimestampTZ>(TimestampTZ),
 	},
 	[OID.tstzmultirange]: {
-		serialize: serializer<TimestampTZMultiRange>(TimestampTZMultiRange),
 		parse: parser<TimestampTZMultiRange>(TimestampTZMultiRange),
+		serialize: serializer<TimestampTZMultiRange>(TimestampTZMultiRange),
 	},
 	[OID._tstzmultirange]: {
-		serialize: arraySerializer<TimestampTZMultiRange>(TimestampTZMultiRange),
 		parse: arrayParser<TimestampTZMultiRange>(TimestampTZMultiRange),
+		serialize: arraySerializer<TimestampTZMultiRange>(TimestampTZMultiRange),
 	},
 	[OID.tstzrange]: {
-		serialize: serializer<TimestampTZRange>(TimestampTZRange),
 		parse: parser<TimestampTZRange>(TimestampTZRange),
+		serialize: serializer<TimestampTZRange>(TimestampTZRange),
 	},
 	[OID._tstzrange]: {
-		serialize: arraySerializer<TimestampTZRange>(TimestampTZRange),
 		parse: arrayParser<TimestampTZRange>(TimestampTZRange),
+		serialize: arraySerializer<TimestampTZRange>(TimestampTZRange),
 	},
 	[OID.timetz]: {
-		serialize: serializer<TimeTZ>(TimeTZ),
 		parse: parser<TimeTZ>(TimeTZ),
+		serialize: serializer<TimeTZ>(TimeTZ),
 	},
 	[OID._timetz]: {
-		serialize: arraySerializer<TimeTZ>(TimeTZ, ","),
 		parse: arrayParser<TimeTZ>(TimeTZ, ","),
+		serialize: arraySerializer<TimeTZ>(TimeTZ, ","),
 	},
 	[OID.box]: {
-		serialize: serializer<Box>(Box),
 		parse: parser<Box>(Box),
+		serialize: serializer<Box>(Box),
 	},
 	[OID._box]: {
-		serialize: arraySerializer<Box>(Box, ";"),
 		parse: arrayParser<Box>(Box, ";"),
+		serialize: arraySerializer<Box>(Box, ";"),
 	},
 	[OID.circle]: {
-		serialize: serializer<Circle>(Circle),
 		parse: parser<Circle>(Circle),
+		serialize: serializer<Circle>(Circle),
 	},
 	[OID._circle]: {
-		serialize: arraySerializer<Circle>(Circle),
 		parse: arrayParser<Circle>(Circle),
+		serialize: arraySerializer<Circle>(Circle),
 	},
 	[OID.line]: {
-		serialize: serializer<Line>(Line),
 		parse: parser<Line>(Line),
+		serialize: serializer<Line>(Line),
 	},
 	[OID._line]: {
-		serialize: arraySerializer<Line>(Line),
 		parse: arrayParser<Line>(Line),
+		serialize: arraySerializer<Line>(Line),
 	},
 	[OID.lseg]: {
-		serialize: serializer<LineSegment>(LineSegment),
 		parse: parser<LineSegment>(LineSegment),
+		serialize: serializer<LineSegment>(LineSegment),
 	},
 	[OID._lseg]: {
-		serialize: arraySerializer<LineSegment>(LineSegment),
 		parse: arrayParser<LineSegment>(LineSegment),
+		serialize: arraySerializer<LineSegment>(LineSegment),
 	},
 	[OID.path]: {
-		serialize: serializer<Path>(Path),
 		parse: parser<Path>(Path),
+		serialize: serializer<Path>(Path),
 	},
 	[OID._path]: {
-		serialize: arraySerializer<Path>(Path),
 		parse: arrayParser<Path>(Path),
+		serialize: arraySerializer<Path>(Path),
 	},
 	[OID.point]: {
-		serialize: serializer<Point>(Point),
 		parse: parser<Point>(Point),
+		serialize: serializer<Point>(Point),
 	},
 	[OID._point]: {
-		serialize: arraySerializer<Point>(Point),
 		parse: arrayParser<Point>(Point),
+		serialize: arraySerializer<Point>(Point),
 	},
 	[OID.polygon]: {
-		serialize: serializer<Polygon>(Polygon),
 		parse: parser<Polygon>(Polygon),
+		serialize: serializer<Polygon>(Polygon),
 	},
 	[OID._polygon]: {
-		serialize: arraySerializer<Polygon>(Polygon),
 		parse: arrayParser<Polygon>(Polygon),
+		serialize: arraySerializer<Polygon>(Polygon),
 	},
 	[OID.json]: {
-		serialize: serializer<JSON>(JSON),
 		parse: parser<JSON>(JSON),
+		serialize: serializer<JSON>(JSON),
 	},
 	[OID._json]: {
-		serialize: arraySerializer<JSON>(JSON),
 		parse: arrayParser<JSON>(JSON, ","),
+		serialize: arraySerializer<JSON>(JSON),
 	},
 	[OID.jsonb]: {
-		serialize: serializer<JSON>(JSON),
 		parse: parser<JSON>(JSON),
+		serialize: serializer<JSON>(JSON),
 	},
 	[OID._jsonb]: {
-		serialize: arraySerializer<JSON>(JSON),
 		parse: arrayParser<JSON>(JSON, ","),
+		serialize: arraySerializer<JSON>(JSON),
 	},
 	[OID.money]: {
-		serialize: serializer<Money>(Money),
 		parse: parser<Money>(Money),
+		serialize: serializer<Money>(Money),
 	},
 	[OID._money]: {
-		serialize: arraySerializer<Money>(Money, ","),
 		parse: arrayParser<Money>(Money, ","),
+		serialize: arraySerializer<Money>(Money, ","),
 	},
 	[OID.float4]: {
-		serialize: serializer<Float4>(Float4),
 		parse: parser<Float4>(Float4),
+		serialize: serializer<Float4>(Float4),
 	},
 	[OID._float4]: {
-		serialize: arraySerializer<Float4>(Float4, ","),
 		parse: arrayParser<Float4>(Float4, ","),
+		serialize: arraySerializer<Float4>(Float4, ","),
 	},
 	[OID.float8]: {
-		serialize: serializer<Float8>(Float8),
 		parse: parser<Float8>(Float8),
+		serialize: serializer<Float8>(Float8),
 	},
 	[OID._float8]: {
-		serialize: arraySerializer<Float8>(Float8, ","),
 		parse: arrayParser<Float8>(Float8, ","),
+		serialize: arraySerializer<Float8>(Float8, ","),
 	},
 	[OID.int2]: {
-		serialize: serializer<Int2>(Int2),
 		parse: parser<Int2>(Int2),
+		serialize: serializer<Int2>(Int2),
 	},
 	[OID._int2]: {
-		serialize: arraySerializer<Int2>(Int2, ","),
 		parse: arrayParser<Int2>(Int2, ","),
+		serialize: arraySerializer<Int2>(Int2, ","),
 	},
 	[OID.int4]: {
-		serialize: serializer<Int4>(Int4),
 		parse: parser<Int4>(Int4),
+		serialize: serializer<Int4>(Int4),
 	},
 	[OID._int4]: {
-		serialize: arraySerializer<Int4>(Int4, ","),
 		parse: arrayParser<Int4>(Int4, ","),
+		serialize: arraySerializer<Int4>(Int4, ","),
 	},
 	[OID.int4multirange]: {
-		serialize: serializer<Int4MultiRange>(Int4MultiRange),
 		parse: parser<Int4MultiRange>(Int4MultiRange),
+		serialize: serializer<Int4MultiRange>(Int4MultiRange),
 	},
 	[OID._int4multirange]: {
-		serialize: arraySerializer<Int4MultiRange>(Int4MultiRange),
 		parse: arrayParser<Int4MultiRange>(Int4MultiRange),
+		serialize: arraySerializer<Int4MultiRange>(Int4MultiRange),
 	},
 	[OID.int4range]: {
-		serialize: serializer<Int4Range>(Int4Range),
 		parse: parser<Int4Range>(Int4Range),
+		serialize: serializer<Int4Range>(Int4Range),
 	},
 	[OID._int4range]: {
-		serialize: arraySerializer<Int4Range>(Int4Range),
 		parse: arrayParser<Int4Range>(Int4Range),
+		serialize: arraySerializer<Int4Range>(Int4Range),
 	},
 	[OID.int8]: {
-		serialize: serializer<Int8>(Int8),
 		parse: parser<Int8>(Int8),
+		serialize: serializer<Int8>(Int8),
 	},
 	[OID._int8]: {
-		serialize: arraySerializer<Int8>(Int8, ","),
 		parse: arrayParser<Int8>(Int8, ","),
+		serialize: arraySerializer<Int8>(Int8, ","),
 	},
 	[OID.int8multirange]: {
-		serialize: serializer<Int8MultiRange>(Int8MultiRange),
 		parse: parser<Int8MultiRange>(Int8MultiRange),
+		serialize: serializer<Int8MultiRange>(Int8MultiRange),
 	},
 	[OID._int8multirange]: {
-		serialize: arraySerializer<Int8MultiRange>(Int8MultiRange),
 		parse: arrayParser<Int8MultiRange>(Int8MultiRange),
+		serialize: arraySerializer<Int8MultiRange>(Int8MultiRange),
 	},
 	[OID.int8range]: {
-		serialize: serializer<Int8Range>(Int8Range),
 		parse: parser<Int8Range>(Int8Range),
+		serialize: serializer<Int8Range>(Int8Range),
 	},
 	[OID._int8range]: {
-		serialize: arraySerializer<Int8Range>(Int8Range),
 		parse: arrayParser<Int8Range>(Int8Range),
+		serialize: arraySerializer<Int8Range>(Int8Range),
 	},
 	[OID.oid]: {
-		serialize: serializer<OIDClass>(OIDClass),
 		parse: parser<OIDClass>(OIDClass),
+		serialize: serializer<OIDClass>(OIDClass),
 	},
 	[OID._oid]: {
-		serialize: arraySerializer<OIDClass>(OIDClass, ","),
 		parse: arrayParser<OIDClass>(OIDClass, ","),
+		serialize: arraySerializer<OIDClass>(OIDClass, ","),
 	},
 	[OID.uuid]: {
-		serialize: serializer<UUID>(UUID),
 		parse: parser<UUID>(UUID),
+		serialize: serializer<UUID>(UUID),
 	},
 	[OID._uuid]: {
-		serialize: arraySerializer<UUID>(UUID, ","),
 		parse: arrayParser<UUID>(UUID, ","),
+		serialize: arraySerializer<UUID>(UUID, ","),
 	},
 };

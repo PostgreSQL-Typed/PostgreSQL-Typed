@@ -25,7 +25,7 @@ export type PgTInt4Type<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Int4" ? Int4 : TMode extends "string" ? string : number,
-	TDriverParameter = Int4
+	TDriverParameter = Int4,
 > = PgTInt4<{
 	tableName: TTableName;
 	name: TName;

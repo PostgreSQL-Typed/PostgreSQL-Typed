@@ -25,7 +25,7 @@ export type PgTIntervalType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Interval" ? Interval : string,
-	TDriverParameter = Interval
+	TDriverParameter = Interval,
 > = PgTInterval<{
 	tableName: TTableName;
 	name: TName;

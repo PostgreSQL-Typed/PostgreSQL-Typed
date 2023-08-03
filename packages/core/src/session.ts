@@ -30,8 +30,8 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 		};
 		this.query = {
 			name,
-			text: queryString,
 			rowMode: "array",
+			text: queryString,
 		};
 	}
 
@@ -160,7 +160,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 
 export class PgTSession<
 	TFullSchema extends Record<string, unknown> = Record<string, never>,
-	TSchema extends TablesRelationalConfig = Record<string, never>
+	TSchema extends TablesRelationalConfig = Record<string, never>,
 > extends PgSession<NodePgQueryResultHKT, TFullSchema, TSchema> {
 	private logger: Logger;
 	private nodePgSession: NodePgSession<TFullSchema, TSchema>;

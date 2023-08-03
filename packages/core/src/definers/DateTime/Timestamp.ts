@@ -17,7 +17,7 @@ import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
 
 export interface PgTTimestampConfig<
-	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string"
+	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
 > {
 	mode?: TMode;
 }
@@ -37,7 +37,7 @@ export type PgTTimestampType<
 		: TMode extends "unix"
 		? number
 		: string,
-	TDriverParameter = Timestamp
+	TDriverParameter = Timestamp,
 > = PgTTimestamp<{
 	tableName: TTableName;
 	name: TName;

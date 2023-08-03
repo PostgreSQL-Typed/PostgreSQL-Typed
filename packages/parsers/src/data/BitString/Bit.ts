@@ -93,10 +93,10 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (_n < 1) {
 			throwPgTPError({
 				code: "too_small",
-				type: "number",
-				minimum: 1,
 				inclusive: true,
+				minimum: 1,
 				received: _n,
+				type: "number",
 			});
 		}
 
@@ -116,17 +116,17 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -170,9 +170,9 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (argument.length > this._n) {
 			this.setIssueForContext(context, {
 				code: "invalid_n_length",
+				input: argument,
 				maximum: this._n,
 				received: argument.length,
-				input: argument,
 			});
 			return INVALID;
 		}
@@ -197,10 +197,10 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 		if (argument < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				type: "number",
-				minimum: 0,
 				exact: true,
+				minimum: 0,
 				received: argument,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -216,9 +216,9 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 			if (argument.n > this._n) {
 				this.setIssueForContext(context, {
 					code: "invalid_n_length",
+					input: argument.value,
 					maximum: this._n,
 					received: argument.n,
-					input: argument.value,
 				});
 				return INVALID;
 			}
@@ -284,7 +284,10 @@ class BitConstructorClass<N extends number> extends PgTPConstructorBase<Bit<N>> 
 const Bit: BitConstructor<1> = new BitConstructorClass(1);
 
 class BitClass<N extends number> extends PgTPBase<Bit<N>> implements Bit<N> {
-	constructor(private _bit: string, private _n: N = 1 as N) {
+	constructor(
+		private _bit: string,
+		private _n: N = 1 as N
+	) {
 		super();
 	}
 
@@ -292,8 +295,8 @@ class BitClass<N extends number> extends PgTPBase<Bit<N>> implements Bit<N> {
 		const parsed = new BitConstructorClass(this._n).safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

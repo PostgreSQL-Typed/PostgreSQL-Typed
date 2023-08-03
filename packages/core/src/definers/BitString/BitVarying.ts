@@ -26,7 +26,7 @@ export type PgTBitVaryingType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "BitVarying" ? BitVarying<number> : TMode extends "string" ? string : number,
-	TDriverParameter = BitVarying<number>
+	TDriverParameter = BitVarying<number>,
 > = PgTBitVarying<{
 	tableName: TTableName;
 	name: TName;

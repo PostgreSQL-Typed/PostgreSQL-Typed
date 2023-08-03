@@ -1,7 +1,3 @@
-import type { Ref, WritableComputedRef } from "vue";
-import { watch } from "vue";
-import CodeMirror from "codemirror";
-
 import "codemirror/addon/display/placeholder";
 import "codemirror/addon/scroll/simplescrollbars.css";
 import "codemirror/addon/scroll/simplescrollbars";
@@ -10,11 +6,16 @@ import "codemirror/mode/jsx/jsx";
 import "codemirror/mode/sql/sql";
 import "codemirror/mode/xml/xml";
 
+import CodeMirror from "codemirror";
+import type { Ref, WritableComputedRef } from "vue";
+import { watch } from "vue";
+
 export function useCodeMirror(
 	textarea: Ref<HTMLTextAreaElement | null | undefined>,
 	input: Ref<string> | WritableComputedRef<string>,
 	options: CodeMirror.EditorConfiguration = {}
 ) {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const cm = CodeMirror.fromTextArea(textarea.value!, {
 		theme: "vars",
 		...options,
@@ -37,7 +38,7 @@ export function useCodeMirror(
 			if (v !== cm.getValue()) {
 				skip = true;
 				const selections = cm.listSelections();
-				cm.replaceRange(v, cm.posFromIndex(0), cm.posFromIndex(Infinity));
+				cm.replaceRange(v, cm.posFromIndex(0), cm.posFromIndex(Number.POSITIVE_INFINITY));
 				cm.setSelections(selections);
 			}
 		},

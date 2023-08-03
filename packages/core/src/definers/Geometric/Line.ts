@@ -25,7 +25,7 @@ export type PgTLineType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Line" ? Line : string,
-	TDriverParameter = Line
+	TDriverParameter = Line,
 > = PgTLine<{
 	tableName: TTableName;
 	name: TName;

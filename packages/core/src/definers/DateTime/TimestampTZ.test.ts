@@ -10,17 +10,17 @@ import { defineTimestampTZ } from "./TimestampTZ";
 describe("defineTimestampTZ", async () => {
 	test('defineTimestampTZ({ mode: "TimestampTZ" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamptz.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamptz", {
-				timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
 				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "TimestampTZ" }).array().notNull(),
+				timestamptz: defineTimestampTZ("timestamptz", { mode: "TimestampTZ" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z"),
 				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z"), TimestampTZ.from("2023-01-01T11:11:11Z")],
+				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineTimestampTZ", async () => {
 
 	test('defineTimestampTZ({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamptzstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamptzstring", {
-				timestamptz: defineTimestampTZ("timestamptz", { mode: "string" }).notNull(),
 				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "string" }).array().notNull(),
+				timestamptz: defineTimestampTZ("timestamptz", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: "2023-01-01T00:00:00Z",
 				_timestamptz: ["2023-01-01T00:00:00Z", "2023-01-01T11:11:11Z"],
+				timestamptz: "2023-01-01T00:00:00Z",
 			})
 			.returning();
 
@@ -158,17 +158,17 @@ describe("defineTimestampTZ", async () => {
 
 	test('defineTimestampTZ({ mode: "unix" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamptzunix.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamptzunix", {
-				timestamptz: defineTimestampTZ("timestamptz", { mode: "unix" }).notNull(),
 				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "unix" }).array().notNull(),
+				timestamptz: defineTimestampTZ("timestamptz", { mode: "unix" }).notNull(),
 			});
 
 		await database.connect();
@@ -183,8 +183,8 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z").toNumber(),
 				_timestamptz: [TimestampTZ.from("2023-01-01T00:00:00Z").toNumber(), TimestampTZ.from("2023-01-01T11:11:11Z").toNumber()],
+				timestamptz: TimestampTZ.from("2023-01-01T00:00:00Z").toNumber(),
 			})
 			.returning();
 
@@ -228,17 +228,17 @@ describe("defineTimestampTZ", async () => {
 
 	test('defineTimestampTZ({ mode: "luxon" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamptzluxon.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamptzluxon", {
-				timestamptz: defineTimestampTZ("timestamptz", { mode: "luxon.DateTime" }).notNull(),
 				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "luxon.DateTime" }).array().notNull(),
+				timestamptz: defineTimestampTZ("timestamptz", { mode: "luxon.DateTime" }).notNull(),
 			});
 
 		await database.connect();
@@ -253,9 +253,6 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}),
 				_timestamptz: [
 					DateTime.fromISO("2023-01-01T00:00:00.000Z", {
 						setZone: true,
@@ -264,6 +261,9 @@ describe("defineTimestampTZ", async () => {
 						setZone: true,
 					}),
 				],
+				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}),
 			})
 			.returning();
 
@@ -329,17 +329,17 @@ describe("defineTimestampTZ", async () => {
 
 	test('defineTimestampTZ({ mode: "js" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "timestamptzjs.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("timestamptzjs", {
-				timestamptz: defineTimestampTZ("timestamptz", { mode: "globalThis.Date" }).notNull(),
 				_timestamptz: defineTimestampTZ("_timestamptz", { mode: "globalThis.Date" }).array().notNull(),
+				timestamptz: defineTimestampTZ("timestamptz", { mode: "globalThis.Date" }).notNull(),
 			});
 
 		await database.connect();
@@ -354,9 +354,6 @@ describe("defineTimestampTZ", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
-					setZone: true,
-				}).toJSDate(),
 				_timestamptz: [
 					DateTime.fromISO("2023-01-01T00:00:00.000Z", {
 						setZone: true,
@@ -365,6 +362,9 @@ describe("defineTimestampTZ", async () => {
 						setZone: true,
 					}).toJSDate(),
 				],
+				timestamptz: DateTime.fromISO("2023-01-01T11:11:11.000Z", {
+					setZone: true,
+				}).toJSDate(),
 			})
 			.returning();
 

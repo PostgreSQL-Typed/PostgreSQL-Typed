@@ -14,10 +14,10 @@ export function printTable(type: ClassDetails, printer: Printer) {
 
 	const TableRecord = printer.context.pushValueDeclaration(
 		{
-			type: "table",
-			name: type.class_name,
 			databaseName: type.database_name,
+			name: type.class_name,
 			schemaName: type.schema_name,
+			type: "table",
 		},
 		(identifierName, file) => {
 			const { SchemaRecord } = printSchema(type, printer);
@@ -31,13 +31,13 @@ export function printTable(type: ClassDetails, printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "table",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "table",
 			},
+			type: "export",
 		},
 		TableRecord
 	);
@@ -46,17 +46,17 @@ export function printTable(type: ClassDetails, printer: Printer) {
 
 	const TableTypeRecord = printer.context.pushValueDeclaration(
 		{
-			type: "tableType",
-			name: type.class_name,
 			databaseName: type.database_name,
+			name: type.class_name,
 			schemaName: type.schema_name,
+			type: "tableType",
 		},
 		(identifierName, file) => {
 			file.addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/core",
 				name: "PgTableWithColumns",
 				type: "named",
-				isType: true,
 			});
 			return [
 				`declare const ${identifierName}: PgTableWithColumns<{`,
@@ -72,13 +72,13 @@ export function printTable(type: ClassDetails, printer: Printer) {
 
 	printer.context.pushReExport(
 		{
-			type: "export",
 			of: {
-				type: "tableType",
-				name: type.class_name,
 				databaseName: type.database_name,
+				name: type.class_name,
 				schemaName: type.schema_name,
+				type: "tableType",
 			},
+			type: "export",
 		},
 		TableTypeRecord
 	);
@@ -89,11 +89,11 @@ export function printTable(type: ClassDetails, printer: Printer) {
 function printColumn(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
 	const { getDeclarationName } = file,
 		name = getDeclarationName({
-			type: "column",
-			name: attribute.attribute_name,
 			databaseName: type.database_name,
+			name: attribute.attribute_name,
 			schemaName: type.schema_name,
 			tableName: type.class_name,
+			type: "column",
 		});
 	return `  ${name}: ${getAttribute(type, attribute, printer, file)},`;
 }
@@ -101,11 +101,11 @@ function printColumn(type: ClassDetails, attribute: Attribute, printer: Printer,
 function printColumnType(type: ClassDetails, attribute: Attribute, printer: Printer, file: FileContext): string {
 	const { getDeclarationName } = file,
 		name = getDeclarationName({
-			type: "column",
-			name: attribute.attribute_name,
 			databaseName: type.database_name,
+			name: attribute.attribute_name,
 			schemaName: type.schema_name,
 			tableName: type.class_name,
+			type: "column",
 		});
 	return `    ${name}: ${getAttributeType(type, attribute, printer, file)};`;
 }
@@ -119,9 +119,9 @@ function getAttribute(type: ClassDetails, attribute: Attribute, printer: Printer
 
 	const definer = printer
 		.getDefiner(attribute.type_id, file, {
+			columnName: attribute.attribute_name,
 			schemaName: type.schema_name,
 			tableName: type.class_name,
-			columnName: attribute.attribute_name,
 		})
 		.replace("%ATTRIBUTE%", attribute.attribute_name)
 		.replace("%NOTNULL%", attribute.not_null ? ".notNull()" : "")
@@ -140,9 +140,9 @@ function getAttributeType(type: ClassDetails, attribute: Attribute, printer: Pri
 
 	return printer
 		.getDefinerType(attribute.type_id, file, {
+			columnName: attribute.attribute_name,
 			schemaName: type.schema_name,
 			tableName: type.class_name,
-			columnName: attribute.attribute_name,
 		})
 		.replace("%ATTRIBUTE%", attribute.attribute_name)
 		.replace("%TABLE%", type.class_name)
@@ -159,20 +159,20 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 		case OID.bit:
 			if (!printer.config.files.definerModes.bit) return "";
 			file.addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/parsers",
 				name: "Bit",
 				type: "named",
-				isType: true,
 			});
 			return ", Bit<%LENGTH%>";
 		case OID._varbit:
 		case OID.varbit:
 			if (!printer.config.files.definerModes.bitVarying) return "";
 			file.addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/parsers",
 				name: "BitVarying",
 				type: "named",
-				isType: true,
 			});
 			return ", BitVarying<%LENGTH%>";
 		case OID._bpchar:
@@ -181,20 +181,20 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 		case OID.char:
 			if (!printer.config.files.definerModes.character) return "";
 			file.addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/parsers",
 				name: "Character",
 				type: "named",
-				isType: true,
 			});
 			return ", Character<%LENGTH%>";
 		case OID._varchar:
 		case OID.varchar:
 			if (!printer.config.files.definerModes.characterVarying) return "";
 			file.addImportStatement({
+				isType: true,
 				module: "@postgresql-typed/parsers",
 				name: "CharacterVarying",
 				type: "named",
-				isType: true,
 			});
 			return ", CharacterVarying<%LENGTH%>";
 		default:
@@ -219,11 +219,11 @@ function getReference(type: ClassDetails, attribute: Attribute, printer: Printer
 					const { TableRecord } = printTable(referencedClass, printer);
 
 					return `.references(() => ${getImport(TableRecord)}.${getDeclarationName({
-						type: "column",
-						name: referencedAttribute.attribute_name,
 						databaseName: referencedClass.database_name,
+						name: referencedAttribute.attribute_name,
 						schemaName: referencedClass.schema_name,
 						tableName: referencedClass.class_name,
+						type: "column",
 					})})`;
 				}
 			}

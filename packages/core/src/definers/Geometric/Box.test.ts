@@ -9,17 +9,17 @@ import { defineBox } from "./Box";
 describe("defineBox", async () => {
 	test('defineBox({ mode: "Box" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "box.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("box", {
-				box: defineBox("box", { mode: "Box" }).notNull(),
 				_box: defineBox("_box", { mode: "Box" }).array().notNull(),
+				box: defineBox("box", { mode: "Box" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineBox", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				box: Box.from("(1,2),(1,2)"),
 				_box: [Box.from("(1,2),(1,2)"), Box.from("(3,4),(3,4)")],
+				box: Box.from("(1,2),(1,2)"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineBox", async () => {
 
 	test('defineBox({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "boxstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("boxstring", {
-				box: defineBox("box", { mode: "string" }).notNull(),
 				_box: defineBox("_box", { mode: "string" }).array().notNull(),
+				box: defineBox("box", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineBox", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				box: "(1,2),(1,2)",
 				_box: ["(1,2),(1,2)", "(3,4),(3,4)"],
+				box: "(1,2),(1,2)",
 			})
 			.returning();
 

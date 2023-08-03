@@ -9,17 +9,17 @@ import { defineDateRange } from "./DateRange";
 describe("defineDateRange", async () => {
 	test('defineDateRange({ mode: "DateRange" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "daterange.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("daterange", {
-				daterange: defineDateRange("daterange", { mode: "DateRange" }).notNull(),
 				_daterange: defineDateRange("_daterange", { mode: "DateRange" }).array().notNull(),
+				daterange: defineDateRange("daterange", { mode: "DateRange" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineDateRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				daterange: DateRange.from("[2025-01-01,2026-01-01)"),
 				_daterange: [DateRange.from("[2025-01-01,2026-01-01)"), DateRange.from("[2026-01-01,2027-01-01)")],
+				daterange: DateRange.from("[2025-01-01,2026-01-01)"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineDateRange", async () => {
 
 	test('defineDateRange({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "daterangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("daterangestring", {
-				daterange: defineDateRange("daterange", { mode: "string" }).notNull(),
 				_daterange: defineDateRange("_daterange", { mode: "string" }).array().notNull(),
+				daterange: defineDateRange("daterange", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineDateRange", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				daterange: "[2025-01-01,2026-01-01)",
 				_daterange: ["[2025-01-01,2026-01-01)", "[2026-01-01,2027-01-01)"],
+				daterange: "[2025-01-01,2026-01-01)",
 			})
 			.returning();
 

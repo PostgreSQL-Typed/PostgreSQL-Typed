@@ -21,7 +21,11 @@ export class PgTUpdateBuilder<TTable extends AnyPgTable, TQueryResult extends Qu
 		readonly table: TTable;
 	};
 
-	constructor(private table: TTable, private session: PgTSession, private dialect: PgDialect) {}
+	constructor(
+		private table: TTable,
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {}
 
 	set(values: PgUpdateSetSource<TTable>): PgTUpdate<TTable, TQueryResult> {
 		return new PgTUpdate<TTable, TQueryResult>(this.table, mapUpdateSet(this.table, values), this.session, this.dialect);
@@ -41,7 +45,12 @@ export class PgTUpdate<TTable extends AnyPgTable, TQueryResult extends QueryResu
 
 	private config: PgUpdateConfig;
 
-	constructor(table: TTable, set: UpdateSet, private session: PgTSession, private dialect: PgDialect) {
+	constructor(
+		table: TTable,
+		set: UpdateSet,
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {
 		super();
 		this.config = { set, table };
 	}

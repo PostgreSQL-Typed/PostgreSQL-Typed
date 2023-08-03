@@ -9,12 +9,12 @@ import { sql, table as pgTable } from "../index.js";
 describe("insert", () => {
 	test("insert()", async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "insert_test.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("insert_test", {
@@ -87,8 +87,8 @@ describe("insert", () => {
 				.insert(table)
 				.values({ int2: 1, text: "test" })
 				.onConflictDoUpdate({
-					target: table.int2,
 					set: { text: "test" },
+					target: table.int2,
 					where: sql`${table.int2} < 10`,
 				})
 				.returning()
@@ -100,8 +100,8 @@ describe("insert", () => {
 				.insert(table)
 				.values({ int2: 1, text: "test" })
 				.onConflictDoUpdate({
-					target: [table.int2],
 					set: { text: "test2" },
+					target: [table.int2],
 				})
 				.returning()
 				.execute();

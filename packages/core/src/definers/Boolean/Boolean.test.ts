@@ -9,17 +9,17 @@ import { defineBoolean } from "./Boolean";
 describe("defineBoolean", async () => {
 	test('defineBoolean({ mode: "Boolean" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "boolean.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("boolean", {
-				boolean: defineBoolean("boolean", { mode: "Boolean" }).notNull(),
 				_boolean: defineBoolean("_boolean", { mode: "Boolean" }).array().notNull(),
+				boolean: defineBoolean("boolean", { mode: "Boolean" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineBoolean", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				boolean: Boolean.from(1),
 				_boolean: [Boolean.from(1), Boolean.from(0)],
+				boolean: Boolean.from(1),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineBoolean", async () => {
 
 	test('defineBoolean({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "booleanstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("booleanstring", {
-				boolean: defineBoolean("boolean", { mode: "string" }).notNull(),
 				_boolean: defineBoolean("_boolean", { mode: "string" }).array().notNull(),
+				boolean: defineBoolean("boolean", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineBoolean", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				boolean: "true",
 				_boolean: ["true", "false"],
+				boolean: "true",
 			})
 			.returning();
 
@@ -157,17 +157,17 @@ describe("defineBoolean", async () => {
 
 	test('defineBoolean({ mode: "number" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "booleannumber.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("booleannumber", {
-				boolean: defineBoolean("boolean", { mode: "number" }).notNull(),
 				_boolean: defineBoolean("_boolean", { mode: "number" }).array().notNull(),
+				boolean: defineBoolean("boolean", { mode: "number" }).notNull(),
 			});
 
 		await database.connect();
@@ -182,8 +182,8 @@ describe("defineBoolean", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				boolean: 1,
 				_boolean: [1, 0],
+				boolean: 1,
 			})
 			.returning();
 
@@ -227,17 +227,17 @@ describe("defineBoolean", async () => {
 
 	test('defineBoolean({ mode: "boolean" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "booleanboolean.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("booleanboolean", {
-				boolean: defineBoolean("boolean", { mode: "boolean" }).notNull(),
 				_boolean: defineBoolean("_boolean", { mode: "boolean" }).array().notNull(),
+				boolean: defineBoolean("boolean", { mode: "boolean" }).notNull(),
 			});
 
 		await database.connect();
@@ -252,8 +252,8 @@ describe("defineBoolean", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				boolean: true,
 				_boolean: [true, false],
+				boolean: true,
 			})
 			.returning();
 

@@ -35,12 +35,12 @@
 		"test": "vitest --run",
 		"test:watch": "vitest --ui --coverage",
 		"test:ci": "vitest --run --coverage",
-		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
-		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+		"lint": "eslint --ext .ts ./ && prettier --check .",
+		"lint:fix": "eslint --fix --ext .ts ./ && prettier -w ."
 	},
 	"devDependencies": {
-		"@types/pg": "^8.6.6",
-		"pg": "^8.10.0"
+		"@types/pg": "^8.10.2",
+		"pg": "^8.11.2"
 	},
 	"publishConfig": {
 		"provenance": true

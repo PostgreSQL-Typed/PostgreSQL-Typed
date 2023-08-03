@@ -109,8 +109,8 @@ function toJSON(
 	[key: string]: any;
 } {
 	return {
-		__pgtParserType: parserType,
 		__pgtParserExtraData: "n" in parser ? parser.n.toString() : undefined,
+		__pgtParserType: parserType,
 		...parser.toJSON(),
 	};
 }

@@ -1,8 +1,8 @@
 import type { Argument } from "../types/interfaces/Argument.js";
 
 export const Silent: Argument = {
-	name: "silent",
 	description: "Silences all output from the program",
-	type: Boolean,
+	name: "silent",
 	run: error => void error,
+	type: Boolean,
 };

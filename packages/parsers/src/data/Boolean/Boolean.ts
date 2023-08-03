@@ -59,17 +59,17 @@ class BooleanConstructorClass extends PgTPConstructorBase<Boolean> implements Bo
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -157,8 +157,8 @@ class BooleanClass extends PgTPBase<Boolean> implements Boolean {
 		const parsed = Boolean.safeFrom(...input.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toBoolean() === this.toBoolean(),
 				data: parsed.data,
+				equals: parsed.data.toBoolean() === this.toBoolean(),
 			});
 		}
 		this.setIssueForContext(input, parsed.error.issue);

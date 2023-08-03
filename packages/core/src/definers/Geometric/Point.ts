@@ -25,7 +25,7 @@ export type PgTPointType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Point" ? Point : string,
-	TDriverParameter = Point
+	TDriverParameter = Point,
 > = PgTPoint<{
 	tableName: TTableName;
 	name: TName;

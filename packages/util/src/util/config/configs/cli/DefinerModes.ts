@@ -262,10 +262,6 @@ export interface DefinerModes {
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
-	bytea: {
-		$default: "Buffer",
-		$resolve: (value: any) => (typeof value === "string" && ["ByteA", "Buffer", "string"].includes(value) ? value : "Buffer"),
-	},
 	bit: {
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["Bit", "string", "number"].includes(value) ? value : "string"),
@@ -278,6 +274,14 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "boolean",
 		$resolve: (value: any) => (typeof value === "string" && ["Boolean", "string", "boolean", "number"].includes(value) ? value : "boolean"),
 	},
+	box: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Box", "string"].includes(value) ? value : "string"),
+	},
+	bytea: {
+		$default: "Buffer",
+		$resolve: (value: any) => (typeof value === "string" && ["ByteA", "Buffer", "string"].includes(value) ? value : "Buffer"),
+	},
 	character: {
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["Character", "string"].includes(value) ? value : "string"),
@@ -286,13 +290,9 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["CharacterVarying", "string"].includes(value) ? value : "string"),
 	},
-	name: {
+	circle: {
 		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Name", "string"].includes(value) ? value : "string"),
-	},
-	text: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Text", "string"].includes(value) ? value : "string"),
+		$resolve: (value: any) => (typeof value === "string" && ["Circle", "string"].includes(value) ? value : "string"),
 	},
 	date: {
 		$default: "globalThis.Date",
@@ -307,89 +307,9 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["DateRange", "string"].includes(value) ? value : "string"),
 	},
-	interval: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Interval", "string"].includes(value) ? value : "string"),
-	},
-	time: {
-		$default: "globalThis.Date",
-		$resolve: (value: any) =>
-			typeof value === "string" && ["Time", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
-	},
-	timestamp: {
-		$default: "globalThis.Date",
-		$resolve: (value: any) =>
-			typeof value === "string" && ["Timestamp", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
-	},
-	timestampMultiRange: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["TimestampMultiRange", "string"].includes(value) ? value : "string"),
-	},
-	timestampRange: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["TimestampRange", "string"].includes(value) ? value : "string"),
-	},
-	timestamptz: {
-		$default: "globalThis.Date",
-		$resolve: (value: any) =>
-			typeof value === "string" && ["TimestampTZ", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
-	},
-	timestamptzMultiRange: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["TimestampTZMultiRange", "string"].includes(value) ? value : "string"),
-	},
-	timestamptzRange: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["TimestampTZRange", "string"].includes(value) ? value : "string"),
-	},
-	timetz: {
-		$default: "globalThis.Date",
-		$resolve: (value: any) =>
-			typeof value === "string" && ["TimeTZ", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
-	},
 	enum: {
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["Enum", "string"].includes(value) ? value : "string"),
-	},
-	box: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Box", "string"].includes(value) ? value : "string"),
-	},
-	circle: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Circle", "string"].includes(value) ? value : "string"),
-	},
-	line: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Line", "string"].includes(value) ? value : "string"),
-	},
-	lineSegment: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["LineSegment", "string"].includes(value) ? value : "string"),
-	},
-	path: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Path", "string"].includes(value) ? value : "string"),
-	},
-	point: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Point", "string"].includes(value) ? value : "string"),
-	},
-	polygon: {
-		$default: "string",
-		$resolve: (value: any) => (typeof value === "string" && ["Polygon", "string"].includes(value) ? value : "string"),
-	},
-	json: {
-		$default: "value",
-		$resolve: (value: any) => (typeof value === "string" && ["JSON", "string", "value"].includes(value) ? value : "value"),
-	},
-	jsonb: {
-		$default: "value",
-		$resolve: (value: any) => (typeof value === "string" && ["JSON", "string", "value"].includes(value) ? value : "value"),
-	},
-	money: {
-		$default: "number",
-		$resolve: (value: any) => (typeof value === "string" && ["Money", "string", "BigNumber", "number"].includes(value) ? value : "number"),
 	},
 	float4: {
 		$default: "number",
@@ -427,9 +347,89 @@ const schema: SchemaDefinition = defineUntypedSchema({
 		$default: "string",
 		$resolve: (value: any) => (typeof value === "string" && ["Int8Range", "string"].includes(value) ? value : "string"),
 	},
+	interval: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Interval", "string"].includes(value) ? value : "string"),
+	},
+	json: {
+		$default: "value",
+		$resolve: (value: any) => (typeof value === "string" && ["JSON", "string", "value"].includes(value) ? value : "value"),
+	},
+	jsonb: {
+		$default: "value",
+		$resolve: (value: any) => (typeof value === "string" && ["JSON", "string", "value"].includes(value) ? value : "value"),
+	},
+	line: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Line", "string"].includes(value) ? value : "string"),
+	},
+	lineSegment: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["LineSegment", "string"].includes(value) ? value : "string"),
+	},
+	money: {
+		$default: "number",
+		$resolve: (value: any) => (typeof value === "string" && ["Money", "string", "BigNumber", "number"].includes(value) ? value : "number"),
+	},
+	name: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Name", "string"].includes(value) ? value : "string"),
+	},
 	oid: {
 		$default: "number",
 		$resolve: (value: any) => (typeof value === "string" && ["OID", "string", "number"].includes(value) ? value : "number"),
+	},
+	path: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Path", "string"].includes(value) ? value : "string"),
+	},
+	point: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Point", "string"].includes(value) ? value : "string"),
+	},
+	polygon: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Polygon", "string"].includes(value) ? value : "string"),
+	},
+	text: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["Text", "string"].includes(value) ? value : "string"),
+	},
+	time: {
+		$default: "globalThis.Date",
+		$resolve: (value: any) =>
+			typeof value === "string" && ["Time", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
+	},
+	timestamp: {
+		$default: "globalThis.Date",
+		$resolve: (value: any) =>
+			typeof value === "string" && ["Timestamp", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
+	},
+	timestampMultiRange: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["TimestampMultiRange", "string"].includes(value) ? value : "string"),
+	},
+	timestampRange: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["TimestampRange", "string"].includes(value) ? value : "string"),
+	},
+	timestamptz: {
+		$default: "globalThis.Date",
+		$resolve: (value: any) =>
+			typeof value === "string" && ["TimestampTZ", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
+	},
+	timestamptzMultiRange: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["TimestampTZMultiRange", "string"].includes(value) ? value : "string"),
+	},
+	timestamptzRange: {
+		$default: "string",
+		$resolve: (value: any) => (typeof value === "string" && ["TimestampTZRange", "string"].includes(value) ? value : "string"),
+	},
+	timetz: {
+		$default: "globalThis.Date",
+		$resolve: (value: any) =>
+			typeof value === "string" && ["TimeTZ", "globalThis.Date", "luxon.DateTime", "unix", "string"].includes(value) ? value : "globalThis.Date",
 	},
 	uuid: {
 		$default: "string",

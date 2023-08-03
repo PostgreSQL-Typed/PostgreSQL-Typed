@@ -73,17 +73,17 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -137,8 +137,8 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE [(x1,y1),(x2,y2)]",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -147,10 +147,10 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 		if (context.data.length > 2) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "arguments",
-				maximum: 2,
 				inclusive: true,
+				maximum: 2,
 				received: context.data.length,
+				type: "arguments",
 			});
 			return INVALID;
 		}
@@ -163,10 +163,10 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 			if (parsedType !== "undefined") {
 				this.setIssueForContext(context, {
 					code: "too_big",
-					type: "arguments",
-					maximum: 1,
 					exact: true,
+					maximum: 1,
 					received: context.data.length,
+					type: "arguments",
 				});
 				return INVALID;
 			}
@@ -179,10 +179,10 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 			if (parsedType === "undefined") {
 				this.setIssueForContext(context, {
 					code: "too_small",
-					type: "arguments",
-					minimum: 2,
 					exact: true,
+					minimum: 2,
 					received: context.data.length,
+					type: "arguments",
 				});
 				return INVALID;
 			}
@@ -200,10 +200,10 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 		if (parsedType !== "undefined") {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				received: context.data.length,
+				type: "arguments",
 			});
 			return INVALID;
 		}
@@ -261,7 +261,10 @@ class LineSegmentConstructorClass extends PgTPConstructorBase<LineSegment> imple
 const LineSegment: LineSegmentConstructor = new LineSegmentConstructorClass();
 
 class LineSegmentClass extends PgTPBase<LineSegment> implements LineSegment {
-	constructor(private _a: Point, private _b: Point) {
+	constructor(
+		private _a: Point,
+		private _b: Point
+	) {
 		super();
 	}
 
@@ -270,8 +273,8 @@ class LineSegmentClass extends PgTPBase<LineSegment> implements LineSegment {
 		const parsed = LineSegment.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toString() === this.toString(),
 				data: parsed.data,
+				equals: parsed.data.toString() === this.toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);

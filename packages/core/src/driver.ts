@@ -22,7 +22,11 @@ const { types } = pg;
 export class PgTDriver {
 	extensions = new PgTExtensionManager();
 
-	constructor(private client: NodePgClient, private dialect: PgDialect, private options: PgDriverOptions = {}) {
+	constructor(
+		private client: NodePgClient,
+		private dialect: PgDialect,
+		private options: PgDriverOptions = {}
+	) {
 		this.initMappers();
 	}
 

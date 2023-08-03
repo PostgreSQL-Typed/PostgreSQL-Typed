@@ -10,17 +10,17 @@ import { defineUUID } from "./UUID";
 describe("defineUUID", async () => {
 	test('defineUUID({ mode: "UUID" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "uuid.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("uuid", {
-				uuid: defineUUID("uuid", { mode: "UUID" }).notNull(),
 				_uuid: defineUUID("_uuid", { mode: "UUID" }).array().notNull(),
+				uuid: defineUUID("uuid", { mode: "UUID" }).notNull(),
 			});
 
 		await database.connect();
@@ -35,8 +35,8 @@ describe("defineUUID", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				uuid: UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"),
 				_uuid: [UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"), UUID.from("cd65d0c9-3818-4cdc-ad3c-52f5757a1b63")],
+				uuid: UUID.from("a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"),
 			})
 			.returning();
 
@@ -88,17 +88,17 @@ describe("defineUUID", async () => {
 
 	test('defineUUID({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "uuidstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("uuidstring", {
-				uuid: defineUUID("uuid", { mode: "string" }).notNull(),
 				_uuid: defineUUID("_uuid", { mode: "string" }).array().notNull(),
+				uuid: defineUUID("uuid", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -113,8 +113,8 @@ describe("defineUUID", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
 				_uuid: ["a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11", "cd65d0c9-3818-4cdc-ad3c-52f5757a1b63"],
+				uuid: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
 			})
 			.returning();
 

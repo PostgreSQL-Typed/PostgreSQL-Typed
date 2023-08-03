@@ -48,13 +48,13 @@ describe("TimestampTZConstructor", () => {
 		expect(TimestampTZ.safeFrom("2023-01-01T22:10:09Z").success).toBe(true);
 		expect(
 			TimestampTZ.safeFrom({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			}).success
 		).toBe(true);
 		expect(TimestampTZ.safeFrom(2022, 9, 2, 1, 2, 3, 4, 5, "plus").success).toBe(true);
@@ -74,69 +74,69 @@ describe("TimestampTZConstructor", () => {
 		expect(() => TimestampTZ.from({} as any)).toThrowError("Missing keys in object: 'year', 'month', 'day', 'hour', 'minute', 'second', 'offset'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: "2",
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			} as any)
 		).toThrowError("Expected 'number' for key 'day', received 'string'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
-				week: 0,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				week: 0,
+				year: 2022,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'week'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
-				second: 3,
+				month: 9,
 				offset: {},
+				second: 3,
+				year: 2022,
 			} as any)
 		).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "a" as any, hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "a" as any },
+				year: 2022,
 			} as any)
 		).toThrowError("Expected 'minus' | 'plus', received 'a'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0, second: 1 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus", second: 1 },
+				year: 2022,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'second'");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: "0" },
 				second: 3,
-				offset: { hour: 0, minute: "0", direction: "plus" },
+				year: 2022,
 			} as any)
 		).toThrowError("Expected 'number' for key 'minute', received 'string'");
 		expect(() => TimestampTZ.from(1, 2, "a" as any, 4, 5, 6, 7, 8, "minus")).toThrowError("Expected 'number' for key 'day', received 'string'");
@@ -185,258 +185,258 @@ describe("TimestampTZConstructor", () => {
 
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022.2,
+				day: 2,
+				hour: 1,
+				minute: 2,
 				month: 9,
-				day: 2,
-				hour: 1,
-				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022.2,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
+				day: 2,
+				hour: 1,
+				minute: 2,
 				month: 9.2,
-				day: 2,
-				hour: 1,
-				minute: 2,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 0,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 0,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 1");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 13,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 13,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 12");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2.2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 0,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 1");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 32,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 31");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1.2,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 24,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 23");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: -1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 1.2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 60,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: -1,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: -1,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 60,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 1.2, minute: 0 },
 				second: 3,
-				offset: { hour: 1.2, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 24, minute: 0 },
 				second: 3,
-				offset: { hour: 24, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 23");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: -1, minute: 0 },
 				second: 3,
-				offset: { hour: -1, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 1.2 },
 				second: 3,
-				offset: { hour: 0, minute: 1.2, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be whole");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 60 },
 				second: 3,
-				offset: { hour: 0, minute: 60, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be less than or equal to 59");
 		expect(() =>
 			TimestampTZ.from({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: -1 },
 
 				second: 3,
-				offset: { hour: 0, minute: -1, direction: "plus" },
+				year: 2022,
 			})
 		).toThrowError("Number must be greater than or equal to 0");
 	});
 
 	test("isTimestampTZ(...)", () => {
 		const timestamptz = TimestampTZ.from({
-			year: 2022,
-			month: 9,
 			day: 2,
 			hour: 1,
 			minute: 2,
+			month: 9,
+			offset: { direction: "plus", hour: 0, minute: 0 },
 			second: 3,
-			offset: { hour: 0, minute: 0, direction: "plus" },
+			year: 2022,
 		});
 		expect(TimestampTZ.isTimestampTZ(timestamptz)).toBe(true);
 		expect(
 			TimestampTZ.isTimestampTZ({
-				year: 2022,
-				month: 9,
 				day: 2,
 				hour: 1,
 				minute: 2,
+				month: 9,
+				offset: { direction: "plus", hour: 0, minute: 0 },
 				second: 3,
-				offset: { hour: 0, minute: 0, direction: "plus" },
+				year: 2022,
 			})
 		).toBe(false);
 	});
@@ -516,13 +516,13 @@ describe("TimestampTZ", () => {
 	test("toJSON()", () => {
 		const timestamptz = TimestampTZ.from("2023-01-01T22:10:09-02:00");
 		expect(timestamptz.toJSON()).toEqual({
-			year: 2023,
-			month: 1,
 			day: 1,
 			hour: 22,
 			minute: 10,
-			second: 9,
+			month: 1,
 			offset: { direction: "minus", hour: 2, minute: 0 },
+			second: 9,
+			year: 2023,
 		});
 	});
 
@@ -701,33 +701,33 @@ describe("TimestampTZ", () => {
 			timestamptz.offset = {} as any;
 		}).toThrowError("Missing keys in object: 'hour', 'minute', 'direction'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: 1 } as any;
+			timestamptz.offset = { direction: 1, hour: 2, minute: 0 } as any;
 		}).toThrowError("Expected 'string' for key 'direction', received 'number'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: "plus", second: 1 } as any;
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 0, second: 1 } as any;
 		}).toThrowError("Unrecognized key in object: 'second'");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0, direction: "+" as any };
+			timestamptz.offset = { direction: "+" as any, hour: 2, minute: 0 };
 		}).toThrowError("Expected 'minus' | 'plus', received '+'");
 		expect(() => {
-			timestamptz.offset = { hour: 2.5, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2.5, minute: 0 };
 		}).toThrowError("Number must be whole");
 		expect(() => {
-			timestamptz.offset = { hour: -1, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: -1, minute: 0 };
 		}).toThrowError("Number must be greater than or equal to 0");
 		expect(() => {
-			timestamptz.offset = { hour: 24, minute: 0, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 24, minute: 0 };
 		}).toThrowError("Number must be less than or equal to 23");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 0.5, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 0.5 };
 		}).toThrowError("Number must be whole");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: -1, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: -1 };
 		}).toThrowError("Number must be greater than or equal to 0");
 		expect(() => {
-			timestamptz.offset = { hour: 2, minute: 60, direction: "plus" };
+			timestamptz.offset = { direction: "plus", hour: 2, minute: 60 };
 		}).toThrowError("Number must be less than or equal to 59");
-		timestamptz.offset = { hour: 2, minute: 0, direction: "plus" };
+		timestamptz.offset = { direction: "plus", hour: 2, minute: 0 };
 		expect(timestamptz.offset).toEqual({
 			direction: "plus",
 			hour: 2,
@@ -872,12 +872,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "timestamptz.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

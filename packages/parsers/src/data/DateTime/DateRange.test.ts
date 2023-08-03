@@ -54,14 +54,14 @@ describe("DateRangeConstructor", () => {
 			upper: UpperRange.exclude,
 			values: [
 				{
-					year: 2022,
-					month: 9,
 					day: 2,
+					month: 9,
+					year: 2022,
 				},
 				{
-					year: 2022,
-					month: 10,
 					day: 3,
+					month: 10,
+					year: 2022,
 				},
 			],
 		});
@@ -73,14 +73,14 @@ describe("DateRangeConstructor", () => {
 
 		const dateRangeFromArgumentsArray = DateRange.from(
 			Date.from({
-				year: 2022,
-				month: 9,
 				day: 2,
+				month: 9,
+				year: 2022,
 			}),
 			Date.from({
-				year: 2022,
-				month: 10,
 				day: 3,
+				month: 10,
+				year: 2022,
 			})
 		);
 		expect(dateRangeFromArgumentsArray).not.toBeNull();
@@ -88,9 +88,9 @@ describe("DateRangeConstructor", () => {
 		expect(() => {
 			DateRange.from(
 				Date.from({
-					year: 2022,
-					month: 9,
 					day: 2,
+					month: 9,
+					year: 2022,
 				}),
 				BigInt(1) as any
 			);
@@ -98,14 +98,14 @@ describe("DateRangeConstructor", () => {
 
 		const dateRangeFromArray = DateRange.from([
 			Date.from({
-				year: 2022,
-				month: 9,
 				day: 2,
+				month: 9,
+				year: 2022,
 			}),
 			Date.from({
-				year: 2022,
-				month: 10,
 				day: 3,
+				month: 10,
+				year: 2022,
 			}),
 		]);
 		expect(dateRangeFromArray).not.toBeNull();
@@ -135,14 +135,14 @@ describe("DateRangeConstructor", () => {
 				upper: UpperRange.exclude,
 				values: [
 					Date.from({
-						year: 2022,
-						month: 9,
 						day: 2,
+						month: 9,
+						year: 2022,
 					}),
 					Date.from({
-						year: 2022,
-						month: 10,
 						day: 3,
+						month: 10,
+						year: 2022,
 					}),
 				],
 			})
@@ -215,8 +215,8 @@ describe("DateRange", () => {
 			lower: LowerRange.include,
 			upper: UpperRange.exclude,
 			values: [
-				{ year: 2022, month: 9, day: 2 },
-				{ year: 2022, month: 10, day: 3 },
+				{ day: 2, month: 9, year: 2022 },
+				{ day: 3, month: 10, year: 2022 },
 			],
 		});
 
@@ -225,8 +225,8 @@ describe("DateRange", () => {
 			lower: LowerRange.include,
 			upper: UpperRange.include,
 			values: [
-				{ year: 2022, month: 9, day: 2 },
-				{ year: 2022, month: 10, day: 3 },
+				{ day: 2, month: 9, year: 2022 },
+				{ day: 3, month: 10, year: 2022 },
 			],
 		});
 
@@ -235,8 +235,8 @@ describe("DateRange", () => {
 			lower: LowerRange.exclude,
 			upper: UpperRange.exclude,
 			values: [
-				{ year: 2022, month: 9, day: 2 },
-				{ year: 2022, month: 10, day: 3 },
+				{ day: 2, month: 9, year: 2022 },
+				{ day: 3, month: 10, year: 2022 },
 			],
 		});
 
@@ -245,8 +245,8 @@ describe("DateRange", () => {
 			lower: LowerRange.exclude,
 			upper: UpperRange.include,
 			values: [
-				{ year: 2022, month: 9, day: 2 },
-				{ year: 2022, month: 10, day: 3 },
+				{ day: 2, month: 9, year: 2022 },
+				{ day: 3, month: 10, year: 2022 },
 			],
 		});
 	});
@@ -279,18 +279,18 @@ describe("DateRange", () => {
 		expect(
 			dateRange.values?.[0].equals(
 				Date.from({
-					year: 2022,
-					month: 9,
 					day: 2,
+					month: 9,
+					year: 2022,
 				})
 			)
 		).toBe(true);
 		expect(
 			dateRange.values?.[1].equals(
 				Date.from({
-					year: 2022,
-					month: 10,
 					day: 3,
+					month: 10,
+					year: 2022,
 				})
 			)
 		).toBe(true);
@@ -303,18 +303,18 @@ describe("DateRange", () => {
 		expect(
 			dateRange.values?.[0].equals(
 				Date.from({
-					year: 2022,
-					month: 11,
 					day: 4,
+					month: 11,
+					year: 2022,
 				})
 			)
 		).toBe(true);
 		expect(
 			dateRange.values?.[1].equals(
 				Date.from({
-					year: 2022,
-					month: 12,
 					day: 5,
+					month: 12,
+					year: 2022,
 				})
 			)
 		).toBe(true);
@@ -361,12 +361,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "daterange.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

@@ -10,5 +10,5 @@ export async function setDefaultConfig(config: Record<string, any>): Promise<PgT
 		core: coreSchema,
 	};
 
-	return (await applyDefaults(schema, config)) as PgTConfigSchema;
+	return (await applyDefaults(schema, config)) as unknown as PgTConfigSchema;
 }

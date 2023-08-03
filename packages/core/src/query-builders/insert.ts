@@ -19,7 +19,11 @@ import { mapUpdateSet, orderSelectedFields, SelectResultFields } from "./util.js
 export class PgTInsertBuilder<TTable extends AnyPgTable, TQueryResult extends QueryResultHKT> {
 	static readonly [entityKind]: string = "PgTInsertBuilder";
 
-	constructor(private table: TTable, private session: PgTSession, private dialect: PgDialect) {}
+	constructor(
+		private table: TTable,
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {}
 
 	values(value: PgInsertValue<TTable>): PgTInsert<TTable, TQueryResult>;
 	values(values: PgInsertValue<TTable>[]): PgTInsert<TTable, TQueryResult>;
@@ -55,7 +59,12 @@ export class PgTInsert<TTable extends AnyPgTable, TQueryResult extends QueryResu
 
 	private config: PgInsertConfig<TTable>;
 
-	constructor(table: TTable, values: PgInsertConfig["values"], private session: PgTSession, private dialect: PgDialect) {
+	constructor(
+		table: TTable,
+		values: PgInsertConfig["values"],
+		private session: PgTSession,
+		private dialect: PgDialect
+	) {
 		super();
 		this.config = { table, values };
 	}

@@ -33,9 +33,9 @@ describe("PointConstructor", () => {
 		).toThrowError("Expected 'number' | 'nan' for key 'y', received 'string'");
 		expect(() =>
 			Point.from({
+				r: 3,
 				x: 1,
 				y: 2,
-				r: 3,
 			} as any)
 		).toThrowError("Unrecognized key in object: 'r'");
 		expect(() => Point.from(1, "a" as any)).toThrowError("Expected 'number' | 'nan', received 'string'");
@@ -153,12 +153,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned from PostgreSQL", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "point.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

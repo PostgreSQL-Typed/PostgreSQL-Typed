@@ -1,18 +1,21 @@
+<!-- eslint-disable @typescript-eslint/no-non-null-assertion -->
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-	import type { ResizeContext } from "d3-graph-controller";
-	import { GraphController, Markers, PositionInitializers, defineGraphConfig } from "d3-graph-controller";
 	import "d3-graph-controller/default.css";
+
+	import type { ResizeContext } from "d3-graph-controller";
+	import { defineGraphConfig, GraphController, Markers, PositionInitializers } from "d3-graph-controller";
+
 	import type { RelatinoGraphController, RelationGraph, RelationLink, RelationNode, RelationType } from "@/composables/graph";
 
-	const props = defineProps<{
-		graph: RelationGraph;
-	}>();
-	const { graph } = toRefs(props);
-	const el = ref<HTMLDivElement>();
-
-	// const modalShow = ref(false)
-	// const selectedModule = ref<string | null>()
-	const controller = ref<RelatinoGraphController | undefined>();
+	const properties = defineProps<{
+			graph: RelationGraph;
+		}>(),
+		{ graph } = toRefs(properties),
+		element = ref<HTMLDivElement>(),
+		// const modalShow = ref(false)
+		// const selectedModule = ref<string | null>()
+		controller = ref<RelatinoGraphController | undefined>();
 
 	// watchEffect(() => {
 	//   if (modalShow.value === false)
@@ -29,10 +32,12 @@
 
 	watch(graph, resetGraphController);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function setFilter(name: RelationType, event: any) {
 		controller.value?.filterNodesByType(event.target.checked, name);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	function setShowLabels(event: any) {
 		if (!controller.value) return;
 		controller.value.showLinkLabels = event.target.checked;
@@ -40,17 +45,23 @@
 
 	function resetGraphController() {
 		controller.value?.shutdown();
-		if (!graph.value || !el.value) return;
+		if (!graph.value || !element.value) return;
 		controller.value = new GraphController<RelationType, RelationNode, RelationLink>(
-			el.value!,
+			element.value!,
 			graph.value,
 			// See https://graph-controller.yeger.eu/config/ for more options
 			defineGraphConfig<RelationType, RelationNode, RelationLink>({
-				nodeRadius: 10,
 				autoResize: true,
 				initial: {
 					showLinkLabels: false,
 				},
+				marker: Markers.Arrow(2),
+				nodeRadius: 10,
+				// modifiers: {
+				//   node: bindOnClick,
+				// },
+				positionInitializer: graph.value.nodes.length > 1 ? PositionInitializers.Randomized : PositionInitializers.Centered,
+
 				simulation: {
 					alphas: {
 						initialize: 1,
@@ -69,14 +80,9 @@
 						},
 					},
 				},
-				marker: Markers.Arrow(2),
-				// modifiers: {
-				//   node: bindOnClick,
-				// },
-				positionInitializer: graph.value.nodes.length > 1 ? PositionInitializers.Randomized : PositionInitializers.Centered,
 				zoom: {
-					min: 0.5,
 					max: 2,
+					min: 0.5,
 				},
 			})
 		);
@@ -109,11 +115,11 @@
 				<div flex="~ gap-1" flex-col absolute top="0" py-2>
 					<div v-for="node of controller?.nodeTypes.sort(sortNodeTypes)" :key="node" flex="~ gap-1" items-center select-none>
 						<input
+							v-if="node !== 'root'"
 							:id="`type-${node}`"
 							type="checkbox"
 							:checked="controller?.nodeTypeFilter.includes(node)"
 							@change="setFilter(node, $event)"
-							v-if="node !== 'root'"
 						/>
 						<label
 							font-light
@@ -140,7 +146,7 @@
 				</div>
 			</div>
 		</div>
-		<div ref="el" />
+		<div ref="element" />
 		<div v-if="showStarExplanation" absolute bottom="0" right="3" py-2>
 			<span text="xs" op20> * indicates that the relation is not set using Foreign Key constraints, but in a custom way. </span>
 		</div>

@@ -206,17 +206,17 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				context.data.length > 1
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 1,
 							exact: true,
+							maximum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 1,
 							exact: true,
+							minimum: 1,
 							received: context.data.length,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -538,8 +538,8 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 
 		this.setIssueForContext(context, {
 			code: "invalid_string",
-			received: argument,
 			expected: "LIKE YYYY-MM-DD HH:MM:SS+HH:MM",
+			received: argument,
 		});
 		return INVALID;
 	}
@@ -561,17 +561,17 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				totalLength > 9
 					? {
 							code: "too_big",
-							type: "arguments",
-							maximum: 9,
 							exact: true,
+							maximum: 9,
 							received: totalLength,
+							type: "arguments",
 					  }
 					: {
 							code: "too_small",
-							type: "arguments",
-							minimum: 9,
 							exact: true,
+							minimum: 9,
 							received: totalLength,
+							type: "arguments",
 					  }
 			);
 			return INVALID;
@@ -580,17 +580,17 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		// Should be [year, month, day, hour, minute, second, offsetHour, offsetMinute, offsetDirection]
 		// To validate all the arguments, we make them go through the object parser
 		return this._parseObject(context, {
-			year: argument,
-			month: otherArguments[0],
 			day: otherArguments[1],
 			hour: otherArguments[2],
 			minute: otherArguments[3],
-			second: otherArguments[4],
+			month: otherArguments[0],
 			offset: {
+				direction: otherArguments[7],
 				hour: otherArguments[5],
 				minute: otherArguments[6],
-				direction: otherArguments[7],
 			},
+			second: otherArguments[4],
+			year: argument,
 		});
 	}
 
@@ -615,11 +615,13 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				];
 				return OK(
 					new TimestampTZClass(year, month, day, hour, minute, second + milliseconds / 1000, {
-						hour: Math.abs(offset / 60),
-						minute: Math.abs(offset % 60),
 						/* c8 ignore next 2 */
 						// globalThis.Date.getTimezoneOffset() returns system timezone offset, so it's always positive or negative depending on the system timezone
 						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
+
+						hour: Math.abs(offset / 60),
+
+						minute: Math.abs(offset % 60),
 					})
 				);
 			}
@@ -643,9 +645,9 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 				];
 				return OK(
 					new TimestampTZClass(year, month, day, hour, minute, second + milliseconds / 1000, {
+						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
 						hour: Math.abs(offset / 60),
 						minute: Math.abs(offset % 60),
-						direction: offset < 0 ? OffsetDirection.minus : OffsetDirection.plus,
 					})
 				);
 			}
@@ -734,20 +736,20 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (month < 1) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 1,
-				type: "number",
 				inclusive: true,
+				minimum: 1,
 				received: month,
+				type: "number",
 			});
 		}
 
 		if (month > 12) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 12,
-				type: "number",
 				inclusive: true,
+				maximum: 12,
 				received: month,
+				type: "number",
 			});
 		}
 
@@ -761,20 +763,20 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (day < 1) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 1,
-				type: "number",
 				inclusive: true,
+				minimum: 1,
 				received: day,
+				type: "number",
 			});
 		}
 
 		if (day > 31) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 31,
-				type: "number",
 				inclusive: true,
+				maximum: 31,
 				received: day,
+				type: "number",
 			});
 		}
 
@@ -789,10 +791,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (hour < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -800,10 +802,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (hour > 23) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -819,10 +821,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (minute < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -830,10 +832,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (minute > 59) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -841,10 +843,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (second < 0) {
 			this.setIssueForContext(context, {
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -852,10 +854,10 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (second >= 60) {
 			this.setIssueForContext(context, {
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 			return INVALID;
 		}
@@ -880,20 +882,20 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (parsedOffset.obj.hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
@@ -907,20 +909,20 @@ class TimestampTZConstructorClass extends PgTPConstructorBase<TimestampTZ> imple
 		if (parsedOffset.obj.minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
@@ -952,8 +954,8 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		const parsed = TimestampTZ.safeFrom(...context.data);
 		if (parsed.success) {
 			return OK({
-				equals: parsed.data.toDateTime("UTC").toString() === this.toDateTime("UTC").toString(),
 				data: parsed.data,
+				equals: parsed.data.toDateTime("UTC").toString() === this.toDateTime("UTC").toString(),
 			});
 		}
 		this.setIssueForContext(context, parsed.error.issue);
@@ -1030,12 +1032,12 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 
 	private _buildISODurationProperty(property: TimestampTZProperties, short = false): string {
 		const propertiesISOEquivalent = {
-				year: "Y",
-				month: "M",
 				day: "D",
 				hour: "H",
 				minute: "M",
+				month: "M",
 				second: "S",
+				year: "Y",
 			},
 			value: string | number = this[property];
 
@@ -1049,8 +1051,8 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 
 	private _toStringPostgreSQL(style: TimestampPostgreSQLStyles): string {
 		const dateTime = DateTime.fromISO(this._toStringISO(), {
-				setZone: true,
 				locale: "en",
+				setZone: true,
 			}),
 			isShort = style === TimestampStyle.PostgreSQLShort,
 			dayOfWeek = isShort ? dateTime.weekdayShort : dateTime.weekdayLong,
@@ -1077,21 +1079,21 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 
 	toJSON(): TimestampTZObject {
 		return {
-			year: this._year,
-			month: this._month,
 			day: this._day,
 			hour: this._hour,
 			minute: this._minute,
-			second: this._second,
+			month: this._month,
 			offset: this._offset,
+			second: this._second,
+			year: this._year,
 		};
 	}
 
 	toDate(): Date {
 		return Date.from({
-			year: this._year,
-			month: this._month,
 			day: this._day,
+			month: this._month,
+			year: this._year,
 		});
 	}
 
@@ -1107,19 +1109,19 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		return TimeTZ.from({
 			hour: this._hour,
 			minute: this._minute,
-			second: this._second,
 			offset: this._offset,
+			second: this._second,
 		});
 	}
 
 	toTimestamp(): Timestamp {
 		return Timestamp.from({
-			year: this._year,
-			month: this._month,
 			day: this._day,
 			hour: this._hour,
 			minute: this._minute,
+			month: this._month,
 			second: this._second,
+			year: this._year,
 		});
 	}
 
@@ -1179,20 +1181,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (month < 1) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 1,
-				type: "number",
 				inclusive: true,
+				minimum: 1,
 				received: month,
+				type: "number",
 			});
 		}
 
 		if (month > 12) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 12,
-				type: "number",
 				inclusive: true,
+				maximum: 12,
 				received: month,
+				type: "number",
 			});
 		}
 
@@ -1223,20 +1225,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (day < 1) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 1,
-				type: "number",
 				inclusive: true,
+				minimum: 1,
 				received: day,
+				type: "number",
 			});
 		}
 
 		if (day > 31) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 31,
-				type: "number",
 				inclusive: true,
+				maximum: 31,
 				received: day,
+				type: "number",
 			});
 		}
 
@@ -1267,20 +1269,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: hour,
+				type: "number",
 			});
 		}
 
 		if (hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: hour,
+				type: "number",
 			});
 		}
 
@@ -1311,20 +1313,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: minute,
+				type: "number",
 			});
 		}
 
 		if (minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: minute,
+				type: "number",
 			});
 		}
 
@@ -1348,20 +1350,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (second < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: second,
+				type: "number",
 			});
 		}
 
 		if (second >= 60) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: second,
+				type: "number",
 			});
 		}
 
@@ -1437,20 +1439,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (parsedOffset.obj.hour < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.hour > 23) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 23,
-				type: "number",
 				inclusive: true,
+				maximum: 23,
 				received: parsedOffset.obj.hour,
+				type: "number",
 			});
 		}
 
@@ -1464,20 +1466,20 @@ class TimestampTZClass extends PgTPBase<TimestampTZ> implements TimestampTZ {
 		if (parsedOffset.obj.minute < 0) {
 			throwPgTPError({
 				code: "too_small",
-				minimum: 0,
-				type: "number",
 				inclusive: true,
+				minimum: 0,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 
 		if (parsedOffset.obj.minute > 59) {
 			throwPgTPError({
 				code: "too_big",
-				maximum: 59,
-				type: "number",
 				inclusive: true,
+				maximum: 59,
 				received: parsedOffset.obj.minute,
+				type: "number",
 			});
 		}
 

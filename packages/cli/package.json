@@ -49,23 +49,23 @@
 	"scripts": {
 		"dev": "tsc -w",
 		"build": "tsc",
-		"lint": "eslint --fix --ext .ts ./ && prettier -w .",
-		"lint:ci": "eslint --ext .ts ./ && prettier --check ."
+		"lint": "eslint --ext .ts ./ && prettier --check .",
+		"lint:fix": "eslint --fix --ext .ts ./ && prettier -w ."
 	},
 	"dependencies": {
 		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
-		"c12": "^1.4.1",
+		"c12": "^1.4.2",
 		"camelcase": "7.0.1",
-		"chalk": "5.2.0",
+		"chalk": "5.3.0",
 		"command-line-args": "^5.2.1",
 		"command-line-commands": "^3.0.2",
 		"command-line-usage": "^7.0.1",
 		"debug": "^4.3.4",
 		"mkdirp": "^3.0.1",
 		"pascalcase": "2.0.0",
-		"pathe": "^1.1.0",
-		"pg": "^8.10.0",
+		"pathe": "^1.1.1",
+		"pg": "^8.11.2",
 		"pluralize": "^8.0.0",
 		"source-map-support": "^0.5.21"
 	},
@@ -73,12 +73,12 @@
 		"@types/command-line-args": "^5.2.0",
 		"@types/command-line-commands": "^2.0.1",
 		"@types/command-line-usage": "^5.0.2",
-		"@types/debug": "^4.1.7",
-		"@types/node": "^20.1.1",
+		"@types/debug": "^4.1.8",
+		"@types/node": "^20.4.6",
 		"@types/pascalcase": "^1.0.1",
-		"@types/pg": "^8.6.6",
-		"@types/pluralize": "^0.0.29",
-		"typescript": "^4.7.4"
+		"@types/pg": "^8.10.2",
+		"@types/pluralize": "^0.0.30",
+		"typescript": "^5.1.6"
 	},
 	"publishConfig": {
 		"provenance": true

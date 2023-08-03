@@ -4,22 +4,29 @@ import { checkValue } from "./util/checkValue.js";
 
 const SCHEMA: SchemaDefinition = {
 	$default: false,
+	/* c8 ignore next 1 */
+	$resolve: (value: unknown) => (typeof value === "object" ? value : false),
+
 	$schema: {
-		type: "object",
 		properties: {
 			from: { type: "string" },
 			to: { type: "string" },
 		},
 		required: ["from", "to"],
+		type: "object",
 	},
-	/* c8 ignore next 1 */
-	$resolve: (value: unknown) => (typeof value === "object" ? value : false),
 };
 
 export default definePgTExtension<PgTTzSwitcherOptions>({
 	meta: {
-		name: "tzswitcher",
 		configKey: "tzswitcher",
+		name: "tzswitcher",
+	},
+	schema: {
+		time: SCHEMA,
+		timestamp: SCHEMA,
+		timestamptz: SCHEMA,
+		timetz: SCHEMA,
 	},
 	setup(resolvedOptions, manager) {
 		const { timestamp, timestamptz, time, timetz } = resolvedOptions;
@@ -34,12 +41,6 @@ export default definePgTExtension<PgTTzSwitcherOptions>({
 		manager.hook("pgt:post-query", data => {
 			data.output.rows = checkValue(data.output.rows, resolvedOptions, "to", "from");
 		});
-	},
-	schema: {
-		timestamp: SCHEMA,
-		timestamptz: SCHEMA,
-		time: SCHEMA,
-		timetz: SCHEMA,
 	},
 });
 

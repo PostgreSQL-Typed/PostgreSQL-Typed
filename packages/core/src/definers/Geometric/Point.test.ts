@@ -9,17 +9,17 @@ import { definePoint } from "./Point";
 describe("definePoint", async () => {
 	test('definePoint({ mode: "Point" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "point.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("point", {
-				point: definePoint("point", { mode: "Point" }).notNull(),
 				_point: definePoint("_point", { mode: "Point" }).array().notNull(),
+				point: definePoint("point", { mode: "Point" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("definePoint", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				point: Point.from("(1,2)"),
 				_point: [Point.from("(1,2)"), Point.from("(3,4)")],
+				point: Point.from("(1,2)"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("definePoint", async () => {
 
 	test('definePoint({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "pointstring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("pointstring", {
-				point: definePoint("point", { mode: "string" }).notNull(),
 				_point: definePoint("_point", { mode: "string" }).array().notNull(),
+				point: definePoint("point", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("definePoint", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				point: "(1,2)",
 				_point: ["(1,2)", "(3,4)"],
+				point: "(1,2)",
 			})
 			.returning();
 

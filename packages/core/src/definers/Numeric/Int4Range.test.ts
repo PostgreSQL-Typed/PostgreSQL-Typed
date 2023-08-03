@@ -9,17 +9,17 @@ import { defineInt4Range } from "./Int4Range";
 describe("defineInt4Range", async () => {
 	test('defineInt4Range({ mode: "Int4Range" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4range.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4range", {
-				int4range: defineInt4Range("int4range", { mode: "Int4Range" }).notNull(),
 				_int4range: defineInt4Range("_int4range", { mode: "Int4Range" }).array().notNull(),
+				int4range: defineInt4Range("int4range", { mode: "Int4Range" }).notNull(),
 			});
 
 		await database.connect();
@@ -34,8 +34,8 @@ describe("defineInt4Range", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4range: Int4Range.from("[1,3)"),
 				_int4range: [Int4Range.from("[1,3)"), Int4Range.from("[4,6)")],
+				int4range: Int4Range.from("[1,3)"),
 			})
 			.returning();
 
@@ -87,17 +87,17 @@ describe("defineInt4Range", async () => {
 
 	test('defineInt4Range({ mode: "string" })', async () => {
 		const postgres = new Client({
-				password: "password",
-				host: "localhost",
-				user: "postgres",
-				database: "postgres",
-				port: 5432,
 				application_name: "int4rangestring.test.ts",
+				database: "postgres",
+				host: "localhost",
+				password: "password",
+				port: 5432,
+				user: "postgres",
 			}),
 			database = pgt(postgres),
 			table = pgTable("int4rangestring", {
-				int4range: defineInt4Range("int4range", { mode: "string" }).notNull(),
 				_int4range: defineInt4Range("_int4range", { mode: "string" }).array().notNull(),
+				int4range: defineInt4Range("int4range", { mode: "string" }).notNull(),
 			});
 
 		await database.connect();
@@ -112,8 +112,8 @@ describe("defineInt4Range", async () => {
 		const result1 = await database
 			.insert(table)
 			.values({
-				int4range: "[1,3)",
 				_int4range: ["[1,3)", "[4,6)"],
+				int4range: "[1,3)",
 			})
 			.returning();
 

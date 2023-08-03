@@ -6,7 +6,10 @@ export class PgTError extends Error {
 		return this.PgTPError.issue;
 	}
 
-	constructor(public column: PgColumn<any, any>, public PgTPError: PgTPError) {
+	constructor(
+		public column: PgColumn<any, any>,
+		public PgTPError: PgTPError
+	) {
 		super();
 	}
 

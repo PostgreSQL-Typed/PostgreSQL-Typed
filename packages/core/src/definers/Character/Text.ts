@@ -25,7 +25,7 @@ export type PgTTextType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Text" ? Text : string,
-	TDriverParameter = Text
+	TDriverParameter = Text,
 > = PgTText<{
 	tableName: TTableName;
 	name: TName;

@@ -1,11 +1,11 @@
-import { activeTable, getRelationsRelatedTo, classById, attIsFK, attIsPK, attIsUnique } from "@/composables/data";
+import { activeTable, attIsFK, attIsPK, attIsUnique, classById, getRelationsRelatedTo } from "@/composables/data";
 
 export function getERD(): string {
 	const table = activeTable.value;
 	if (!table) return "";
 	const { nodes, links } = getRelationsRelatedTo(table.table_id);
 
-	if (!nodes.length) {
+	if (nodes.length === 0) {
 		const tableColumns = classById(table.table_id)?.attributes || [];
 		return `erDiagram\n\t${table.table_name} {\n\t\t${tableColumns
 			.map(c => {
@@ -24,7 +24,7 @@ export function getERD(): string {
 	return `erDiagram\n\t${nodes
 		.map(
 			node =>
-				`${node.class_name}{\n\t\t${classById(parseInt(node.class_id))
+				`${node.class_name}{\n\t\t${classById(Number.parseInt(node.class_id))
 					?.attributes?.map(c => {
 						let extraString = "";
 						if (!c.not_null) extraString += " Nullable,";
@@ -39,8 +39,8 @@ export function getERD(): string {
 		)
 		.join("\n\t")}\n\t${links
 		.map(link => {
-			const source = classById(parseInt(link.source))?.class_name || link.source,
-				target = classById(parseInt(link.target))?.class_name || link.target;
+			const source = classById(Number.parseInt(link.source))?.class_name || link.source,
+				target = classById(Number.parseInt(link.target))?.class_name || link.target;
 			return `${source} ${link.cardinality} ${target}: "${link.relationship}"`;
 		})
 		.join("\n\t")}`;

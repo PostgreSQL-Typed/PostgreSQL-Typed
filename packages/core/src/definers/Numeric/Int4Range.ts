@@ -25,7 +25,7 @@ export type PgTInt4RangeType<
 	TNotNull extends boolean,
 	THasDefault extends boolean,
 	TData = TMode extends "Int4Range" ? Int4Range : string,
-	TDriverParameter = string
+	TDriverParameter = string,
 > = PgTInt4Range<{
 	tableName: TTableName;
 	name: TName;

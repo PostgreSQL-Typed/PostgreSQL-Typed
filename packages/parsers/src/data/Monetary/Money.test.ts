@@ -47,8 +47,8 @@ describe("MoneyConstructor", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -59,8 +59,8 @@ describe("MoneyConstructor", () => {
 			expect(nanString.error.issue).toStrictEqual({
 				code: "invalid_string",
 				expected: "LIKE 1.23",
-				received: "abc",
 				message: "Expected 'LIKE 1.23', received 'abc'",
+				received: "abc",
 			});
 		}
 
@@ -70,11 +70,11 @@ describe("MoneyConstructor", () => {
 		else {
 			expect(tooBig.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "number",
-				maximum: "92233720368547758.07",
 				inclusive: true,
+				maximum: "92233720368547758.07",
 				message: "Number must be less than or equal to 92233720368547758.07",
 				received: "10e400",
+				type: "number",
 			});
 		}
 
@@ -84,11 +84,11 @@ describe("MoneyConstructor", () => {
 		else {
 			expect(tooSmall.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "number",
-				minimum: "-92233720368547758.08",
 				inclusive: true,
 				message: "Number must be greater than or equal to -92233720368547758.08",
+				minimum: "-92233720368547758.08",
 				received: "-10e400",
+				type: "number",
 			});
 		}
 
@@ -99,11 +99,11 @@ describe("MoneyConstructor", () => {
 		else {
 			expect(tooManyArguments.error.issue).toStrictEqual({
 				code: "too_big",
-				type: "arguments",
-				maximum: 1,
 				exact: true,
+				maximum: 1,
 				message: "Function must have exactly 1 argument(s)",
 				received: 2,
+				type: "arguments",
 			});
 		}
 
@@ -114,17 +114,17 @@ describe("MoneyConstructor", () => {
 		else {
 			expect(tooFewArguments.error.issue).toStrictEqual({
 				code: "too_small",
-				type: "arguments",
-				minimum: 1,
 				exact: true,
 				message: "Function must have exactly 1 argument(s)",
+				minimum: 1,
 				received: 0,
+				type: "arguments",
 			});
 		}
 
 		const unrecognizedKeys = Money.safeFrom({
-			value: 1,
 			unrecognized: true,
+			value: 1,
 		} as any);
 		expect(unrecognizedKeys.success).toEqual(false);
 		if (unrecognizedKeys.success) expect.fail();
@@ -157,10 +157,10 @@ describe("MoneyConstructor", () => {
 		else {
 			expect(invalidKeys.error.issue).toStrictEqual({
 				code: "invalid_key_type",
-				objectKey: "value",
 				expected: "string",
-				received: "number",
 				message: "Expected 'string' for key 'value', received 'number'",
+				objectKey: "value",
+				received: "number",
 			});
 		}
 		//#endregion
@@ -240,8 +240,8 @@ describe("Money", () => {
 			expect(boolean.error.issue).toStrictEqual({
 				code: "invalid_type",
 				expected: ["number", "string", "object", "bigNumber", "bigint"],
-				received: "boolean",
 				message: "Expected 'number' | 'string' | 'object' | 'bigNumber' | 'bigint', received 'boolean'",
+				received: "boolean",
 			});
 		}
 
@@ -339,12 +339,12 @@ describe("PostgreSQL", () => {
 
 	it("should be returned as a Money", async () => {
 		const client = new Client({
-			password: "password",
-			host: "localhost",
-			user: "postgres",
-			database: "postgres",
-			port: 5432,
 			application_name: "money.test.ts",
+			database: "postgres",
+			host: "localhost",
+			password: "password",
+			port: 5432,
+			user: "postgres",
 		});
 
 		await client.connect();

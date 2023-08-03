@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/parsers",
-	"version": "0.9.3",
+	"version": "0.10.0",
 	"description": "Parsers to convert PostgreSQL data types to TypeScript classes",
 	"type": "module",
 	"exports": "./lib/index.js",

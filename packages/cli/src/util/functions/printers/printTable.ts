@@ -157,7 +157,7 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 	switch (attribute.type_id) {
 		case OID._bit:
 		case OID.bit:
-			if (!printer.config.files.definerModes.bit) return "";
+			if (printer.config.files.definerModes.bit !== "Bit") return "";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/parsers",
@@ -167,7 +167,7 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 			return ", Bit<%LENGTH%>";
 		case OID._varbit:
 		case OID.varbit:
-			if (!printer.config.files.definerModes.bitVarying) return "";
+			if (printer.config.files.definerModes.bitVarying !== "BitVarying") return "";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/parsers",
@@ -179,7 +179,7 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 		case OID.bpchar:
 		case OID._char:
 		case OID.char:
-			if (!printer.config.files.definerModes.character) return "";
+			if (printer.config.files.definerModes.character !== "Character") return "";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/parsers",
@@ -189,7 +189,7 @@ function getLenghtMaybe(attribute: Attribute, printer: Printer, file: FileContex
 			return ", Character<%LENGTH%>";
 		case OID._varchar:
 		case OID.varchar:
-			if (!printer.config.files.definerModes.characterVarying) return "";
+			if (printer.config.files.definerModes.characterVarying !== "CharacterVarying") return "";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/parsers",

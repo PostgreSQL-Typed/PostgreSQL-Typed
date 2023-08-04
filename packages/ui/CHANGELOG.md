@@ -1,5 +1,12 @@
 # @postgresql-typed/ui
 
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @postgresql-typed/cli@0.8.2
+
 ## 0.4.4
 
 ### Patch Changes

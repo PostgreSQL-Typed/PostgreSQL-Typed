@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.8.2
+
+### Patch Changes
+
+- swap falsy to truthy
+
 ## 0.8.1
 
 ### Patch Changes

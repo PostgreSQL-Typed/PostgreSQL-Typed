@@ -1189,7 +1189,7 @@ export const isLessThanOrEqual = lte;
  *
  * @see notInArray for the inverse of this test
  */
-/* c8 ignore next 11 */
+/* c8 ignore next 14 */
 export function inArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean>;
 export function inArray<TColumn extends AnyColumn>(
 	column: TColumn,
@@ -1225,7 +1225,7 @@ export function inArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown 
  *
  * @see inArray for the inverse of this test
  */
-/* c8 ignore next 13 */
+/* c8 ignore next 16 */
 export function notInArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean>;
 export function notInArray<TColumn extends AnyColumn>(
 	column: TColumn,

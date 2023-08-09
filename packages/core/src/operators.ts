@@ -89,9 +89,9 @@ export function divide(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Pla
  *
  * @description Uses the `~=` operator.
  */
-export function sameAs<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function sameAs<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function sameAs(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function sameAs<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function sameAs<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function sameAs(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} ~= ${bindIfParam(right, left as SQL.Aliased)}`;
 }
 
@@ -954,9 +954,9 @@ export function extractYear(value: AnyColumn | SQL.Aliased | SQL): SQL<number> {
  *
  * @see isNull for a way to test equality to NULL.
  */
-export function eq<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function eq<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function eq(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function eq<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function eq<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function eq(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} = ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -982,9 +982,9 @@ export const is = eq;
  *
  * @see isNotNull for a way to test whether a value is not null.
  */
-export function ne<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function ne<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function ne(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function ne<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function ne<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function ne(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} <> ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -1072,7 +1072,7 @@ export function or(...unfilteredConditions: (SQL | undefined)[]): SQL | undefine
  *   .where(not(inArray(cars.make, ['GM', 'Ford'])))
  * ```
  */
-export function not(condition: SQL): SQL {
+export function not(condition: SQL): SQL<boolean> {
 	return sql`not ${condition}`;
 }
 
@@ -1090,9 +1090,9 @@ export function not(condition: SQL): SQL {
  *
  * @see gte for greater-than-or-equal
  */
-export function gt<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function gt<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function gt(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function gt<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function gt<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function gt(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} > ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -1115,9 +1115,9 @@ export const isGreaterThan = gt;
  *
  * @see gt for a strictly greater-than condition
  */
-export function gte<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function gte<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function gte(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function gte<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function gte<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function gte(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} >= ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -1138,9 +1138,9 @@ export const isGreaterThanOrEqual = gte;
  *
  * @see lte for greater-than-or-equal
  */
-export function lt<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function lt<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function lt(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function lt<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function lt<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function lt(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} < ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -1161,9 +1161,9 @@ export const isLessThan = lt;
  *
  * @see lt for a strictly less-than condition
  */
-export function lte<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function lte<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL;
-export function lte(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL {
+export function lte<T>(left: SQL.Aliased<T> | SQL<T>, right: T | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function lte<TColumn extends AnyColumn>(left: TColumn, right: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper | AnyColumn): SQL<boolean>;
+export function lte(left: AnyColumn | SQL.Aliased | SQL, right: unknown | Placeholder | SQLWrapper | AnyColumn): SQL<boolean> {
 	return sql`${left} <= ${bindIfParam(right, left as AnyColumn)}`;
 }
 
@@ -1190,9 +1190,12 @@ export const isLessThanOrEqual = lte;
  * @see notInArray for the inverse of this test
  */
 /* c8 ignore next 11 */
-export function inArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL;
-export function inArray<TColumn extends AnyColumn>(column: TColumn, values: (GetColumnData<TColumn, "raw"> | Placeholder)[] | Placeholder | SQLWrapper): SQL;
-export function inArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown | Placeholder)[] | Placeholder | SQLWrapper): SQL {
+export function inArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean>;
+export function inArray<TColumn extends AnyColumn>(
+	column: TColumn,
+	values: (GetColumnData<TColumn, "raw"> | Placeholder)[] | Placeholder | SQLWrapper
+): SQL<boolean>;
+export function inArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean> {
 	if (Array.isArray(values)) {
 		if (values.length === 0) throw new Error("inArray requires at least one value");
 
@@ -1223,9 +1226,12 @@ export function inArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown 
  * @see inArray for the inverse of this test
  */
 /* c8 ignore next 13 */
-export function notInArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL;
-export function notInArray<TColumn extends AnyColumn>(column: TColumn, values: (GetColumnData<TColumn, "raw"> | Placeholder)[] | Placeholder | SQLWrapper): SQL;
-export function notInArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown | Placeholder)[] | Placeholder | SQLWrapper): SQL {
+export function notInArray<T>(column: SQL.Aliased<T> | SQL<T>, values: (T | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean>;
+export function notInArray<TColumn extends AnyColumn>(
+	column: TColumn,
+	values: (GetColumnData<TColumn, "raw"> | Placeholder)[] | Placeholder | SQLWrapper
+): SQL<boolean>;
+export function notInArray(column: AnyColumn | SQL.Aliased | SQL, values: (unknown | Placeholder)[] | Placeholder | SQLWrapper): SQL<boolean> {
 	if (isSQLWrapper(values)) return sql`${column} not in ${values}`;
 
 	if (Array.isArray(values)) {
@@ -1256,7 +1262,7 @@ export const nin = notInArray;
  *
  * @see isNotNull for the inverse of this test
  */
-export function isNull(column: AnyColumn | Placeholder | SQLWrapper): SQL {
+export function isNull(column: AnyColumn | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} is null`;
 }
 
@@ -1276,7 +1282,7 @@ export function isNull(column: AnyColumn | Placeholder | SQLWrapper): SQL {
  *
  * @see isNull for the inverse of this test
  */
-export function isNotNull(column: AnyColumn | Placeholder | SQLWrapper): SQL {
+export function isNotNull(column: AnyColumn | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} is not null`;
 }
 
@@ -1301,7 +1307,7 @@ export function isNotNull(column: AnyColumn | Placeholder | SQLWrapper): SQL {
  * @see notExists for the inverse of this test
  */
 /* c8 ignore next 3 */
-export function exists(subquery: SQLWrapper): SQL {
+export function exists(subquery: SQLWrapper): SQL<boolean> {
 	return sql`exists (${subquery})`;
 }
 
@@ -1327,7 +1333,7 @@ export function exists(subquery: SQLWrapper): SQL {
  * @see exists for the inverse of this test
  */
 /* c8 ignore next 3 */
-export function notExists(subquery: SQLWrapper): SQL {
+export function notExists(subquery: SQLWrapper): SQL<boolean> {
 	return sql`not exists (${subquery})`;
 }
 
@@ -1350,13 +1356,13 @@ export function notExists(subquery: SQLWrapper): SQL {
  *
  * @see notBetween for the inverse of this test
  */
-export function between<T>(column: SQL.Aliased, min: T | Placeholder | SQLWrapper, max: T | Placeholder | SQLWrapper): SQL;
+export function between<T>(column: SQL.Aliased, min: T | Placeholder | SQLWrapper, max: T | Placeholder | SQLWrapper): SQL<boolean>;
 export function between<TColumn extends AnyColumn>(
 	column: TColumn,
 	min: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper,
 	max: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper
-): SQL;
-export function between(column: AnyColumn | SQL.Aliased | SQL, min: unknown | Placeholder | SQLWrapper, max: unknown | Placeholder | SQLWrapper): SQL {
+): SQL<boolean>;
+export function between(column: AnyColumn | SQL.Aliased | SQL, min: unknown | Placeholder | SQLWrapper, max: unknown | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} between ${bindIfParam(min, column as AnyColumn)} and ${bindIfParam(max, column as AnyColumn)}`;
 }
 
@@ -1380,13 +1386,17 @@ export const isBetween = between;
  *
  * @see between for the inverse of this test
  */
-export function notBetween<T>(column: SQL.Aliased, min: T | Placeholder | SQLWrapper, max: T | Placeholder | SQLWrapper): SQL;
+export function notBetween<T>(column: SQL.Aliased, min: T | Placeholder | SQLWrapper, max: T | Placeholder | SQLWrapper): SQL<boolean>;
 export function notBetween<TColumn extends AnyColumn>(
 	column: TColumn,
 	min: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper,
 	max: GetColumnData<TColumn, "raw"> | Placeholder | SQLWrapper
-): SQL;
-export function notBetween(column: AnyColumn | SQL.Aliased | SQL, min: unknown | Placeholder | SQLWrapper, max: unknown | Placeholder | SQLWrapper): SQL {
+): SQL<boolean>;
+export function notBetween(
+	column: AnyColumn | SQL.Aliased | SQL,
+	min: unknown | Placeholder | SQLWrapper,
+	max: unknown | Placeholder | SQLWrapper
+): SQL<boolean> {
 	return sql`${column} not between ${bindIfParam(min, column as AnyColumn)} and ${bindIfParam(max, column as AnyColumn)}`;
 }
 
@@ -1410,7 +1420,7 @@ export const isNotBetween = notBetween;
  *
  * @see ilike for a case-insensitive version of this condition
  */
-export function like(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL {
+export function like(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} like ${value}`;
 }
 
@@ -1432,7 +1442,7 @@ export function like(column: AnyColumn, value: string | Placeholder | SQLWrapper
  * @see like for the inverse condition
  * @see notIlike for a case-insensitive version of this condition
  */
-export function notLike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL {
+export function notLike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} not like ${value}`;
 }
 
@@ -1455,7 +1465,7 @@ export function notLike(column: AnyColumn, value: string | Placeholder | SQLWrap
  *
  * @see like for a case-sensitive version of this condition
  */
-export function ilike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL {
+export function ilike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} ilike ${value}`;
 }
 
@@ -1477,7 +1487,7 @@ export function ilike(column: AnyColumn, value: string | Placeholder | SQLWrappe
  * @see ilike for the inverse condition
  * @see notLike for a case-sensitive version of this condition
  */
-export function notIlike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL {
+export function notIlike(column: AnyColumn, value: string | Placeholder | SQLWrapper): SQL<boolean> {
 	return sql`${column} not ilike ${value}`;
 }
 

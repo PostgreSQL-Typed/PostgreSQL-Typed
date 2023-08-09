@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.10.2
+
+### Patch Changes
+
+- fix return type of sql operators
+
 ## 0.10.1
 
 ### Patch Changes

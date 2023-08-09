@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/core",
-	"version": "0.10.1",
+	"version": "0.10.2",
 	"description": "A type-safe PostgreSQL client for Node.js",
 	"type": "module",
 	"exports": {

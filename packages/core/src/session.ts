@@ -1,12 +1,17 @@
 import type { PgTExtensionContext, PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
-import { fillPlaceholders, Logger, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, TablesRelationalConfig } from "drizzle-orm";
-import { NodePgClient, NodePgQueryResultHKT, NodePgSession, NodePgSessionOptions, NodePgTransaction } from "drizzle-orm/node-postgres";
-import { AnyPgColumn, PgDialect, PgSession, PgTransactionConfig, PreparedQuery, PreparedQueryConfig } from "drizzle-orm/pg-core";
-import type { QueryArrayConfig, QueryConfig } from "pg";
+import { fillPlaceholders, Logger, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, SQL, sql, TablesRelationalConfig } from "drizzle-orm";
+import { NodePgQueryResultHKT, NodePgSessionOptions } from "drizzle-orm/node-postgres";
+import { AnyPgColumn, PgDialect, PgTransactionConfig, PreparedQuery, PreparedQueryConfig } from "drizzle-orm/pg-core";
+import type { Client, PoolClient, QueryArrayConfig, QueryConfig } from "pg";
+import pg from "pg";
 
 import { PgTDriver } from "./driver.js";
 import { PgTExtensionManager } from "./extensions.js";
 import { mapResultRow } from "./functions/mapResultRow.js";
+import { PgTransaction } from "./query-builders/transaction.js";
+
+export type NodePgClient = pg.Pool | PoolClient | Client;
+const { Pool } = pg;
 
 export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {
 	private rawQuery: QueryConfig;
@@ -158,25 +163,18 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 	}
 }
 
-export class PgTSession<
-	TFullSchema extends Record<string, unknown> = Record<string, never>,
-	TSchema extends TablesRelationalConfig = Record<string, never>,
-> extends PgSession<NodePgQueryResultHKT, TFullSchema, TSchema> {
+export class PgTSession<TFullSchema extends Record<string, unknown> = Record<string, never>, TSchema extends TablesRelationalConfig = Record<string, never>> {
 	private logger: Logger;
-	private nodePgSession: NodePgSession<TFullSchema, TSchema>;
 
 	constructor(
 		public client: NodePgClient,
 		public extensions: PgTExtensionManager,
 		public driver: PgTDriver,
-		dialect: PgDialect,
-		schema: RelationalSchemaConfig<TSchema> | undefined,
-		options: NodePgSessionOptions = {}
+		private dialect: PgDialect,
+		private schema: RelationalSchemaConfig<TSchema> | undefined,
+		private options: NodePgSessionOptions = {}
 	) {
-		super(dialect);
 		this.logger = options.logger ?? new NoopLogger();
-
-		this.nodePgSession = new NodePgSession(client, dialect, schema, options);
 	}
 
 	prepareQuery<T extends PreparedQueryConfig = PreparedQueryConfig>(
@@ -188,11 +186,54 @@ export class PgTSession<
 		return new PgTPreparedQuery(this.client, this.extensions, this.driver, query.sql, query.params, this.logger, fields, name, customResultMapper);
 	}
 
-	/* c8 ignore next 6 */
-	override async transaction<T>(
-		transaction: (tx: NodePgTransaction<TFullSchema, TSchema>) => Promise<T>,
-		config?: PgTransactionConfig | undefined
-	): Promise<T> {
-		return this.nodePgSession.transaction(transaction, config);
+	execute<T>(query: SQL): Promise<T> {
+		// eslint-disable-next-line unicorn/no-useless-undefined
+		const prepared = this.prepareQuery<PreparedQueryConfig & { execute: T }>(this.dialect.sqlToQuery(query), undefined, undefined);
+		return prepared.execute();
+	}
+
+	/* c8 ignore next 4 */
+	all<T = unknown>(query: SQL): Promise<T[]> {
+		// eslint-disable-next-line unicorn/no-useless-undefined
+		return this.prepareQuery<PreparedQueryConfig & { all: T[] }>(this.dialect.sqlToQuery(query), undefined, undefined).all();
+	}
+
+	async transaction<T>(transaction: (tx: PgTTransaction<TFullSchema, TSchema>) => Promise<T>, config?: PgTransactionConfig | undefined): Promise<T> {
+		const session =
+				this.client instanceof Pool ? new PgTSession(await this.client.connect(), this.extensions, this.driver, this.dialect, this.schema, this.options) : this,
+			tx = new PgTTransaction(this.dialect, session, this.schema);
+		await tx.execute(sql`begin${config ? sql` ${tx.getTransactionConfigSQL(config)}` : undefined}`);
+		try {
+			const result = await transaction(tx);
+			await tx.execute(sql`commit`);
+			return result;
+			/* c8 ignore next 3 */
+		} catch (error) {
+			await tx.execute(sql`rollback`);
+			throw error;
+		} finally {
+			if (this.client instanceof Pool) (session.client as PoolClient).release();
+		}
+	}
+}
+
+export class PgTTransaction<TFullSchema extends Record<string, unknown>, TSchema extends TablesRelationalConfig> extends PgTransaction<
+	NodePgQueryResultHKT,
+	TFullSchema,
+	TSchema
+> {
+	/* c8 ignore next 13 */
+	override async transaction<T>(transaction: (tx: PgTTransaction<TFullSchema, TSchema>) => Promise<T>): Promise<T> {
+		const savepointName = `sp${this.nestedIndex + 1}`,
+			tx = new PgTTransaction(this.dialect, this.session, this.schema, this.nestedIndex + 1);
+		await tx.execute(sql.raw(`savepoint ${savepointName}`));
+		try {
+			const result = await transaction(tx);
+			await tx.execute(sql.raw(`release savepoint ${savepointName}`));
+			return result;
+		} catch (error) {
+			await tx.execute(sql.raw(`rollback to savepoint ${savepointName}`));
+			throw error;
+		}
 	}
 }

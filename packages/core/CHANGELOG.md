@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.11.0
+
+### Minor Changes
+
+- transactions should now correctly work
+
 ## 0.10.2
 
 ### Patch Changes

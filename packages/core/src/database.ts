@@ -9,7 +9,6 @@ import {
 	TablesRelationalConfig,
 	WithSubquery,
 } from "drizzle-orm";
-import { NodePgTransaction } from "drizzle-orm/node-postgres";
 import {
 	AnyPgColumn,
 	AnyPgTable,
@@ -29,8 +28,9 @@ import { PgTRelationalQueryBuilder } from "./query-builders/query.js";
 import { PgTQueryBuilder, TypedQueryBuilder } from "./query-builders/query-builder.js";
 import { PgTRefreshMaterializedView } from "./query-builders/refresh-materialized-view.js";
 import { PgTSelectBuilder } from "./query-builders/select.js";
+import { PgTransaction } from "./query-builders/transaction.js";
 import { PgTUpdateBuilder } from "./query-builders/update.js";
-import { PgTSession } from "./session.js";
+import { PgTSession, PgTTransaction } from "./session.js";
 
 export class PgTDatabase<
 	TQueryResult extends QueryResultHKT,
@@ -161,8 +161,8 @@ export class PgTDatabase<
 		return this.session.execute(query.getSQL());
 	}
 
-	transaction<T>(transaction: (tx: NodePgTransaction<TFullSchema, TSchema>) => Promise<T>, config?: PgTransactionConfig): Promise<T> {
-		return this.session.transaction(transaction, config);
+	transaction<T>(transaction: (tx: PgTransaction<TQueryResult, TFullSchema, TSchema>) => Promise<T>, config?: PgTransactionConfig): Promise<T> {
+		return this.session.transaction(transaction as (tx: PgTTransaction<TFullSchema, TSchema>) => Promise<T>, config);
 	}
 
 	public get extensions(): PgTExtensionManager {

@@ -10,7 +10,7 @@ import { PgTExtensionManager } from "./extensions.js";
 import { mapResultRow } from "./functions/mapResultRow.js";
 import { PgTransaction } from "./query-builders/transaction.js";
 
-export type NodePgClient = pg.Pool | PoolClient | Client;
+type NodePgClient = pg.Pool | PoolClient | Client;
 const { Pool } = pg;
 
 export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQuery<T> {

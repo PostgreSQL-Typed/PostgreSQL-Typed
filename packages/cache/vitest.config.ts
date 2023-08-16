@@ -4,6 +4,7 @@ export default defineConfig({
 	test: {
 		coverage: {
 			100: true,
+			reportOnFailure: true,
 			reporter: ["json-summary", "text", "html"],
 		},
 		deps: {

@@ -366,7 +366,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].varchar = parser<CharacterVarying<number>>(CharacterVarying)(result.rows[0].varchar);
-			result.rows[0]._varchar = arrayParser<CharacterVarying<number>>(CharacterVarying, ",")(result.rows[0]._varchar);
+			result.rows[0]._varchar = arrayParser<CharacterVarying<number>>(CharacterVarying)(result.rows[0]._varchar);
 
 			expect(CharacterVarying.isCharacterVarying(result.rows[0].varchar)).toBe(true);
 			expect(CharacterVarying.from("a").equals(result.rows[0].varchar)).toBe(true);

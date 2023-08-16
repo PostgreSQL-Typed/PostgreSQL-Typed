@@ -392,9 +392,9 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].char = parser<Character<number>>(Character)(result.rows[0].char);
-			result.rows[0]._char = arrayParser<Character<number>>(Character, ",")(result.rows[0]._char);
+			result.rows[0]._char = arrayParser<Character<number>>(Character)(result.rows[0]._char);
 			result.rows[0].bpchar = parser<Character<number>>(Character)(result.rows[0].bpchar);
-			result.rows[0]._bpchar = arrayParser<Character<number>>(Character, ",")(result.rows[0]._bpchar);
+			result.rows[0]._bpchar = arrayParser<Character<number>>(Character)(result.rows[0]._bpchar);
 
 			expect(Character.isAnyCharacter(result.rows[0].char)).toBe(true);
 			expect(Character.from("a").equals(result.rows[0].char.value)).toBe(true);

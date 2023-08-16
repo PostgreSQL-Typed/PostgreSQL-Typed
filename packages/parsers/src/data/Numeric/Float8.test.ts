@@ -409,7 +409,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].float8 = parser<Float8>(Float8)(result.rows[0].float8);
-			result.rows[0]._float8 = arrayParser<Float8>(Float8, ",")(result.rows[0]._float8);
+			result.rows[0]._float8 = arrayParser<Float8>(Float8)(result.rows[0]._float8);
 
 			expect(Float8.isFloat8(result.rows[0].float8)).toBe(true);
 			expect(Float8.from(1).equals(result.rows[0].float8)).toBe(true);

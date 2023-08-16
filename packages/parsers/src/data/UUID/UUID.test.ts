@@ -281,7 +281,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].uuid = parser<UUID>(UUID)(result.rows[0].uuid);
-			result.rows[0]._uuid = arrayParser<UUID>(UUID, ",")(result.rows[0]._uuid);
+			result.rows[0]._uuid = arrayParser<UUID>(UUID)(result.rows[0]._uuid);
 
 			expect(result.rows[0].uuid.toString()).toStrictEqual(UUID.from("A0EEBC99-9C0B-4EF8-BB6D-6BB9BD380A11").toString());
 			expect(result.rows[0]._uuid).toHaveLength(2);

@@ -378,7 +378,7 @@ describe("PostgreSQL", () => {
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		result.rows[0].boolean = parser<Boolean>(Boolean)(result.rows[0].boolean);
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		result.rows[0]._boolean = arrayParser<Boolean>(Boolean, ",")(result.rows[0]._boolean);
+		result.rows[0]._boolean = arrayParser<Boolean>(Boolean)(result.rows[0]._boolean);
 
 		expect(Boolean.isBoolean(result.rows[0].boolean)).toBe(true);
 		expect(Boolean.from(true).equals(result.rows[0].boolean)).toBe(true);

@@ -382,7 +382,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].money = parser<Money>(Money)(result.rows[0].money);
-			result.rows[0]._money = arrayParser<Money>(Money, ",")(result.rows[0]._money);
+			result.rows[0]._money = arrayParser<Money>(Money)(result.rows[0]._money);
 
 			expect(Money.isMoney(result.rows[0].money)).toBe(true);
 			expect(Money.from(1).equals(result.rows[0].money)).toBe(true);

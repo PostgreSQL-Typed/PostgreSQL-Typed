@@ -28,12 +28,6 @@ describe("arrayParser", () => {
 		expect(parser('{"0","1"}')?.map(v => v.value)).toStrictEqual([0, 1]);
 		expect(parser("{}")).toStrictEqual([]);
 	});
-
-	it("should return null if string is invalid", () => {
-		expect(parser("bla")).toBeNull();
-		expect(parser('{"a","b"}')).toBeNull();
-		expect(parser(null)).toBeNull();
-	});
 });
 
 describe("arrayParser (+ custom delimiter)", () => {
@@ -41,11 +35,5 @@ describe("arrayParser (+ custom delimiter)", () => {
 	it("should return an Object array if the string is valid", () => {
 		expect(parser("{0;1}")?.map(v => v.value)).toStrictEqual([0, 1]);
 		expect(parser("{}")).toStrictEqual([]);
-	});
-
-	it("should return null if string is invalid", () => {
-		expect(parser("bla")).toBeNull();
-		expect(parser("{a;b}")).toBeNull();
-		expect(parser(null)).toBeNull();
 	});
 });

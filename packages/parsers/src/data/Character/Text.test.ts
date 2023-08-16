@@ -242,7 +242,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].text = parser<Text>(Text)(result.rows[0].text);
-			result.rows[0]._text = arrayParser<Text>(Text, ",")(result.rows[0]._text);
+			result.rows[0]._text = arrayParser<Text>(Text)(result.rows[0]._text);
 
 			expect(result.rows[0].text.toString()).toStrictEqual(Text.from("abc").toString());
 			expect(result.rows[0]._text).toHaveLength(2);

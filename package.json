@@ -50,7 +50,7 @@
 		"commitlint": "^17.6.7",
 		"eslint": "^8.46.0",
 		"husky": "^8.0.3",
-		"lint-staged": "^13.2.3",
+		"lint-staged": "^14.0.0",
 		"monorepo-coverage-badges": "^1.0.3",
 		"prettier": "^3.0.1",
 		"rimraf": "^5.0.1",

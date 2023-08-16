@@ -187,6 +187,9 @@ importers:
       '@postgresql-typed/util':
         specifier: workspace:*
         version: link:../util
+      '@types/pg':
+        specifier: ^8.10.2
+        version: 8.10.2
       c12:
         specifier: ^1.4.2
         version: 1.4.2
@@ -218,9 +221,6 @@ importers:
       '@types/node':
         specifier: ^20.4.6
         version: 20.4.6
-      '@types/pg':
-        specifier: ^8.10.2
-        version: 8.10.2
       typescript:
         specifier: ^5.1.6
         version: 5.1.6

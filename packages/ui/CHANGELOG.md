@@ -1,5 +1,18 @@
 # @postgresql-typed/ui
 
+## 0.4.6
+
+### Patch Changes
+
+- [#85](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/85) [`0655c08`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/0655c08097f23c77ca349779d1a491922d366936) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `unocss` to `^0.55.0`.
+
+- [#83](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/83) [`25d3745`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/25d3745fc38b06a0527ab2d5e03d95ee6ac8b84c) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@unocss/nuxt` to `^0.55.0`.
+
+- [#84](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/84) [`899c635`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/899c635cf610a72298dc7a3dcb1ba46db51e8268) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `@unocss/reset` to `^0.55.0`.
+
+- Updated dependencies [[`9ff48cf`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/9ff48cf4b9182671061d03b5f4a9f098cd297a7e)]:
+  - @postgresql-typed/cli@0.8.3
+
 ## 0.4.5
 
 ### Patch Changes

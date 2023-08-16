@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.11.2
+
+### Patch Changes
+
+- export the type of the pg classes
+
 ## 0.11.1
 
 ### Patch Changes

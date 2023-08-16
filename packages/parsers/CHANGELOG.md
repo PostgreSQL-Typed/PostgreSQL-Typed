@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.11.0
+
+### Minor Changes
+
+- [#87](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/87) [`7843d3a`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/7843d3a7ed67f901d91f572babf46899f4b9721e) Thanks [@Bas950](https://github.com/Bas950)! - Rework how array parsing works
+
 ## 0.10.1
 
 ### Patch Changes

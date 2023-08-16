@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.8.3
+
+### Patch Changes
+
+- [#86](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/86) [`9ff48cf`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/9ff48cf4b9182671061d03b5f4a9f098cd297a7e) Thanks [@renovate](https://github.com/apps/renovate)! - Updated dependency `camelcase` to `8.0.0`.
+
 ## 0.8.2
 
 ### Patch Changes

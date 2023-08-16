@@ -10,3 +10,4 @@ dist
 __generated__
 cypress/videos
 cypress/screenshots
+!.npmrc

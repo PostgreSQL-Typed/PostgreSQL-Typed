@@ -412,7 +412,7 @@ describe("PostgreSQL", () => {
 		`);
 
 		result.rows[0].oid = parser<OID>(OID)(result.rows[0].oid);
-		result.rows[0]._oid = arrayParser<OID>(OID, ",")(result.rows[0]._oid);
+		result.rows[0]._oid = arrayParser<OID>(OID)(result.rows[0]._oid);
 
 		expect(OID.isOID(result.rows[0].oid)).toBe(true);
 		expect(OID.from(1).equals(result.rows[0].oid)).toBe(true);

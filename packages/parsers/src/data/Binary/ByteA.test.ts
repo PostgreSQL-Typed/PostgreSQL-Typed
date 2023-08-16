@@ -305,7 +305,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].bytea = parser<ByteA>(ByteA)(result.rows[0].bytea);
-			result.rows[0]._bytea = arrayParser<ByteA>(ByteA, undefined, "\\")(result.rows[0]._bytea);
+			result.rows[0]._bytea = arrayParser<ByteA>(ByteA)(result.rows[0]._bytea);
 
 			expect(ByteA.isByteA(result.rows[0].bytea)).toBe(true);
 			expect(ByteA.from("\\x1234").equals(result.rows[0].bytea)).toBe(true);

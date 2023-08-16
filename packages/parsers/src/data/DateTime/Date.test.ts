@@ -265,7 +265,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].date = parser<Date>(Date)(result.rows[0].date);
-			result.rows[0]._date = arrayParser<Date>(Date, ",")(result.rows[0]._date);
+			result.rows[0]._date = arrayParser<Date>(Date)(result.rows[0]._date);
 
 			expect(result.rows[0].date.toString()).toStrictEqual(
 				Date.from({

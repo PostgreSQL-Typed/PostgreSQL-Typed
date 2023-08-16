@@ -99,11 +99,13 @@ class JSONConstructorClass extends PgTPConstructorBase<JSON> implements JSONCons
 		}
 	}
 
-	private _parseString(context: ParseContext, argument: string): ParseReturnType<JSON> {
+	private _parseString(context: ParseContext, argument: string, retried = false): ParseReturnType<JSON> {
 		try {
 			const parsed = globalThis.JSON.parse(argument);
+			if (typeof parsed === "string" && !retried) return this._parseString(context, parsed, true);
 			return OK(new JSONClass(parsed));
 		} catch {
+			if (retried) return OK(new JSONClass(argument));
 			this.setIssueForContext(context, {
 				code: "invalid_json",
 				received: argument,

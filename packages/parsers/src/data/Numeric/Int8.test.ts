@@ -404,7 +404,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].int8 = parser<Int8>(Int8)(result.rows[0].int8);
-			result.rows[0]._int8 = arrayParser<Int8>(Int8, ",")(result.rows[0]._int8);
+			result.rows[0]._int8 = arrayParser<Int8>(Int8)(result.rows[0]._int8);
 
 			expect(Int8.isInt8(result.rows[0].int8)).toBe(true);
 			expect(Int8.from(1).equals(result.rows[0].int8)).toBe(true);

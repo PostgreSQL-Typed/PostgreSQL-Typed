@@ -432,7 +432,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].bit = parser<Bit<number>>(Bit)(result.rows[0].bit);
-			result.rows[0]._bit = arrayParser<Bit<number>>(Bit, ",")(result.rows[0]._bit);
+			result.rows[0]._bit = arrayParser<Bit<number>>(Bit)(result.rows[0]._bit);
 
 			expect(Bit.isAnyBit(result.rows[0].bit)).toBe(true);
 			expect(Bit.from(1).equals(result.rows[0].bit.value)).toBe(true);

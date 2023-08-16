@@ -522,7 +522,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].timetz = parser<TimeTZ>(TimeTZ)(result.rows[0].timetz);
-			result.rows[0]._timetz = arrayParser<TimeTZ>(TimeTZ, ",")(result.rows[0]._timetz);
+			result.rows[0]._timetz = arrayParser<TimeTZ>(TimeTZ)(result.rows[0]._timetz);
 
 			expect(result.rows[0].timetz.toString()).toStrictEqual(TimeTZ.from("04:05:06.789-01:00").toString());
 			expect(result.rows[0]._timetz).toHaveLength(2);

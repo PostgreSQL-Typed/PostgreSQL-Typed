@@ -357,9 +357,9 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].json = parser<JSON>(JSON)(result.rows[0].json);
-			result.rows[0]._json = arrayParser<JSON>(JSON, ",")(result.rows[0]._json);
+			result.rows[0]._json = arrayParser<JSON>(JSON)(result.rows[0]._json);
 			result.rows[0].jsonb = parser<JSON>(JSON)(result.rows[0].jsonb);
-			result.rows[0]._jsonb = arrayParser<JSON>(JSON, ",")(result.rows[0]._jsonb);
+			result.rows[0]._jsonb = arrayParser<JSON>(JSON)(result.rows[0]._jsonb);
 
 			expect(JSON.isJSON(result.rows[0].json)).toBe(true);
 			expect(JSON.from(1).equals(result.rows[0].json)).toBe(true);

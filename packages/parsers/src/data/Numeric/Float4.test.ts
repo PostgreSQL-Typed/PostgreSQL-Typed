@@ -416,7 +416,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].float4 = parser<Float4>(Float4)(result.rows[0].float4);
-			result.rows[0]._float4 = arrayParser<Float4>(Float4, ",")(result.rows[0]._float4);
+			result.rows[0]._float4 = arrayParser<Float4>(Float4)(result.rows[0]._float4);
 
 			expect(Float4.isFloat4(result.rows[0].float4)).toBe(true);
 			expect(Float4.from(1).equals(result.rows[0].float4)).toBe(true);

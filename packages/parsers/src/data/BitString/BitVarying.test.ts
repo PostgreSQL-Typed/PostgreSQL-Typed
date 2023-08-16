@@ -422,7 +422,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].varbit = parser<BitVarying<number>>(BitVarying)(result.rows[0].varbit);
-			result.rows[0]._varbit = arrayParser<BitVarying<number>>(BitVarying, ",")(result.rows[0]._varbit);
+			result.rows[0]._varbit = arrayParser<BitVarying<number>>(BitVarying)(result.rows[0]._varbit);
 
 			expect(BitVarying.isBitVarying(result.rows[0].varbit)).toBe(true);
 			expect(BitVarying.from(1).equals(result.rows[0].varbit)).toBe(true);

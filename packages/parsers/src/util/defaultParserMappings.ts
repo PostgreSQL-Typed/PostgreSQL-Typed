@@ -53,7 +53,7 @@ export const defaultParserMappings = {
 		serialize: serializer<ByteA>(ByteA),
 	},
 	[OID._bytea]: {
-		parse: arrayParser<ByteA>(ByteA, undefined, "\\"),
+		parse: arrayParser<ByteA>(ByteA),
 		serialize: arraySerializer<ByteA>(ByteA, undefined, "\\"),
 	},
 	[OID.bit]: {
@@ -61,7 +61,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Bit<number>>(Bit),
 	},
 	[OID._bit]: {
-		parse: arrayParser<Bit<number>>(Bit, ","),
+		parse: arrayParser<Bit<number>>(Bit),
 		serialize: arraySerializer<Bit<number>>(Bit, ","),
 	},
 	[OID.varbit]: {
@@ -69,7 +69,7 @@ export const defaultParserMappings = {
 		serialize: serializer<BitVarying<number>>(BitVarying),
 	},
 	[OID._varbit]: {
-		parse: arrayParser<BitVarying<number>>(BitVarying, ","),
+		parse: arrayParser<BitVarying<number>>(BitVarying),
 		serialize: arraySerializer<BitVarying<number>>(BitVarying, ","),
 	},
 	[OID.bool]: {
@@ -81,7 +81,7 @@ export const defaultParserMappings = {
 	},
 	[OID._bool]: {
 		// eslint-disable-next-line @typescript-eslint/ban-types
-		parse: arrayParser<Boolean>(Boolean, ","),
+		parse: arrayParser<Boolean>(Boolean),
 
 		// eslint-disable-next-line @typescript-eslint/ban-types
 		serialize: arraySerializer<Boolean>(Boolean, ","),
@@ -91,7 +91,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Character<number>>(Character),
 	},
 	[OID._char]: {
-		parse: arrayParser<Character<number>>(Character, ","),
+		parse: arrayParser<Character<number>>(Character),
 		serialize: arraySerializer<Character<number>>(Character, ","),
 	},
 	[OID.bpchar]: {
@@ -99,7 +99,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Character<number>>(Character),
 	},
 	[OID._bpchar]: {
-		parse: arrayParser<Character<number>>(Character, ","),
+		parse: arrayParser<Character<number>>(Character),
 		serialize: arraySerializer<Character<number>>(Character, ","),
 	},
 	[OID.varchar]: {
@@ -107,7 +107,7 @@ export const defaultParserMappings = {
 		serialize: serializer<CharacterVarying<number>>(CharacterVarying),
 	},
 	[OID._varchar]: {
-		parse: arrayParser<CharacterVarying<number>>(CharacterVarying, ","),
+		parse: arrayParser<CharacterVarying<number>>(CharacterVarying),
 		serialize: arraySerializer<CharacterVarying<number>>(CharacterVarying, ","),
 	},
 	[OID.name]: {
@@ -115,7 +115,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Name>(Name),
 	},
 	[OID._name]: {
-		parse: arrayParser<Name>(Name, ","),
+		parse: arrayParser<Name>(Name),
 		serialize: arraySerializer<Name>(Name, ","),
 	},
 	[OID.text]: {
@@ -123,7 +123,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Text>(Text),
 	},
 	[OID._text]: {
-		parse: arrayParser<Text>(Text, ","),
+		parse: arrayParser<Text>(Text),
 		serialize: arraySerializer<Text>(Text, ","),
 	},
 	[OID.date]: {
@@ -131,7 +131,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Date>(Date),
 	},
 	[OID._date]: {
-		parse: arrayParser<Date>(Date, ","),
+		parse: arrayParser<Date>(Date),
 		serialize: arraySerializer<Date>(Date, ","),
 	},
 	[OID.datemultirange]: {
@@ -163,7 +163,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Time>(Time),
 	},
 	[OID._time]: {
-		parse: arrayParser<Time>(Time, ","),
+		parse: arrayParser<Time>(Time),
 		serialize: arraySerializer<Time>(Time, ","),
 	},
 	[OID.timestamp]: {
@@ -219,7 +219,7 @@ export const defaultParserMappings = {
 		serialize: serializer<TimeTZ>(TimeTZ),
 	},
 	[OID._timetz]: {
-		parse: arrayParser<TimeTZ>(TimeTZ, ","),
+		parse: arrayParser<TimeTZ>(TimeTZ),
 		serialize: arraySerializer<TimeTZ>(TimeTZ, ","),
 	},
 	[OID.box]: {
@@ -283,7 +283,7 @@ export const defaultParserMappings = {
 		serialize: serializer<JSON>(JSON),
 	},
 	[OID._json]: {
-		parse: arrayParser<JSON>(JSON, ","),
+		parse: arrayParser<JSON>(JSON),
 		serialize: arraySerializer<JSON>(JSON),
 	},
 	[OID.jsonb]: {
@@ -291,7 +291,7 @@ export const defaultParserMappings = {
 		serialize: serializer<JSON>(JSON),
 	},
 	[OID._jsonb]: {
-		parse: arrayParser<JSON>(JSON, ","),
+		parse: arrayParser<JSON>(JSON),
 		serialize: arraySerializer<JSON>(JSON),
 	},
 	[OID.money]: {
@@ -299,15 +299,15 @@ export const defaultParserMappings = {
 		serialize: serializer<Money>(Money),
 	},
 	[OID._money]: {
-		parse: arrayParser<Money>(Money, ","),
-		serialize: arraySerializer<Money>(Money, ","),
+		parse: arrayParser<Money>(Money),
+		serialize: arraySerializer<Money>(Money),
 	},
 	[OID.float4]: {
 		parse: parser<Float4>(Float4),
 		serialize: serializer<Float4>(Float4),
 	},
 	[OID._float4]: {
-		parse: arrayParser<Float4>(Float4, ","),
+		parse: arrayParser<Float4>(Float4),
 		serialize: arraySerializer<Float4>(Float4, ","),
 	},
 	[OID.float8]: {
@@ -315,7 +315,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Float8>(Float8),
 	},
 	[OID._float8]: {
-		parse: arrayParser<Float8>(Float8, ","),
+		parse: arrayParser<Float8>(Float8),
 		serialize: arraySerializer<Float8>(Float8, ","),
 	},
 	[OID.int2]: {
@@ -323,7 +323,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Int2>(Int2),
 	},
 	[OID._int2]: {
-		parse: arrayParser<Int2>(Int2, ","),
+		parse: arrayParser<Int2>(Int2),
 		serialize: arraySerializer<Int2>(Int2, ","),
 	},
 	[OID.int4]: {
@@ -331,7 +331,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Int4>(Int4),
 	},
 	[OID._int4]: {
-		parse: arrayParser<Int4>(Int4, ","),
+		parse: arrayParser<Int4>(Int4),
 		serialize: arraySerializer<Int4>(Int4, ","),
 	},
 	[OID.int4multirange]: {
@@ -355,7 +355,7 @@ export const defaultParserMappings = {
 		serialize: serializer<Int8>(Int8),
 	},
 	[OID._int8]: {
-		parse: arrayParser<Int8>(Int8, ","),
+		parse: arrayParser<Int8>(Int8),
 		serialize: arraySerializer<Int8>(Int8, ","),
 	},
 	[OID.int8multirange]: {
@@ -379,7 +379,7 @@ export const defaultParserMappings = {
 		serialize: serializer<OIDClass>(OIDClass),
 	},
 	[OID._oid]: {
-		parse: arrayParser<OIDClass>(OIDClass, ","),
+		parse: arrayParser<OIDClass>(OIDClass),
 		serialize: arraySerializer<OIDClass>(OIDClass, ","),
 	},
 	[OID.uuid]: {
@@ -387,7 +387,7 @@ export const defaultParserMappings = {
 		serialize: serializer<UUID>(UUID),
 	},
 	[OID._uuid]: {
-		parse: arrayParser<UUID>(UUID, ","),
+		parse: arrayParser<UUID>(UUID),
 		serialize: arraySerializer<UUID>(UUID, ","),
 	},
 };

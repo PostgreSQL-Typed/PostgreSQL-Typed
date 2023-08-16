@@ -337,7 +337,7 @@ describe("PostgreSQL", () => {
 			`);
 
 			result.rows[0].time = parser<Time>(Time)(result.rows[0].time);
-			result.rows[0]._time = arrayParser<Time>(Time, ",")(result.rows[0]._time);
+			result.rows[0]._time = arrayParser<Time>(Time)(result.rows[0]._time);
 
 			expect(result.rows[0].time.toString()).toStrictEqual(
 				Time.from({

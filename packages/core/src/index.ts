@@ -3,6 +3,7 @@ import pg from "pg";
 export const { Client, Pool, Query } = pg;
 export * from "./driver.js";
 export * from "./PgTError.js";
+export * from "./query-builders/index.js";
 export * from "./session.js";
 export { Issue, IssueCode, PgTPError } from "@postgresql-typed/parsers";
 export { ClientHooks, ParsedType, PgTExtensionContext, PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";

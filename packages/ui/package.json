@@ -46,7 +46,7 @@
 		"basic-auth": "^2.0.1",
 		"codemirror": "^5.65.11",
 		"codemirror-theme-vars": "^0.1.2",
-		"cypress": "^12.17.3",
+		"cypress": "^13.0.0",
 		"d3": "^7.8.5",
 		"d3-graph-controller": "^2.6.1",
 		"floating-vue": "2.0.0-beta.24",

@@ -48,7 +48,7 @@
 		"codemirror-theme-vars": "^0.1.2",
 		"cypress": "^12.17.3",
 		"d3": "^7.8.5",
-		"d3-graph-controller": "^2.6.1",
+		"d3-graph-controller": "^3.0.0",
 		"floating-vue": "2.0.0-beta.24",
 		"h3": "^1.7.1",
 		"ky": "^0.33.3",

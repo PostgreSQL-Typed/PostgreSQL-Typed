@@ -356,8 +356,8 @@ importers:
         specifier: ^7.8.5
         version: 7.8.5
       d3-graph-controller:
-        specifier: ^2.6.1
-        version: 2.6.1
+        specifier: ^3.0.0
+        version: 3.0.1
       floating-vue:
         specifier: 2.0.0-beta.24
         version: 2.0.0-beta.24(vue@3.3.4)
@@ -3399,8 +3399,8 @@ packages:
     resolution: {integrity: sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==}
     dev: true
 
-  /@yeger/debounce@1.1.1:
-    resolution: {integrity: sha512-qnfWPZm8OSlAnxIe5iDX6IobaA2SW0UmNRJnxwtHA42v/18kt5WHU+p1Da6iuG5dm0rqeXRmrhCSjLD5+7lj1w==}
+  /@yeger/debounce@2.0.1:
+    resolution: {integrity: sha512-/SeYp8/wtBCI3NZlHcNj2SiNN3/xSWr8v5zIpqNGYH/C+G5g3IXtX3VrXZJModuqpKuyMSKwRN77WlVJrRwOUw==}
     dev: true
 
   /JSONStream@1.3.5:
@@ -4755,15 +4755,15 @@ packages:
       d3-array: 3.2.4
     dev: true
 
-  /d3-graph-controller@2.6.1:
-    resolution: {integrity: sha512-QvS5KCJhAVcyCCsRuxWD31+zCNY1ZUmi2nf0TuH8wbFCEhFnsOjHFAmEeHuLKVObaUdHe/MRCOZ01N9Qu7OqJg==}
+  /d3-graph-controller@3.0.1:
+    resolution: {integrity: sha512-hwrQ1uSpg+1NJoW9ZChL9PPf9TBpGnk5zw3E1AjTW2nBvmmac+a6wtW+2DiaZfa1OVlokvgi70RpBVE4S5Xh9w==}
     dependencies:
-      '@yeger/debounce': 1.1.1
+      '@yeger/debounce': 2.0.1
       d3-drag: 3.0.0
       d3-force: 3.0.0
       d3-selection: 3.0.0
       d3-zoom: 3.0.0
-      vecti: 2.2.1
+      vecti: 3.0.1
     dev: true
 
   /d3-hierarchy@3.1.2:
@@ -10816,8 +10816,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vecti@2.2.1:
-    resolution: {integrity: sha512-UmfIn93o1JlG5ZDjWscV/mXGcwnNQK68Mub3SuqydMPMfEPx86DLMzNshCo9ASYKvHuv8dPjPlB5Ni+TyUDjIg==}
+  /vecti@3.0.1:
+    resolution: {integrity: sha512-XRZQAscHt3LytameX+30LkL67zln+0/C7YwU15pU1+v4sewuyWximfcdjeHMBtXwSzGsugG3Sggga5ovHErbeg==}
     dev: true
 
   /verror@1.10.0:

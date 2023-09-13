@@ -51,7 +51,7 @@
 		"d3-graph-controller": "^2.6.1",
 		"floating-vue": "2.0.0-beta.24",
 		"h3": "^1.7.1",
-		"ky": "^0.33.3",
+		"ky": "^1.0.0",
 		"mermaid": "^10.3.0",
 		"nuxt": "^3.6.5",
 		"prettier": "^3.0.1",

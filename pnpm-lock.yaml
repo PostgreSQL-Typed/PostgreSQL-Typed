@@ -365,8 +365,8 @@ importers:
         specifier: ^1.7.1
         version: 1.7.1
       ky:
-        specifier: ^0.33.3
-        version: 0.33.3
+        specifier: ^1.0.0
+        version: 1.0.1
       mermaid:
         specifier: ^10.3.0
         version: 10.3.0
@@ -7164,9 +7164,9 @@ packages:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
     dev: true
 
-  /ky@0.33.3:
-    resolution: {integrity: sha512-CasD9OCEQSFIam2U8efFK81Yeg8vNMTBUqtMOHlrcWQHqUX3HeCl9Dr31u4toV7emlH8Mymk5+9p0lL6mKb/Xw==}
-    engines: {node: '>=14.16'}
+  /ky@1.0.1:
+    resolution: {integrity: sha512-UvcwpQO0LOuZwG0Ti3VDo6w57KYt+r4bWEYlNaMt82hgyFtse86QtOGum1RzsZni31FndXQl6NvtDArfunt2JQ==}
+    engines: {node: '>=18'}
     dev: true
 
   /layout-base@1.0.2:

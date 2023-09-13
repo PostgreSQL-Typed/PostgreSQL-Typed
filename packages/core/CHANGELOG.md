@@ -1,5 +1,13 @@
 # @postgresql-typed/core
 
+## 0.11.3
+
+### Patch Changes
+
+- [`d2bb450`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/d2bb4504fd2190bd36fa138a8844fca21a9f38dd) Thanks [@Bas950](https://github.com/Bas950)! - chore: export more types
+
+- [`dcfc091`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/dcfc09174f839f22efeb3231a82eae9ea3fee435) Thanks [@Bas950](https://github.com/Bas950)! - add pg types as normal dependency
+
 ## 0.11.2
 
 ### Patch Changes

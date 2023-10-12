@@ -43,7 +43,7 @@
 		"@postgresql-typed/oids": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
 		"bignumber.js": "^9.1.1",
-		"ip-address": "^8.1.0",
+		"ip-address": "^9.0.0",
 		"jsprim": "^2.0.2",
 		"luxon": "^3.3.0",
 		"source-map-support": "^0.5.21"

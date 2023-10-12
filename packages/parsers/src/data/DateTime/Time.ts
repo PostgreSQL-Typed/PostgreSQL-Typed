@@ -373,10 +373,11 @@ class TimeClass extends PgTPBase<Time> implements Time {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
+		const millisecond = Math.round((this._second % 1) * 1000);
 		return DateTime.fromObject(
 			{
 				hour: this._hour,
-				millisecond: Math.round((this._second % 1) * 1000),
+				millisecond: millisecond >= 1000 ? 999 : millisecond,
 				minute: this._minute,
 				second: Math.trunc(this._second),
 			},

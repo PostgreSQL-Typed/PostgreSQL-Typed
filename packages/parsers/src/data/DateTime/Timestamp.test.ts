@@ -322,6 +322,10 @@ describe("Timestamp", () => {
 		const timestamp2 = Timestamp.from("2023-01-01T22:10:09.123");
 		expect(timestamp2.toDateTime().isValid).toBe(true);
 		expect(timestamp2.toDateTime().millisecond).toBe(123);
+
+		const timestamp3 = Timestamp.from("2023-01-01T22:10:09.999923");
+		expect(timestamp3.toDateTime().isValid).toBe(true);
+		expect(timestamp3.toDateTime().millisecond).toBe(999);
 	});
 
 	test("toJSDate()", () => {

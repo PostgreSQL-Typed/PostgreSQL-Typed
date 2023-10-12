@@ -538,11 +538,12 @@ class TimestampClass extends PgTPBase<Timestamp> implements Timestamp {
 	}
 
 	toDateTime(zone?: string | Zone | undefined): DateTime {
+		const millisecond = Math.round((this._second % 1) * 1000);
 		return DateTime.fromObject(
 			{
 				day: this._day,
 				hour: this._hour,
-				millisecond: Math.round((this._second % 1) * 1000),
+				millisecond: millisecond >= 1000 ? 999 : millisecond,
 				minute: this._minute,
 				month: this._month,
 				second: Math.trunc(this._second),

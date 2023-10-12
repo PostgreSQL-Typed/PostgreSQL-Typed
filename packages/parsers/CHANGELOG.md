@@ -1,5 +1,11 @@
 # postgresql-type-parsers
 
+## 0.11.1
+
+### Patch Changes
+
+- [#104](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/104) [`1e329fe`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/1e329fe812adc226d01c112ac6c573d284eca2e6) Thanks [@Bas950](https://github.com/Bas950)! - fix(Parsers): luxon should accept the milliseconds now
+
 ## 0.11.0
 
 ### Minor Changes

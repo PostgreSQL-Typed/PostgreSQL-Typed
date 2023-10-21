@@ -77,7 +77,7 @@
 		"@types/node": "^20.4.6",
 		"@types/pascalcase": "^1.0.1",
 		"@types/pg": "^8.10.2",
-		"@types/pluralize": "^0.0.30",
+		"@types/pluralize": "^0.0.32",
 		"typescript": "^5.1.6"
 	},
 	"publishConfig": {

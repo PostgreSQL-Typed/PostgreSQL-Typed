@@ -40,7 +40,7 @@
 		"@types/node": "^20.4.6",
 		"@types/splitpanes": "^2.2.1",
 		"@unocss/nuxt": "^0.55.0",
-		"@unocss/reset": "^0.55.0",
+		"@unocss/reset": "^0.57.0",
 		"@vueuse/core": "^10.3.0",
 		"@vueuse/nuxt": "^10.3.0",
 		"basic-auth": "^2.0.1",

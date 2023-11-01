@@ -1,146 +1,97 @@
 import { Box } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTBoxConfig<TMode extends "Box" | "string" = "Box" | "string"> {
-	mode?: TMode;
-}
-
-export type PgTBoxType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Box" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Box" ? Box : string,
-	TDriverParameter = Box,
-> = PgTBox<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTBoxBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTBoxBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTBoxHKT;
-}
-export interface PgTBoxHKT extends ColumnHKTBase {
-	_type: PgTBox<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Box
+//#region Box
 export type PgTBoxBuilderInitial<TName extends string> = PgTBoxBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTBox";
 	data: Box;
 	driverParam: Box;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBoxBuilderHKT, T> {
+export class PgTBoxBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTBox">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTBoxBuilder";
 
-	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBox<MakeColumnConfig<T, TTableBox>> {
-		return new PgTBox<MakeColumnConfig<T, TTableBox>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTBox");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBox<MakeColumnConfig<T, TTableBox>> {
+		return new PgTBox<MakeColumnConfig<T, TTableBox>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTBox<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
+export class PgTBox<T extends ColumnBaseConfig<"custom", "PgTBox">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTBox";
 
 	getSQLType(): string {
 		return "box";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Box.from(value as string);
+	override mapFromDriverValue(value: Box): Box {
+		return Box.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Box.safeFrom(value as string);
+	override mapToDriverValue(value: Box): Box {
+		const result = Box.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Box as string
+//#region string
 export type PgTBoxStringBuilderInitial<TName extends string> = PgTBoxStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTBoxString";
 	data: string;
 	driverParam: Box;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTBoxBuilderHKT, T> {
+export class PgTBoxStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTBoxString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTBoxStringBuilder";
 
-	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBoxString<MakeColumnConfig<T, TTableBox>> {
-		return new PgTBoxString<MakeColumnConfig<T, TTableBox>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTBoxString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableBox extends string>(table: AnyPgTable<{ name: TTableBox }>): PgTBoxString<MakeColumnConfig<T, TTableBox>> {
+		return new PgTBoxString<MakeColumnConfig<T, TTableBox>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTBoxString<T extends ColumnBaseConfig> extends PgColumn<PgTBoxHKT, T> {
+export class PgTBoxString<T extends ColumnBaseConfig<"string", "PgTBoxString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTBoxString";
 
 	getSQLType(): string {
 		return "box";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Box.from(value as string).postgres;
+	override mapFromDriverValue(value: Box): string {
+		return Box.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Box.safeFrom(value as string);
+	override mapToDriverValue(value: string): Box {
+		const result = Box.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineBox<TBox extends string, TMode extends PgTBoxConfig["mode"] & {}>(
-	name: TBox,
-	config?: PgTBoxConfig<TMode>
-): Equal<TMode, "Box"> extends true ? PgTBoxBuilderInitial<TBox> : PgTBoxStringBuilderInitial<TBox>;
-export function defineBox(name: string, config: PgTBoxConfig = {}) {
-	if (config.mode === "Box") return new PgTBoxBuilder(name);
-	return new PgTBoxStringBuilder(name);
+export function defineBox<TName extends string>(name: TName, config: { mode: "Box" }): PgTBoxBuilderInitial<TName>;
+export function defineBox<TName extends string>(name: TName, config?: { mode: "string" }): PgTBoxStringBuilderInitial<TName>;
+export function defineBox<TName extends string>(name: TName, config?: { mode: "Box" | "string" }) {
+	if (config?.mode === "Box") return new PgTBoxBuilder(name) as PgTBoxBuilderInitial<TName>;
+	return new PgTBoxStringBuilder(name) as PgTBoxStringBuilderInitial<TName>;
 }

@@ -1,92 +1,53 @@
 /* eslint-disable unicorn/no-null */
-import {
-	AnyColumnBuilder,
-	Assume,
-	BuildColumn,
-	ColumnBaseConfig,
-	ColumnBuilderBaseConfig,
-	ColumnBuilderHKTBase,
-	ColumnHKTBase,
-	entityKind,
-	MakeColumnConfig,
-} from "drizzle-orm";
-import { AnyPgColumn, AnyPgTable, parsePgArray, PgColumn, PgColumnBuilder, PgColumnBuilderHKT } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, ColumnDataType, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable, parsePgArray, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
 
-export interface PgTArrayBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTArrayBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTArrayHKT;
-}
+import { PgTColumnBuilder } from "./query-builders/common.js";
 
-export interface PgTArrayHKT extends ColumnHKTBase {
-	_type: PgTArray<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-export class PgTArrayBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<
-	PgTArrayBuilderHKT,
+export class PgTArrayBuilder<
+	T extends ColumnBuilderBaseConfig<"array", "PgTArray">,
+	TBase extends ColumnBuilderBaseConfig<ColumnDataType, string>,
+> extends PgColumnBuilder<
 	T,
 	{
-		baseBuilder: PgColumnBuilder<
-			PgColumnBuilderHKT,
-			{
-				name: T["name"];
-				notNull: T["notNull"];
-				hasDefault: T["hasDefault"];
-				data: Assume<T["data"], unknown[]>[number];
-				driverParam: string | Assume<T["driverParam"], unknown[]>[number];
-			}
-		>;
+		baseBuilder: PgTColumnBuilder<TBase>;
 		size: number | undefined;
+	},
+	{
+		baseBuilder: PgTColumnBuilder<TBase>;
 	}
 > {
 	static override readonly [entityKind] = "PgTArrayBuilder";
 
-	constructor(name: string, baseBuilder: PgTArrayBuilder<T>["config"]["baseBuilder"], size: number | undefined) {
-		super(name);
+	constructor(name: string, baseBuilder: PgTArrayBuilder<T, TBase>["config"]["baseBuilder"], size: number | undefined) {
+		super(name, "array", "PgTArray");
 		this.config.baseBuilder = baseBuilder;
 		this.config.size = size;
 	}
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTArray<MakeColumnConfig<T, TTableName>> {
-		//@ts-expect-error - It does exist
-		const baseColumn = this.config.baseBuilder.build(table);
-		return new PgTArray<MakeColumnConfig<T, TTableName>>(table, this.config, baseColumn);
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTArray<MakeColumnConfig<T, TTableName>, TBase> {
+		const baseColumn = (
+			this.config.baseBuilder as unknown as {
+				build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgColumn<MakeColumnConfig<T, TTableName>>;
+			}
+		).build(table);
+		return new PgTArray<MakeColumnConfig<T, TTableName>, TBase>(
+			table as AnyPgTable<{ name: MakeColumnConfig<T, TTableName>["tableName"] }>,
+			this.config as ColumnBuilderRuntimeConfig<any, any>,
+			baseColumn
+		);
 	}
 }
 
-export class PgTArray<T extends ColumnBaseConfig> extends PgColumn<
-	PgTArrayHKT,
-	T,
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	{},
-	{
-		baseColumn: BuildColumn<
-			string,
-			Assume<
-				PgColumnBuilder<
-					PgColumnBuilderHKT,
-					{
-						name: T["name"];
-						notNull: T["notNull"];
-						hasDefault: T["hasDefault"];
-						data: Assume<T["data"], unknown[]>[number];
-						driverParam: string | Assume<T["driverParam"], unknown[]>[number];
-					}
-				>,
-				AnyColumnBuilder
-			>
-		>;
-	}
-> {
-	protected declare $pgColumnBrand: "PgArray";
-
+export class PgTArray<T extends ColumnBaseConfig<"array", "PgTArray">, TBase extends ColumnBuilderBaseConfig<ColumnDataType, string>> extends PgColumn<T> {
 	readonly size: number | undefined;
 
 	static readonly [entityKind]: string = "PgArray";
 
 	constructor(
 		table: AnyPgTable<{ name: T["tableName"] }>,
-		config: PgTArrayBuilder<T>["config"],
-		readonly baseColumn: AnyPgColumn,
+		config: PgTArrayBuilder<T, TBase>["config"],
+		readonly baseColumn: PgColumn,
 		readonly range?: [number | undefined, number | undefined]
 	) {
 		super(table, config);

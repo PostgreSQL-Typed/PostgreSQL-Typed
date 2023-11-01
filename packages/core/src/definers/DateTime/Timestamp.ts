@@ -1,85 +1,15 @@
-/* eslint-disable unicorn/filename-case */
-import { Timestamp } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-	sql,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { DateTime, Timestamp } from "@postgresql-typed/parsers";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, ColumnDataType, entityKind, MakeColumnConfig, sql } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTTimestampConfig<
-	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
-> {
-	mode?: TMode;
-}
-
-export type PgTTimestampType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Timestamp"
-		? Timestamp
-		: TMode extends "globalThis.Date"
-		? globalThis.Date
-		: TMode extends "luxon.DateTime"
-		? luxon.DateTime
-		: TMode extends "unix"
-		? number
-		: string,
-	TDriverParameter = Timestamp,
-> = PgTTimestamp<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTTimestampBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTTimestampBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTTimestampHKT;
-}
-export interface PgTTimestampHKT extends ColumnHKTBase {
-	_type: PgTTimestamp<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Time
-export type PgTTimestampBuilderInitial<TName extends string> = PgTTimestampBuilder<{
-	name: TName;
-	data: Timestamp;
-	driverParam: Timestamp;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTTimestampBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTTimestampBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestamp<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestamp<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
+export abstract class PgTTimestampColumnBaseBuilder<
+	T extends ColumnBuilderBaseConfig<ColumnDataType, string>,
+	TRuntimeConfig extends object = object,
+> extends PgTColumnBuilder<T, TRuntimeConfig> {
+	static readonly [entityKind]: string = "PgTTimestampColumnBaseBuilder";
 
 	/* c8 ignore next 3 */
 	defaultNow() {
@@ -87,246 +17,227 @@ export class PgTTimestampBuilder<T extends ColumnBuilderBaseConfig> extends PgCo
 	}
 }
 
-export class PgTTimestamp<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampHKT, T> {
+//#region Date
+export type PgTTimestampBuilderInitial<TName extends string> = PgTTimestampBuilder<{
+	name: TName;
+	dataType: "custom";
+	columnType: "PgTTimestamp";
+	data: Timestamp;
+	driverParam: Timestamp;
+	enumValues: undefined;
+}>;
+
+export class PgTTimestampBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTTimestamp">> extends PgTTimestampColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTTimestampBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTTimestamp");
+	}
+
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestamp<MakeColumnConfig<T, TTableName>> {
+		return new PgTTimestamp<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTTimestamp<T extends ColumnBaseConfig<"custom", "PgTTimestamp">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTimestamp";
 
 	getSQLType(): string {
 		return "timestamp";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Timestamp.from(value as string);
+	override mapFromDriverValue(value: Timestamp): Timestamp {
+		return Timestamp.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Timestamp.safeFrom(value as string);
+	override mapToDriverValue(value: Timestamp): Timestamp {
+		const result = Timestamp.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Time as string
-export type PgTTimestampStringBuilderInitial<TName extends string> = PgTTimestampStringBuilder<{
-	name: TName;
-	data: string;
-	driverParam: Timestamp;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTTimestampStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTTimestampStringBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampString<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampString<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
-	}
-}
-
-export class PgTTimestampString<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampHKT, T> {
-	static readonly [entityKind]: string = "PgTTimestampString";
-
-	getSQLType(): string {
-		return "timestamp";
-	}
-
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Timestamp.from(value as string).postgres;
-	}
-
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Timestamp.safeFrom(value as string);
-		if (result.success) return result.data;
-		throw new PgTError(this, result.error);
-	}
-}
-//#endregion
-
-//#region @postgresql-typed/parsers Time as globalThis.Date
+//#region globalThis.Date
 export type PgTTimestampGlobalThisDateBuilderInitial<TName extends string> = PgTTimestampGlobalThisDateBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTTimestampGlobalThisDate";
 	data: globalThis.Date;
 	driverParam: Timestamp;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTimestampGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampBuilderHKT, T> {
+export class PgTTimestampGlobalThisDateBuilder<
+	T extends ColumnBuilderBaseConfig<"custom", "PgTTimestampGlobalThisDate">,
+> extends PgTTimestampColumnBaseBuilder<T> {
 	static readonly [entityKind]: string = "PgTTimestampGlobalThisDateBuilder";
 
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTTimestampGlobalThisDate");
+	}
+
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampGlobalThisDate<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+		return new PgTTimestampGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTimestampGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampHKT, T> {
+export class PgTTimestampGlobalThisDate<T extends ColumnBaseConfig<"custom", "PgTTimestampGlobalThisDate">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTimestampGlobalThisDate";
 
 	getSQLType(): string {
 		return "timestamp";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Timestamp.from(value as string).toJSDate();
+	override mapFromDriverValue(value: Timestamp): globalThis.Date {
+		return Timestamp.from(value).toJSDate();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Timestamp.safeFrom(value as string);
+	override mapToDriverValue(value: globalThis.Date): Timestamp {
+		const result = Timestamp.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Time as luxon.DateTime
-export type PgTTimestampLuxonDateTimeBuilderInitial<TName extends string> = PgTTimestampLuxonDateTimeBuilder<{
+//#region luxon.DateTime
+export type PgTTimestampLuxonDateBuilderInitial<TName extends string> = PgTTimestampLuxonDateBuilder<{
 	name: TName;
-	data: luxon.DateTime;
+	dataType: "custom";
+	columnType: "PgTTimestampLuxonDate";
+	data: DateTime;
 	driverParam: Timestamp;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTimestampLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTTimestampLuxonDateTimeBuilder";
+export class PgTTimestampLuxonDateBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTTimestampLuxonDate">> extends PgTTimestampColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTTimestampLuxonDateBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampLuxonDateTime<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTTimestampLuxonDate");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampLuxonDate<MakeColumnConfig<T, TTableName>> {
+		return new PgTTimestampLuxonDate<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTimestampLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampHKT, T> {
-	static readonly [entityKind]: string = "PgTTimestampLuxonDateTime";
+export class PgTTimestampLuxonDate<T extends ColumnBaseConfig<"custom", "PgTTimestampLuxonDate">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTTimestampLuxonDate";
 
 	getSQLType(): string {
 		return "timestamp";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Timestamp.from(value as string).toDateTime();
+	override mapFromDriverValue(value: Timestamp): DateTime {
+		return Timestamp.from(value).toDateTime();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Timestamp.safeFrom(value as string);
+	override mapToDriverValue(value: DateTime): Timestamp {
+		const result = Timestamp.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
+//#endregion
 
-//#region @postgresql-typed/parsers Time as unix
+//#region unix
 export type PgTTimestampUnixBuilderInitial<TName extends string> = PgTTimestampUnixBuilder<{
 	name: TName;
+	dataType: "number";
+	columnType: "PgTTimestampUnix";
 	data: number;
 	driverParam: Timestamp;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTimestampUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampBuilderHKT, T> {
+export class PgTTimestampUnixBuilder<T extends ColumnBuilderBaseConfig<"number", "PgTTimestampUnix">> extends PgTTimestampColumnBaseBuilder<T> {
 	static readonly [entityKind]: string = "PgTTimestampUnixBuilder";
 
+	constructor(name: T["name"]) {
+		super(name, "number", "PgTTimestampUnix");
+	}
+
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampUnix<MakeColumnConfig<T, TTableName>> {
-		return new PgTTimestampUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+		return new PgTTimestampUnix<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTimestampUnix<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampHKT, T> {
+export class PgTTimestampUnix<T extends ColumnBaseConfig<"number", "PgTTimestampUnix">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTimestampUnix";
 
 	getSQLType(): string {
 		return "timestamp";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Timestamp.from(value as string).toNumber();
+	override mapFromDriverValue(value: Timestamp): number {
+		return Timestamp.from(value).toNumber();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Timestamp.safeFrom(value as string);
+	override mapToDriverValue(value: number): Timestamp {
+		const result = Timestamp.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineTimestamp<TName extends string, TMode extends PgTTimestampConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTTimestampConfig<TMode>
-): Equal<TMode, "Timestamp"> extends true
-	? PgTTimestampBuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTTimestampStringBuilderInitial<TName>
-	: Equal<TMode, "luxon.DateTime"> extends true
-	? PgTTimestampLuxonDateTimeBuilderInitial<TName>
-	: Equal<TMode, "unix"> extends true
-	? PgTTimestampUnixBuilderInitial<TName>
-	: PgTTimestampGlobalThisDateBuilderInitial<TName>;
+//#region string
+export type PgTTimestampStringBuilderInitial<TName extends string> = PgTTimestampStringBuilder<{
+	name: TName;
+	dataType: "string";
+	columnType: "PgTTimestampString";
+	data: string;
+	driverParam: Timestamp;
+	enumValues: undefined;
+}>;
 
-export function defineTimestamp(name: string, config: PgTTimestampConfig = {}) {
-	if (config.mode === "Timestamp") return new PgTTimestampBuilder(name);
-	if (config.mode === "string") return new PgTTimestampStringBuilder(name);
-	if (config.mode === "luxon.DateTime") return new PgTTimestampLuxonDateTimeBuilder(name);
-	if (config.mode === "unix") return new PgTTimestampUnixBuilder(name);
-	return new PgTTimestampGlobalThisDateBuilder(name);
+export class PgTTimestampStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTTimestampString">> extends PgTTimestampColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTTimestampStringBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTTimestampString");
+	}
+
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampString<MakeColumnConfig<T, TTableName>> {
+		return new PgTTimestampString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTTimestampString<T extends ColumnBaseConfig<"string", "PgTTimestampString">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTTimestampString";
+
+	getSQLType(): string {
+		return "timestamp";
+	}
+
+	override mapFromDriverValue(value: Timestamp): string {
+		return Timestamp.from(value).postgres;
+	}
+
+	override mapToDriverValue(value: string): Timestamp {
+		const result = Timestamp.safeFrom(value);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
+	}
+}
+//#endregion
+
+export function defineTimestamp<TName extends string>(name: TName, config: { mode: "Timestamp" }): PgTTimestampBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config: { mode: "luxon.DateTime" }): PgTTimestampLuxonDateBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config: { mode: "unix" }): PgTTimestampUnixBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config: { mode: "string" }): PgTTimestampStringBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "globalThis.Date" }): PgTTimestampGlobalThisDateBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" }) {
+	if (config?.mode === "Timestamp") return new PgTTimestampBuilder(name) as PgTTimestampBuilderInitial<TName>;
+	if (config?.mode === "luxon.DateTime") return new PgTTimestampLuxonDateBuilder(name) as PgTTimestampLuxonDateBuilderInitial<TName>;
+	if (config?.mode === "unix") return new PgTTimestampUnixBuilder(name) as PgTTimestampUnixBuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTTimestampStringBuilder(name) as PgTTimestampStringBuilderInitial<TName>;
+	return new PgTTimestampGlobalThisDateBuilder(name) as PgTTimestampGlobalThisDateBuilderInitial<TName>;
 }

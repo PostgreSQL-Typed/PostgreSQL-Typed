@@ -1,6 +1,8 @@
 /* eslint-disable unicorn/filename-case */
+/* eslint-disable unicorn/no-this-assignment */
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { type ColumnsSelection, entityKind, SelectionProxyHandler, type SQL, type SQLWrapper, WithSubquery } from "drizzle-orm";
-import { type AnyPgColumn, PgDialect, type SelectedFields, type WithSubqueryWithSelection } from "drizzle-orm/pg-core";
+import { PgColumn, PgDialect, type SelectedFields, type WithSubqueryWithSelection } from "drizzle-orm/pg-core";
 
 import { PgTSelectBuilder } from "./select.js";
 
@@ -23,7 +25,6 @@ export class PgTQueryBuilder {
 	private dialect: PgDialect | undefined;
 
 	$with<TAlias extends string>(alias: TAlias) {
-		// eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
 		const queryBuilder = this;
 
 		return {
@@ -41,7 +42,6 @@ export class PgTQueryBuilder {
 	}
 
 	with(...queries: WithSubquery[]) {
-		// eslint-disable-next-line @typescript-eslint/no-this-alias, unicorn/no-this-assignment
 		const self = this;
 
 		function select(): PgTSelectBuilder<undefined, "qb">;
@@ -66,9 +66,9 @@ export class PgTQueryBuilder {
 			});
 		}
 
-		function selectDistinctOn(on: (AnyPgColumn | SQLWrapper)[]): PgTSelectBuilder<undefined, "qb">;
-		function selectDistinctOn<TSelection extends SelectedFields>(on: (AnyPgColumn | SQLWrapper)[], fields: TSelection): PgTSelectBuilder<TSelection, "qb">;
-		function selectDistinctOn(on: (AnyPgColumn | SQLWrapper)[], fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined, "qb"> {
+		function selectDistinctOn(on: (PgColumn | SQLWrapper)[]): PgTSelectBuilder<undefined, "qb">;
+		function selectDistinctOn<TSelection extends SelectedFields>(on: (PgColumn | SQLWrapper)[], fields: TSelection): PgTSelectBuilder<TSelection, "qb">;
+		function selectDistinctOn(on: (PgColumn | SQLWrapper)[], fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined, "qb"> {
 			return new PgTSelectBuilder({
 				dialect: self.getDialect(),
 				distinct: { on },
@@ -101,9 +101,9 @@ export class PgTQueryBuilder {
 		});
 	}
 
-	selectDistinctOn(on: (AnyPgColumn | SQLWrapper)[]): PgTSelectBuilder<undefined>;
-	selectDistinctOn<TSelection extends SelectedFields>(on: (AnyPgColumn | SQLWrapper)[], fields: TSelection): PgTSelectBuilder<TSelection>;
-	selectDistinctOn(on: (AnyPgColumn | SQLWrapper)[], fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
+	selectDistinctOn(on: (PgColumn | SQLWrapper)[]): PgTSelectBuilder<undefined>;
+	selectDistinctOn<TSelection extends SelectedFields>(on: (PgColumn | SQLWrapper)[], fields: TSelection): PgTSelectBuilder<TSelection>;
+	selectDistinctOn(on: (PgColumn | SQLWrapper)[], fields?: SelectedFields): PgTSelectBuilder<SelectedFields | undefined> {
 		return new PgTSelectBuilder({
 			dialect: this.getDialect(),
 			distinct: { on },

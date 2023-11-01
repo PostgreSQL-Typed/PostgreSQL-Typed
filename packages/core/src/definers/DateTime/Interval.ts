@@ -1,146 +1,97 @@
 import { Interval } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTIntervalConfig<TMode extends "Interval" | "string" = "Interval" | "string"> {
-	mode?: TMode;
-}
-
-export type PgTIntervalType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Interval" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Interval" ? Interval : string,
-	TDriverParameter = Interval,
-> = PgTInterval<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTIntervalBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTIntervalBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTIntervalHKT;
-}
-export interface PgTIntervalHKT extends ColumnHKTBase {
-	_type: PgTInterval<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Interval
+//#region Interval
 export type PgTIntervalBuilderInitial<TName extends string> = PgTIntervalBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTInterval";
 	data: Interval;
 	driverParam: Interval;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTIntervalBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTIntervalBuilderHKT, T> {
+export class PgTIntervalBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTInterval">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTIntervalBuilder";
 
-	build<TTableInterval extends string>(table: AnyPgTable<{ name: TTableInterval }>): PgTInterval<MakeColumnConfig<T, TTableInterval>> {
-		return new PgTInterval<MakeColumnConfig<T, TTableInterval>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTInterval");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInterval<MakeColumnConfig<T, TTableName>> {
+		return new PgTInterval<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInterval<T extends ColumnBaseConfig> extends PgColumn<PgTIntervalHKT, T> {
+export class PgTInterval<T extends ColumnBaseConfig<"custom", "PgTInterval">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInterval";
 
 	getSQLType(): string {
 		return "interval";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Interval.from(value as string);
+	override mapFromDriverValue(value: Interval): Interval {
+		return Interval.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Interval.safeFrom(value as string);
+	override mapToDriverValue(value: Interval): Interval {
+		const result = Interval.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Interval as string
+//#region string
 export type PgTIntervalStringBuilderInitial<TName extends string> = PgTIntervalStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTIntervalString";
 	data: string;
 	driverParam: Interval;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTIntervalStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTIntervalBuilderHKT, T> {
+export class PgTIntervalStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTIntervalString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTIntervalStringBuilder";
 
-	build<TTableInterval extends string>(table: AnyPgTable<{ name: TTableInterval }>): PgTIntervalString<MakeColumnConfig<T, TTableInterval>> {
-		return new PgTIntervalString<MakeColumnConfig<T, TTableInterval>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTIntervalString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTIntervalString<MakeColumnConfig<T, TTableName>> {
+		return new PgTIntervalString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTIntervalString<T extends ColumnBaseConfig> extends PgColumn<PgTIntervalHKT, T> {
+export class PgTIntervalString<T extends ColumnBaseConfig<"string", "PgTIntervalString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTIntervalString";
 
 	getSQLType(): string {
 		return "interval";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Interval.from(value as string).postgres;
+	override mapFromDriverValue(value: Interval): string {
+		return Interval.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Interval.safeFrom(value as string);
+	override mapToDriverValue(value: string): Interval {
+		const result = Interval.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineInterval<TInterval extends string, TMode extends PgTIntervalConfig["mode"] & {}>(
-	name: TInterval,
-	config?: PgTIntervalConfig<TMode>
-): Equal<TMode, "Interval"> extends true ? PgTIntervalBuilderInitial<TInterval> : PgTIntervalStringBuilderInitial<TInterval>;
-export function defineInterval(name: string, config: PgTIntervalConfig = {}) {
-	if (config.mode === "Interval") return new PgTIntervalBuilder(name);
-	return new PgTIntervalStringBuilder(name);
+export function defineInterval<TName extends string>(name: TName, config: { mode: "Interval" }): PgTIntervalBuilderInitial<TName>;
+export function defineInterval<TName extends string>(name: TName, config?: { mode: "string" }): PgTIntervalStringBuilderInitial<TName>;
+export function defineInterval<TName extends string>(name: TName, config?: { mode: "Interval" | "string" }) {
+	if (config?.mode === "Interval") return new PgTIntervalBuilder(name) as PgTIntervalBuilderInitial<TName>;
+	return new PgTIntervalStringBuilder(name) as PgTIntervalStringBuilderInitial<TName>;
 }

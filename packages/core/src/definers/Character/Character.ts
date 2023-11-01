@@ -1,82 +1,39 @@
 import { Character } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTCharacterConfig<TMode extends "Character" | "string" = "Character" | "string"> {
-	mode?: TMode;
+export interface PgTCharacterConfig {
 	length?: number;
 }
 
-export type PgTCharacterType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Character" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Character" ? Character<number> : string,
-	TDriverParameter = Character<number>,
-> = PgTCharacter<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTCharacterBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTCharacterBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTCharacterHKT;
-}
-export interface PgTCharacterHKT extends ColumnHKTBase {
-	_type: PgTCharacter<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Character
+//#region Character
 export type PgTCharacterBuilderInitial<TName extends string> = PgTCharacterBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTCharacter";
 	data: Character<number>;
 	driverParam: Character<number>;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCharacterBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterBuilderHKT, T, { length?: number }> {
+export class PgTCharacterBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTCharacter">> extends PgTColumnBuilder<T, { length: number | undefined }> {
 	static readonly [entityKind]: string = "PgTCharacterBuilder";
 
-	constructor(name: string, config: PgTCharacterConfig) {
-		super(name);
+	constructor(name: T["name"], config: PgTCharacterConfig) {
+		super(name, "custom", "PgTCharacter");
 		this.config.length = config.length;
 	}
 
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacter<MakeColumnConfig<T, TTableName>> {
-		return new PgTCharacter<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+		return new PgTCharacter<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
+export class PgTCharacter<T extends ColumnBaseConfig<"custom", "PgTCharacter">> extends PgTColumn<T, { length: number | undefined }> {
 	static readonly [entityKind]: string = "PgTCharacter";
 
 	readonly length = this.config.length;
@@ -85,52 +42,46 @@ export class PgTCharacter<T extends ColumnBaseConfig> extends PgColumn<PgTCharac
 		return this.length === undefined ? "char" : `char(${this.length})`;
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string);
-		return Character.from(value as string);
+	override mapFromDriverValue(value: Character<number>): Character<number> {
+		return this.length === undefined ? Character.from(value) : Character.setN(this.length).from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = this.config.length === undefined ? Character.safeFrom(value as string) : Character.setN(this.config.length).safeFrom(value as string);
+	override mapToDriverValue(value: Character<number>): Character<number> {
+		const result = this.length === undefined ? Character.safeFrom(value) : Character.setN(this.length).safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Character as string
+//#region string
 export type PgTCharacterStringBuilderInitial<TName extends string> = PgTCharacterStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTCharacterString";
 	data: string;
 	driverParam: Character<number>;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCharacterStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterBuilderHKT, T, { length?: number }> {
+export class PgTCharacterStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTCharacterString">> extends PgTColumnBuilder<
+	T,
+	{ length: number | undefined }
+> {
 	static readonly [entityKind]: string = "PgTCharacterStringBuilder";
 
-	constructor(name: string, config: PgTCharacterConfig) {
-		super(name);
+	constructor(name: T["name"], config: PgTCharacterConfig) {
+		super(name, "string", "PgTCharacterString");
 		this.config.length = config.length;
 	}
 
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterString<MakeColumnConfig<T, TTableName>> {
-		return new PgTCharacterString<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+		return new PgTCharacterString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCharacterString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterHKT, T, { length?: number }> {
+export class PgTCharacterString<T extends ColumnBaseConfig<"string", "PgTCharacterString">> extends PgTColumn<T, { length: number | undefined }> {
 	static readonly [entityKind]: string = "PgTCharacterString";
 
 	readonly length = this.config.length;
@@ -139,30 +90,21 @@ export class PgTCharacterString<T extends ColumnBaseConfig> extends PgColumn<PgT
 		return this.length === undefined ? "char" : `char(${this.length})`;
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		if (this.config.length !== undefined) return Character.setN(this.config.length).from(value as string).postgres;
-		return Character.from(value as string).postgres;
+	override mapFromDriverValue(value: Character<number>): string {
+		return (this.length === undefined ? Character.from(value) : Character.setN(this.length).from(value)).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = this.config.length === undefined ? Character.safeFrom(value as string) : Character.setN(this.config.length).safeFrom(value as string);
+	override mapToDriverValue(value: string): Character<number> {
+		const result = this.length === undefined ? Character.safeFrom(value) : Character.setN(this.length).safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineCharacter<TName extends string, TMode extends PgTCharacterConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTCharacterConfig<TMode>
-): Equal<TMode, "Character"> extends true ? PgTCharacterBuilderInitial<TName> : PgTCharacterStringBuilderInitial<TName>;
-export function defineCharacter(name: string, config: PgTCharacterConfig = {}) {
-	const { length, mode } = config;
-	if (mode === "Character") {
-		return new PgTCharacterBuilder(name, {
-			length,
-		});
-	}
-	return new PgTCharacterStringBuilder(name, { length });
+export function defineCharacter<TName extends string>(name: TName, config: { mode: "Character"; length?: number }): PgTCharacterBuilderInitial<TName>;
+export function defineCharacter<TName extends string>(name: TName, config?: { mode: "string"; length?: number }): PgTCharacterStringBuilderInitial<TName>;
+export function defineCharacter<TName extends string>(name: TName, config?: { mode: "Character" | "string"; length?: number }) {
+	if (config?.mode === "Character") return new PgTCharacterBuilder(name, { length: config.length }) as PgTCharacterBuilderInitial<TName>;
+	return new PgTCharacterStringBuilder(name, { length: config?.length }) as PgTCharacterStringBuilderInitial<TName>;
 }

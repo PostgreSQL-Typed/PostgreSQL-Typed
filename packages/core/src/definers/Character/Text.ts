@@ -1,146 +1,97 @@
 import { Text } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTTextConfig<TMode extends "Text" | "string" = "Text" | "string"> {
-	mode?: TMode;
-}
-
-export type PgTTextType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Text" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Text" ? Text : string,
-	TDriverParameter = Text,
-> = PgTText<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTTextBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTTextBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTTextHKT;
-}
-export interface PgTTextHKT extends ColumnHKTBase {
-	_type: PgTText<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Text
+//#region Text
 export type PgTTextBuilderInitial<TName extends string> = PgTTextBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTText";
 	data: Text;
 	driverParam: Text;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTextBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTextBuilderHKT, T> {
+export class PgTTextBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTText">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTTextBuilder";
 
-	build<TTableText extends string>(table: AnyPgTable<{ name: TTableText }>): PgTText<MakeColumnConfig<T, TTableText>> {
-		return new PgTText<MakeColumnConfig<T, TTableText>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTText");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTText<MakeColumnConfig<T, TTableName>> {
+		return new PgTText<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTText<T extends ColumnBaseConfig> extends PgColumn<PgTTextHKT, T> {
+export class PgTText<T extends ColumnBaseConfig<"custom", "PgTText">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTText";
 
 	getSQLType(): string {
 		return "text";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Text.from(value as string);
+	override mapFromDriverValue(value: Text): Text {
+		return Text.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Text.safeFrom(value as string);
+	override mapToDriverValue(value: Text): Text {
+		const result = Text.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Text as string
+//#region string
 export type PgTTextStringBuilderInitial<TName extends string> = PgTTextStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTTextString";
 	data: string;
 	driverParam: Text;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTextStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTextBuilderHKT, T> {
+export class PgTTextStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTTextString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTTextStringBuilder";
 
-	build<TTableText extends string>(table: AnyPgTable<{ name: TTableText }>): PgTTextString<MakeColumnConfig<T, TTableText>> {
-		return new PgTTextString<MakeColumnConfig<T, TTableText>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTTextString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTextString<MakeColumnConfig<T, TTableName>> {
+		return new PgTTextString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTextString<T extends ColumnBaseConfig> extends PgColumn<PgTTextHKT, T> {
+export class PgTTextString<T extends ColumnBaseConfig<"string", "PgTTextString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTextString";
 
 	getSQLType(): string {
 		return "text";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Text.from(value as string).postgres;
+	override mapFromDriverValue(value: Text): string {
+		return Text.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Text.safeFrom(value as string);
+	override mapToDriverValue(value: string): Text {
+		const result = Text.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineText<TText extends string, TMode extends PgTTextConfig["mode"] & {}>(
-	name: TText,
-	config?: PgTTextConfig<TMode>
-): Equal<TMode, "Text"> extends true ? PgTTextBuilderInitial<TText> : PgTTextStringBuilderInitial<TText>;
-export function defineText(text: string, config: PgTTextConfig = {}) {
-	if (config.mode === "Text") return new PgTTextBuilder(text);
-	return new PgTTextStringBuilder(text);
+export function defineText<TName extends string>(name: TName, config: { mode: "Text" }): PgTTextBuilderInitial<TName>;
+export function defineText<TName extends string>(name: TName, config?: { mode: "string" }): PgTTextStringBuilderInitial<TName>;
+export function defineText<TName extends string>(name: TName, config?: { mode: "Text" | "string" }) {
+	if (config?.mode === "Text") return new PgTTextBuilder(name) as PgTTextBuilderInitial<TName>;
+	return new PgTTextStringBuilder(name) as PgTTextStringBuilderInitial<TName>;
 }

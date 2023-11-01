@@ -1,140 +1,130 @@
 /* eslint-disable unicorn/filename-case */
 import { JSON } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTJSONConfig<TMode extends "JSON" | "string" | "value" = "JSON" | "string" | "value"> {
-	mode?: TMode;
-}
-
-export type PgTJSONType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "JSON" | "string" | "value",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "JSON"
-		? JSON
-		: TMode extends "string"
-		? string
-		: TMode extends "value"
-		? Record<string, unknown> | unknown[] | string | number | boolean | null
-		: JSON,
-	TDriverParameter = JSON,
-> = PgTJSON<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTJSONBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTJSONBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTJSONHKT;
-}
-export interface PgTJSONHKT extends ColumnHKTBase {
-	_type: PgTJSON<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers JSON
+//#region JSON
 export type PgTJSONBuilderInitial<TName extends string> = PgTJSONBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTJSON";
 	data: JSON;
 	driverParam: JSON;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTJSONBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTJSONBuilderHKT, T> {
+export class PgTJSONBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTJSON">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTJSONBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSON<MakeColumnConfig<T, TTableName>> {
-		return new PgTJSON<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTJSON");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableJSON extends string>(table: AnyPgTable<{ name: TTableJSON }>): PgTJSON<MakeColumnConfig<T, TTableJSON>> {
+		return new PgTJSON<MakeColumnConfig<T, TTableJSON>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTJSON<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHKT, T> {
+export class PgTJSON<T extends ColumnBaseConfig<"custom", "PgTJSON">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTJSON";
 
 	getSQLType(): string {
 		return "json";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return JSON.from(value as string);
+	override mapFromDriverValue(value: JSON): JSON {
+		return JSON.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = JSON.safeFrom(value as string);
+	override mapToDriverValue(value: JSON): JSON {
+		const result = JSON.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers JSON as string
+//#region string
 export type PgTJSONStringBuilderInitial<TName extends string> = PgTJSONStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTJSONString";
 	data: string;
 	driverParam: JSON;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTJSONStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTJSONBuilderHKT, T> {
+export class PgTJSONStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTJSONString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTJSONStringBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSONString<MakeColumnConfig<T, TTableName>> {
-		return new PgTJSONString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTJSONString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableJSON extends string>(table: AnyPgTable<{ name: TTableJSON }>): PgTJSONString<MakeColumnConfig<T, TTableJSON>> {
+		return new PgTJSONString<MakeColumnConfig<T, TTableJSON>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTJSONString<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHKT, T> {
+export class PgTJSONString<T extends ColumnBaseConfig<"string", "PgTJSONString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTJSONString";
 
 	getSQLType(): string {
 		return "json";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return JSON.from(value as string).postgres;
+	override mapFromDriverValue(value: JSON): string {
+		return JSON.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
+	override mapToDriverValue(value: string): JSON {
+		const result = JSON.safeFrom(value);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
+	}
+}
+//#endregion
+
+//#region value
+export type PgTJSONValueBuilderInitial<TName extends string> = PgTJSONValueBuilder<{
+	name: TName;
+	dataType: "string";
+	columnType: "PgTJSONValue";
+	data: Record<string, unknown> | unknown[] | string | number | boolean | null;
+	driverParam: JSON;
+	enumValues: undefined;
+}>;
+
+export class PgTJSONValueBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTJSONValue">> extends PgTColumnBuilder<T> {
+	static readonly [entityKind]: string = "PgTJSONValueBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTJSONValue");
+	}
+
+	/** @internal */
+	build<TTableJSON extends string>(table: AnyPgTable<{ name: TTableJSON }>): PgTJSONValue<MakeColumnConfig<T, TTableJSON>> {
+		return new PgTJSONValue<MakeColumnConfig<T, TTableJSON>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTJSONValue<T extends ColumnBaseConfig<"string", "PgTJSONValue">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTJSONValue";
+
+	getSQLType(): string {
+		return "json";
+	}
+
+	override mapFromDriverValue(value: JSON): Record<string, unknown> | unknown[] | string | number | boolean | null {
+		return JSON.from(value).json;
+	}
+
+	override mapToDriverValue(value: Record<string, unknown> | unknown[] | string | number | boolean | null): JSON {
 		const result = JSON.safeFrom(value as string);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
@@ -142,62 +132,11 @@ export class PgTJSONString<T extends ColumnBaseConfig> extends PgColumn<PgTJSONH
 }
 //#endregion
 
-//#region @postgresql-typed/parsers JSON as value
-export type PgTJSONValueBuilderInitial<TName extends string> = PgTJSONValueBuilder<{
-	name: TName;
-	data: Record<string, unknown> | unknown[] | string | number | boolean | null;
-	driverParam: JSON;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTJSONValueBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTJSONBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTJSONValueBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTJSONValue<MakeColumnConfig<T, TTableName>> {
-		return new PgTJSONValue<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-}
-
-export class PgTJSONValue<T extends ColumnBaseConfig> extends PgColumn<PgTJSONHKT, T> {
-	static readonly [entityKind]: string = "PgTJSONValue";
-
-	getSQLType(): string {
-		return "json";
-	}
-
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return JSON.from(value as string).json;
-	}
-
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = JSON.safeFrom(value as string);
-		if (result.success) return result.data;
-		throw new PgTError(this, result.error);
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineJSON<TName extends string, TMode extends PgTJSONConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTJSONConfig<TMode>
-): Equal<TMode, "JSON"> extends true
-	? PgTJSONBuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTJSONStringBuilderInitial<TName>
-	: PgTJSONValueBuilderInitial<TName>;
-export function defineJSON(name: string, config: PgTJSONConfig = {}) {
-	if (config.mode === "JSON") return new PgTJSONBuilder(name);
-	if (config.mode === "string") return new PgTJSONStringBuilder(name);
-	return new PgTJSONValueBuilder(name);
+export function defineJSON<TName extends string>(name: TName, config: { mode: "JSON" }): PgTJSONBuilderInitial<TName>;
+export function defineJSON<TName extends string>(name: TName, config: { mode: "string" }): PgTJSONStringBuilderInitial<TName>;
+export function defineJSON<TName extends string>(name: TName, config?: { mode: "value" }): PgTJSONValueBuilderInitial<TName>;
+export function defineJSON<TName extends string>(name: TName, config?: { mode: "JSON" | "string" | "value" }) {
+	if (config?.mode === "JSON") return new PgTJSONBuilder(name) as PgTJSONBuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTJSONStringBuilder(name) as PgTJSONStringBuilderInitial<TName>;
+	return new PgTJSONValueBuilder(name) as PgTJSONValueBuilderInitial<TName>;
 }

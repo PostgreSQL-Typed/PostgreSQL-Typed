@@ -1,196 +1,142 @@
+/* eslint-disable unicorn/filename-case */
 import { Int4 } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTInt4Config<TMode extends "Int4" | "string" | "number" = "Int4" | "string" | "number"> {
-	mode?: TMode;
-}
-
-export type PgTInt4Type<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Int4" | "string" | "number",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Int4" ? Int4 : TMode extends "string" ? string : number,
-	TDriverParameter = Int4,
-> = PgTInt4<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTInt4BuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTInt4Builder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTInt4HKT;
-}
-export interface PgTInt4HKT extends ColumnHKTBase {
-	_type: PgTInt4<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Int4
+//#region Int4
 export type PgTInt4BuilderInitial<TName extends string> = PgTInt4Builder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTInt4";
 	data: Int4;
 	driverParam: Int4;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTInt4Builder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt4BuilderHKT, T> {
+export class PgTInt4Builder<T extends ColumnBuilderBaseConfig<"custom", "PgTInt4">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTInt4Builder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4<MakeColumnConfig<T, TTableName>> {
-		return new PgTInt4<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTInt4");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableInt4 extends string>(table: AnyPgTable<{ name: TTableInt4 }>): PgTInt4<MakeColumnConfig<T, TTableInt4>> {
+		return new PgTInt4<MakeColumnConfig<T, TTableInt4>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInt4<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
+export class PgTInt4<T extends ColumnBaseConfig<"custom", "PgTInt4">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInt4";
 
 	getSQLType(): string {
 		return "int4";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Int4.from(value as string);
+	override mapFromDriverValue(value: Int4): Int4 {
+		return Int4.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Int4.safeFrom(value as string);
+	override mapToDriverValue(value: Int4): Int4 {
+		const result = Int4.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Int4 as string
+//#region string
 export type PgTInt4StringBuilderInitial<TName extends string> = PgTInt4StringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTInt4String";
 	data: string;
 	driverParam: Int4;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTInt4StringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt4BuilderHKT, T> {
+export class PgTInt4StringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTInt4String">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTInt4StringBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4String<MakeColumnConfig<T, TTableName>> {
-		return new PgTInt4String<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTInt4String");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableInt4 extends string>(table: AnyPgTable<{ name: TTableInt4 }>): PgTInt4String<MakeColumnConfig<T, TTableInt4>> {
+		return new PgTInt4String<MakeColumnConfig<T, TTableInt4>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInt4String<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
+export class PgTInt4String<T extends ColumnBaseConfig<"string", "PgTInt4String">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInt4String";
 
 	getSQLType(): string {
 		return "int4";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Int4.from(value as string).postgres;
+	override mapFromDriverValue(value: Int4): string {
+		return Int4.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Int4.safeFrom(value as string);
+	override mapToDriverValue(value: string): Int4 {
+		const result = Int4.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Int4 as number
+//#region number
 export type PgTInt4NumberBuilderInitial<TName extends string> = PgTInt4NumberBuilder<{
 	name: TName;
+	dataType: "number";
+	columnType: "PgTInt4Number";
 	data: number;
 	driverParam: Int4;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTInt4NumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt4BuilderHKT, T> {
+export class PgTInt4NumberBuilder<T extends ColumnBuilderBaseConfig<"number", "PgTInt4Number">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTInt4NumberBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTInt4Number<MakeColumnConfig<T, TTableName>> {
-		return new PgTInt4Number<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "number", "PgTInt4Number");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableInt4 extends string>(table: AnyPgTable<{ name: TTableInt4 }>): PgTInt4Number<MakeColumnConfig<T, TTableInt4>> {
+		return new PgTInt4Number<MakeColumnConfig<T, TTableInt4>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInt4Number<T extends ColumnBaseConfig> extends PgColumn<PgTInt4HKT, T> {
+export class PgTInt4Number<T extends ColumnBaseConfig<"number", "PgTInt4Number">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInt4Number";
 
 	getSQLType(): string {
 		return "int4";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Int4.from(value as string).toNumber();
+	override mapFromDriverValue(value: Int4): number {
+		return Int4.from(value).toNumber();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Int4.safeFrom(value as string);
+	override mapToDriverValue(value: number): Int4 {
+		const result = Int4.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
+//#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineInt4<TName extends string, TMode extends PgTInt4Config["mode"] & {}>(
-	name: TName,
-	config?: PgTInt4Config<TMode>
-): Equal<TMode, "Int4"> extends true
-	? PgTInt4BuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTInt4StringBuilderInitial<TName>
-	: PgTInt4NumberBuilderInitial<TName>;
-export function defineInt4(name: string, config: PgTInt4Config = {}) {
-	if (config.mode === "Int4") return new PgTInt4Builder(name);
-	if (config.mode === "string") return new PgTInt4StringBuilder(name);
-	return new PgTInt4NumberBuilder(name);
+export function defineInt4<TName extends string>(name: TName, config: { mode: "Int4" }): PgTInt4BuilderInitial<TName>;
+export function defineInt4<TName extends string>(name: TName, config: { mode: "string" }): PgTInt4StringBuilderInitial<TName>;
+export function defineInt4<TName extends string>(name: TName, config?: { mode: "number" }): PgTInt4NumberBuilderInitial<TName>;
+export function defineInt4<TName extends string>(name: TName, config?: { mode: "Int4" | "number" | "string" }) {
+	if (config?.mode === "Int4") return new PgTInt4Builder(name) as PgTInt4BuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTInt4StringBuilder(name) as PgTInt4StringBuilderInitial<TName>;
+	return new PgTInt4NumberBuilder(name) as PgTInt4NumberBuilderInitial<TName>;
 }

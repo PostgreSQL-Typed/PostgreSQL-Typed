@@ -1,146 +1,97 @@
 import { Int8Range } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTInt8RangeConfig<TMode extends "Int8Range" | "string" = "Int8Range" | "string"> {
-	mode?: TMode;
-}
-
-export type PgTInt8RangeType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Int8Range" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Int8Range" ? Int8Range : TMode extends "string" ? string : number,
-	TDriverParameter = Int8Range,
-> = PgTInt8Range<{
-	tableName: TTableName;
+//#region Int8Range
+export type PgTInt8RangeBuilderInitial<TName extends string> = PgTInt8RangeBuilder<{
 	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTInt8RangeBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTInt8RangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTInt8RangeHKT;
-}
-export interface PgTInt8RangeHKT extends ColumnHKTBase {
-	_type: PgTInt8Range<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Int8Range
-export type PgTInt8RangeBuilderInitial<TInt8Range extends string> = PgTInt8RangeBuilder<{
-	name: TInt8Range;
+	dataType: "custom";
+	columnType: "PgTInt8Range";
 	data: Int8Range;
 	driverParam: Int8Range;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTInt8RangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8RangeBuilderHKT, T> {
+export class PgTInt8RangeBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTInt8Range">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTInt8RangeBuilder";
 
-	build<TTableInt8Range extends string>(table: AnyPgTable<{ name: TTableInt8Range }>): PgTInt8Range<MakeColumnConfig<T, TTableInt8Range>> {
-		return new PgTInt8Range<MakeColumnConfig<T, TTableInt8Range>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTInt8Range");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableInt8Range extends string>(table: AnyPgTable<{ name: TTableInt8Range }>): PgTInt8Range<MakeColumnConfig<T, TTableInt8Range>> {
+		return new PgTInt8Range<MakeColumnConfig<T, TTableInt8Range>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInt8Range<T extends ColumnBaseConfig> extends PgColumn<PgTInt8RangeHKT, T> {
+export class PgTInt8Range<T extends ColumnBaseConfig<"custom", "PgTInt8Range">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInt8Range";
 
 	getSQLType(): string {
 		return "int8range";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Int8Range.from(value as string);
+	override mapFromDriverValue(value: Int8Range): Int8Range {
+		return Int8Range.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Int8Range.safeFrom(value as string);
+	override mapToDriverValue(value: Int8Range): Int8Range {
+		const result = Int8Range.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Int8Range as string
-export type PgTInt8RangeStringBuilderInitial<TInt8Range extends string> = PgTInt8RangeStringBuilder<{
-	name: TInt8Range;
+//#region string
+export type PgTInt8RangeStringBuilderInitial<TName extends string> = PgTInt8RangeStringBuilder<{
+	name: TName;
+	dataType: "string";
+	columnType: "PgTInt8RangeString";
 	data: string;
 	driverParam: Int8Range;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTInt8RangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTInt8RangeBuilderHKT, T> {
+export class PgTInt8RangeStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTInt8RangeString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTInt8RangeStringBuilder";
 
-	build<TTableInt8Range extends string>(table: AnyPgTable<{ name: TTableInt8Range }>): PgTInt8RangeString<MakeColumnConfig<T, TTableInt8Range>> {
-		return new PgTInt8RangeString<MakeColumnConfig<T, TTableInt8Range>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTInt8RangeString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableInt8Range extends string>(table: AnyPgTable<{ name: TTableInt8Range }>): PgTInt8RangeString<MakeColumnConfig<T, TTableInt8Range>> {
+		return new PgTInt8RangeString<MakeColumnConfig<T, TTableInt8Range>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTInt8RangeString<T extends ColumnBaseConfig> extends PgColumn<PgTInt8RangeHKT, T> {
+export class PgTInt8RangeString<T extends ColumnBaseConfig<"string", "PgTInt8RangeString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTInt8RangeString";
 
 	getSQLType(): string {
 		return "int8range";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Int8Range.from(value as string).postgres;
+	override mapFromDriverValue(value: Int8Range): string {
+		return Int8Range.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Int8Range.safeFrom(value as string);
+	override mapToDriverValue(value: string): Int8Range {
+		const result = Int8Range.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineInt8Range<TInt8Range extends string, TMode extends PgTInt8RangeConfig["mode"] & {}>(
-	name: TInt8Range,
-	config?: PgTInt8RangeConfig<TMode>
-): Equal<TMode, "Int8Range"> extends true ? PgTInt8RangeBuilderInitial<TInt8Range> : PgTInt8RangeStringBuilderInitial<TInt8Range>;
-export function defineInt8Range(name: string, config: PgTInt8RangeConfig = {}) {
-	if (config.mode === "Int8Range") return new PgTInt8RangeBuilder(name);
-	return new PgTInt8RangeStringBuilder(name);
+export function defineInt8Range<TName extends string>(name: TName, config: { mode: "Int8Range" }): PgTInt8RangeBuilderInitial<TName>;
+export function defineInt8Range<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt8RangeStringBuilderInitial<TName>;
+export function defineInt8Range<TName extends string>(name: TName, config?: { mode: "Int8Range" | "string" }) {
+	if (config?.mode === "Int8Range") return new PgTInt8RangeBuilder(name) as PgTInt8RangeBuilderInitial<TName>;
+	return new PgTInt8RangeStringBuilder(name) as PgTInt8RangeStringBuilderInitial<TName>;
 }

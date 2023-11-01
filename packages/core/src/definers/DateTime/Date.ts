@@ -1,84 +1,15 @@
-import { Date } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-	sql,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { Date, DateTime } from "@postgresql-typed/parsers";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, ColumnDataType, entityKind, MakeColumnConfig, sql } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTDateConfig<
-	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" = "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
-> {
-	mode?: TMode;
-}
-
-export type PgTDateType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Date"
-		? Date
-		: TMode extends "globalThis.Date"
-		? globalThis.Date
-		: TMode extends "luxon.DateTime"
-		? luxon.DateTime
-		: TMode extends "unix"
-		? number
-		: string,
-	TDriverParameter = Date,
-> = PgTDate<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTDateBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTDateBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTDateHKT;
-}
-export interface PgTDateHKT extends ColumnHKTBase {
-	_type: PgTDate<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Date
-export type PgTDateBuilderInitial<TName extends string> = PgTDateBuilder<{
-	name: TName;
-	data: Date;
-	driverParam: Date;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTDateBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDate<MakeColumnConfig<T, TTableName>> {
-		return new PgTDate<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
+export abstract class PgTDateColumnBaseBuilder<
+	T extends ColumnBuilderBaseConfig<ColumnDataType, string>,
+	TRuntimeConfig extends object = object,
+> extends PgTColumnBuilder<T, TRuntimeConfig> {
+	static readonly [entityKind]: string = "PgTDateColumnBaseBuilder";
 
 	/* c8 ignore next 3 */
 	defaultNow() {
@@ -86,246 +17,225 @@ export class PgTDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnB
 	}
 }
 
-export class PgTDate<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
+//#region Date
+export type PgTDateBuilderInitial<TName extends string> = PgTDateBuilder<{
+	name: TName;
+	dataType: "custom";
+	columnType: "PgTDate";
+	data: Date;
+	driverParam: Date;
+	enumValues: undefined;
+}>;
+
+export class PgTDateBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTDate">> extends PgTDateColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTDateBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTDate");
+	}
+
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDate<MakeColumnConfig<T, TTableName>> {
+		return new PgTDate<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTDate<T extends ColumnBaseConfig<"custom", "PgTDate">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTDate";
 
 	getSQLType(): string {
 		return "date";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Date.from(value as string);
+	override mapFromDriverValue(value: Date): Date {
+		return Date.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Date.safeFrom(value as string);
+	override mapToDriverValue(value: Date): Date {
+		const result = Date.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Date as string
-export type PgTDateStringBuilderInitial<TName extends string> = PgTDateStringBuilder<{
-	name: TName;
-	data: string;
-	driverParam: Date;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTDateStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTDateStringBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateString<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateString<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
-	}
-}
-
-export class PgTDateString<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
-	static readonly [entityKind]: string = "PgTDateString";
-
-	getSQLType(): string {
-		return "date";
-	}
-
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Date.from(value as string).postgres;
-	}
-
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Date.safeFrom(value as string);
-		if (result.success) return result.data;
-		throw new PgTError(this, result.error);
-	}
-}
-//#endregion
-
-//#region @postgresql-typed/parsers Date as globalThis.Date
+//#region globalThis.Date
 export type PgTDateGlobalThisDateBuilderInitial<TName extends string> = PgTDateGlobalThisDateBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTDateGlobalThisDate";
 	data: globalThis.Date;
 	driverParam: Date;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTDateGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
+export class PgTDateGlobalThisDateBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTDateGlobalThisDate">> extends PgTDateColumnBaseBuilder<T> {
 	static readonly [entityKind]: string = "PgTDateGlobalThisDateBuilder";
 
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTDateGlobalThisDate");
+	}
+
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+		return new PgTDateGlobalThisDate<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTDateGlobalThisDate<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
+export class PgTDateGlobalThisDate<T extends ColumnBaseConfig<"custom", "PgTDateGlobalThisDate">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTDateGlobalThisDate";
 
 	getSQLType(): string {
 		return "date";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Date.from(value as string).toJSDate();
+	override mapFromDriverValue(value: Date): globalThis.Date {
+		return Date.from(value).toJSDate();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Date.safeFrom(value as string);
+	override mapToDriverValue(value: globalThis.Date): Date {
+		const result = Date.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Date as luxon.DateTime
-export type PgTDateLuxonDateTimeBuilderInitial<TName extends string> = PgTDateLuxonDateTimeBuilder<{
+//#region luxon.DateTime
+export type PgTDateLuxonDateBuilderInitial<TName extends string> = PgTDateLuxonDateBuilder<{
 	name: TName;
-	data: luxon.DateTime;
+	dataType: "custom";
+	columnType: "PgTDateLuxonDate";
+	data: DateTime;
 	driverParam: Date;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTDateLuxonDateTimeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTDateLuxonDateTimeBuilder";
+export class PgTDateLuxonDateBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTDateLuxonDate">> extends PgTDateColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTDateLuxonDateBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateLuxonDateTime<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateLuxonDateTime<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTDateLuxonDate");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateLuxonDate<MakeColumnConfig<T, TTableName>> {
+		return new PgTDateLuxonDate<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTDateLuxonDateTime<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
-	static readonly [entityKind]: string = "PgTDateLuxonDateTime";
+export class PgTDateLuxonDate<T extends ColumnBaseConfig<"custom", "PgTDateLuxonDate">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTDateLuxonDate";
 
 	getSQLType(): string {
 		return "date";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Date.from(value as string).toDateTime();
+	override mapFromDriverValue(value: Date): DateTime {
+		return Date.from(value).toDateTime();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Date.safeFrom(value as string);
+	override mapToDriverValue(value: DateTime): Date {
+		const result = Date.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
+//#endregion
 
-//#region @postgresql-typed/parsers Date as unix
+//#region unix
 export type PgTDateUnixBuilderInitial<TName extends string> = PgTDateUnixBuilder<{
 	name: TName;
+	dataType: "number";
+	columnType: "PgTDateUnix";
 	data: number;
 	driverParam: Date;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTDateUnixBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateBuilderHKT, T> {
+export class PgTDateUnixBuilder<T extends ColumnBuilderBaseConfig<"number", "PgTDateUnix">> extends PgTDateColumnBaseBuilder<T> {
 	static readonly [entityKind]: string = "PgTDateUnixBuilder";
 
+	constructor(name: T["name"]) {
+		super(name, "number", "PgTDateUnix");
+	}
+
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateUnix<MakeColumnConfig<T, TTableName>> {
-		return new PgTDateUnix<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-
-	/* c8 ignore next 3 */
-	defaultNow() {
-		return this.default(sql`now()`);
+		return new PgTDateUnix<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTDateUnix<T extends ColumnBaseConfig> extends PgColumn<PgTDateHKT, T> {
+export class PgTDateUnix<T extends ColumnBaseConfig<"number", "PgTDateUnix">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTDateUnix";
 
 	getSQLType(): string {
 		return "date";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Date.from(value as string).toNumber();
+	override mapFromDriverValue(value: Date): number {
+		return Date.from(value).toNumber();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Date.safeFrom(value as string);
+	override mapToDriverValue(value: number): Date {
+		const result = Date.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineDate<TName extends string, TMode extends PgTDateConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTDateConfig<TMode>
-): Equal<TMode, "Date"> extends true
-	? PgTDateBuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTDateStringBuilderInitial<TName>
-	: Equal<TMode, "luxon.DateTime"> extends true
-	? PgTDateLuxonDateTimeBuilderInitial<TName>
-	: Equal<TMode, "unix"> extends true
-	? PgTDateUnixBuilderInitial<TName>
-	: PgTDateGlobalThisDateBuilderInitial<TName>;
+//#region string
+export type PgTDateStringBuilderInitial<TName extends string> = PgTDateStringBuilder<{
+	name: TName;
+	dataType: "string";
+	columnType: "PgTDateString";
+	data: string;
+	driverParam: Date;
+	enumValues: undefined;
+}>;
 
-export function defineDate(name: string, config: PgTDateConfig = {}) {
-	if (config.mode === "Date") return new PgTDateBuilder(name);
-	if (config.mode === "string") return new PgTDateStringBuilder(name);
-	if (config.mode === "luxon.DateTime") return new PgTDateLuxonDateTimeBuilder(name);
-	if (config.mode === "unix") return new PgTDateUnixBuilder(name);
-	return new PgTDateGlobalThisDateBuilder(name);
+export class PgTDateStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTDateString">> extends PgTDateColumnBaseBuilder<T> {
+	static readonly [entityKind]: string = "PgTDateStringBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTDateString");
+	}
+
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateString<MakeColumnConfig<T, TTableName>> {
+		return new PgTDateString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTDateString<T extends ColumnBaseConfig<"string", "PgTDateString">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTDateString";
+
+	getSQLType(): string {
+		return "date";
+	}
+
+	override mapFromDriverValue(value: Date): string {
+		return Date.from(value).postgres;
+	}
+
+	override mapToDriverValue(value: string): Date {
+		const result = Date.safeFrom(value);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
+	}
+}
+//#endregion
+
+export function defineDate<TName extends string>(name: TName, config: { mode: "Date" }): PgTDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config: { mode: "luxon.DateTime" }): PgTDateLuxonDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config: { mode: "unix" }): PgTDateUnixBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config: { mode: "string" }): PgTDateStringBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "globalThis.Date" }): PgTDateGlobalThisDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" }) {
+	if (config?.mode === "Date") return new PgTDateBuilder(name) as PgTDateBuilderInitial<TName>;
+	if (config?.mode === "luxon.DateTime") return new PgTDateLuxonDateBuilder(name) as PgTDateLuxonDateBuilderInitial<TName>;
+	if (config?.mode === "unix") return new PgTDateUnixBuilder(name) as PgTDateUnixBuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTDateStringBuilder(name) as PgTDateStringBuilderInitial<TName>;
+	return new PgTDateGlobalThisDateBuilder(name) as PgTDateGlobalThisDateBuilderInitial<TName>;
 }

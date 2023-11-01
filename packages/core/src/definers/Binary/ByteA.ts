@@ -1,22 +1,9 @@
 import { ByteA } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTByteAConfig<TMode extends "ByteA" | "string" | "Buffer" = "ByteA" | "string" | "Buffer"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTByteAType<
 	TTableName extends string,
@@ -33,165 +20,142 @@ export type PgTByteAType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: "PgTByteA";
+	dataType: "custom";
+	enumValues: undefined;
 }>;
 
-export interface PgTByteABuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTByteABuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTByteAHKT;
-}
-export interface PgTByteAHKT extends ColumnHKTBase {
-	_type: PgTByteA<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers ByteA
+//#region ByteA
 export type PgTByteABuilderInitial<TName extends string> = PgTByteABuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTByteA";
 	data: ByteA;
 	driverParam: ByteA;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTByteABuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTByteABuilderHKT, T> {
+export class PgTByteABuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTByteA">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTByteABuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteA<MakeColumnConfig<T, TTableName>> {
-		return new PgTByteA<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTByteA");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteA<MakeColumnConfig<T, TTableName>> {
+		return new PgTByteA<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTByteA<T extends ColumnBaseConfig> extends PgColumn<PgTByteAHKT, T> {
+export class PgTByteA<T extends ColumnBaseConfig<"custom", "PgTByteA">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTByteA";
 
 	getSQLType(): string {
 		return "bytea";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return ByteA.from(value as string);
+	override mapFromDriverValue(value: ByteA): ByteA {
+		return ByteA.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = ByteA.safeFrom(value as Buffer);
+	override mapToDriverValue(value: ByteA): ByteA {
+		const result = ByteA.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers ByteA as string
-export type PgTByteAStringBuilderInitial<TName extends string> = PgTByteAStringBuilder<{
-	name: TName;
-	data: string;
-	driverParam: ByteA;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTByteAStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTByteABuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTByteAStringBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteAString<MakeColumnConfig<T, TTableName>> {
-		return new PgTByteAString<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-}
-
-export class PgTByteAString<T extends ColumnBaseConfig> extends PgColumn<PgTByteAHKT, T> {
-	static readonly [entityKind]: string = "PgTByteAString";
-
-	getSQLType(): string {
-		return "bytea";
-	}
-
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return ByteA.from(value as string).postgres;
-	}
-
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = ByteA.safeFrom(value as Buffer);
-		if (result.success) return result.data;
-		throw new PgTError(this, result.error);
-	}
-}
-//#endregion
-
-//#region @postgresql-typed/parsers ByteA as Buffer
+//#region Buffer
 export type PgTByteABufferBuilderInitial<TName extends string> = PgTByteABufferBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTByteABuffer";
 	data: Buffer;
 	driverParam: ByteA;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTByteABufferBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTByteABuilderHKT, T> {
+export class PgTByteABufferBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTByteABuffer">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTByteABufferBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteABuffer<MakeColumnConfig<T, TTableName>> {
-		return new PgTByteABuffer<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTByteABuffer");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteABuffer<MakeColumnConfig<T, TTableName>> {
+		return new PgTByteABuffer<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTByteABuffer<T extends ColumnBaseConfig> extends PgColumn<PgTByteAHKT, T> {
+export class PgTByteABuffer<T extends ColumnBaseConfig<"custom", "PgTByteABuffer">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTByteABuffer";
 
 	getSQLType(): string {
 		return "bytea";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return ByteA.from(value as string).toBuffer();
+	override mapFromDriverValue(value: ByteA): Buffer {
+		return ByteA.from(value).bytea;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = ByteA.safeFrom(value as Buffer);
+	override mapToDriverValue(value: Buffer): ByteA {
+		const result = ByteA.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineByteA<TName extends string, TMode extends PgTByteAConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTByteAConfig<TMode>
-): Equal<TMode, "ByteA"> extends true
-	? PgTByteABuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTByteAStringBuilderInitial<TName>
-	: PgTByteABufferBuilderInitial<TName>;
-export function defineByteA(name: string, config: PgTByteAConfig = {}) {
-	if (config.mode === "ByteA") return new PgTByteABuilder(name);
-	if (config.mode === "string") return new PgTByteAStringBuilder(name);
-	return new PgTByteABufferBuilder(name);
+//#region string
+export type PgTByteAStringBuilderInitial<TName extends string> = PgTByteAStringBuilder<{
+	name: TName;
+	dataType: "string";
+	columnType: "PgTByteAString";
+	data: string;
+	driverParam: ByteA;
+	enumValues: undefined;
+}>;
+
+export class PgTByteAStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTByteAString">> extends PgTColumnBuilder<T> {
+	static readonly [entityKind]: string = "PgTByteAStringBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTByteAString");
+	}
+
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTByteAString<MakeColumnConfig<T, TTableName>> {
+		return new PgTByteAString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTByteAString<T extends ColumnBaseConfig<"string", "PgTByteAString">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTByteAString";
+
+	getSQLType(): string {
+		return "bytea";
+	}
+
+	override mapFromDriverValue(value: ByteA): string {
+		return ByteA.from(value).postgres;
+	}
+
+	override mapToDriverValue(value: string): ByteA {
+		const result = ByteA.safeFrom(value);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
+	}
+}
+//#endregion
+
+export function defineByteA<TName extends string>(name: TName, config: { mode: "ByteA" }): PgTByteABuilderInitial<TName>;
+export function defineByteA<TName extends string>(name: TName, config: { mode: "string" }): PgTByteAStringBuilderInitial<TName>;
+export function defineByteA<TName extends string>(name: TName, config?: { mode: "Buffer" }): PgTByteABufferBuilderInitial<TName>;
+export function defineByteA<TName extends string>(name: TName, config?: { mode: "ByteA" | "Buffer" | "string" }) {
+	if (config?.mode === "ByteA") return new PgTByteABuilder(name) as PgTByteABuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTByteAStringBuilder(name) as PgTByteAStringBuilderInitial<TName>;
+	return new PgTByteABufferBuilder(name) as PgTByteABufferBuilderInitial<TName>;
 }

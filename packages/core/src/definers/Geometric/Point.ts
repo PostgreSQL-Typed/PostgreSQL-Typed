@@ -1,146 +1,97 @@
 import { Point } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTPointConfig<TMode extends "Point" | "string" = "Point" | "string"> {
-	mode?: TMode;
-}
-
-export type PgTPointType<
-	TTableName extends string,
-	TName extends string,
-	TMode extends "Point" | "string",
-	TNotNull extends boolean,
-	THasDefault extends boolean,
-	TData = TMode extends "Point" ? Point : string,
-	TDriverParameter = Point,
-> = PgTPoint<{
-	tableName: TTableName;
-	name: TName;
-	data: TData;
-	driverParam: TDriverParameter;
-	notNull: TNotNull;
-	hasDefault: THasDefault;
-}>;
-
-export interface PgTPointBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTPointBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTPointHKT;
-}
-export interface PgTPointHKT extends ColumnHKTBase {
-	_type: PgTPoint<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Point
+//#region Point
 export type PgTPointBuilderInitial<TName extends string> = PgTPointBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTPoint";
 	data: Point;
 	driverParam: Point;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPointBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPointBuilderHKT, T> {
+export class PgTPointBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTPoint">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPointBuilder";
 
-	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPoint<MakeColumnConfig<T, TTablePoint>> {
-		return new PgTPoint<MakeColumnConfig<T, TTablePoint>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTPoint");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPoint<MakeColumnConfig<T, TTablePoint>> {
+		return new PgTPoint<MakeColumnConfig<T, TTablePoint>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPoint<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, T> {
+export class PgTPoint<T extends ColumnBaseConfig<"custom", "PgTPoint">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPoint";
 
 	getSQLType(): string {
 		return "point";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Point.from(value as string);
+	override mapFromDriverValue(value: Point): Point {
+		return Point.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Point.safeFrom(value as string);
+	override mapToDriverValue(value: Point): Point {
+		const result = Point.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Point as string
+//#region string
 export type PgTPointStringBuilderInitial<TName extends string> = PgTPointStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTPointString";
 	data: string;
 	driverParam: Point;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPointStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPointBuilderHKT, T> {
+export class PgTPointStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTPointString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPointStringBuilder";
 
-	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPointString<MakeColumnConfig<T, TTablePoint>> {
-		return new PgTPointString<MakeColumnConfig<T, TTablePoint>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTPointString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePoint extends string>(table: AnyPgTable<{ name: TTablePoint }>): PgTPointString<MakeColumnConfig<T, TTablePoint>> {
+		return new PgTPointString<MakeColumnConfig<T, TTablePoint>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPointString<T extends ColumnBaseConfig> extends PgColumn<PgTPointHKT, T> {
+export class PgTPointString<T extends ColumnBaseConfig<"string", "PgTPointString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPointString";
 
 	getSQLType(): string {
 		return "point";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Point.from(value as string).postgres;
+	override mapFromDriverValue(value: Point): string {
+		return Point.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Point.safeFrom(value as string);
+	override mapToDriverValue(value: string): Point {
+		const result = Point.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function definePoint<TPoint extends string, TMode extends PgTPointConfig["mode"] & {}>(
-	name: TPoint,
-	config?: PgTPointConfig<TMode>
-): Equal<TMode, "Point"> extends true ? PgTPointBuilderInitial<TPoint> : PgTPointStringBuilderInitial<TPoint>;
-export function definePoint(name: string, config: PgTPointConfig = {}) {
-	if (config.mode === "Point") return new PgTPointBuilder(name);
-	return new PgTPointStringBuilder(name);
+export function definePoint<TName extends string>(name: TName, config: { mode: "Point" }): PgTPointBuilderInitial<TName>;
+export function definePoint<TName extends string>(name: TName, config?: { mode: "string" }): PgTPointStringBuilderInitial<TName>;
+export function definePoint<TName extends string>(name: TName, config?: { mode: "Point" | "string" }) {
+	if (config?.mode === "Point") return new PgTPointBuilder(name) as PgTPointBuilderInitial<TName>;
+	return new PgTPointStringBuilder(name) as PgTPointStringBuilderInitial<TName>;
 }

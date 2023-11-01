@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/util",
-	"version": "0.10.1",
+	"version": "0.11.0",
 	"description": "Utility functions for PostgreSQL-Typed",
 	"type": "module",
 	"exports": "./lib/index.js",

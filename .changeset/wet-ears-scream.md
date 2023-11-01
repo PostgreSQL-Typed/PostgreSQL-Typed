@@ -2,4 +2,4 @@
 "@postgresql-typed/core": minor
 ---
 
-Update depedencies (mainly drizzle-orm)
+Update dependencies (mainly drizzle-orm)

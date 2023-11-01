@@ -6,8 +6,11 @@ export function getExportNameTemplate(config: PostgreSQLTypedCLIConfig, id: Type
 	const filesConfig = config.files;
 
 	switch (id.type) {
-		case "column":
-			return filesConfig.columnName;
+		case "column": {
+			const override =
+				config.files.columnNameOverrides[`${id.schemaName}.${id.tableName}.${id.name}`] || config.files.columnNameOverrides[`${id.tableName}.${id.name}`];
+			return override ?? filesConfig.columnName;
+		}
 		case "table":
 		case "tableType":
 			return filesConfig.tableName;

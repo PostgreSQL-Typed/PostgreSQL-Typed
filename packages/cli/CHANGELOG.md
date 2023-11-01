@@ -1,5 +1,16 @@
 # @postgresql-typed/cli
 
+## 0.9.0
+
+### Minor Changes
+
+- [#115](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/115) [`ec7d5d4`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ec7d5d4048e845734b9187e3df9076b3fc3c2498) Thanks [@Bas950](https://github.com/Bas950)! - Add 2 new settings (skipColumns and columnNameOverrides)
+
+### Patch Changes
+
+- Updated dependencies [[`ec7d5d4`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ec7d5d4048e845734b9187e3df9076b3fc3c2498)]:
+  - @postgresql-typed/util@0.11.0
+
 ## 0.8.3
 
 ### Patch Changes

@@ -382,12 +382,51 @@ export interface FilesConfig {
 	 * @link https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/blob/main/packages/oids/src/OIDs.ts
 	 */
 	definerOverrides: { [x: string]: [string, ImportStatement[]] | undefined };
+
+	/**
+	 * Override generated column names for some columns. The key can be either:
+	 *
+	 * - "table_name.column_name"
+	 * - "schema_name.table_name.column_name"
+	 *
+	 * @default {}
+	 *
+	 * @example Renaming "user_id" to "id" in tables with the name "users"
+	 * ```ts
+	 * {
+	 * 	  "users.user_id": "id",
+	 * }
+	 * ```
+	 */
+	columnNameOverrides: { [x: string]: string | undefined };
+
+	/**
+	 * Skip generating types for some columns. The key can be either:
+	 *
+	 * - "table_name.column_name"
+	 * - "schema_name.table_name.column_name"
+	 *
+	 * @default []
+	 *
+	 * @example Skipping "user_id" in tables with the name "users"
+	 * ```ts
+	 * ["users.user_id"]
+	 * ```
+	 */
+	skipColumns: string[];
 }
 
 const schema: SchemaDefinition = defineUntypedSchema({
 	columnName: {
 		$default: "{{ COLUMN_NAME | camel-case }}",
 		$resolve: value => (typeof value === "string" ? value : "{{ COLUMN_NAME | camel-case }}"),
+	},
+	columnNameOverrides: {
+		$default: {},
+		$resolve: value => {
+			if (typeof value === "object") return value;
+			return {};
+		},
 	},
 	databaseFileName: {
 		$default: "databases/{{ DATABASE_NAME | camel-case }}.ts",
@@ -451,6 +490,13 @@ const schema: SchemaDefinition = defineUntypedSchema({
 	schemasFileName: {
 		$default: "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts",
 		$resolve: value => (typeof value === "string" ? value : "databases/{{ DATABASE_NAME | camel-case }}/schemas.ts"),
+	},
+	skipColumns: {
+		$default: [],
+		$resolve: value => {
+			if (typeof value === "object") return value;
+			return [];
+		},
 	},
 	tableFileName: {
 		$default: "databases/{{ DATABASE_NAME | camel-case }}/{{ SCHEMA_NAME | camel-case }}/{{ TABLE_NAME | camel-case }}.ts",

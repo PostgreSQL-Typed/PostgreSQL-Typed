@@ -23,7 +23,7 @@ export function printTable(type: ClassDetails, printer: Printer) {
 			const { SchemaRecord } = printSchema(type, printer);
 			return [
 				`const ${identifierName} = ${file.getImport(SchemaRecord)}.table("${type.class_name}", {`,
-				...type.attributes.filter(a => a.attribute_number >= 0).map(attribute => printColumn(type, attribute, printer, file)),
+				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumn(type, attribute, printer, file)),
 				"});",
 			];
 		}
@@ -63,7 +63,7 @@ export function printTable(type: ClassDetails, printer: Printer) {
 				`  name: "${type.class_name}";`,
 				`  schema: "${type.schema_name}";`,
 				"  columns: {",
-				...type.attributes.filter(a => a.attribute_number >= 0).map(attribute => printColumnType(type, attribute, printer, file)),
+				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumnType(type, attribute, printer, file)),
 				"  };",
 				"}>;",
 			];
@@ -243,4 +243,11 @@ function getDefault(attribute: Attribute, file: FileContext): string {
 		return `.default(sql\`${attribute.default}\`)`;
 	}
 	return "";
+}
+
+function shouldSkip(attribute: Attribute, printer: Printer): boolean {
+	return (
+		printer.config.files.skipColumns.includes(`${attribute.schema_name}.${attribute.class_name}.${attribute.attribute_name}`) ||
+		printer.config.files.skipColumns.includes(`${attribute.class_name}.${attribute.attribute_name}`)
+	);
 }

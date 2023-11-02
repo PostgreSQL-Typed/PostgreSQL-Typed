@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.10.1
+
+### Patch Changes
+
+- fix type issue
+
 ## 0.10.0
 
 ### Minor Changes

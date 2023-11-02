@@ -1,6 +1,6 @@
 {
 	"name": "@postgresql-typed/cli",
-	"version": "0.10.0",
+	"version": "0.10.1",
 	"description": "Generate TypeScript types to be used with the PostgreSQL-Typed ecosystem from your PostgreSQL database.",
 	"type": "module",
 	"types": "./lib/index.d.ts",

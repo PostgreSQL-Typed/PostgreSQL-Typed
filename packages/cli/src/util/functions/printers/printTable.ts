@@ -65,6 +65,7 @@ export function printTable(type: ClassDetails, printer: Printer) {
 				"  columns: {",
 				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumnType(type, attribute, printer, file)),
 				"  };",
+				'  dialect: "pg";',
 				"}>;",
 			];
 		}

@@ -228,11 +228,11 @@ importers:
   packages/oids:
     devDependencies:
       '@types/pg':
-        specifier: ^8.10.2
-        version: 8.10.2
+        specifier: ^8.10.7
+        version: 8.10.7
       pg:
-        specifier: ^8.11.2
-        version: 8.11.2
+        specifier: ^8.11.3
+        version: 8.11.3
 
   packages/parsers:
     dependencies:
@@ -9071,7 +9071,6 @@ packages:
       pg: '>=8.0'
     dependencies:
       pg: 8.11.3
-    dev: false
 
   /pg-protocol@1.6.0:
     resolution: {integrity: sha512-M+PDm637OY5WM307051+bsDia5Xej6d9IR4GwJse1qA1DIhiKlksvrneZOYQq42OM+spubpcNYEo2FcKQrDk+Q==}
@@ -9136,7 +9135,6 @@ packages:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
-    dev: false
 
   /pgpass@1.0.5:
     resolution: {integrity: sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug==}

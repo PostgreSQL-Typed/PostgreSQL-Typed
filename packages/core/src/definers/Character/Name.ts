@@ -1,22 +1,9 @@
 import { Name } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTNameConfig<TMode extends "Name" | "string" = "Name" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTNameType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTNameType<
 	THasDefault extends boolean,
 	TData = TMode extends "Name" ? Name : string,
 	TDriverParameter = Name,
+	TColumnType extends "PgTName" = "PgTName",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTName<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTNameType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTNameBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTNameBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTNameHKT;
-}
-export interface PgTNameHKT extends ColumnHKTBase {
-	_type: PgTName<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Name
+//#region Name
 export type PgTNameBuilderInitial<TName extends string> = PgTNameBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTName";
 	data: Name;
 	driverParam: Name;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTNameBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTNameBuilderHKT, T> {
+export class PgTNameBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTName">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTNameBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTName<MakeColumnConfig<T, TTableName>> {
-		return new PgTName<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTName");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTName<MakeColumnConfig<T, TTableName>> {
+		return new PgTName<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTName<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T> {
+export class PgTName<T extends ColumnBaseConfig<"custom", "PgTName">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTName";
 
 	getSQLType(): string {
 		return "name";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Name.from(value as string);
+	override mapFromDriverValue(value: Name): Name {
+		return Name.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Name.safeFrom(value as string);
+	override mapToDriverValue(value: Name): Name {
+		const result = Name.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Name as string
+//#region string
 export type PgTNameStringBuilderInitial<TName extends string> = PgTNameStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTNameString";
 	data: string;
 	driverParam: Name;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTNameStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTNameBuilderHKT, T> {
+export class PgTNameStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTNameString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTNameStringBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTNameString<MakeColumnConfig<T, TTableName>> {
-		return new PgTNameString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTNameString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTNameString<MakeColumnConfig<T, TTableName>> {
+		return new PgTNameString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTNameString<T extends ColumnBaseConfig> extends PgColumn<PgTNameHKT, T> {
+export class PgTNameString<T extends ColumnBaseConfig<"string", "PgTNameString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTNameString";
 
 	getSQLType(): string {
 		return "name";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Name.from(value as string).postgres;
+	override mapFromDriverValue(value: Name): string {
+		return Name.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Name.safeFrom(value as string);
+	override mapToDriverValue(value: string): Name {
+		const result = Name.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineName<TName extends string, TMode extends PgTNameConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTNameConfig<TMode>
-): Equal<TMode, "Name"> extends true ? PgTNameBuilderInitial<TName> : PgTNameStringBuilderInitial<TName>;
-export function defineName(name: string, config: PgTNameConfig = {}) {
-	if (config.mode === "Name") return new PgTNameBuilder(name);
-	return new PgTNameStringBuilder(name);
+export function defineName<TName extends string>(name: TName, config?: { mode: "string" }): PgTNameStringBuilderInitial<TName>;
+export function defineName<TName extends string>(name: TName, config?: { mode: "Name" }): PgTNameBuilderInitial<TName>;
+export function defineName<TName extends string>(name: TName, config?: { mode: "Name" | "string" }) {
+	if (config?.mode === "Name") return new PgTNameBuilder(name) as PgTNameBuilderInitial<TName>;
+	return new PgTNameStringBuilder(name) as PgTNameStringBuilderInitial<TName>;
 }

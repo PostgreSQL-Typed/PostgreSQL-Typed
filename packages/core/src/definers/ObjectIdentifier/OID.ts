@@ -1,23 +1,10 @@
 /* eslint-disable unicorn/filename-case */
 import { OID } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTOIDConfig<TMode extends "OID" | "string" | "number" = "OID" | "string" | "number"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTOIDType<
 	TTableName extends string,
@@ -27,6 +14,9 @@ export type PgTOIDType<
 	THasDefault extends boolean,
 	TData = TMode extends "OID" ? OID : TMode extends "string" ? string : number,
 	TDriverParameter = OID,
+	TColumnType extends "PgTOID" = "PgTOID",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTOID<{
 	tableName: TTableName;
 	name: TName;
@@ -34,164 +24,142 @@ export type PgTOIDType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTOIDBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTOIDBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTOIDHKT;
-}
-export interface PgTOIDHKT extends ColumnHKTBase {
-	_type: PgTOID<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers OID
+//#region OID
 export type PgTOIDBuilderInitial<TName extends string> = PgTOIDBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTOID";
 	data: OID;
 	driverParam: OID;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTOIDBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
+export class PgTOIDBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTOID">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTOIDBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOID<MakeColumnConfig<T, TTableName>> {
-		return new PgTOID<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTOID");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableOID extends string>(table: AnyPgTable<{ name: TTableOID }>): PgTOID<MakeColumnConfig<T, TTableOID>> {
+		return new PgTOID<MakeColumnConfig<T, TTableOID>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTOID<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
+export class PgTOID<T extends ColumnBaseConfig<"custom", "PgTOID">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTOID";
 
 	getSQLType(): string {
 		return "oid";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return OID.from(value as string);
+	override mapFromDriverValue(value: OID): OID {
+		return OID.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = OID.safeFrom(value as string);
+	override mapToDriverValue(value: OID): OID {
+		const result = OID.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers OID as string
+//#region string
 export type PgTOIDStringBuilderInitial<TName extends string> = PgTOIDStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTOIDString";
 	data: string;
 	driverParam: OID;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTOIDStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
+export class PgTOIDStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTOIDString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTOIDStringBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDString<MakeColumnConfig<T, TTableName>> {
-		return new PgTOIDString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTOIDString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableOID extends string>(table: AnyPgTable<{ name: TTableOID }>): PgTOIDString<MakeColumnConfig<T, TTableOID>> {
+		return new PgTOIDString<MakeColumnConfig<T, TTableOID>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTOIDString<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
+export class PgTOIDString<T extends ColumnBaseConfig<"string", "PgTOIDString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTOIDString";
 
 	getSQLType(): string {
 		return "oid";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return OID.from(value as string).postgres;
+	override mapFromDriverValue(value: OID): string {
+		return OID.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = OID.safeFrom(value as string);
+	override mapToDriverValue(value: string): OID {
+		const result = OID.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers OID as number
+//#region number
 export type PgTOIDNumberBuilderInitial<TName extends string> = PgTOIDNumberBuilder<{
 	name: TName;
+	dataType: "number";
+	columnType: "PgTOIDNumber";
 	data: number;
 	driverParam: OID;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTOIDNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTOIDBuilderHKT, T> {
+export class PgTOIDNumberBuilder<T extends ColumnBuilderBaseConfig<"number", "PgTOIDNumber">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTOIDNumberBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTOIDNumber<MakeColumnConfig<T, TTableName>> {
-		return new PgTOIDNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "number", "PgTOIDNumber");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableOID extends string>(table: AnyPgTable<{ name: TTableOID }>): PgTOIDNumber<MakeColumnConfig<T, TTableOID>> {
+		return new PgTOIDNumber<MakeColumnConfig<T, TTableOID>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTOIDNumber<T extends ColumnBaseConfig> extends PgColumn<PgTOIDHKT, T> {
+export class PgTOIDNumber<T extends ColumnBaseConfig<"number", "PgTOIDNumber">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTOIDNumber";
 
 	getSQLType(): string {
 		return "oid";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return OID.from(value as string).toNumber();
+	override mapFromDriverValue(value: OID): number {
+		return OID.from(value).toNumber();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = OID.safeFrom(value as string);
+	override mapToDriverValue(value: number): OID {
+		const result = OID.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
+//#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineOID<TName extends string, TMode extends PgTOIDConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTOIDConfig<TMode>
-): Equal<TMode, "OID"> extends true
-	? PgTOIDBuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTOIDStringBuilderInitial<TName>
-	: PgTOIDNumberBuilderInitial<TName>;
-export function defineOID(name: string, config: PgTOIDConfig = {}) {
-	if (config.mode === "OID") return new PgTOIDBuilder(name);
-	if (config.mode === "string") return new PgTOIDStringBuilder(name);
-	return new PgTOIDNumberBuilder(name);
+export function defineOID<TName extends string>(name: TName, config?: { mode: "number" }): PgTOIDNumberBuilderInitial<TName>;
+export function defineOID<TName extends string>(name: TName, config?: { mode: "string" }): PgTOIDStringBuilderInitial<TName>;
+export function defineOID<TName extends string>(name: TName, config?: { mode: "OID" }): PgTOIDBuilderInitial<TName>;
+export function defineOID<TName extends string>(name: TName, config?: { mode: "OID" | "number" | "string" }) {
+	if (config?.mode === "OID") return new PgTOIDBuilder(name) as PgTOIDBuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTOIDStringBuilder(name) as PgTOIDStringBuilderInitial<TName>;
+	return new PgTOIDNumberBuilder(name) as PgTOIDNumberBuilderInitial<TName>;
 }

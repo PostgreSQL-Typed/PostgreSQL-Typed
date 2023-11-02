@@ -1,22 +1,9 @@
 import { Line } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTLineConfig<TMode extends "Line" | "string" = "Line" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTLineType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTLineType<
 	THasDefault extends boolean,
 	TData = TMode extends "Line" ? Line : string,
 	TDriverParameter = Line,
+	TColumnType extends "PgTLine" = "PgTLine",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTLine<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTLineType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTLineBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTLineBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTLineHKT;
-}
-export interface PgTLineHKT extends ColumnHKTBase {
-	_type: PgTLine<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Line
+//#region Line
 export type PgTLineBuilderInitial<TName extends string> = PgTLineBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTLine";
 	data: Line;
 	driverParam: Line;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTLineBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineBuilderHKT, T> {
+export class PgTLineBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTLine">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTLineBuilder";
 
-	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLine<MakeColumnConfig<T, TTableLine>> {
-		return new PgTLine<MakeColumnConfig<T, TTableLine>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTLine");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLine<MakeColumnConfig<T, TTableLine>> {
+		return new PgTLine<MakeColumnConfig<T, TTableLine>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTLine<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
+export class PgTLine<T extends ColumnBaseConfig<"custom", "PgTLine">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTLine";
 
 	getSQLType(): string {
 		return "line";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Line.from(value as string);
+	override mapFromDriverValue(value: Line): Line {
+		return Line.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Line.safeFrom(value as string);
+	override mapToDriverValue(value: Line): Line {
+		const result = Line.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Line as string
+//#region string
 export type PgTLineStringBuilderInitial<TName extends string> = PgTLineStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTLineString";
 	data: string;
 	driverParam: Line;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTLineStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineBuilderHKT, T> {
+export class PgTLineStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTLineString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTLineStringBuilder";
 
-	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLineString<MakeColumnConfig<T, TTableLine>> {
-		return new PgTLineString<MakeColumnConfig<T, TTableLine>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTLineString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableLine extends string>(table: AnyPgTable<{ name: TTableLine }>): PgTLineString<MakeColumnConfig<T, TTableLine>> {
+		return new PgTLineString<MakeColumnConfig<T, TTableLine>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTLineString<T extends ColumnBaseConfig> extends PgColumn<PgTLineHKT, T> {
+export class PgTLineString<T extends ColumnBaseConfig<"string", "PgTLineString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTLineString";
 
 	getSQLType(): string {
 		return "line";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Line.from(value as string).postgres;
+	override mapFromDriverValue(value: Line): string {
+		return Line.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Line.safeFrom(value as string);
+	override mapToDriverValue(value: string): Line {
+		const result = Line.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineLine<TLine extends string, TMode extends PgTLineConfig["mode"] & {}>(
-	name: TLine,
-	config?: PgTLineConfig<TMode>
-): Equal<TMode, "Line"> extends true ? PgTLineBuilderInitial<TLine> : PgTLineStringBuilderInitial<TLine>;
-export function defineLine(name: string, config: PgTLineConfig = {}) {
-	if (config.mode === "Line") return new PgTLineBuilder(name);
-	return new PgTLineStringBuilder(name);
+export function defineLine<TName extends string>(name: TName, config?: { mode: "string" }): PgTLineStringBuilderInitial<TName>;
+export function defineLine<TName extends string>(name: TName, config?: { mode: "Line" }): PgTLineBuilderInitial<TName>;
+export function defineLine<TName extends string>(name: TName, config?: { mode: "Line" | "string" }) {
+	if (config?.mode === "Line") return new PgTLineBuilder(name) as PgTLineBuilderInitial<TName>;
+	return new PgTLineStringBuilder(name) as PgTLineStringBuilderInitial<TName>;
 }

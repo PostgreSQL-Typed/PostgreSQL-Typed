@@ -1,22 +1,10 @@
+/* eslint-disable unicorn/filename-case */
 import { BigNumber, Money } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTMoneyConfig<TMode extends "Money" | "string" | "BigNumber" | "number" = "Money" | "string" | "BigNumber" | "number"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTMoneyType<
 	TTableName extends string,
@@ -26,6 +14,9 @@ export type PgTMoneyType<
 	THasDefault extends boolean,
 	TData = TMode extends "Money" ? Money : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
 	TDriverParameter = Money,
+	TColumnType extends "PgTMoney" = "PgTMoney",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTMoney<{
 	tableName: TTableName;
 	name: TName;
@@ -33,213 +24,186 @@ export type PgTMoneyType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTMoneyBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTMoneyBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTMoneyHKT;
-}
-export interface PgTMoneyHKT extends ColumnHKTBase {
-	_type: PgTMoney<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Money
+//#region Money
 export type PgTMoneyBuilderInitial<TName extends string> = PgTMoneyBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTMoney";
 	data: Money;
 	driverParam: Money;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTMoneyBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
+export class PgTMoneyBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTMoney">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTMoneyBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoney<MakeColumnConfig<T, TTableName>> {
-		return new PgTMoney<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTMoney");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableMoney extends string>(table: AnyPgTable<{ name: TTableMoney }>): PgTMoney<MakeColumnConfig<T, TTableMoney>> {
+		return new PgTMoney<MakeColumnConfig<T, TTableMoney>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTMoney<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
+export class PgTMoney<T extends ColumnBaseConfig<"custom", "PgTMoney">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTMoney";
 
 	getSQLType(): string {
 		return "money";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Money.from(value as string);
+	override mapFromDriverValue(value: Money): Money {
+		return Money.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Money.safeFrom(value as string);
+	override mapToDriverValue(value: Money): Money {
+		const result = Money.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Money as string
+//#region string
 export type PgTMoneyStringBuilderInitial<TName extends string> = PgTMoneyStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTMoneyString";
 	data: string;
 	driverParam: Money;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTMoneyStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
+export class PgTMoneyStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTMoneyString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTMoneyStringBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyString<MakeColumnConfig<T, TTableName>> {
-		return new PgTMoneyString<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTMoneyString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableMoney extends string>(table: AnyPgTable<{ name: TTableMoney }>): PgTMoneyString<MakeColumnConfig<T, TTableMoney>> {
+		return new PgTMoneyString<MakeColumnConfig<T, TTableMoney>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTMoneyString<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
+export class PgTMoneyString<T extends ColumnBaseConfig<"string", "PgTMoneyString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTMoneyString";
 
 	getSQLType(): string {
 		return "money";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Money.from(value as string).postgres;
+	override mapFromDriverValue(value: Money): string {
+		return Money.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Money.safeFrom(value as string);
+	override mapToDriverValue(value: string): Money {
+		const result = Money.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Money as BigNumber
-export type PgTMoneyBigNumberBuilderInitial<TName extends string> = PgTMoneyBigNumberBuilder<{
-	name: TName;
-	data: BigNumber;
-	driverParam: Money;
-	notNull: false;
-	hasDefault: false;
-}>;
-
-export class PgTMoneyBigNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
-	static readonly [entityKind]: string = "PgTMoneyBigNumberBuilder";
-
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>> {
-		return new PgTMoneyBigNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
-	}
-}
-
-export class PgTMoneyBigNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
-	static readonly [entityKind]: string = "PgTMoneyBigNumber";
-
-	getSQLType(): string {
-		return "money";
-	}
-
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Money.from(value as string).toBigNumber();
-	}
-
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Money.safeFrom(value as string);
-		if (result.success) return result.data;
-		throw new PgTError(this, result.error);
-	}
-}
-//#endregion
-
-//#region @postgresql-typed/parsers Money as number
+//#region number
 export type PgTMoneyNumberBuilderInitial<TName extends string> = PgTMoneyNumberBuilder<{
 	name: TName;
+	dataType: "number";
+	columnType: "PgTMoneyNumber";
 	data: number;
 	driverParam: Money;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTMoneyNumberBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTMoneyBuilderHKT, T> {
+export class PgTMoneyNumberBuilder<T extends ColumnBuilderBaseConfig<"number", "PgTMoneyNumber">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTMoneyNumberBuilder";
 
-	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTMoneyNumber<MakeColumnConfig<T, TTableName>> {
-		return new PgTMoneyNumber<MakeColumnConfig<T, TTableName>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "number", "PgTMoneyNumber");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableMoney extends string>(table: AnyPgTable<{ name: TTableMoney }>): PgTMoneyNumber<MakeColumnConfig<T, TTableMoney>> {
+		return new PgTMoneyNumber<MakeColumnConfig<T, TTableMoney>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTMoneyNumber<T extends ColumnBaseConfig> extends PgColumn<PgTMoneyHKT, T> {
+export class PgTMoneyNumber<T extends ColumnBaseConfig<"number", "PgTMoneyNumber">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTMoneyNumber";
 
 	getSQLType(): string {
 		return "money";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Money.from(value as string).toNumber();
+	override mapFromDriverValue(value: Money): number {
+		return Money.from(value).toNumber();
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Money.safeFrom(value as string);
+	override mapToDriverValue(value: number): Money {
+		const result = Money.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
+//#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineMoney<TName extends string, TMode extends PgTMoneyConfig["mode"] & {}>(
-	name: TName,
-	config?: PgTMoneyConfig<TMode>
-): Equal<TMode, "Money"> extends true
-	? PgTMoneyBuilderInitial<TName>
-	: Equal<TMode, "BigNumber"> extends true
-	? PgTMoneyBigNumberBuilderInitial<TName>
-	: Equal<TMode, "string"> extends true
-	? PgTMoneyStringBuilderInitial<TName>
-	: PgTMoneyNumberBuilderInitial<TName>;
-export function defineMoney(name: string, config: PgTMoneyConfig = {}) {
-	if (config.mode === "Money") return new PgTMoneyBuilder(name);
-	if (config.mode === "BigNumber") return new PgTMoneyBigNumberBuilder(name);
-	if (config.mode === "string") return new PgTMoneyStringBuilder(name);
-	return new PgTMoneyNumberBuilder(name);
+//#region BigNumber
+export type PgTMoneyBigNumberBuilderInitial<TName extends string> = PgTMoneyBigNumberBuilder<{
+	name: TName;
+	dataType: "custom";
+	columnType: "PgTMoneyBigNumber";
+	data: BigNumber;
+	driverParam: Money;
+	enumValues: undefined;
+}>;
+
+export class PgTMoneyBigNumberBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTMoneyBigNumber">> extends PgTColumnBuilder<T> {
+	static readonly [entityKind]: string = "PgTMoneyBigNumberBuilder";
+
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTMoneyBigNumber");
+	}
+
+	/** @internal */
+	build<TTableMoney extends string>(table: AnyPgTable<{ name: TTableMoney }>): PgTMoneyBigNumber<MakeColumnConfig<T, TTableMoney>> {
+		return new PgTMoneyBigNumber<MakeColumnConfig<T, TTableMoney>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
+	}
+}
+
+export class PgTMoneyBigNumber<T extends ColumnBaseConfig<"custom", "PgTMoneyBigNumber">> extends PgTColumn<T> {
+	static readonly [entityKind]: string = "PgTMoneyBigNumber";
+
+	getSQLType(): string {
+		return "money";
+	}
+
+	override mapFromDriverValue(value: Money): BigNumber {
+		return Money.from(value).toBigNumber();
+	}
+
+	override mapToDriverValue(value: BigNumber): Money {
+		const result = Money.safeFrom(value);
+		if (result.success) return result.data;
+		throw new PgTError(this, result.error);
+	}
+}
+//#endregion
+
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "number" }): PgTMoneyNumberBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "Money" }): PgTMoneyBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "string" }): PgTMoneyStringBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "BigNumber" }): PgTMoneyBigNumberBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "Money" | "number" | "string" | "BigNumber" }) {
+	if (config?.mode === "Money") return new PgTMoneyBuilder(name) as PgTMoneyBuilderInitial<TName>;
+	if (config?.mode === "BigNumber") return new PgTMoneyBigNumberBuilder(name) as PgTMoneyBigNumberBuilderInitial<TName>;
+	if (config?.mode === "string") return new PgTMoneyStringBuilder(name) as PgTMoneyStringBuilderInitial<TName>;
+	return new PgTMoneyNumberBuilder(name) as PgTMoneyNumberBuilderInitial<TName>;
 }

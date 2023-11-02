@@ -1,21 +1,11 @@
 import { CharacterVarying } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
-export interface PgTCharacterVaryingConfig<TMode extends "CharacterVarying" | "string" = "CharacterVarying" | "string"> {
-	mode?: TMode;
+export interface PgTCharacterVaryingConfig {
 	length?: number;
 }
 
@@ -27,6 +17,9 @@ export type PgTCharacterVaryingType<
 	THasDefault extends boolean,
 	TData = TMode extends "CharacterVarying" ? CharacterVarying<number> : string,
 	TDriverParameter = CharacterVarying<number>,
+	TColumnType extends "PgTCharacterVarying" = "PgTCharacterVarying",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTCharacterVarying<{
 	tableName: TTableName;
 	name: TName;
@@ -34,49 +27,39 @@ export type PgTCharacterVaryingType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTCharacterVaryingBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTCharacterVaryingBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTCharacterVaryingHKT;
-}
-export interface PgTCharacterVaryingHKT extends ColumnHKTBase {
-	_type: PgTCharacterVarying<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers CharacterVarying
+//#region CharacterVarying
 export type PgTCharacterVaryingBuilderInitial<TName extends string> = PgTCharacterVaryingBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTCharacterVarying";
 	data: CharacterVarying<number>;
 	driverParam: CharacterVarying<number>;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCharacterVaryingBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCharacterVaryingBuilderHKT, T, { length?: number }> {
+export class PgTCharacterVaryingBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTCharacterVarying">> extends PgTColumnBuilder<
+	T,
+	{ length: number | undefined }
+> {
 	static readonly [entityKind]: string = "PgTCharacterVaryingBuilder";
 
-	constructor(name: string, config: PgTCharacterVaryingConfig) {
-		super(name);
+	constructor(name: T["name"], config: PgTCharacterVaryingConfig) {
+		super(name, "custom", "PgTCharacterVarying");
 		this.config.length = config.length;
 	}
 
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVarying<MakeColumnConfig<T, TTableName>> {
-		return new PgTCharacterVarying<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+		return new PgTCharacterVarying<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
+export class PgTCharacterVarying<T extends ColumnBaseConfig<"custom", "PgTCharacterVarying">> extends PgTColumn<T, { length: number | undefined }> {
 	static readonly [entityKind]: string = "PgTCharacterVarying";
 
 	readonly length = this.config.length;
@@ -85,57 +68,46 @@ export class PgTCharacterVarying<T extends ColumnBaseConfig> extends PgColumn<Pg
 		return this.length === undefined ? "varchar" : `varchar(${this.length})`;
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string);
-		return CharacterVarying.from(value as string);
+	override mapFromDriverValue(value: CharacterVarying<number>): CharacterVarying<number> {
+		return this.length === undefined ? CharacterVarying.from(value) : CharacterVarying.setN(this.length).from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result =
-			this.config.length === undefined ? CharacterVarying.safeFrom(value as string) : CharacterVarying.setN(this.config.length).safeFrom(value as string);
+	override mapToDriverValue(value: CharacterVarying<number>): CharacterVarying<number> {
+		const result = this.length === undefined ? CharacterVarying.safeFrom(value) : CharacterVarying.setN(this.length).safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers CharacterVarying as string
+//#region string
 export type PgTCharacterVaryingStringBuilderInitial<TName extends string> = PgTCharacterVaryingStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTCharacterVaryingString";
 	data: string;
 	driverParam: CharacterVarying<number>;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCharacterVaryingStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<
-	PgTCharacterVaryingBuilderHKT,
+export class PgTCharacterVaryingStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTCharacterVaryingString">> extends PgTColumnBuilder<
 	T,
-	{ length?: number }
+	{ length: number | undefined }
 > {
 	static readonly [entityKind]: string = "PgTCharacterVaryingStringBuilder";
 
-	constructor(name: string, config: PgTCharacterVaryingConfig) {
-		super(name);
+	constructor(name: T["name"], config: PgTCharacterVaryingConfig) {
+		super(name, "string", "PgTCharacterVaryingString");
 		this.config.length = config.length;
 	}
 
+	/** @internal */
 	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>> {
-		return new PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>>(table, this.config);
-	}
-
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+		return new PgTCharacterVaryingString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgColumn<PgTCharacterVaryingHKT, T, { length?: number }> {
+export class PgTCharacterVaryingString<T extends ColumnBaseConfig<"string", "PgTCharacterVaryingString">> extends PgTColumn<T, { length: number | undefined }> {
 	static readonly [entityKind]: string = "PgTCharacterVaryingString";
 
 	readonly length = this.config.length;
@@ -144,31 +116,27 @@ export class PgTCharacterVaryingString<T extends ColumnBaseConfig> extends PgCol
 		return this.length === undefined ? "varchar" : `varchar(${this.length})`;
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		if (this.config.length !== undefined) return CharacterVarying.setN(this.config.length).from(value as string).postgres;
-		return CharacterVarying.from(value as string).postgres;
+	override mapFromDriverValue(value: CharacterVarying<number>): string {
+		return (this.length === undefined ? CharacterVarying.from(value) : CharacterVarying.setN(this.length).from(value)).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result =
-			this.config.length === undefined ? CharacterVarying.safeFrom(value as string) : CharacterVarying.setN(this.config.length).safeFrom(value as string);
+	override mapToDriverValue(value: string): CharacterVarying<number> {
+		const result = this.length === undefined ? CharacterVarying.safeFrom(value) : CharacterVarying.setN(this.length).safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineCharacterVarying<TName extends string, TMode extends PgTCharacterVaryingConfig["mode"] & {}>(
+export function defineCharacterVarying<TName extends string>(
 	name: TName,
-	config?: PgTCharacterVaryingConfig<TMode>
-): Equal<TMode, "CharacterVarying"> extends true ? PgTCharacterVaryingBuilderInitial<TName> : PgTCharacterVaryingStringBuilderInitial<TName>;
-export function defineCharacterVarying(name: string, config: PgTCharacterVaryingConfig = {}) {
-	const { length, mode } = config;
-	if (mode === "CharacterVarying") {
-		return new PgTCharacterVaryingBuilder(name, {
-			length,
-		});
-	}
-	return new PgTCharacterVaryingStringBuilder(name, { length });
+	config?: { mode: "string"; length?: number }
+): PgTCharacterVaryingStringBuilderInitial<TName>;
+export function defineCharacterVarying<TName extends string>(
+	name: TName,
+	config?: { mode: "CharacterVarying"; length?: number }
+): PgTCharacterVaryingBuilderInitial<TName>;
+export function defineCharacterVarying<TName extends string>(name: TName, config?: { mode: "CharacterVarying" | "string"; length?: number }) {
+	if (config?.mode === "CharacterVarying") return new PgTCharacterVaryingBuilder(name, { length: config.length }) as PgTCharacterVaryingBuilderInitial<TName>;
+	return new PgTCharacterVaryingStringBuilder(name, { length: config?.length }) as PgTCharacterVaryingStringBuilderInitial<TName>;
 }

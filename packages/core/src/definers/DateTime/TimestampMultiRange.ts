@@ -1,25 +1,12 @@
 import { TimestampMultiRange } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 // MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
 /* c8 ignore start */
-
-export interface PgTTimestampMultiRangeConfig<TMode extends "TimestampMultiRange" | "string" = "TimestampMultiRange" | "string"> {
-	mode?: TMode;
-}
 
 export type PgTTimestampMultiRangeType<
 	TTableName extends string,
@@ -29,6 +16,9 @@ export type PgTTimestampMultiRangeType<
 	THasDefault extends boolean,
 	TData = TMode extends "TimestampMultiRange" ? TimestampMultiRange : string,
 	TDriverParameter = TimestampMultiRange,
+	TColumnType extends "PgTTimestampMultiRange" = "PgTTimestampMultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTTimestampMultiRange<{
 	tableName: TTableName;
 	name: TName;
@@ -36,120 +26,101 @@ export type PgTTimestampMultiRangeType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTTimestampMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTTimestampMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTTimestampMultiRangeHKT;
-}
-export interface PgTTimestampMultiRangeHKT extends ColumnHKTBase {
-	_type: PgTTimestampMultiRange<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers TimestampMultiRange
+//#region TimestampMultiRange
 export type PgTTimestampMultiRangeBuilderInitial<TName extends string> = PgTTimestampMultiRangeBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTTimestampMultiRange";
 	data: TimestampMultiRange;
 	driverParam: TimestampMultiRange;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTimestampMultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampMultiRangeBuilderHKT, T> {
+export class PgTTimestampMultiRangeBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTTimestampMultiRange">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTTimestampMultiRangeBuilder";
 
-	build<TTableTimestampMultiRange extends string>(
-		table: AnyPgTable<{ name: TTableTimestampMultiRange }>
-	): PgTTimestampMultiRange<MakeColumnConfig<T, TTableTimestampMultiRange>> {
-		return new PgTTimestampMultiRange<MakeColumnConfig<T, TTableTimestampMultiRange>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTTimestampMultiRange");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampMultiRange<MakeColumnConfig<T, TTableName>> {
+		return new PgTTimestampMultiRange<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTimestampMultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampMultiRangeHKT, T> {
+export class PgTTimestampMultiRange<T extends ColumnBaseConfig<"custom", "PgTTimestampMultiRange">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTimestampMultiRange";
 
 	getSQLType(): string {
 		return "tsmultirange";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return TimestampMultiRange.from(value as string);
+	override mapFromDriverValue(value: TimestampMultiRange): TimestampMultiRange {
+		return TimestampMultiRange.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = TimestampMultiRange.safeFrom(value as string);
+	override mapToDriverValue(value: TimestampMultiRange): TimestampMultiRange {
+		const result = TimestampMultiRange.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers TimestampMultiRange as string
+//#region string
 export type PgTTimestampMultiRangeStringBuilderInitial<TName extends string> = PgTTimestampMultiRangeStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTTimestampMultiRangeString";
 	data: string;
 	driverParam: TimestampMultiRange;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTTimestampMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTTimestampMultiRangeBuilderHKT, T> {
+export class PgTTimestampMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTTimestampMultiRangeString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTTimestampMultiRangeStringBuilder";
 
-	build<TTableTimestampMultiRange extends string>(
-		table: AnyPgTable<{ name: TTableTimestampMultiRange }>
-	): PgTTimestampMultiRangeString<MakeColumnConfig<T, TTableTimestampMultiRange>> {
-		return new PgTTimestampMultiRangeString<MakeColumnConfig<T, TTableTimestampMultiRange>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTTimestampMultiRangeString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTTimestampMultiRangeString<MakeColumnConfig<T, TTableName>> {
+		return new PgTTimestampMultiRangeString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTTimestampMultiRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTTimestampMultiRangeHKT, T> {
+export class PgTTimestampMultiRangeString<T extends ColumnBaseConfig<"string", "PgTTimestampMultiRangeString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTTimestampMultiRangeString";
 
 	getSQLType(): string {
 		return "tsmultirange";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return TimestampMultiRange.from(value as string).postgres;
+	override mapFromDriverValue(value: TimestampMultiRange): string {
+		return TimestampMultiRange.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = TimestampMultiRange.safeFrom(value as string);
+	override mapToDriverValue(value: string): TimestampMultiRange {
+		const result = TimestampMultiRange.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineTimestampMultiRange<TTimestampMultiRange extends string, TMode extends PgTTimestampMultiRangeConfig["mode"] & {}>(
-	name: TTimestampMultiRange,
-	config?: PgTTimestampMultiRangeConfig<TMode>
-): Equal<TMode, "TimestampMultiRange"> extends true
-	? PgTTimestampMultiRangeBuilderInitial<TTimestampMultiRange>
-	: PgTTimestampMultiRangeStringBuilderInitial<TTimestampMultiRange>;
-export function defineTimestampMultiRange(name: string, config: PgTTimestampMultiRangeConfig = {}) {
-	if (config.mode === "TimestampMultiRange") return new PgTTimestampMultiRangeBuilder(name);
-	return new PgTTimestampMultiRangeStringBuilder(name);
+export function defineTimestampMultiRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimestampMultiRangeStringBuilderInitial<TName>;
+export function defineTimestampMultiRange<TName extends string>(
+	name: TName,
+	config?: { mode: "TimestampMultiRange" }
+): PgTTimestampMultiRangeBuilderInitial<TName>;
+export function defineTimestampMultiRange<TName extends string>(name: TName, config?: { mode: "TimestampMultiRange" | "string" }) {
+	if (config?.mode === "TimestampMultiRange") return new PgTTimestampMultiRangeBuilder(name) as PgTTimestampMultiRangeBuilderInitial<TName>;
+	return new PgTTimestampMultiRangeStringBuilder(name) as PgTTimestampMultiRangeStringBuilderInitial<TName>;
 }

@@ -1,22 +1,9 @@
 import { Circle } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTCircleConfig<TMode extends "Circle" | "string" = "Circle" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTCircleType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTCircleType<
 	THasDefault extends boolean,
 	TData = TMode extends "Circle" ? Circle : TMode extends "string" ? string : number,
 	TDriverParameter = Circle,
+	TColumnType extends "PgTCircle" = "PgTCircle",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTCircle<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTCircleType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTCircleBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTCircleBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTCircleHKT;
-}
-export interface PgTCircleHKT extends ColumnHKTBase {
-	_type: PgTCircle<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Circle
+//#region Circle
 export type PgTCircleBuilderInitial<TName extends string> = PgTCircleBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTCircle";
 	data: Circle;
 	driverParam: Circle;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCircleBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCircleBuilderHKT, T> {
+export class PgTCircleBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTCircle">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTCircleBuilder";
 
-	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircle<MakeColumnConfig<T, TTableCircle>> {
-		return new PgTCircle<MakeColumnConfig<T, TTableCircle>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTCircle");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircle<MakeColumnConfig<T, TTableCircle>> {
+		return new PgTCircle<MakeColumnConfig<T, TTableCircle>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCircle<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT, T> {
+export class PgTCircle<T extends ColumnBaseConfig<"custom", "PgTCircle">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTCircle";
 
 	getSQLType(): string {
 		return "circle";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Circle.from(value as string);
+	override mapFromDriverValue(value: Circle): Circle {
+		return Circle.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Circle.safeFrom(value as string);
+	override mapToDriverValue(value: Circle): Circle {
+		const result = Circle.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Circle as string
+//#region string
 export type PgTCircleStringBuilderInitial<TName extends string> = PgTCircleStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTCircleString";
 	data: string;
 	driverParam: Circle;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTCircleStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTCircleBuilderHKT, T> {
+export class PgTCircleStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTCircleString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTCircleStringBuilder";
 
-	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircleString<MakeColumnConfig<T, TTableCircle>> {
-		return new PgTCircleString<MakeColumnConfig<T, TTableCircle>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTCircleString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableCircle extends string>(table: AnyPgTable<{ name: TTableCircle }>): PgTCircleString<MakeColumnConfig<T, TTableCircle>> {
+		return new PgTCircleString<MakeColumnConfig<T, TTableCircle>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTCircleString<T extends ColumnBaseConfig> extends PgColumn<PgTCircleHKT, T> {
+export class PgTCircleString<T extends ColumnBaseConfig<"string", "PgTCircleString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTCircleString";
 
 	getSQLType(): string {
 		return "circle";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Circle.from(value as string).postgres;
+	override mapFromDriverValue(value: Circle): string {
+		return Circle.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Circle.safeFrom(value as string);
+	override mapToDriverValue(value: string): Circle {
+		const result = Circle.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineCircle<TCircle extends string, TMode extends PgTCircleConfig["mode"] & {}>(
-	name: TCircle,
-	config?: PgTCircleConfig<TMode>
-): Equal<TMode, "Circle"> extends true ? PgTCircleBuilderInitial<TCircle> : PgTCircleStringBuilderInitial<TCircle>;
-export function defineCircle(name: string, config: PgTCircleConfig = {}) {
-	if (config.mode === "Circle") return new PgTCircleBuilder(name);
-	return new PgTCircleStringBuilder(name);
+export function defineCircle<TName extends string>(name: TName, config?: { mode: "string" }): PgTCircleStringBuilderInitial<TName>;
+export function defineCircle<TName extends string>(name: TName, config?: { mode: "Circle" }): PgTCircleBuilderInitial<TName>;
+export function defineCircle<TName extends string>(name: TName, config?: { mode: "Circle" | "string" }) {
+	if (config?.mode === "Circle") return new PgTCircleBuilder(name) as PgTCircleBuilderInitial<TName>;
+	return new PgTCircleStringBuilder(name) as PgTCircleStringBuilderInitial<TName>;
 }

@@ -4,7 +4,6 @@ import {
 	type AnyTable,
 	type Assume,
 	Column,
-	type ColumnKind,
 	type ColumnsSelection,
 	type DrizzleTypeError,
 	type Equal,
@@ -12,7 +11,6 @@ import {
 	is,
 	Param,
 	type SelectedFieldsOrdered,
-	type SimplifyShallow,
 	SQL,
 	Subquery,
 	SubqueryConfig,
@@ -79,7 +77,7 @@ type SelectPartialResult<TFields, TNullability extends Record<string, JoinNullab
 					? TField["_"]["name"] extends keyof TNullability
 						? ApplyNullability<SelectResultFields<TField["_"]["columns"]>, TNullability[TField["_"]["name"]]>
 						: never
-					: TField extends AnyColumn
+					: TField extends Column
 					? TField["_"]["tableName"] extends keyof TNullability
 						? ApplyNullability<SelectResultField<TField>, TNullability[TField["_"]["tableName"]]>
 						: never
@@ -98,17 +96,18 @@ type SelectPartialResult<TFields, TNullability extends Record<string, JoinNullab
 
 export type ApplyNullability<T, TNullability extends JoinNullability> = TNullability extends "nullable" ? T | null : TNullability extends "null" ? null : T;
 
-export type ApplyNotNullMapToJoins<TResult, TNullabilityMap extends Record<string, JoinNullability>> = SimplifyShallow<{
+export type ApplyNotNullMapToJoins<TResult, TNullabilityMap extends Record<string, JoinNullability>> = {
 	[TTableName in keyof TResult & keyof TNullabilityMap & string]: ApplyNullability<TResult[TTableName], TNullabilityMap[TTableName]>;
-}>;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+} & {};
 
 export type SelectResultField<T, TDeep extends boolean = true> = T extends DrizzleTypeError<any>
 	? T
-	: T extends AnyTable
+	: T extends Table
 	? Equal<TDeep, true> extends true
 		? SelectResultField<T["_"]["columns"], false>
 		: never
-	: T extends AnyColumn
+	: T extends Column<any>
 	? GetColumnData<T>
 	: T extends SQL | SQL.Aliased
 	? T["_"]["type"]
@@ -116,15 +115,18 @@ export type SelectResultField<T, TDeep extends boolean = true> = T extends Drizz
 	? SelectResultFields<T, true>
 	: never;
 
-export type SelectResultFields<TSelectedFields, TDeep extends boolean = true> = SimplifyShallow<{
+export type SelectResultFields<TSelectedFields, TDeep extends boolean = true> = {
 	[Key in keyof TSelectedFields & string]: SelectResultField<TSelectedFields[Key], TDeep>;
-}>;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+} & {};
 
 type IsUnion<T, U extends T = T> = (T extends any ? (U extends T ? false : true) : never) extends false ? false : true;
 
 type Not<T extends boolean> = T extends true ? false : true;
 
-export type GetSelectTableName<TTable extends AnyTable | Subquery | View | SQL> = TTable extends AnyTable
+export type TableLike = Table | Subquery | View | SQL;
+
+export type GetSelectTableName<TTable extends TableLike> = TTable extends Table
 	? TTable["_"]["name"]
 	: TTable extends Subquery
 	? TTable["_"]["alias"]
@@ -134,7 +136,7 @@ export type GetSelectTableName<TTable extends AnyTable | Subquery | View | SQL> 
 	? undefined
 	: never;
 
-export type GetSelectTableSelection<TTable extends AnyTable | Subquery | View | SQL> = TTable extends AnyTable
+export type GetSelectTableSelection<TTable extends TableLike> = TTable extends Table
 	? TTable["_"]["columns"]
 	: TTable extends Subquery | View
 	? Assume<TTable["_"]["selectedFields"], ColumnsSelection>
@@ -143,12 +145,11 @@ export type GetSelectTableSelection<TTable extends AnyTable | Subquery | View | 
 	  {}
 	: never;
 
-export type ApplyNullabilityToColumn<TColumn extends AnyColumn, TNullability extends JoinNullability> = TNullability extends "not-null"
+export type ApplyNullabilityToColumn<TColumn extends Column, TNullability extends JoinNullability> = TNullability extends "not-null"
 	? TColumn
-	: ColumnKind<
-			TColumn["_"]["hkt"],
+	: Column<
 			UpdateColConfig<
-				TColumn["_"]["config"],
+				TColumn["_"],
 				{
 					notNull: TNullability extends "nullable" ? false : TColumn["_"]["notNull"];
 				}
@@ -157,17 +158,18 @@ export type ApplyNullabilityToColumn<TColumn extends AnyColumn, TNullability ext
 
 export type BuildSubquerySelection<TSelection extends ColumnsSelection, TNullability extends Record<string, JoinNullability>> = TSelection extends never
 	? any
-	: SimplifyShallow<{
+	: {
 			[Key in keyof TSelection]: TSelection[Key] extends SQL
 				? DrizzleTypeError<"You cannot reference this field without assigning it an alias first - use `.as(<alias>)`">
 				: TSelection[Key] extends SQL.Aliased
 				? TSelection[Key]
-				: TSelection[Key] extends AnyColumn
+				: TSelection[Key] extends Column
 				? ApplyNullabilityToColumn<TSelection[Key], TNullability[TSelection[Key]["_"]["tableName"]]>
 				: TSelection[Key] extends ColumnsSelection
 				? BuildSubquerySelection<TSelection[Key], TNullability>
 				: never;
-	  }>;
+			// eslint-disable-next-line @typescript-eslint/ban-types
+	  } & {};
 
 /** @internal */
 export function getTableLikeName(table: AnyTable | Subquery | View | SQL): string | undefined {
@@ -188,3 +190,16 @@ export function getTableLikeName(table: AnyTable | Subquery | View | SQL): strin
 }
 
 export type JoinType = "inner" | "left" | "right" | "full";
+
+export function makePgTArray(array: any[]): string {
+	return `{${array
+		.map(item => {
+			if (Array.isArray(item)) return makePgTArray(item);
+
+			if (typeof item === "object" && item !== null && "postgres" in item) item = item.postgres;
+			if (typeof item === "string" && item.includes(",")) return `"${item.replaceAll('"', '\\"')}"`;
+
+			return `${item}`;
+		})
+		.join(",")}}`;
+}

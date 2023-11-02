@@ -1,22 +1,9 @@
 import { Path } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTPathConfig<TMode extends "Path" | "string" = "Path" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTPathType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTPathType<
 	THasDefault extends boolean,
 	TData = TMode extends "Path" ? Path : string,
 	TDriverParameter = Path,
+	TColumnType extends "PgTPath" = "PgTPath",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTPath<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTPathType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTPathBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTPathBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTPathHKT;
-}
-export interface PgTPathHKT extends ColumnHKTBase {
-	_type: PgTPath<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Path
+//#region Path
 export type PgTPathBuilderInitial<TName extends string> = PgTPathBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTPath";
 	data: Path;
 	driverParam: Path;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPathBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPathBuilderHKT, T> {
+export class PgTPathBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTPath">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPathBuilder";
 
-	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPath<MakeColumnConfig<T, TTablePath>> {
-		return new PgTPath<MakeColumnConfig<T, TTablePath>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTPath");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPath<MakeColumnConfig<T, TTablePath>> {
+		return new PgTPath<MakeColumnConfig<T, TTablePath>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPath<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T> {
+export class PgTPath<T extends ColumnBaseConfig<"custom", "PgTPath">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPath";
 
 	getSQLType(): string {
 		return "path";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Path.from(value as string);
+	override mapFromDriverValue(value: Path): Path {
+		return Path.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Path.safeFrom(value as string);
+	override mapToDriverValue(value: Path): Path {
+		const result = Path.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Path as string
+//#region string
 export type PgTPathStringBuilderInitial<TName extends string> = PgTPathStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTPathString";
 	data: string;
 	driverParam: Path;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPathStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPathBuilderHKT, T> {
+export class PgTPathStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTPathString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPathStringBuilder";
 
-	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPathString<MakeColumnConfig<T, TTablePath>> {
-		return new PgTPathString<MakeColumnConfig<T, TTablePath>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTPathString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePath extends string>(table: AnyPgTable<{ name: TTablePath }>): PgTPathString<MakeColumnConfig<T, TTablePath>> {
+		return new PgTPathString<MakeColumnConfig<T, TTablePath>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPathString<T extends ColumnBaseConfig> extends PgColumn<PgTPathHKT, T> {
+export class PgTPathString<T extends ColumnBaseConfig<"string", "PgTPathString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPathString";
 
 	getSQLType(): string {
 		return "path";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Path.from(value as string).postgres;
+	override mapFromDriverValue(value: Path): string {
+		return Path.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Path.safeFrom(value as string);
+	override mapToDriverValue(value: string): Path {
+		const result = Path.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function definePath<TPath extends string, TMode extends PgTPathConfig["mode"] & {}>(
-	name: TPath,
-	config?: PgTPathConfig<TMode>
-): Equal<TMode, "Path"> extends true ? PgTPathBuilderInitial<TPath> : PgTPathStringBuilderInitial<TPath>;
-export function definePath(name: string, config: PgTPathConfig = {}) {
-	if (config.mode === "Path") return new PgTPathBuilder(name);
-	return new PgTPathStringBuilder(name);
+export function definePath<TName extends string>(name: TName, config?: { mode: "string" }): PgTPathStringBuilderInitial<TName>;
+export function definePath<TName extends string>(name: TName, config?: { mode: "Path" }): PgTPathBuilderInitial<TName>;
+export function definePath<TName extends string>(name: TName, config?: { mode: "Path" | "string" }) {
+	if (config?.mode === "Path") return new PgTPathBuilder(name) as PgTPathBuilderInitial<TName>;
+	return new PgTPathStringBuilder(name) as PgTPathStringBuilderInitial<TName>;
 }

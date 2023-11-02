@@ -7,7 +7,6 @@ import {
 	Query,
 	QueryPromise,
 	SelectionProxyHandler,
-	Simplify,
 	SQL,
 	type SQLWrapper,
 	Subquery,
@@ -23,11 +22,13 @@ import {
 	JoinFn,
 	LockConfig,
 	LockStrength,
+	PgColumn,
 	type PgDialect,
 	type PgSelectConfig,
 	type PgSelectHKT,
 	type PgSelectHKTBase,
 	PgSelectQueryBuilderHKT,
+	PgTable,
 	PgViewBase,
 	type PreparedQueryConfig,
 	SelectedFields,
@@ -178,17 +179,13 @@ export abstract class PgTSelectQueryBuilder<
 		distinct:
 			| boolean
 			| {
-					on: (AnyPgColumn | SQLWrapper)[];
+					on: (PgColumn | SQLWrapper)[];
 			  }
 			| undefined;
 	}) {
 		this.config = {
 			distinct,
 			fields: { ...fields },
-			groupBy: [],
-			joins: [],
-			lockingClauses: [],
-			orderBy: [],
 			table,
 			withList,
 		};
@@ -203,11 +200,11 @@ export abstract class PgTSelectQueryBuilder<
 	}
 
 	private createJoin<TJoinType extends JoinType>(joinType: TJoinType): JoinFn<THKT, TTableName, TSelectMode, TJoinType, TSelection, TNullabilityMap> {
-		return (table: AnyPgTable | Subquery | PgViewBase | SQL, on: ((aliases: TSelection) => SQL | undefined) | SQL | undefined) => {
+		return (table: PgTable | Subquery | PgViewBase | SQL, on: ((aliases: TSelection) => SQL | undefined) | SQL | undefined) => {
 			const baseTableName = this.tableName,
 				tableName = getTableLikeName(table);
 
-			if (typeof tableName === "string" && this.config.joins.some(join => join.alias === tableName))
+			if (typeof tableName === "string" && this.config.joins?.some(join => join.alias === tableName))
 				throw new Error(`Alias "${tableName}" is already used in this query`);
 
 			if (!this.isPartialSelect) {
@@ -232,6 +229,8 @@ export abstract class PgTSelectQueryBuilder<
 
 			if (typeof on === "function")
 				on = on(new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })) as TSelection);
+
+			if (!this.config.joins) this.config.joins = [];
 
 			this.config.joins.push({ alias: tableName, joinType, on, table });
 
@@ -347,13 +346,13 @@ export abstract class PgTSelectQueryBuilder<
 	 *
 	 * {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-GROUPBY|Postgres GROUP BY documentation}
 	 */
-	groupBy(builder: (aliases: TSelection) => ValueOrArray<AnyPgColumn | SQL | SQL.Aliased>): this;
-	groupBy(...columns: (AnyPgColumn | SQL | SQL.Aliased)[]): this;
-	groupBy(...columns: [(aliases: TSelection) => ValueOrArray<AnyPgColumn | SQL | SQL.Aliased>] | (AnyPgColumn | SQL | SQL.Aliased)[]) {
+	groupBy(builder: (aliases: TSelection) => ValueOrArray<PgColumn | SQL | SQL.Aliased>): this;
+	groupBy(...columns: (PgColumn | SQL | SQL.Aliased)[]): this;
+	groupBy(...columns: [(aliases: TSelection) => ValueOrArray<PgColumn | SQL | SQL.Aliased>] | (PgColumn | SQL | SQL.Aliased)[]) {
 		if (typeof columns[0] === "function") {
 			const groupBy = columns[0](new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })) as TSelection);
 			this.config.groupBy = Array.isArray(groupBy) ? groupBy : [groupBy];
-		} else this.config.groupBy = columns as (AnyPgColumn | SQL | SQL.Aliased)[];
+		} else this.config.groupBy = columns as (PgColumn | SQL | SQL.Aliased)[];
 
 		return this;
 	}
@@ -373,13 +372,13 @@ export abstract class PgTSelectQueryBuilder<
 	 *
 	 * {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-ORDERBY|Postgres ORDER BY documentation}
 	 */
-	orderBy(builder: (aliases: TSelection) => ValueOrArray<AnyPgColumn | SQL | SQL.Aliased>): this;
-	orderBy(...columns: (AnyPgColumn | SQL | SQL.Aliased)[]): this;
-	orderBy(...columns: [(aliases: TSelection) => ValueOrArray<AnyPgColumn | SQL | SQL.Aliased>] | (AnyPgColumn | SQL | SQL.Aliased)[]) {
+	orderBy(builder: (aliases: TSelection) => ValueOrArray<PgColumn | SQL | SQL.Aliased>): this;
+	orderBy(...columns: (PgColumn | SQL | SQL.Aliased)[]): this;
+	orderBy(...columns: [(aliases: TSelection) => ValueOrArray<PgColumn | SQL | SQL.Aliased>] | (PgColumn | SQL | SQL.Aliased)[]) {
 		if (typeof columns[0] === "function") {
 			const orderBy = columns[0](new Proxy(this.config.fields, new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" })) as TSelection);
 			this.config.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy];
-		} else this.config.orderBy = columns as (AnyPgColumn | SQL | SQL.Aliased)[];
+		} else this.config.orderBy = columns as (PgColumn | SQL | SQL.Aliased)[];
 
 		return this;
 	}
@@ -426,6 +425,8 @@ export abstract class PgTSelectQueryBuilder<
 	 * {@link https://www.postgresql.org/docs/current/sql-select.html#SQL-FOR-UPDATE-SHARE|Postgres locking clause documentation}
 	 */
 	for(strength: LockStrength, config: LockConfig = {}) {
+		if (!this.config.lockingClauses) this.config.lockingClauses = [];
+
 		this.config.lockingClauses.push({ config, strength });
 		return this;
 	}
@@ -435,7 +436,7 @@ export abstract class PgTSelectQueryBuilder<
 		return this.dialect.buildSelectQuery(this.config);
 	}
 
-	toSQL(): Simplify<Omit<Query, "typings">> {
+	toSQL(): Query {
 		const { typings: _typings, ...rest } = this.dialect.sqlToQuery(this.getSQL());
 		return rest;
 	}

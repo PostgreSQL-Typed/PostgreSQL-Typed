@@ -1,3 +1,5 @@
+import { ColumnDataType } from "drizzle-orm";
+
 import type { PgTArray } from "../array.js";
 import type { PgTByteAType } from "./Binary/ByteA.js";
 import type { PgTBitType } from "./BitString/Bit.js";
@@ -49,383 +51,1509 @@ export type PgTArrayOfType<TType> = TType extends PgTByteAType<
 	infer TNotNull,
 	infer THasDefault,
 	infer TData,
-	infer TDriverParameter
+	infer TDriverParameter,
+	infer TColumnType,
+	infer TDataType,
+	infer TEnumValues
 >
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTBitType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTBitVaryingType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTBooleanType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTCharacterType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTCharacterVaryingType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTNameType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTextType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTDateType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTDateMultiRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTDateRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTIntervalType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampMultiRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampTZType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampTZMultiRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimestampTZRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTTimeTZType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTEnumType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTBoxType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTCircleType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTLineType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTLineSegmentType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTPathType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTPointType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTPolygonType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTJSONType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTJSONBType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTMoneyType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTFloat4Type<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTFloat8Type<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt2Type<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt4Type<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt4MultiRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt4RangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt8Type<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt8MultiRangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTInt8RangeType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTOIDType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
-	: TType extends PgTUUIDType<infer TTableName, infer TName, any, infer TNotNull, infer THasDefault, infer TData, infer TDriverParameter>
-	? PgTArray<{
-			tableName: TTableName;
-			name: TName;
-			notNull: TNotNull;
-			hasDefault: THasDefault;
-			data: TData[];
-			driverParam: TDriverParameter[] | string;
-	  }>
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTBitType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTBitVaryingType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTBooleanType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTCharacterType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTCharacterVaryingType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTNameType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTextType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTDateType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTDateMultiRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTDateRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTIntervalType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampMultiRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampTZType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampTZMultiRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimestampTZRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTTimeTZType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTEnumType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTBoxType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTCircleType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTLineType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTLineSegmentType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTPathType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTPointType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTPolygonType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTJSONType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTJSONBType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTMoneyType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTFloat4Type<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTFloat8Type<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt2Type<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt4Type<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt4MultiRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt4RangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt8Type<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt8MultiRangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTInt8RangeType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTOIDType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
+	: TType extends PgTUUIDType<
+			infer TTableName,
+			infer TName,
+			any,
+			infer TNotNull,
+			infer THasDefault,
+			infer TData,
+			infer TDriverParameter,
+			infer TColumnType,
+			infer TDataType,
+			infer TEnumValues
+	  >
+	? PgTArray<
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				data: TData[];
+				driverParam: TDriverParameter[] | string;
+				columnType: "PgTArray";
+				dataType: "array";
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			},
+			{
+				tableName: TTableName extends string ? TTableName : never;
+				name: TName extends string ? TName : never;
+				data: TData;
+				driverParam: TDriverParameter;
+				notNull: TNotNull extends boolean ? TNotNull : never;
+				hasDefault: THasDefault extends boolean ? THasDefault : never;
+				columnType: TColumnType extends string ? TColumnType : never;
+				dataType: TDataType extends ColumnDataType ? TDataType : never;
+				enumValues: TEnumValues extends undefined ? TEnumValues : never;
+			}
+	  >
 	: never;

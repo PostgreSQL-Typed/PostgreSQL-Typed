@@ -1,22 +1,9 @@
 import { LineSegment } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTLineSegmentConfig<TMode extends "LineSegment" | "string" = "LineSegment" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTLineSegmentType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTLineSegmentType<
 	THasDefault extends boolean,
 	TData = TMode extends "LineSegment" ? LineSegment : string,
 	TDriverParameter = string,
+	TColumnType extends "PgTLineSegment" = "PgTLineSegment",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTLineSegment<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTLineSegmentType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTLineSegmentBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTLineSegmentBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTLineSegmentHKT;
-}
-export interface PgTLineSegmentHKT extends ColumnHKTBase {
-	_type: PgTLineSegment<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers LineSegment
+//#region LineSegment
 export type PgTLineSegmentBuilderInitial<TName extends string> = PgTLineSegmentBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTLineSegment";
 	data: LineSegment;
 	driverParam: LineSegment;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTLineSegmentBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineSegmentBuilderHKT, T> {
+export class PgTLineSegmentBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTLineSegment">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTLineSegmentBuilder";
 
-	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>> {
-		return new PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTLineSegment");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>> {
+		return new PgTLineSegment<MakeColumnConfig<T, TTableLineSegment>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTLineSegment<T extends ColumnBaseConfig> extends PgColumn<PgTLineSegmentHKT, T> {
+export class PgTLineSegment<T extends ColumnBaseConfig<"custom", "PgTLineSegment">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTLineSegment";
 
 	getSQLType(): string {
 		return "lseg";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return LineSegment.from(value as string);
+	override mapFromDriverValue(value: LineSegment): LineSegment {
+		return LineSegment.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = LineSegment.safeFrom(value as string);
+	override mapToDriverValue(value: LineSegment): LineSegment {
+		const result = LineSegment.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers LineSegment as string
+//#region string
 export type PgTLineSegmentStringBuilderInitial<TName extends string> = PgTLineSegmentStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTLineSegmentString";
 	data: string;
 	driverParam: LineSegment;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTLineSegmentStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTLineSegmentBuilderHKT, T> {
+export class PgTLineSegmentStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTLineSegmentString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTLineSegmentStringBuilder";
 
-	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>> {
-		return new PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTLineSegmentString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableLineSegment extends string>(table: AnyPgTable<{ name: TTableLineSegment }>): PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>> {
+		return new PgTLineSegmentString<MakeColumnConfig<T, TTableLineSegment>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTLineSegmentString<T extends ColumnBaseConfig> extends PgColumn<PgTLineSegmentHKT, T> {
+export class PgTLineSegmentString<T extends ColumnBaseConfig<"string", "PgTLineSegmentString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTLineSegmentString";
 
 	getSQLType(): string {
 		return "lseg";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return LineSegment.from(value as string).postgres;
+	override mapFromDriverValue(value: LineSegment): string {
+		return LineSegment.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = LineSegment.safeFrom(value as string);
+	override mapToDriverValue(value: string): LineSegment {
+		const result = LineSegment.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineLineSegment<TLineSegment extends string, TMode extends PgTLineSegmentConfig["mode"] & {}>(
-	name: TLineSegment,
-	config?: PgTLineSegmentConfig<TMode>
-): Equal<TMode, "LineSegment"> extends true ? PgTLineSegmentBuilderInitial<TLineSegment> : PgTLineSegmentStringBuilderInitial<TLineSegment>;
-export function defineLineSegment(name: string, config: PgTLineSegmentConfig = {}) {
-	if (config.mode === "LineSegment") return new PgTLineSegmentBuilder(name);
-	return new PgTLineSegmentStringBuilder(name);
+export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "string" }): PgTLineSegmentStringBuilderInitial<TName>;
+export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "LineSegment" }): PgTLineSegmentBuilderInitial<TName>;
+export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "LineSegment" | "string" }) {
+	if (config?.mode === "LineSegment") return new PgTLineSegmentBuilder(name) as PgTLineSegmentBuilderInitial<TName>;
+	return new PgTLineSegmentStringBuilder(name) as PgTLineSegmentStringBuilderInitial<TName>;
 }

@@ -1,22 +1,9 @@
 import { Polygon } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
-
-export interface PgTPolygonConfig<TMode extends "Polygon" | "string" = "Polygon" | "string"> {
-	mode?: TMode;
-}
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 export type PgTPolygonType<
 	TTableName extends string,
@@ -26,6 +13,9 @@ export type PgTPolygonType<
 	THasDefault extends boolean,
 	TData = TMode extends "Polygon" ? Polygon : string,
 	TDriverParameter = string,
+	TColumnType extends "PgTPolygon" = "PgTPolygon",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTPolygon<{
 	tableName: TTableName;
 	name: TName;
@@ -33,114 +23,98 @@ export type PgTPolygonType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTPolygonBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTPolygonBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTPolygonHKT;
-}
-export interface PgTPolygonHKT extends ColumnHKTBase {
-	_type: PgTPolygon<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers Polygon
+//#region Polygon
 export type PgTPolygonBuilderInitial<TName extends string> = PgTPolygonBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTPolygon";
 	data: Polygon;
 	driverParam: Polygon;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPolygonBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPolygonBuilderHKT, T> {
+export class PgTPolygonBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTPolygon">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPolygonBuilder";
 
-	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygon<MakeColumnConfig<T, TTablePolygon>> {
-		return new PgTPolygon<MakeColumnConfig<T, TTablePolygon>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTPolygon");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygon<MakeColumnConfig<T, TTablePolygon>> {
+		return new PgTPolygon<MakeColumnConfig<T, TTablePolygon>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPolygon<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonHKT, T> {
+export class PgTPolygon<T extends ColumnBaseConfig<"custom", "PgTPolygon">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPolygon";
 
 	getSQLType(): string {
 		return "polygon";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Polygon.from(value as string);
+	override mapFromDriverValue(value: Polygon): Polygon {
+		return Polygon.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Polygon.safeFrom(value as string);
+	override mapToDriverValue(value: Polygon): Polygon {
+		const result = Polygon.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers Polygon as string
+//#region string
 export type PgTPolygonStringBuilderInitial<TName extends string> = PgTPolygonStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTPolygonString";
 	data: string;
 	driverParam: Polygon;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTPolygonStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTPolygonBuilderHKT, T> {
+export class PgTPolygonStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTPolygonString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTPolygonStringBuilder";
 
-	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygonString<MakeColumnConfig<T, TTablePolygon>> {
-		return new PgTPolygonString<MakeColumnConfig<T, TTablePolygon>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTPolygonString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTablePolygon extends string>(table: AnyPgTable<{ name: TTablePolygon }>): PgTPolygonString<MakeColumnConfig<T, TTablePolygon>> {
+		return new PgTPolygonString<MakeColumnConfig<T, TTablePolygon>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTPolygonString<T extends ColumnBaseConfig> extends PgColumn<PgTPolygonHKT, T> {
+export class PgTPolygonString<T extends ColumnBaseConfig<"string", "PgTPolygonString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTPolygonString";
 
 	getSQLType(): string {
 		return "polygon";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return Polygon.from(value as string).postgres;
+	override mapFromDriverValue(value: Polygon): string {
+		return Polygon.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = Polygon.safeFrom(value as string);
+	override mapToDriverValue(value: string): Polygon {
+		const result = Polygon.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function definePolygon<TPolygon extends string, TMode extends PgTPolygonConfig["mode"] & {}>(
-	name: TPolygon,
-	config?: PgTPolygonConfig<TMode>
-): Equal<TMode, "Polygon"> extends true ? PgTPolygonBuilderInitial<TPolygon> : PgTPolygonStringBuilderInitial<TPolygon>;
-export function definePolygon(name: string, config: PgTPolygonConfig = {}) {
-	if (config.mode === "Polygon") return new PgTPolygonBuilder(name);
-	return new PgTPolygonStringBuilder(name);
+export function definePolygon<TName extends string>(name: TName, config?: { mode: "string" }): PgTPolygonStringBuilderInitial<TName>;
+export function definePolygon<TName extends string>(name: TName, config?: { mode: "Polygon" }): PgTPolygonBuilderInitial<TName>;
+export function definePolygon<TName extends string>(name: TName, config?: { mode: "Polygon" | "string" }) {
+	if (config?.mode === "Polygon") return new PgTPolygonBuilder(name) as PgTPolygonBuilderInitial<TName>;
+	return new PgTPolygonStringBuilder(name) as PgTPolygonStringBuilderInitial<TName>;
 }

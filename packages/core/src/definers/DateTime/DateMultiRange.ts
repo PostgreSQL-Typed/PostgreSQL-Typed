@@ -1,25 +1,12 @@
 import { DateMultiRange } from "@postgresql-typed/parsers";
-import {
-	type Assume,
-	type ColumnBaseConfig,
-	type ColumnBuilderBaseConfig,
-	type ColumnBuilderHKTBase,
-	type ColumnHKTBase,
-	entityKind,
-	type Equal,
-	type MakeColumnConfig,
-} from "drizzle-orm";
-import { type AnyPgTable, type PgArrayBuilder, PgColumn, PgColumnBuilder } from "drizzle-orm/pg-core";
+import { ColumnBaseConfig, ColumnBuilderBaseConfig, ColumnBuilderRuntimeConfig, entityKind, MakeColumnConfig } from "drizzle-orm";
+import { AnyPgTable } from "drizzle-orm/pg-core";
 
-import { PgTArrayBuilder } from "../../array.js";
 import { PgTError } from "../../PgTError.js";
+import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 // MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
 /* c8 ignore start */
-
-export interface PgTDateMultiRangeConfig<TMode extends "DateMultiRange" | "string" = "DateMultiRange" | "string"> {
-	mode?: TMode;
-}
 
 export type PgTDateMultiRangeType<
 	TTableName extends string,
@@ -29,6 +16,9 @@ export type PgTDateMultiRangeType<
 	THasDefault extends boolean,
 	TData = TMode extends "DateMultiRange" ? DateMultiRange : string,
 	TDriverParameter = DateMultiRange,
+	TColumnType extends "PgTDateMultiRange" = "PgTDateMultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTDateMultiRange<{
 	tableName: TTableName;
 	name: TName;
@@ -36,116 +26,98 @@ export type PgTDateMultiRangeType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
-export interface PgTDateMultiRangeBuilderHKT extends ColumnBuilderHKTBase {
-	_type: PgTDateMultiRangeBuilder<Assume<this["config"], ColumnBuilderBaseConfig>>;
-	_columnHKT: PgTDateMultiRangeHKT;
-}
-export interface PgTDateMultiRangeHKT extends ColumnHKTBase {
-	_type: PgTDateMultiRange<Assume<this["config"], ColumnBaseConfig>>;
-}
-
-//#region @postgresql-typed/parsers DateMultiRange
+//#region DateMultiRange
 export type PgTDateMultiRangeBuilderInitial<TName extends string> = PgTDateMultiRangeBuilder<{
 	name: TName;
+	dataType: "custom";
+	columnType: "PgTDateMultiRange";
 	data: DateMultiRange;
 	driverParam: DateMultiRange;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTDateMultiRangeBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateMultiRangeBuilderHKT, T> {
+export class PgTDateMultiRangeBuilder<T extends ColumnBuilderBaseConfig<"custom", "PgTDateMultiRange">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTDateMultiRangeBuilder";
 
-	build<TTableDateMultiRange extends string>(table: AnyPgTable<{ name: TTableDateMultiRange }>): PgTDateMultiRange<MakeColumnConfig<T, TTableDateMultiRange>> {
-		return new PgTDateMultiRange<MakeColumnConfig<T, TTableDateMultiRange>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "custom", "PgTDateMultiRange");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateMultiRange<MakeColumnConfig<T, TTableName>> {
+		return new PgTDateMultiRange<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTDateMultiRange<T extends ColumnBaseConfig> extends PgColumn<PgTDateMultiRangeHKT, T> {
+export class PgTDateMultiRange<T extends ColumnBaseConfig<"custom", "PgTDateMultiRange">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTDateMultiRange";
 
 	getSQLType(): string {
 		return "datemultirange";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return DateMultiRange.from(value as string);
+	override mapFromDriverValue(value: DateMultiRange): DateMultiRange {
+		return DateMultiRange.from(value);
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = DateMultiRange.safeFrom(value as string);
+	override mapToDriverValue(value: DateMultiRange): DateMultiRange {
+		const result = DateMultiRange.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-//#region @postgresql-typed/parsers DateMultiRange as string
+//#region string
 export type PgTDateMultiRangeStringBuilderInitial<TName extends string> = PgTDateMultiRangeStringBuilder<{
 	name: TName;
+	dataType: "string";
+	columnType: "PgTDateMultiRangeString";
 	data: string;
 	driverParam: DateMultiRange;
-	notNull: false;
-	hasDefault: false;
+	enumValues: undefined;
 }>;
 
-export class PgTDateMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig> extends PgColumnBuilder<PgTDateMultiRangeBuilderHKT, T> {
+export class PgTDateMultiRangeStringBuilder<T extends ColumnBuilderBaseConfig<"string", "PgTDateMultiRangeString">> extends PgTColumnBuilder<T> {
 	static readonly [entityKind]: string = "PgTDateMultiRangeStringBuilder";
 
-	build<TTableDateMultiRange extends string>(
-		table: AnyPgTable<{ name: TTableDateMultiRange }>
-	): PgTDateMultiRangeString<MakeColumnConfig<T, TTableDateMultiRange>> {
-		return new PgTDateMultiRangeString<MakeColumnConfig<T, TTableDateMultiRange>>(table, this.config);
+	constructor(name: T["name"]) {
+		super(name, "string", "PgTDateMultiRangeString");
 	}
 
-	override array(size?: number): PgArrayBuilder<{
-		name: NonNullable<T["name"]>;
-		notNull: NonNullable<T["notNull"]>;
-		hasDefault: NonNullable<T["hasDefault"]>;
-		data: T["data"][];
-		driverParam: T["driverParam"][] | string;
-	}> {
-		return new PgTArrayBuilder(this.config.name, this, size) as any;
+	/** @internal */
+	build<TTableName extends string>(table: AnyPgTable<{ name: TTableName }>): PgTDateMultiRangeString<MakeColumnConfig<T, TTableName>> {
+		return new PgTDateMultiRangeString<MakeColumnConfig<T, TTableName>>(table, this.config as ColumnBuilderRuntimeConfig<any, any>);
 	}
 }
 
-export class PgTDateMultiRangeString<T extends ColumnBaseConfig> extends PgColumn<PgTDateMultiRangeHKT, T> {
+export class PgTDateMultiRangeString<T extends ColumnBaseConfig<"string", "PgTDateMultiRangeString">> extends PgTColumn<T> {
 	static readonly [entityKind]: string = "PgTDateMultiRangeString";
 
 	getSQLType(): string {
 		return "datemultirange";
 	}
 
-	override mapFromDriverValue(value: T["driverParam"]): T["data"] {
-		return DateMultiRange.from(value as string).postgres;
+	override mapFromDriverValue(value: DateMultiRange): string {
+		return DateMultiRange.from(value).postgres;
 	}
 
-	override mapToDriverValue(value: T["data"]): T["driverParam"] {
-		const result = DateMultiRange.safeFrom(value as string);
+	override mapToDriverValue(value: string): DateMultiRange {
+		const result = DateMultiRange.safeFrom(value);
 		if (result.success) return result.data;
 		throw new PgTError(this, result.error);
 	}
 }
 //#endregion
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function defineDateMultiRange<TDateMultiRange extends string, TMode extends PgTDateMultiRangeConfig["mode"] & {}>(
-	name: TDateMultiRange,
-	config?: PgTDateMultiRangeConfig<TMode>
-): Equal<TMode, "DateMultiRange"> extends true ? PgTDateMultiRangeBuilderInitial<TDateMultiRange> : PgTDateMultiRangeStringBuilderInitial<TDateMultiRange>;
-export function defineDateMultiRange(name: string, config: PgTDateMultiRangeConfig = {}) {
-	if (config.mode === "DateMultiRange") return new PgTDateMultiRangeBuilder(name);
-	return new PgTDateMultiRangeStringBuilder(name);
+export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTDateMultiRangeStringBuilderInitial<TName>;
+export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "DateMultiRange" }): PgTDateMultiRangeBuilderInitial<TName>;
+export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "DateMultiRange" | "string" }) {
+	if (config?.mode === "DateMultiRange") return new PgTDateMultiRangeBuilder(name) as PgTDateMultiRangeBuilderInitial<TName>;
+	return new PgTDateMultiRangeStringBuilder(name) as PgTDateMultiRangeStringBuilderInitial<TName>;
 }

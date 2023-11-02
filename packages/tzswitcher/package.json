@@ -50,15 +50,15 @@
 	"dependencies": {
 		"@postgresql-typed/parsers": "workspace:*",
 		"@postgresql-typed/util": "workspace:*",
-		"luxon": "^3.3.0",
+		"luxon": "^3.4.3",
 		"source-map-support": "^0.5.21"
 	},
 	"devDependencies": {
 		"@postgresql-typed/cli": "workspace:*",
 		"@postgresql-typed/core": "workspace:*",
-		"@types/luxon": "^3.3.1",
-		"@types/node": "^20.4.6",
-		"typescript": "^5.1.6"
+		"@types/luxon": "^3.3.3",
+		"@types/node": "^20.8.10",
+		"typescript": "^5.2.2"
 	},
 	"publishConfig": {
 		"provenance": true

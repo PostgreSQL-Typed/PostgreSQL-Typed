@@ -280,8 +280,8 @@ importers:
         specifier: workspace:*
         version: link:../util
       luxon:
-        specifier: ^3.3.0
-        version: 3.3.0
+        specifier: ^3.4.3
+        version: 3.4.3
       source-map-support:
         specifier: ^0.5.21
         version: 0.5.21
@@ -293,14 +293,14 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@types/luxon':
-        specifier: ^3.3.1
-        version: 3.3.1
+        specifier: ^3.3.3
+        version: 3.3.3
       '@types/node':
-        specifier: ^20.4.6
-        version: 20.4.6
+        specifier: ^20.8.10
+        version: 20.8.10
       typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
+        specifier: ^5.2.2
+        version: 5.2.2
 
   packages/ui:
     devDependencies:
@@ -2805,7 +2805,7 @@ packages:
   /@types/pg@8.10.2:
     resolution: {integrity: sha512-MKFs9P6nJ+LAeHLU3V0cODEOgyThJ3OAnmOlsZsxux6sfQs3HRXR5bBn7xG5DjckEFhTAxsXi7k7cd0pCMxpJw==}
     dependencies:
-      '@types/node': 20.8.10
+      '@types/node': 20.4.6
       pg-protocol: 1.6.0
       pg-types: 4.0.1
     dev: true

@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTIntervalType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Interval" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Interval" ? Interval : string,
+	TDriverParameter = Interval,
+	TColumnType extends "PgTInterval" = "PgTInterval",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInterval<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Interval
 export type PgTIntervalBuilderInitial<TName extends string> = PgTIntervalBuilder<{
 	name: TName;
@@ -89,7 +112,7 @@ export class PgTIntervalString<T extends ColumnBaseConfig<"string", "PgTInterval
 }
 //#endregion
 
-export function defineInterval<TName extends string>(name: TName, config: { mode: "Interval" }): PgTIntervalBuilderInitial<TName>;
+export function defineInterval<TName extends string>(name: TName, config?: { mode: "Interval" }): PgTIntervalBuilderInitial<TName>;
 export function defineInterval<TName extends string>(name: TName, config?: { mode: "string" }): PgTIntervalStringBuilderInitial<TName>;
 export function defineInterval<TName extends string>(name: TName, config?: { mode: "Interval" | "string" }) {
 	if (config?.mode === "Interval") return new PgTIntervalBuilder(name) as PgTIntervalBuilderInitial<TName>;

@@ -7,6 +7,29 @@ import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
 //#region Boolean
+export type PgTBooleanType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Boolean" | "string" | "boolean",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Boolean" ? Boolean : TMode extends "string" ? string : TMode extends "boolean" ? boolean : number,
+	TDriverParameter = Boolean,
+	TColumnType extends "PgTBoolean" = "PgTBoolean",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTBoolean<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 export type PgTBooleanBuilderInitial<TName extends string> = PgTBooleanBuilder<{
 	name: TName;
 	dataType: "custom";
@@ -174,10 +197,10 @@ export class PgTBooleanNumber<T extends ColumnBaseConfig<"number", "PgTBooleanNu
 }
 //#endregion
 
-export function defineBoolean<TName extends string>(name: TName, config: { mode: "Boolean" }): PgTBooleanBuilderInitial<TName>;
-export function defineBoolean<TName extends string>(name: TName, config: { mode: "string" }): PgTBooleanStringBuilderInitial<TName>;
-export function defineBoolean<TName extends string>(name: TName, config: { mode: "number" }): PgTBooleanNumberBuilderInitial<TName>;
 export function defineBoolean<TName extends string>(name: TName, config?: { mode: "boolean" }): PgTBooleanBooleanBuilderInitial<TName>;
+export function defineBoolean<TName extends string>(name: TName, config?: { mode: "Boolean" }): PgTBooleanBuilderInitial<TName>;
+export function defineBoolean<TName extends string>(name: TName, config?: { mode: "string" }): PgTBooleanStringBuilderInitial<TName>;
+export function defineBoolean<TName extends string>(name: TName, config?: { mode: "number" }): PgTBooleanNumberBuilderInitial<TName>;
 export function defineBoolean<TName extends string>(name: TName, config?: { mode: "Boolean" | "boolean" | "string" | "number" }) {
 	if (config?.mode === "Boolean") return new PgTBooleanBuilder(name) as PgTBooleanBuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTBooleanStringBuilder(name) as PgTBooleanStringBuilderInitial<TName>;

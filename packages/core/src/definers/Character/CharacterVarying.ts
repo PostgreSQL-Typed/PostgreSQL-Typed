@@ -9,6 +9,29 @@ export interface PgTCharacterVaryingConfig {
 	length?: number;
 }
 
+export type PgTCharacterVaryingType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "CharacterVarying" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "CharacterVarying" ? CharacterVarying<number> : string,
+	TDriverParameter = CharacterVarying<number>,
+	TColumnType extends "PgTCharacterVarying" = "PgTCharacterVarying",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTCharacterVarying<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region CharacterVarying
 export type PgTCharacterVaryingBuilderInitial<TName extends string> = PgTCharacterVaryingBuilder<{
 	name: TName;
@@ -107,12 +130,12 @@ export class PgTCharacterVaryingString<T extends ColumnBaseConfig<"string", "PgT
 
 export function defineCharacterVarying<TName extends string>(
 	name: TName,
-	config: { mode: "CharacterVarying"; length?: number }
-): PgTCharacterVaryingBuilderInitial<TName>;
-export function defineCharacterVarying<TName extends string>(
-	name: TName,
 	config?: { mode: "string"; length?: number }
 ): PgTCharacterVaryingStringBuilderInitial<TName>;
+export function defineCharacterVarying<TName extends string>(
+	name: TName,
+	config?: { mode: "CharacterVarying"; length?: number }
+): PgTCharacterVaryingBuilderInitial<TName>;
 export function defineCharacterVarying<TName extends string>(name: TName, config?: { mode: "CharacterVarying" | "string"; length?: number }) {
 	if (config?.mode === "CharacterVarying") return new PgTCharacterVaryingBuilder(name, { length: config.length }) as PgTCharacterVaryingBuilderInitial<TName>;
 	return new PgTCharacterVaryingStringBuilder(name, { length: config?.length }) as PgTCharacterVaryingStringBuilderInitial<TName>;

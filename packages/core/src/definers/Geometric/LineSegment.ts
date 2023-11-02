@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTLineSegmentType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "LineSegment" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "LineSegment" ? LineSegment : string,
+	TDriverParameter = string,
+	TColumnType extends "PgTLineSegment" = "PgTLineSegment",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTLineSegment<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region LineSegment
 export type PgTLineSegmentBuilderInitial<TName extends string> = PgTLineSegmentBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTLineSegmentString<T extends ColumnBaseConfig<"string", "PgTLineS
 }
 //#endregion
 
-export function defineLineSegment<TName extends string>(name: TName, config: { mode: "LineSegment" }): PgTLineSegmentBuilderInitial<TName>;
 export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "string" }): PgTLineSegmentStringBuilderInitial<TName>;
+export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "LineSegment" }): PgTLineSegmentBuilderInitial<TName>;
 export function defineLineSegment<TName extends string>(name: TName, config?: { mode: "LineSegment" | "string" }) {
 	if (config?.mode === "LineSegment") return new PgTLineSegmentBuilder(name) as PgTLineSegmentBuilderInitial<TName>;
 	return new PgTLineSegmentStringBuilder(name) as PgTLineSegmentStringBuilderInitial<TName>;

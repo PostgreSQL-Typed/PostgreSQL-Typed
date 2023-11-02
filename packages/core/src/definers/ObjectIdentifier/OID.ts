@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTOIDType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "OID" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "OID" ? OID : TMode extends "string" ? string : number,
+	TDriverParameter = OID,
+	TColumnType extends "PgTOID" = "PgTOID",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTOID<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region OID
 export type PgTOIDBuilderInitial<TName extends string> = PgTOIDBuilder<{
 	name: TName;
@@ -132,9 +155,9 @@ export class PgTOIDNumber<T extends ColumnBaseConfig<"number", "PgTOIDNumber">> 
 }
 //#endregion
 
-export function defineOID<TName extends string>(name: TName, config: { mode: "OID" }): PgTOIDBuilderInitial<TName>;
-export function defineOID<TName extends string>(name: TName, config: { mode: "string" }): PgTOIDStringBuilderInitial<TName>;
 export function defineOID<TName extends string>(name: TName, config?: { mode: "number" }): PgTOIDNumberBuilderInitial<TName>;
+export function defineOID<TName extends string>(name: TName, config?: { mode: "string" }): PgTOIDStringBuilderInitial<TName>;
+export function defineOID<TName extends string>(name: TName, config?: { mode: "OID" }): PgTOIDBuilderInitial<TName>;
 export function defineOID<TName extends string>(name: TName, config?: { mode: "OID" | "number" | "string" }) {
 	if (config?.mode === "OID") return new PgTOIDBuilder(name) as PgTOIDBuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTOIDStringBuilder(name) as PgTOIDStringBuilderInitial<TName>;

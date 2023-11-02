@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTFloat4Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Float4" | "string" | "BigNumber" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Float4" ? Float4 : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
+	TDriverParameter = Float4,
+	TColumnType extends "PgTFloat4" = "PgTFloat4",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTFloat4<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Float4
 export type PgTFloat4BuilderInitial<TName extends string> = PgTFloat4Builder<{
 	name: TName;
@@ -174,10 +197,10 @@ export class PgTFloat4BigNumber<T extends ColumnBaseConfig<"custom", "PgTFloat4B
 }
 //#endregion
 
-export function defineFloat4<TName extends string>(name: TName, config: { mode: "Float4" }): PgTFloat4BuilderInitial<TName>;
-export function defineFloat4<TName extends string>(name: TName, config: { mode: "string" }): PgTFloat4StringBuilderInitial<TName>;
-export function defineFloat4<TName extends string>(name: TName, config: { mode: "BigNumber" }): PgTFloat4BigNumberBuilderInitial<TName>;
 export function defineFloat4<TName extends string>(name: TName, config?: { mode: "number" }): PgTFloat4NumberBuilderInitial<TName>;
+export function defineFloat4<TName extends string>(name: TName, config?: { mode: "Float4" }): PgTFloat4BuilderInitial<TName>;
+export function defineFloat4<TName extends string>(name: TName, config?: { mode: "string" }): PgTFloat4StringBuilderInitial<TName>;
+export function defineFloat4<TName extends string>(name: TName, config?: { mode: "BigNumber" }): PgTFloat4BigNumberBuilderInitial<TName>;
 export function defineFloat4<TName extends string>(name: TName, config?: { mode: "Float4" | "number" | "string" | "BigNumber" }) {
 	if (config?.mode === "Float4") return new PgTFloat4Builder(name) as PgTFloat4BuilderInitial<TName>;
 	if (config?.mode === "BigNumber") return new PgTFloat4BigNumberBuilder(name) as PgTFloat4BigNumberBuilderInitial<TName>;

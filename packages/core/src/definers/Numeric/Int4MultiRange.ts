@@ -5,6 +5,32 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+// MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
+/* c8 ignore start */
+
+export type PgTInt4MultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int4MultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int4MultiRange" ? Int4MultiRange : string,
+	TDriverParameter = Int4MultiRange,
+	TColumnType extends "PgTInt4MultiRange" = "PgTInt4MultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInt4MultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Int4MultiRange
 export type PgTInt4MultiRangeBuilderInitial<TName extends string> = PgTInt4MultiRangeBuilder<{
 	name: TName;
@@ -91,8 +117,8 @@ export class PgTInt4MultiRangeString<T extends ColumnBaseConfig<"string", "PgTIn
 }
 //#endregion
 
-export function defineInt4MultiRange<TName extends string>(name: TName, config: { mode: "Int4MultiRange" }): PgTInt4MultiRangeBuilderInitial<TName>;
 export function defineInt4MultiRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt4MultiRangeStringBuilderInitial<TName>;
+export function defineInt4MultiRange<TName extends string>(name: TName, config?: { mode: "Int4MultiRange" }): PgTInt4MultiRangeBuilderInitial<TName>;
 export function defineInt4MultiRange<TName extends string>(name: TName, config?: { mode: "Int4MultiRange" | "string" }) {
 	if (config?.mode === "Int4MultiRange") return new PgTInt4MultiRangeBuilder(name) as PgTInt4MultiRangeBuilderInitial<TName>;
 	return new PgTInt4MultiRangeStringBuilder(name) as PgTInt4MultiRangeStringBuilderInitial<TName>;

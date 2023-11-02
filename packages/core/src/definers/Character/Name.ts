@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTNameType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Name" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Name" ? Name : string,
+	TDriverParameter = Name,
+	TColumnType extends "PgTName" = "PgTName",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTName<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Name
 export type PgTNameBuilderInitial<TName extends string> = PgTNameBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTNameString<T extends ColumnBaseConfig<"string", "PgTNameString">
 }
 //#endregion
 
-export function defineName<TName extends string>(name: TName, config: { mode: "Name" }): PgTNameBuilderInitial<TName>;
 export function defineName<TName extends string>(name: TName, config?: { mode: "string" }): PgTNameStringBuilderInitial<TName>;
+export function defineName<TName extends string>(name: TName, config?: { mode: "Name" }): PgTNameBuilderInitial<TName>;
 export function defineName<TName extends string>(name: TName, config?: { mode: "Name" | "string" }) {
 	if (config?.mode === "Name") return new PgTNameBuilder(name) as PgTNameBuilderInitial<TName>;
 	return new PgTNameStringBuilder(name) as PgTNameStringBuilderInitial<TName>;

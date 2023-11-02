@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTCircleType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Circle" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Circle" ? Circle : TMode extends "string" ? string : number,
+	TDriverParameter = Circle,
+	TColumnType extends "PgTCircle" = "PgTCircle",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTCircle<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Circle
 export type PgTCircleBuilderInitial<TName extends string> = PgTCircleBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTCircleString<T extends ColumnBaseConfig<"string", "PgTCircleStri
 }
 //#endregion
 
-export function defineCircle<TName extends string>(name: TName, config: { mode: "Circle" }): PgTCircleBuilderInitial<TName>;
 export function defineCircle<TName extends string>(name: TName, config?: { mode: "string" }): PgTCircleStringBuilderInitial<TName>;
+export function defineCircle<TName extends string>(name: TName, config?: { mode: "Circle" }): PgTCircleBuilderInitial<TName>;
 export function defineCircle<TName extends string>(name: TName, config?: { mode: "Circle" | "string" }) {
 	if (config?.mode === "Circle") return new PgTCircleBuilder(name) as PgTCircleBuilderInitial<TName>;
 	return new PgTCircleStringBuilder(name) as PgTCircleStringBuilderInitial<TName>;

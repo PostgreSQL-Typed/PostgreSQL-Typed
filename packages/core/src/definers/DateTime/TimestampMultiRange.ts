@@ -5,6 +5,32 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+// MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
+/* c8 ignore start */
+
+export type PgTTimestampMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampMultiRange" ? TimestampMultiRange : string,
+	TDriverParameter = TimestampMultiRange,
+	TColumnType extends "PgTTimestampMultiRange" = "PgTTimestampMultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimestampMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region TimestampMultiRange
 export type PgTTimestampMultiRangeBuilderInitial<TName extends string> = PgTTimestampMultiRangeBuilder<{
 	name: TName;
@@ -89,11 +115,11 @@ export class PgTTimestampMultiRangeString<T extends ColumnBaseConfig<"string", "
 }
 //#endregion
 
+export function defineTimestampMultiRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimestampMultiRangeStringBuilderInitial<TName>;
 export function defineTimestampMultiRange<TName extends string>(
 	name: TName,
 	config?: { mode: "TimestampMultiRange" }
 ): PgTTimestampMultiRangeBuilderInitial<TName>;
-export function defineTimestampMultiRange<TName extends string>(name: TName, config: { mode: "string" }): PgTTimestampMultiRangeStringBuilderInitial<TName>;
 export function defineTimestampMultiRange<TName extends string>(name: TName, config?: { mode: "TimestampMultiRange" | "string" }) {
 	if (config?.mode === "TimestampMultiRange") return new PgTTimestampMultiRangeBuilder(name) as PgTTimestampMultiRangeBuilderInitial<TName>;
 	return new PgTTimestampMultiRangeStringBuilder(name) as PgTTimestampMultiRangeStringBuilderInitial<TName>;

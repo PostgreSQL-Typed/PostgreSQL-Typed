@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTLineType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Line" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Line" ? Line : string,
+	TDriverParameter = Line,
+	TColumnType extends "PgTLine" = "PgTLine",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTLine<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Line
 export type PgTLineBuilderInitial<TName extends string> = PgTLineBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTLineString<T extends ColumnBaseConfig<"string", "PgTLineString">
 }
 //#endregion
 
-export function defineLine<TName extends string>(name: TName, config: { mode: "Line" }): PgTLineBuilderInitial<TName>;
 export function defineLine<TName extends string>(name: TName, config?: { mode: "string" }): PgTLineStringBuilderInitial<TName>;
+export function defineLine<TName extends string>(name: TName, config?: { mode: "Line" }): PgTLineBuilderInitial<TName>;
 export function defineLine<TName extends string>(name: TName, config?: { mode: "Line" | "string" }) {
 	if (config?.mode === "Line") return new PgTLineBuilder(name) as PgTLineBuilderInitial<TName>;
 	return new PgTLineStringBuilder(name) as PgTLineStringBuilderInitial<TName>;

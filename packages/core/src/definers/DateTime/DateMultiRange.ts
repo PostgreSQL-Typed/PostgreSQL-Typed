@@ -5,6 +5,32 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+// MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
+/* c8 ignore start */
+
+export type PgTDateMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "DateMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "DateMultiRange" ? DateMultiRange : string,
+	TDriverParameter = DateMultiRange,
+	TColumnType extends "PgTDateMultiRange" = "PgTDateMultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTDateMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region DateMultiRange
 export type PgTDateMultiRangeBuilderInitial<TName extends string> = PgTDateMultiRangeBuilder<{
 	name: TName;
@@ -89,8 +115,8 @@ export class PgTDateMultiRangeString<T extends ColumnBaseConfig<"string", "PgTDa
 }
 //#endregion
 
-export function defineDateMultiRange<TName extends string>(name: TName, config: { mode: "DateMultiRange" }): PgTDateMultiRangeBuilderInitial<TName>;
 export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTDateMultiRangeStringBuilderInitial<TName>;
+export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "DateMultiRange" }): PgTDateMultiRangeBuilderInitial<TName>;
 export function defineDateMultiRange<TName extends string>(name: TName, config?: { mode: "DateMultiRange" | "string" }) {
 	if (config?.mode === "DateMultiRange") return new PgTDateMultiRangeBuilder(name) as PgTDateMultiRangeBuilderInitial<TName>;
 	return new PgTDateMultiRangeStringBuilder(name) as PgTDateMultiRangeStringBuilderInitial<TName>;

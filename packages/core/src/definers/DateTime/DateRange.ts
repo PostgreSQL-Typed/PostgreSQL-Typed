@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTDateRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "DateRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "DateRange" ? DateRange : string,
+	TDriverParameter = DateRange,
+	TColumnType extends "PgTDateRange" = "PgTDateRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTDateRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region DateRange
 export type PgTDateRangeBuilderInitial<TName extends string> = PgTDateRangeBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTDateRangeString<T extends ColumnBaseConfig<"string", "PgTDateRan
 }
 //#endregion
 
-export function defineDateRange<TName extends string>(name: TName, config: { mode: "DateRange" }): PgTDateRangeBuilderInitial<TName>;
 export function defineDateRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTDateRangeStringBuilderInitial<TName>;
+export function defineDateRange<TName extends string>(name: TName, config?: { mode: "DateRange" }): PgTDateRangeBuilderInitial<TName>;
 export function defineDateRange<TName extends string>(name: TName, config?: { mode: "DateRange" | "string" }) {
 	if (config?.mode === "DateRange") return new PgTDateRangeBuilder(name) as PgTDateRangeBuilderInitial<TName>;
 	return new PgTDateRangeStringBuilder(name) as PgTDateRangeStringBuilderInitial<TName>;

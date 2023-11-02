@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTMoneyType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Money" | "string" | "BigNumber" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Money" ? Money : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
+	TDriverParameter = Money,
+	TColumnType extends "PgTMoney" = "PgTMoney",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTMoney<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Money
 export type PgTMoneyBuilderInitial<TName extends string> = PgTMoneyBuilder<{
 	name: TName;
@@ -174,10 +197,10 @@ export class PgTMoneyBigNumber<T extends ColumnBaseConfig<"custom", "PgTMoneyBig
 }
 //#endregion
 
-export function defineMoney<TName extends string>(name: TName, config: { mode: "Money" }): PgTMoneyBuilderInitial<TName>;
-export function defineMoney<TName extends string>(name: TName, config: { mode: "string" }): PgTMoneyStringBuilderInitial<TName>;
-export function defineMoney<TName extends string>(name: TName, config: { mode: "BigNumber" }): PgTMoneyBigNumberBuilderInitial<TName>;
 export function defineMoney<TName extends string>(name: TName, config?: { mode: "number" }): PgTMoneyNumberBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "Money" }): PgTMoneyBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "string" }): PgTMoneyStringBuilderInitial<TName>;
+export function defineMoney<TName extends string>(name: TName, config?: { mode: "BigNumber" }): PgTMoneyBigNumberBuilderInitial<TName>;
 export function defineMoney<TName extends string>(name: TName, config?: { mode: "Money" | "number" | "string" | "BigNumber" }) {
 	if (config?.mode === "Money") return new PgTMoneyBuilder(name) as PgTMoneyBuilderInitial<TName>;
 	if (config?.mode === "BigNumber") return new PgTMoneyBigNumberBuilder(name) as PgTMoneyBigNumberBuilderInitial<TName>;

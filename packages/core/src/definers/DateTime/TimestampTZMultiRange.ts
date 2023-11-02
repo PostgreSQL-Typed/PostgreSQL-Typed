@@ -6,6 +6,32 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+// MultiRange types were introduced in PostgreSQL 14, because we test against older versions, we need to skip coverage for this file
+/* c8 ignore start */
+
+export type PgTTimestampTZMultiRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampTZMultiRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampTZMultiRange" ? TimestampTZMultiRange : string,
+	TDriverParameter = TimestampTZMultiRange,
+	TColumnType extends "PgTTimestampTZMultiRange" = "PgTTimestampTZMultiRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimestampTZMultiRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region TimestampTZMultiRange
 export type PgTTimestampTZMultiRangeBuilderInitial<TName extends string> = PgTTimestampTZMultiRangeBuilder<{
 	name: TName;
@@ -92,12 +118,12 @@ export class PgTTimestampTZMultiRangeString<T extends ColumnBaseConfig<"string",
 
 export function defineTimestampTZMultiRange<TName extends string>(
 	name: TName,
-	config: { mode: "TimestampTZMultiRange" }
-): PgTTimestampTZMultiRangeBuilderInitial<TName>;
-export function defineTimestampTZMultiRange<TName extends string>(
-	name: TName,
 	config?: { mode: "string" }
 ): PgTTimestampTZMultiRangeStringBuilderInitial<TName>;
+export function defineTimestampTZMultiRange<TName extends string>(
+	name: TName,
+	config?: { mode: "TimestampTZMultiRange" }
+): PgTTimestampTZMultiRangeBuilderInitial<TName>;
 export function defineTimestampTZMultiRange<TName extends string>(name: TName, config?: { mode: "TimestampTZMultiRange" | "string" }) {
 	if (config?.mode === "TimestampTZMultiRange") return new PgTTimestampTZMultiRangeBuilder(name) as PgTTimestampTZMultiRangeBuilderInitial<TName>;
 	return new PgTTimestampTZMultiRangeStringBuilder(name) as PgTTimestampTZMultiRangeStringBuilderInitial<TName>;

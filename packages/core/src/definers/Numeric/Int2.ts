@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTInt2Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int2" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int2" ? Int2 : TMode extends "string" ? string : number,
+	TDriverParameter = Int2,
+	TColumnType extends "PgTInt2" = "PgTInt2",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInt2<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Int2
 export type PgTInt2BuilderInitial<TName extends string> = PgTInt2Builder<{
 	name: TName;
@@ -132,9 +155,9 @@ export class PgTInt2Number<T extends ColumnBaseConfig<"number", "PgTInt2Number">
 }
 //#endregion
 
-export function defineInt2<TName extends string>(name: TName, config: { mode: "Int2" }): PgTInt2BuilderInitial<TName>;
-export function defineInt2<TName extends string>(name: TName, config: { mode: "string" }): PgTInt2StringBuilderInitial<TName>;
 export function defineInt2<TName extends string>(name: TName, config?: { mode: "number" }): PgTInt2NumberBuilderInitial<TName>;
+export function defineInt2<TName extends string>(name: TName, config?: { mode: "Int2" }): PgTInt2BuilderInitial<TName>;
+export function defineInt2<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt2StringBuilderInitial<TName>;
 export function defineInt2<TName extends string>(name: TName, config?: { mode: "Int2" | "number" | "string" }) {
 	if (config?.mode === "Int2") return new PgTInt2Builder(name) as PgTInt2BuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTInt2StringBuilder(name) as PgTInt2StringBuilderInitial<TName>;

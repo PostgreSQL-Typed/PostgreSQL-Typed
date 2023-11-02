@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTInt8RangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int8Range" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int8Range" ? Int8Range : TMode extends "string" ? string : number,
+	TDriverParameter = Int8Range,
+	TColumnType extends "PgTInt8Range" = "PgTInt8Range",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInt8Range<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Int8Range
 export type PgTInt8RangeBuilderInitial<TName extends string> = PgTInt8RangeBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTInt8RangeString<T extends ColumnBaseConfig<"string", "PgTInt8Ran
 }
 //#endregion
 
-export function defineInt8Range<TName extends string>(name: TName, config: { mode: "Int8Range" }): PgTInt8RangeBuilderInitial<TName>;
 export function defineInt8Range<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt8RangeStringBuilderInitial<TName>;
+export function defineInt8Range<TName extends string>(name: TName, config?: { mode: "Int8Range" }): PgTInt8RangeBuilderInitial<TName>;
 export function defineInt8Range<TName extends string>(name: TName, config?: { mode: "Int8Range" | "string" }) {
 	if (config?.mode === "Int8Range") return new PgTInt8RangeBuilder(name) as PgTInt8RangeBuilderInitial<TName>;
 	return new PgTInt8RangeStringBuilder(name) as PgTInt8RangeStringBuilderInitial<TName>;

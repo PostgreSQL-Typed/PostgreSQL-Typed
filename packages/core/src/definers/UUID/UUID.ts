@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTUUIDType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "UUID" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "UUID" ? UUID : string,
+	TDriverParameter = UUID,
+	TColumnType extends "PgTUUID" = "PgTUUID",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTUUID<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region UUID
 export type PgTUUIDBuilderInitial<TName extends string> = PgTUUIDBuilder<{
 	name: TName;
@@ -90,8 +113,8 @@ export class PgTUUIDString<T extends ColumnBaseConfig<"string", "PgTUUIDString">
 }
 //#endregion
 
-export function defineUUID<TName extends string>(name: TName, config: { mode: "UUID" }): PgTUUIDBuilderInitial<TName>;
 export function defineUUID<TName extends string>(name: TName, config?: { mode: "string" }): PgTUUIDStringBuilderInitial<TName>;
+export function defineUUID<TName extends string>(name: TName, config?: { mode: "UUID" }): PgTUUIDBuilderInitial<TName>;
 export function defineUUID<TName extends string>(name: TName, config?: { mode: "UUID" | "string" }) {
 	if (config?.mode === "UUID") return new PgTUUIDBuilder(name) as PgTUUIDBuilderInitial<TName>;
 	return new PgTUUIDStringBuilder(name) as PgTUUIDStringBuilderInitial<TName>;

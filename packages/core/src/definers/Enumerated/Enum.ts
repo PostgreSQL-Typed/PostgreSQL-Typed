@@ -10,6 +10,29 @@ export interface PgTEnumConfig<TValues extends [string, ...string[]] = [string, 
 	enumValues: TValues;
 }
 
+export type PgTEnumType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Enum" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Enum" ? Enum<string, [string, ...string[]]> : string,
+	TDriverParameter = Enum<string, [string, ...string[]]>,
+	TColumnType extends "PgTEnum" = "PgTEnum",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTEnum<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Enum
 export type PgTEnumBuilderInitial<TName extends string, TEnumType extends string, TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>> = PgTEnumBuilder<{
 	name: TName;
@@ -119,12 +142,12 @@ export class PgTEnumString<T extends ColumnBaseConfig<"string", "PgTEnumString">
 
 export function defineEnum<TName extends string, TEnumType extends string, TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>>(
 	name: TName,
-	config: { mode: "Enum"; enumName: string; enumValues: TEnumValues | Writable<TEnumValues> }
-): PgTEnumBuilderInitial<TName, TEnumType, TEnumValues>;
+	config: { mode: "string"; enumName: string; enumValues: TEnumValues | Writable<TEnumValues> }
+): PgTEnumStringBuilderInitial<TName, TEnumType, TEnumValues>;
 export function defineEnum<TName extends string, TEnumType extends string, TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>>(
 	name: TName,
-	config: { mode?: "string"; enumName: string; enumValues: TEnumValues | Writable<TEnumValues> }
-): PgTEnumStringBuilderInitial<TName, TEnumType, TEnumValues>;
+	config: { mode: "Enum"; enumName: string; enumValues: TEnumValues | Writable<TEnumValues> }
+): PgTEnumBuilderInitial<TName, TEnumType, TEnumValues>;
 export function defineEnum<TName extends string, TEnumType extends string, TEnumValues extends Readonly<[TEnumType, ...TEnumType[]]>>(
 	name: TName,
 	config: { mode?: "Enum" | "string"; enumName: string; enumValues: TEnumValues | Writable<TEnumValues> }

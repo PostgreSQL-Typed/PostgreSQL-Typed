@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTTimestampTZRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampTZRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampTZRange" ? TimestampTZRange : string,
+	TDriverParameter = TimestampTZRange,
+	TColumnType extends "PgTTimestampTZRange" = "PgTTimestampTZRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimestampTZRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region TimestampTZRange
 export type PgTTimestampTZRangeBuilderInitial<TName extends string> = PgTTimestampTZRangeBuilder<{
 	name: TName;
@@ -90,8 +113,8 @@ export class PgTTimestampTZRangeString<T extends ColumnBaseConfig<"string", "PgT
 }
 //#endregion
 
-export function defineTimestampTZRange<TName extends string>(name: TName, config: { mode: "TimestampTZRange" }): PgTTimestampTZRangeBuilderInitial<TName>;
 export function defineTimestampTZRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimestampTZRangeStringBuilderInitial<TName>;
+export function defineTimestampTZRange<TName extends string>(name: TName, config?: { mode: "TimestampTZRange" }): PgTTimestampTZRangeBuilderInitial<TName>;
 export function defineTimestampTZRange<TName extends string>(name: TName, config?: { mode: "TimestampTZRange" | "string" }) {
 	if (config?.mode === "TimestampTZRange") return new PgTTimestampTZRangeBuilder(name) as PgTTimestampTZRangeBuilderInitial<TName>;
 	return new PgTTimestampTZRangeStringBuilder(name) as PgTTimestampTZRangeStringBuilderInitial<TName>;

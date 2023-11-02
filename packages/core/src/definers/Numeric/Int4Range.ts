@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTInt4RangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int4Range" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int4Range" ? Int4Range : string,
+	TDriverParameter = string,
+	TColumnType extends "PgTInt4Range" = "PgTInt4Range",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInt4Range<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Int4Range
 export type PgTInt4RangeBuilderInitial<TName extends string> = PgTInt4RangeBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTInt4RangeString<T extends ColumnBaseConfig<"string", "PgTInt4Ran
 }
 //#endregion
 
-export function defineInt4Range<TName extends string>(name: TName, config: { mode: "Int4Range" }): PgTInt4RangeBuilderInitial<TName>;
 export function defineInt4Range<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt4RangeStringBuilderInitial<TName>;
+export function defineInt4Range<TName extends string>(name: TName, config?: { mode: "Int4Range" }): PgTInt4RangeBuilderInitial<TName>;
 export function defineInt4Range<TName extends string>(name: TName, config?: { mode: "Int4Range" | "string" }) {
 	if (config?.mode === "Int4Range") return new PgTInt4RangeBuilder(name) as PgTInt4RangeBuilderInitial<TName>;
 	return new PgTInt4RangeStringBuilder(name) as PgTInt4RangeStringBuilderInitial<TName>;

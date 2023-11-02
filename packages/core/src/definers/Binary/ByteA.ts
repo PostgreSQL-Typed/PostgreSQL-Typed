@@ -13,6 +13,9 @@ export type PgTByteAType<
 	THasDefault extends boolean,
 	TData = TMode extends "ByteA" ? ByteA : TMode extends "string" ? string : Buffer,
 	TDriverParameter = ByteA,
+	TColumnType extends "PgTByteA" = "PgTByteA",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
 > = PgTByteA<{
 	tableName: TTableName;
 	name: TName;
@@ -20,9 +23,9 @@ export type PgTByteAType<
 	driverParam: TDriverParameter;
 	notNull: TNotNull;
 	hasDefault: THasDefault;
-	columnType: "PgTByteA";
-	dataType: "custom";
-	enumValues: undefined;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
 }>;
 
 //#region ByteA
@@ -151,9 +154,9 @@ export class PgTByteAString<T extends ColumnBaseConfig<"string", "PgTByteAString
 }
 //#endregion
 
-export function defineByteA<TName extends string>(name: TName, config: { mode: "ByteA" }): PgTByteABuilderInitial<TName>;
-export function defineByteA<TName extends string>(name: TName, config: { mode: "string" }): PgTByteAStringBuilderInitial<TName>;
 export function defineByteA<TName extends string>(name: TName, config?: { mode: "Buffer" }): PgTByteABufferBuilderInitial<TName>;
+export function defineByteA<TName extends string>(name: TName, config?: { mode: "ByteA" }): PgTByteABuilderInitial<TName>;
+export function defineByteA<TName extends string>(name: TName, config?: { mode: "string" }): PgTByteAStringBuilderInitial<TName>;
 export function defineByteA<TName extends string>(name: TName, config?: { mode: "ByteA" | "Buffer" | "string" }) {
 	if (config?.mode === "ByteA") return new PgTByteABuilder(name) as PgTByteABuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTByteAStringBuilder(name) as PgTByteAStringBuilderInitial<TName>;

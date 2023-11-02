@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTInt8Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Int8" | "string" | "BigInt" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Int8" ? Int8 : TMode extends "string" ? string : TMode extends "BigInt" ? bigint : number,
+	TDriverParameter = Int8,
+	TColumnType extends "PgTInt8" = "PgTInt8",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTInt8<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Int8
 export type PgTInt8BuilderInitial<TName extends string> = PgTInt8Builder<{
 	name: TName;
@@ -174,10 +197,10 @@ export class PgTInt8BigInt<T extends ColumnBaseConfig<"custom", "PgTInt8BigInt">
 }
 //#endregion
 
-export function defineInt8<TName extends string>(name: TName, config: { mode: "Int8" }): PgTInt8BuilderInitial<TName>;
-export function defineInt8<TName extends string>(name: TName, config: { mode: "string" }): PgTInt8StringBuilderInitial<TName>;
-export function defineInt8<TName extends string>(name: TName, config: { mode: "BigInt" }): PgTInt8BigIntBuilderInitial<TName>;
 export function defineInt8<TName extends string>(name: TName, config?: { mode: "number" }): PgTInt8NumberBuilderInitial<TName>;
+export function defineInt8<TName extends string>(name: TName, config?: { mode: "Int8" }): PgTInt8BuilderInitial<TName>;
+export function defineInt8<TName extends string>(name: TName, config?: { mode: "string" }): PgTInt8StringBuilderInitial<TName>;
+export function defineInt8<TName extends string>(name: TName, config?: { mode: "BigInt" }): PgTInt8BigIntBuilderInitial<TName>;
 export function defineInt8<TName extends string>(name: TName, config?: { mode: "Int8" | "number" | "string" | "BigInt" }) {
 	if (config?.mode === "Int8") return new PgTInt8Builder(name) as PgTInt8BuilderInitial<TName>;
 	if (config?.mode === "BigInt") return new PgTInt8BigIntBuilder(name) as PgTInt8BigIntBuilderInitial<TName>;

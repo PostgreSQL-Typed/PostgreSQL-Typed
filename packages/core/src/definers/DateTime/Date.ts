@@ -17,6 +17,37 @@ export abstract class PgTDateColumnBaseBuilder<
 	}
 }
 
+export type PgTDateType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Date"
+		? Date
+		: TMode extends "globalThis.Date"
+		? globalThis.Date
+		: TMode extends "luxon.DateTime"
+		? luxon.DateTime
+		: TMode extends "unix"
+		? number
+		: string,
+	TDriverParameter = Date,
+	TColumnType extends "PgTDate" = "PgTDate",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTDate<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Date
 export type PgTDateBuilderInitial<TName extends string> = PgTDateBuilder<{
 	name: TName;
@@ -227,11 +258,11 @@ export class PgTDateString<T extends ColumnBaseConfig<"string", "PgTDateString">
 }
 //#endregion
 
-export function defineDate<TName extends string>(name: TName, config: { mode: "Date" }): PgTDateBuilderInitial<TName>;
-export function defineDate<TName extends string>(name: TName, config: { mode: "luxon.DateTime" }): PgTDateLuxonDateBuilderInitial<TName>;
-export function defineDate<TName extends string>(name: TName, config: { mode: "unix" }): PgTDateUnixBuilderInitial<TName>;
-export function defineDate<TName extends string>(name: TName, config: { mode: "string" }): PgTDateStringBuilderInitial<TName>;
 export function defineDate<TName extends string>(name: TName, config?: { mode: "globalThis.Date" }): PgTDateGlobalThisDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "Date" }): PgTDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "luxon.DateTime" }): PgTDateLuxonDateBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "unix" }): PgTDateUnixBuilderInitial<TName>;
+export function defineDate<TName extends string>(name: TName, config?: { mode: "string" }): PgTDateStringBuilderInitial<TName>;
 export function defineDate<TName extends string>(name: TName, config?: { mode: "Date" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" }) {
 	if (config?.mode === "Date") return new PgTDateBuilder(name) as PgTDateBuilderInitial<TName>;
 	if (config?.mode === "luxon.DateTime") return new PgTDateLuxonDateBuilder(name) as PgTDateLuxonDateBuilderInitial<TName>;

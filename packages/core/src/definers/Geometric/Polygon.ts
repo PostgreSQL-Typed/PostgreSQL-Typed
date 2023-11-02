@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTPolygonType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Polygon" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Polygon" ? Polygon : string,
+	TDriverParameter = string,
+	TColumnType extends "PgTPolygon" = "PgTPolygon",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTPolygon<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Polygon
 export type PgTPolygonBuilderInitial<TName extends string> = PgTPolygonBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTPolygonString<T extends ColumnBaseConfig<"string", "PgTPolygonSt
 }
 //#endregion
 
-export function definePolygon<TName extends string>(name: TName, config: { mode: "Polygon" }): PgTPolygonBuilderInitial<TName>;
 export function definePolygon<TName extends string>(name: TName, config?: { mode: "string" }): PgTPolygonStringBuilderInitial<TName>;
+export function definePolygon<TName extends string>(name: TName, config?: { mode: "Polygon" }): PgTPolygonBuilderInitial<TName>;
 export function definePolygon<TName extends string>(name: TName, config?: { mode: "Polygon" | "string" }) {
 	if (config?.mode === "Polygon") return new PgTPolygonBuilder(name) as PgTPolygonBuilderInitial<TName>;
 	return new PgTPolygonStringBuilder(name) as PgTPolygonStringBuilderInitial<TName>;

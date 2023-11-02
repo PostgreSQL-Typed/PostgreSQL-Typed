@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTTimestampRangeType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimestampRange" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimestampRange" ? TimestampRange : string,
+	TDriverParameter = TimestampRange,
+	TColumnType extends "PgTTimestampRange" = "PgTTimestampRange",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimestampRange<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region TimestampRange
 export type PgTTimestampRangeBuilderInitial<TName extends string> = PgTTimestampRangeBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTTimestampRangeString<T extends ColumnBaseConfig<"string", "PgTTi
 }
 //#endregion
 
-export function defineTimestampRange<TName extends string>(name: TName, config: { mode: "TimestampRange" }): PgTTimestampRangeBuilderInitial<TName>;
 export function defineTimestampRange<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimestampRangeStringBuilderInitial<TName>;
+export function defineTimestampRange<TName extends string>(name: TName, config?: { mode: "TimestampRange" }): PgTTimestampRangeBuilderInitial<TName>;
 export function defineTimestampRange<TName extends string>(name: TName, config?: { mode: "TimestampRange" | "string" }) {
 	if (config?.mode === "TimestampRange") return new PgTTimestampRangeBuilder(name) as PgTTimestampRangeBuilderInitial<TName>;
 	return new PgTTimestampRangeStringBuilder(name) as PgTTimestampRangeStringBuilderInitial<TName>;

@@ -17,6 +17,37 @@ export abstract class PgTTimestampColumnBaseBuilder<
 	}
 }
 
+export type PgTTimestampType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Timestamp"
+		? Timestamp
+		: TMode extends "globalThis.Date"
+		? globalThis.Date
+		: TMode extends "luxon.DateTime"
+		? luxon.DateTime
+		: TMode extends "unix"
+		? number
+		: string,
+	TDriverParameter = Timestamp,
+	TColumnType extends "PgTTimestamp" = "PgTTimestamp",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimestamp<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Date
 export type PgTTimestampBuilderInitial<TName extends string> = PgTTimestampBuilder<{
 	name: TName;
@@ -229,11 +260,11 @@ export class PgTTimestampString<T extends ColumnBaseConfig<"string", "PgTTimesta
 }
 //#endregion
 
-export function defineTimestamp<TName extends string>(name: TName, config: { mode: "Timestamp" }): PgTTimestampBuilderInitial<TName>;
-export function defineTimestamp<TName extends string>(name: TName, config: { mode: "luxon.DateTime" }): PgTTimestampLuxonDateBuilderInitial<TName>;
-export function defineTimestamp<TName extends string>(name: TName, config: { mode: "unix" }): PgTTimestampUnixBuilderInitial<TName>;
-export function defineTimestamp<TName extends string>(name: TName, config: { mode: "string" }): PgTTimestampStringBuilderInitial<TName>;
 export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "globalThis.Date" }): PgTTimestampGlobalThisDateBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "Timestamp" }): PgTTimestampBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "luxon.DateTime" }): PgTTimestampLuxonDateBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "unix" }): PgTTimestampUnixBuilderInitial<TName>;
+export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimestampStringBuilderInitial<TName>;
 export function defineTimestamp<TName extends string>(name: TName, config?: { mode: "Timestamp" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" }) {
 	if (config?.mode === "Timestamp") return new PgTTimestampBuilder(name) as PgTTimestampBuilderInitial<TName>;
 	if (config?.mode === "luxon.DateTime") return new PgTTimestampLuxonDateBuilder(name) as PgTTimestampLuxonDateBuilderInitial<TName>;

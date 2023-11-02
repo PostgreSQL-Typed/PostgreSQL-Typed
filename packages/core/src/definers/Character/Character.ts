@@ -9,6 +9,29 @@ export interface PgTCharacterConfig {
 	length?: number;
 }
 
+export type PgTCharacterType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Character" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Character" ? Character<number> : string,
+	TDriverParameter = Character<number>,
+	TColumnType extends "PgTCharacter" = "PgTCharacter",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTCharacter<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Character
 export type PgTCharacterBuilderInitial<TName extends string> = PgTCharacterBuilder<{
 	name: TName;
@@ -102,8 +125,8 @@ export class PgTCharacterString<T extends ColumnBaseConfig<"string", "PgTCharact
 }
 //#endregion
 
-export function defineCharacter<TName extends string>(name: TName, config: { mode: "Character"; length?: number }): PgTCharacterBuilderInitial<TName>;
 export function defineCharacter<TName extends string>(name: TName, config?: { mode: "string"; length?: number }): PgTCharacterStringBuilderInitial<TName>;
+export function defineCharacter<TName extends string>(name: TName, config?: { mode: "Character"; length?: number }): PgTCharacterBuilderInitial<TName>;
 export function defineCharacter<TName extends string>(name: TName, config?: { mode: "Character" | "string"; length?: number }) {
 	if (config?.mode === "Character") return new PgTCharacterBuilder(name, { length: config.length }) as PgTCharacterBuilderInitial<TName>;
 	return new PgTCharacterStringBuilder(name, { length: config?.length }) as PgTCharacterStringBuilderInitial<TName>;

@@ -6,6 +6,35 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTJSONType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "JSON" | "string" | "value",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "JSON"
+		? JSON
+		: TMode extends "string"
+		? string
+		: TMode extends "value"
+		? Record<string, unknown> | unknown[] | string | number | boolean | null
+		: JSON,
+	TDriverParameter = JSON,
+	TColumnType extends "PgTJSON" = "PgTJSON",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTJSON<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region JSON
 export type PgTJSONBuilderInitial<TName extends string> = PgTJSONBuilder<{
 	name: TName;
@@ -132,9 +161,9 @@ export class PgTJSONValue<T extends ColumnBaseConfig<"string", "PgTJSONValue">> 
 }
 //#endregion
 
-export function defineJSON<TName extends string>(name: TName, config: { mode: "JSON" }): PgTJSONBuilderInitial<TName>;
-export function defineJSON<TName extends string>(name: TName, config: { mode: "string" }): PgTJSONStringBuilderInitial<TName>;
 export function defineJSON<TName extends string>(name: TName, config?: { mode: "value" }): PgTJSONValueBuilderInitial<TName>;
+export function defineJSON<TName extends string>(name: TName, config?: { mode: "string" }): PgTJSONStringBuilderInitial<TName>;
+export function defineJSON<TName extends string>(name: TName, config?: { mode: "JSON" }): PgTJSONBuilderInitial<TName>;
 export function defineJSON<TName extends string>(name: TName, config?: { mode: "JSON" | "string" | "value" }) {
 	if (config?.mode === "JSON") return new PgTJSONBuilder(name) as PgTJSONBuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTJSONStringBuilder(name) as PgTJSONStringBuilderInitial<TName>;

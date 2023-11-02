@@ -9,6 +9,29 @@ export interface PgTBitVaryingConfig {
 	length?: number;
 }
 
+export type PgTBitVaryingType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "BitVarying" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "BitVarying" ? BitVarying<number> : TMode extends "string" ? string : number,
+	TDriverParameter = BitVarying<number>,
+	TColumnType extends "PgTBitVarying" = "PgTBitVarying",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTBitVarying<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region BitVarying
 export type PgTBitVaryingBuilderInitial<TName extends string> = PgTBitVaryingBuilder<{
 	name: TName;
@@ -150,9 +173,9 @@ export class PgTBitVaryingNumber<T extends ColumnBaseConfig<"number", "PgTBitVar
 }
 //#endregion
 
-export function defineBitVarying<TName extends string>(name: TName, config: { mode: "BitVarying"; length?: number }): PgTBitVaryingBuilderInitial<TName>;
-export function defineBitVarying<TName extends string>(name: TName, config: { mode: "number"; length?: number }): PgTBitVaryingNumberBuilderInitial<TName>;
 export function defineBitVarying<TName extends string>(name: TName, config?: { mode: "string"; length?: number }): PgTBitVaryingStringBuilderInitial<TName>;
+export function defineBitVarying<TName extends string>(name: TName, config?: { mode: "BitVarying"; length?: number }): PgTBitVaryingBuilderInitial<TName>;
+export function defineBitVarying<TName extends string>(name: TName, config?: { mode: "number"; length?: number }): PgTBitVaryingNumberBuilderInitial<TName>;
 export function defineBitVarying<TName extends string>(name: TName, config?: { mode: "BitVarying" | "number" | "string"; length?: number }) {
 	if (config?.mode === "BitVarying") return new PgTBitVaryingBuilder(name, { length: config.length }) as PgTBitVaryingBuilderInitial<TName>;
 	if (config?.mode === "number") return new PgTBitVaryingNumberBuilder(name, { length: config.length }) as PgTBitVaryingNumberBuilderInitial<TName>;

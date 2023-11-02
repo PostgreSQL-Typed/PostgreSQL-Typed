@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTBoxType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Box" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Box" ? Box : string,
+	TDriverParameter = Box,
+	TColumnType extends "PgTBox" = "PgTBox",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTBox<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Box
 export type PgTBoxBuilderInitial<TName extends string> = PgTBoxBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTBoxString<T extends ColumnBaseConfig<"string", "PgTBoxString">> 
 }
 //#endregion
 
-export function defineBox<TName extends string>(name: TName, config: { mode: "Box" }): PgTBoxBuilderInitial<TName>;
 export function defineBox<TName extends string>(name: TName, config?: { mode: "string" }): PgTBoxStringBuilderInitial<TName>;
+export function defineBox<TName extends string>(name: TName, config?: { mode: "Box" }): PgTBoxBuilderInitial<TName>;
 export function defineBox<TName extends string>(name: TName, config?: { mode: "Box" | "string" }) {
 	if (config?.mode === "Box") return new PgTBoxBuilder(name) as PgTBoxBuilderInitial<TName>;
 	return new PgTBoxStringBuilder(name) as PgTBoxStringBuilderInitial<TName>;

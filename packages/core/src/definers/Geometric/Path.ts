@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTPathType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Path" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Path" ? Path : string,
+	TDriverParameter = Path,
+	TColumnType extends "PgTPath" = "PgTPath",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTPath<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Path
 export type PgTPathBuilderInitial<TName extends string> = PgTPathBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTPathString<T extends ColumnBaseConfig<"string", "PgTPathString">
 }
 //#endregion
 
-export function definePath<TName extends string>(name: TName, config: { mode: "Path" }): PgTPathBuilderInitial<TName>;
 export function definePath<TName extends string>(name: TName, config?: { mode: "string" }): PgTPathStringBuilderInitial<TName>;
+export function definePath<TName extends string>(name: TName, config?: { mode: "Path" }): PgTPathBuilderInitial<TName>;
 export function definePath<TName extends string>(name: TName, config?: { mode: "Path" | "string" }) {
 	if (config?.mode === "Path") return new PgTPathBuilder(name) as PgTPathBuilderInitial<TName>;
 	return new PgTPathStringBuilder(name) as PgTPathStringBuilderInitial<TName>;

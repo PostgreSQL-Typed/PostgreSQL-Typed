@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTTextType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Text" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Text" ? Text : string,
+	TDriverParameter = Text,
+	TColumnType extends "PgTText" = "PgTText",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTText<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Text
 export type PgTTextBuilderInitial<TName extends string> = PgTTextBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTTextString<T extends ColumnBaseConfig<"string", "PgTTextString">
 }
 //#endregion
 
-export function defineText<TName extends string>(name: TName, config: { mode: "Text" }): PgTTextBuilderInitial<TName>;
 export function defineText<TName extends string>(name: TName, config?: { mode: "string" }): PgTTextStringBuilderInitial<TName>;
+export function defineText<TName extends string>(name: TName, config?: { mode: "Text" }): PgTTextBuilderInitial<TName>;
 export function defineText<TName extends string>(name: TName, config?: { mode: "Text" | "string" }) {
 	if (config?.mode === "Text") return new PgTTextBuilder(name) as PgTTextBuilderInitial<TName>;
 	return new PgTTextStringBuilder(name) as PgTTextStringBuilderInitial<TName>;

@@ -6,6 +6,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTFloat8Type<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Float8" | "string" | "BigNumber" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Float8" ? Float8 : TMode extends "BigNumber" ? BigNumber : TMode extends "number" ? number : string,
+	TDriverParameter = Float8,
+	TColumnType extends "PgTFloat8" = "PgTFloat8",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTFloat8<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Float8
 export type PgTFloat8BuilderInitial<TName extends string> = PgTFloat8Builder<{
 	name: TName;
@@ -174,10 +197,10 @@ export class PgTFloat8BigNumber<T extends ColumnBaseConfig<"custom", "PgTFloat8B
 }
 //#endregion
 
-export function defineFloat8<TName extends string>(name: TName, config: { mode: "Float8" }): PgTFloat8BuilderInitial<TName>;
-export function defineFloat8<TName extends string>(name: TName, config: { mode: "string" }): PgTFloat8StringBuilderInitial<TName>;
-export function defineFloat8<TName extends string>(name: TName, config: { mode: "BigNumber" }): PgTFloat8BigNumberBuilderInitial<TName>;
 export function defineFloat8<TName extends string>(name: TName, config?: { mode: "number" }): PgTFloat8NumberBuilderInitial<TName>;
+export function defineFloat8<TName extends string>(name: TName, config?: { mode: "Float8" }): PgTFloat8BuilderInitial<TName>;
+export function defineFloat8<TName extends string>(name: TName, config?: { mode: "string" }): PgTFloat8StringBuilderInitial<TName>;
+export function defineFloat8<TName extends string>(name: TName, config?: { mode: "BigNumber" }): PgTFloat8BigNumberBuilderInitial<TName>;
 export function defineFloat8<TName extends string>(name: TName, config?: { mode: "Float8" | "number" | "string" | "BigNumber" }) {
 	if (config?.mode === "Float8") return new PgTFloat8Builder(name) as PgTFloat8BuilderInitial<TName>;
 	if (config?.mode === "BigNumber") return new PgTFloat8BigNumberBuilder(name) as PgTFloat8BigNumberBuilderInitial<TName>;

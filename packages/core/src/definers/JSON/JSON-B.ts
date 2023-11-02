@@ -6,6 +6,35 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTJSONBType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "JSON" | "string" | "value",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "JSON"
+		? JSON
+		: TMode extends "string"
+		? string
+		: TMode extends "value"
+		? Record<string, unknown> | unknown[] | string | number | boolean | null
+		: JSON,
+	TDriverParameter = JSON,
+	TColumnType extends "PgTJSONB" = "PgTJSONB",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTJSONB<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region JSON
 export type PgTJSONBBuilderInitial<TName extends string> = PgTJSONBBuilder<{
 	name: TName;
@@ -132,9 +161,9 @@ export class PgTJSONBValue<T extends ColumnBaseConfig<"string", "PgTJSONBValue">
 }
 //#endregion
 
-export function defineJSONB<TName extends string>(name: TName, config: { mode: "JSON" }): PgTJSONBBuilderInitial<TName>;
-export function defineJSONB<TName extends string>(name: TName, config: { mode: "string" }): PgTJSONBStringBuilderInitial<TName>;
 export function defineJSONB<TName extends string>(name: TName, config?: { mode: "value" }): PgTJSONBValueBuilderInitial<TName>;
+export function defineJSONB<TName extends string>(name: TName, config?: { mode: "string" }): PgTJSONBStringBuilderInitial<TName>;
+export function defineJSONB<TName extends string>(name: TName, config?: { mode: "JSON" }): PgTJSONBBuilderInitial<TName>;
 export function defineJSONB<TName extends string>(name: TName, config?: { mode: "JSON" | "string" | "value" }) {
 	if (config?.mode === "JSON") return new PgTJSONBBuilder(name) as PgTJSONBBuilderInitial<TName>;
 	if (config?.mode === "string") return new PgTJSONBStringBuilder(name) as PgTJSONBStringBuilderInitial<TName>;

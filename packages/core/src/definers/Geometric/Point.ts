@@ -5,6 +5,29 @@ import { AnyPgTable } from "drizzle-orm/pg-core";
 import { PgTError } from "../../PgTError.js";
 import { PgTColumn, PgTColumnBuilder } from "../../query-builders/common.js";
 
+export type PgTPointType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Point" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Point" ? Point : string,
+	TDriverParameter = Point,
+	TColumnType extends "PgTPoint" = "PgTPoint",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTPoint<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Point
 export type PgTPointBuilderInitial<TName extends string> = PgTPointBuilder<{
 	name: TName;
@@ -89,8 +112,8 @@ export class PgTPointString<T extends ColumnBaseConfig<"string", "PgTPointString
 }
 //#endregion
 
-export function definePoint<TName extends string>(name: TName, config: { mode: "Point" }): PgTPointBuilderInitial<TName>;
 export function definePoint<TName extends string>(name: TName, config?: { mode: "string" }): PgTPointStringBuilderInitial<TName>;
+export function definePoint<TName extends string>(name: TName, config?: { mode: "Point" }): PgTPointBuilderInitial<TName>;
 export function definePoint<TName extends string>(name: TName, config?: { mode: "Point" | "string" }) {
 	if (config?.mode === "Point") return new PgTPointBuilder(name) as PgTPointBuilderInitial<TName>;
 	return new PgTPointStringBuilder(name) as PgTPointStringBuilderInitial<TName>;

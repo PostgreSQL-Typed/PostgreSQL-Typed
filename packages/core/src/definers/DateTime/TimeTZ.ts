@@ -18,6 +18,37 @@ export abstract class PgTTimeTZColumnBaseBuilder<
 	}
 }
 
+export type PgTTimeTZType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "TimeTZ"
+		? TimeTZ
+		: TMode extends "globalThis.Date"
+		? globalThis.Date
+		: TMode extends "luxon.DateTime"
+		? luxon.DateTime
+		: TMode extends "unix"
+		? number
+		: string,
+	TDriverParameter = TimeTZ,
+	TColumnType extends "PgTTimeTZ" = "PgTTimeTZ",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTTimeTZ<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Date
 export type PgTTimeTZBuilderInitial<TName extends string> = PgTTimeTZBuilder<{
 	name: TName;
@@ -228,11 +259,11 @@ export class PgTTimeTZString<T extends ColumnBaseConfig<"string", "PgTTimeTZStri
 }
 //#endregion
 
-export function defineTimeTZ<TName extends string>(name: TName, config: { mode: "TimeTZ" }): PgTTimeTZBuilderInitial<TName>;
-export function defineTimeTZ<TName extends string>(name: TName, config: { mode: "luxon.DateTime" }): PgTTimeTZLuxonDateBuilderInitial<TName>;
-export function defineTimeTZ<TName extends string>(name: TName, config: { mode: "unix" }): PgTTimeTZUnixBuilderInitial<TName>;
-export function defineTimeTZ<TName extends string>(name: TName, config: { mode: "string" }): PgTTimeTZStringBuilderInitial<TName>;
 export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "globalThis.Date" }): PgTTimeTZGlobalThisDateBuilderInitial<TName>;
+export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "TimeTZ" }): PgTTimeTZBuilderInitial<TName>;
+export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "luxon.DateTime" }): PgTTimeTZLuxonDateBuilderInitial<TName>;
+export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "unix" }): PgTTimeTZUnixBuilderInitial<TName>;
+export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "string" }): PgTTimeTZStringBuilderInitial<TName>;
 export function defineTimeTZ<TName extends string>(name: TName, config?: { mode: "TimeTZ" | "globalThis.Date" | "luxon.DateTime" | "unix" | "string" }) {
 	if (config?.mode === "TimeTZ") return new PgTTimeTZBuilder(name) as PgTTimeTZBuilderInitial<TName>;
 	if (config?.mode === "luxon.DateTime") return new PgTTimeTZLuxonDateBuilder(name) as PgTTimeTZLuxonDateBuilderInitial<TName>;

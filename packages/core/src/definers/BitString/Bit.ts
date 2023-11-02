@@ -9,6 +9,29 @@ export interface PgTBitConfig {
 	length?: number;
 }
 
+export type PgTBitType<
+	TTableName extends string,
+	TName extends string,
+	TMode extends "Bit" | "string" | "number",
+	TNotNull extends boolean,
+	THasDefault extends boolean,
+	TData = TMode extends "Bit" ? Bit<number> : TMode extends "string" ? string : number,
+	TDriverParameter = Bit<number>,
+	TColumnType extends "PgTBit" = "PgTBit",
+	TDataType extends "custom" = "custom",
+	TEnumValues extends undefined = undefined,
+> = PgTBit<{
+	tableName: TTableName;
+	name: TName;
+	data: TData;
+	driverParam: TDriverParameter;
+	notNull: TNotNull;
+	hasDefault: THasDefault;
+	columnType: TColumnType;
+	dataType: TDataType;
+	enumValues: TEnumValues;
+}>;
+
 //#region Bit
 export type PgTBitBuilderInitial<TName extends string> = PgTBitBuilder<{
 	name: TName;
@@ -144,9 +167,9 @@ export class PgTBitNumber<T extends ColumnBaseConfig<"number", "PgTBitNumber">> 
 }
 //#endregion
 
-export function defineBit<TName extends string>(name: TName, config: { mode: "Bit"; length?: number }): PgTBitBuilderInitial<TName>;
-export function defineBit<TName extends string>(name: TName, config: { mode: "number"; length?: number }): PgTBitNumberBuilderInitial<TName>;
 export function defineBit<TName extends string>(name: TName, config?: { mode: "string"; length?: number }): PgTBitStringBuilderInitial<TName>;
+export function defineBit<TName extends string>(name: TName, config?: { mode: "Bit"; length?: number }): PgTBitBuilderInitial<TName>;
+export function defineBit<TName extends string>(name: TName, config?: { mode: "number"; length?: number }): PgTBitNumberBuilderInitial<TName>;
 export function defineBit<TName extends string>(name: TName, config?: { mode: "Bit" | "number" | "string"; length?: number }) {
 	if (config?.mode === "Bit") return new PgTBitBuilder(name, { length: config.length }) as PgTBitBuilderInitial<TName>;
 	if (config?.mode === "number") return new PgTBitNumberBuilder(name, { length: config.length }) as PgTBitNumberBuilderInitial<TName>;

@@ -109,8 +109,8 @@ importers:
         specifier: workspace:*
         version: link:../util
       c12:
-        specifier: ^1.4.2
-        version: 1.4.2
+        specifier: ^1.5.1
+        version: 1.5.1
       camelcase:
         specifier: 8.0.0
         version: 8.0.0
@@ -139,8 +139,8 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1
       pg:
-        specifier: ^8.11.2
-        version: 8.11.2
+        specifier: ^8.11.3
+        version: 8.11.3
       pluralize:
         specifier: ^8.0.0
         version: 8.0.0
@@ -149,32 +149,32 @@ importers:
         version: 0.5.21
     devDependencies:
       '@types/command-line-args':
-        specifier: ^5.2.0
-        version: 5.2.0
+        specifier: ^5.2.2
+        version: 5.2.2
       '@types/command-line-commands':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.3
+        version: 2.0.3
       '@types/command-line-usage':
-        specifier: ^5.0.2
-        version: 5.0.2
+        specifier: ^5.0.3
+        version: 5.0.3
       '@types/debug':
-        specifier: ^4.1.8
-        version: 4.1.8
+        specifier: ^4.1.10
+        version: 4.1.10
       '@types/node':
-        specifier: ^20.4.6
-        version: 20.4.6
+        specifier: ^20.8.10
+        version: 20.8.10
       '@types/pascalcase':
-        specifier: ^1.0.1
-        version: 1.0.1
+        specifier: ^1.0.2
+        version: 1.0.2
       '@types/pg':
-        specifier: ^8.10.2
-        version: 8.10.2
+        specifier: ^8.10.7
+        version: 8.10.7
       '@types/pluralize':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.32
+        version: 0.0.32
       typescript:
-        specifier: ^5.1.6
-        version: 5.1.6
+        specifier: ^5.2.2
+        version: 5.2.2
 
   packages/core:
     dependencies:
@@ -2500,16 +2500,16 @@ packages:
       '@types/tern': 0.23.4
     dev: true
 
-  /@types/command-line-args@5.2.0:
-    resolution: {integrity: sha512-UuKzKpJJ/Ief6ufIaIzr3A/0XnluX7RvFgwkV89Yzvm77wCh1kFaFmqN8XEnGcN62EuHdedQjEMb8mYxFLGPyA==}
+  /@types/command-line-args@5.2.2:
+    resolution: {integrity: sha512-9aZ7KzLDOBYyqH5J2bvB9edvsMXusX+H/aS8idAJOpWNmscZG5RqO1CVJPFa4Q0/1xKgvxcweXunFVx2l/dYFA==}
     dev: true
 
-  /@types/command-line-commands@2.0.1:
-    resolution: {integrity: sha512-3cOzvwRdFS0w4NKeoAAjvRGM1ONSphUrvAs2uBIYIUW4uchXu/vm5GZPu6YNRb/wS7H8qt4uh1k0IF99eBF2Xg==}
+  /@types/command-line-commands@2.0.3:
+    resolution: {integrity: sha512-J/nttEvWljlTkKHwx/pCv0oAi4ZnsAIXwQYD5StMYX6bSdLt9y6htdknLRDPYaa2OdDAv2sQXn8TlLZxetX8bQ==}
     dev: true
 
-  /@types/command-line-usage@5.0.2:
-    resolution: {integrity: sha512-n7RlEEJ+4x4TS7ZQddTmNSxP+zziEG0TNsMfiRIxcIVXt71ENJ9ojeXmGO3wPoTdn7pJcU2xc3CJYMktNT6DPg==}
+  /@types/command-line-usage@5.0.3:
+    resolution: {integrity: sha512-ZESq+MDjR7QpvFfuanzfoAwfzA9e/wUUH/5uEyaZpGwqEnNddBpsyzJWltUIMgXYy97//wD0aJFgKStoZ6o1SQ==}
     dev: true
 
   /@types/d3-array@3.0.5:
@@ -2691,10 +2691,10 @@ packages:
       '@types/d3-zoom': 3.0.3
     dev: true
 
-  /@types/debug@4.1.8:
-    resolution: {integrity: sha512-/vPO1EPOs306Cvhwv7KfVfYvOJqA/S/AXjaHQiJboCZzcNDb+TIJFN9/2C9DZ//ijSKWioNyUxD792QmDJ+HKQ==}
+  /@types/debug@4.1.10:
+    resolution: {integrity: sha512-tOSCru6s732pofZ+sMv9o4o3Zc+Sa8l3bxd/tweTQudFn06vAzb13ZX46Zi6m6EJ+RUbRTHvgQJ1gBtSgkaUYA==}
     dependencies:
-      '@types/ms': 0.7.31
+      '@types/ms': 0.7.33
     dev: true
 
   /@types/eslint-scope@3.7.6:
@@ -2769,8 +2769,8 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: true
 
-  /@types/ms@0.7.31:
-    resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
+  /@types/ms@0.7.33:
+    resolution: {integrity: sha512-AuHIyzR5Hea7ij0P9q7vx7xu4z0C28ucwjAZC0ja7JhINyCnOw8/DnvAPQQ9TfOlCtZAmCERKQX9+o1mgQhuOQ==}
     dev: true
 
   /@types/node@12.20.55:
@@ -2794,14 +2794,14 @@ packages:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
     dev: true
 
-  /@types/pascalcase@1.0.1:
-    resolution: {integrity: sha512-JYPox1hbKw66Sv9HtvTp0r5jJkaz6k+V8XjEnZUb7B+4ffIoS+3sjiAtwkX6IMO68UQtQWe9QcAjugn9VR4GJg==}
+  /@types/pascalcase@1.0.2:
+    resolution: {integrity: sha512-XkW9PnSAHH0XIq1tefSZs7hvSIkM1RKkWlSobRfUpeHjz9OjyxIlu7XjgHVkxn/qDkk8siXzjLE20tsyqc4CqQ==}
     dev: true
 
   /@types/pg@8.10.2:
     resolution: {integrity: sha512-MKFs9P6nJ+LAeHLU3V0cODEOgyThJ3OAnmOlsZsxux6sfQs3HRXR5bBn7xG5DjckEFhTAxsXi7k7cd0pCMxpJw==}
     dependencies:
-      '@types/node': 20.4.6
+      '@types/node': 20.8.10
       pg-protocol: 1.6.0
       pg-types: 4.0.1
     dev: true
@@ -2812,10 +2812,9 @@ packages:
       '@types/node': 20.8.10
       pg-protocol: 1.6.0
       pg-types: 4.0.1
-    dev: false
 
-  /@types/pluralize@0.0.30:
-    resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
+  /@types/pluralize@0.0.32:
+    resolution: {integrity: sha512-exDkoRIkWJlbRDRmtYDbI3ZUE28HwBwHe5VKn4mvpvMW7qIRDHO6URItErBsBSX7J8/PrDLSOHCcbUMFXwA6CA==}
     dev: true
 
   /@types/resolve@1.20.2:
@@ -8216,7 +8215,7 @@ packages:
   /micromark@3.2.0:
     resolution: {integrity: sha512-uD66tJj54JLYq0De10AhWycZWGQNUvDI55xPgk2sQM5kn1JYlhbCMTtEeT27+vAhW2FBQxLlOmS3pmA7/2z4aA==}
     dependencies:
-      '@types/debug': 4.1.8
+      '@types/debug': 4.1.10
       debug: 4.3.4(supports-color@8.1.1)
       decode-named-character-reference: 1.0.2
       micromark-core-commonmark: 1.1.0
@@ -9064,6 +9063,7 @@ packages:
       pg: '>=8.0'
     dependencies:
       pg: 8.11.2
+    dev: true
 
   /pg-pool@3.6.1(pg@8.11.3):
     resolution: {integrity: sha512-jizsIzhkIitxCGfPRzJn1ZdcosIt3pz9Sh3V01fm1vZnbnCMgmGl5wvGGdNN2EL9Rmb0EcFoCkixH4Pu+sP9Og==}
@@ -9116,6 +9116,7 @@ packages:
       pgpass: 1.0.5
     optionalDependencies:
       pg-cloudflare: 1.1.1
+    dev: true
 
   /pg@8.11.3:
     resolution: {integrity: sha512-+9iuvG8QfaaUrrph+kpF24cXkH1YOOUeArRNYIxq1viYHZagBxrTno7cecY1Fa44tJeZvaoG+Djpkc3JwehN5g==}

@@ -1,3 +1,4 @@
+import { isAnyParser } from "@postgresql-typed/parsers";
 import type { PgTExtensionContext, PostQueryHookData, PreQueryHookData } from "@postgresql-typed/util";
 import { fillPlaceholders, Logger, NoopLogger, Query, RelationalSchemaConfig, SelectedFieldsOrdered, SQL, sql, TablesRelationalConfig } from "drizzle-orm";
 import { NodePgQueryResultHKT, NodePgSessionOptions } from "drizzle-orm/node-postgres";
@@ -158,7 +159,7 @@ export class PgTPreparedQuery<T extends PreparedQueryConfig> extends PreparedQue
 	private mapValue<T>(value: T): T {
 		if (typeof value !== "object" || value === null) return value;
 		if (Array.isArray(value)) return value.map(element => this.mapValue(element)) as unknown as T;
-		if ("value" in value) return value.value as unknown as T;
+		if (isAnyParser(value)) return value.value as unknown as T;
 		return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, this.mapValue(value)])) as unknown as T;
 	}
 }

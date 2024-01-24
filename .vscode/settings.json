@@ -19,7 +19,7 @@
 	"prettier.useTabs": true,
 	"prettier.vueIndentScriptAndStyle": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": true
+		"source.fixAll.eslint": "explicit"
 	},
 	"unocss.root": "packages/ui",
 	"typescript.tsdk": "node_modules/typescript/lib"

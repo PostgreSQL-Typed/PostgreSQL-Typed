@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.13.0
+
+### Minor Changes
+
+- [#131](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/131) [`ac8c5df`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/ac8c5dffed4700b4fdb5a8054b3b320712912b58) Thanks [@Bas950](https://github.com/Bas950)! - fix: only map value to .value if its a parser
+
 ## 0.12.0
 
 ### Minor Changes

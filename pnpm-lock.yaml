@@ -170,8 +170,8 @@ importers:
         specifier: ^8.10.7
         version: 8.10.7
       '@types/pluralize':
-        specifier: ^0.0.32
-        version: 0.0.32
+        specifier: ^0.0.33
+        version: 0.0.33
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
@@ -3113,8 +3113,8 @@ packages:
       pg-protocol: 1.6.0
       pg-types: 4.0.1
 
-  /@types/pluralize@0.0.32:
-    resolution: {integrity: sha512-exDkoRIkWJlbRDRmtYDbI3ZUE28HwBwHe5VKn4mvpvMW7qIRDHO6URItErBsBSX7J8/PrDLSOHCcbUMFXwA6CA==}
+  /@types/pluralize@0.0.33:
+    resolution: {integrity: sha512-JOqsl+ZoCpP4e8TDke9W79FDcSgPAR0l6pixx2JHkhnRjvShyYiAYw2LVsnA7K08Y6DeOnaU6ujmENO4os/cYg==}
     dev: true
 
   /@types/resolve@1.20.2:

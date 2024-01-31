@@ -80,9 +80,9 @@ describe("query", () => {
 					where: isNotNull(users.invitedBy),
 				})
 				.prepare("test")
-				.all();
+				.execute();
 
-			expect(result4).toEqual([{ id: 2, invited_by: 1, name: "test2" }]);
+			expect(result4).toEqual([{ id: 2, invitedBy: 1, name: "test2" }]);
 
 			const result5 = await database.transaction(async transaction => {
 				const result = await transaction.query.users.findMany();

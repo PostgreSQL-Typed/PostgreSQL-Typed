@@ -1,5 +1,11 @@
 # @postgresql-typed/core
 
+## 0.14.0
+
+### Minor Changes
+
+- [#133](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/133) [`6aa5870`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/6aa587064600e8d2c9a7ded3d09a1b2489d46f8b) Thanks [@Bas950](https://github.com/Bas950)! - Use the setTypeParser per client, not globally
+
 ## 0.13.0
 
 ### Minor Changes

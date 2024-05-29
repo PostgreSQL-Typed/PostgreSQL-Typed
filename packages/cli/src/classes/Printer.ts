@@ -8,7 +8,6 @@ import { dirname, join } from "pathe";
 
 import { PrinterContext } from "../classes/PrinterContext.js";
 import { DebugOnly } from "../commands/DebugOnly.js";
-import { ClassKind } from "../types/enums/ClassKind.js";
 import type { ClassDetails } from "../types/interfaces/ClassDetails.js";
 import type { FetchedData } from "../types/interfaces/FetchedData.js";
 import type { FileContext } from "../types/interfaces/FileContext.js";
@@ -159,7 +158,7 @@ export class Printer {
 	}
 
 	public async print() {
-		const allClasses = [...this.classes.values()].filter(cls => cls.kind === ClassKind.OrdinaryTable),
+		const allClasses = [...this.classes.values()],
 			databaseClassLists: ClassDetails[][] = [];
 
 		for (const cls of allClasses) {

@@ -14,10 +14,11 @@ export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 				.flatMap(type => {
 					const { TableInsertInferTypeRecord, TableInferTypeRecord, TableRecord } = printTableTypes(type, printer),
 						exports = [
-							`export * from "${getRelativePath(TableInsertInferTypeRecord)}";`,
+							TableInsertInferTypeRecord ? `export * from "${getRelativePath(TableInsertInferTypeRecord)}";` : undefined,
 							`export * from "${getRelativePath(TableInferTypeRecord)}";`,
 							`export * from "${getRelativePath(TableRecord)}";`,
 						]
+							.filter((v): v is string => v !== undefined)
 							//* remove duplicates
 							.filter((v, index, a) => a.indexOf(v) === index);
 					return exports;
@@ -51,10 +52,11 @@ export function printSchemaReexport(types: ClassDetails[], printer: Printer) {
 				.flatMap(type => {
 					const { TableInsertInferTypeRecord, TableInferTypeRecord, TableRecord } = printTableTypes(type, printer),
 						exports = [
-							`export * from "${getRelativePath(TableInsertInferTypeRecord)}";`,
+							TableInsertInferTypeRecord ? `export * from "${getRelativePath(TableInsertInferTypeRecord)}";` : undefined,
 							`export * from "${getRelativePath(TableInferTypeRecord)}";`,
 							`export * from "${getRelativePath(TableRecord)}";`,
 						]
+							.filter((v): v is string => v !== undefined)
 							//* remove duplicates
 							.filter((v, index, a) => a.indexOf(v) === index);
 					return exports;

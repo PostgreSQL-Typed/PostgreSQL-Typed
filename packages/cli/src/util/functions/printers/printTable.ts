@@ -10,8 +10,6 @@ import { getModeOfOid } from "../getters/getModeOfOid.js";
 import { printSchema } from "./printSchema.js";
 
 export function printTable(type: ClassDetails, printer: Printer) {
-	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printTable only supports ordinary tables at the moment.");
-
 	const TableRecord = printer.context.pushValueDeclaration(
 		{
 			databaseName: type.database_name,
@@ -21,10 +19,25 @@ export function printTable(type: ClassDetails, printer: Printer) {
 		},
 		(identifierName, file) => {
 			const { SchemaRecord } = printSchema(type, printer);
+			if (type.kind === ClassKind.OrdinaryTable) {
+				return [
+					`const ${identifierName} = ${file.getImport(SchemaRecord)}.table("${type.class_name}", {`,
+					...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumn(type, attribute, printer, file)),
+					"});",
+				];
+			}
+
+			const viewFunction = ClassKind.View ? "pgView" : "pgMaterializedView";
+
+			file.addImportStatement({
+				module: "@postgresql-typed/core",
+				name: viewFunction,
+				type: "named",
+			});
 			return [
-				`const ${identifierName} = ${file.getImport(SchemaRecord)}.table("${type.class_name}", {`,
+				`const ${identifierName} = ${viewFunction}("${type.class_name}", {`,
 				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumn(type, attribute, printer, file)),
-				"});",
+				"}).existing();",
 			];
 		}
 	);
@@ -52,20 +65,37 @@ export function printTable(type: ClassDetails, printer: Printer) {
 			type: "tableType",
 		},
 		(identifierName, file) => {
+			if (type.kind === ClassKind.OrdinaryTable) {
+				file.addImportStatement({
+					isType: true,
+					module: "@postgresql-typed/core",
+					name: "PgTableWithColumns",
+					type: "named",
+				});
+				return [
+					`declare const ${identifierName}: PgTableWithColumns<{`,
+					`  name: "${type.class_name}";`,
+					`  schema: "${type.schema_name}";`,
+					"  columns: {",
+					...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumnType(type, attribute, printer, file)),
+					"  };",
+					'  dialect: "pg";',
+					"}>;",
+				];
+			}
+
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/core",
-				name: "PgTableWithColumns",
+				name: "PgView",
 				type: "named",
 			});
 			return [
-				`declare const ${identifierName}: PgTableWithColumns<{`,
-				`  name: "${type.class_name}";`,
-				`  schema: "${type.schema_name}";`,
-				"  columns: {",
+				`declare const ${identifierName}: PgView<`,
+				`"${type.class_name}",`,
+				"true,",
+				"{",
 				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumnType(type, attribute, printer, file)),
-				"  };",
-				'  dialect: "pg";',
 				"}>;",
 			];
 		}

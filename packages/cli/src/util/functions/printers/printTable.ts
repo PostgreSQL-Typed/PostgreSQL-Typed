@@ -27,15 +27,9 @@ export function printTable(type: ClassDetails, printer: Printer) {
 				];
 			}
 
-			const viewFunction = ClassKind.View ? "pgView" : "pgMaterializedView";
-
-			file.addImportStatement({
-				module: "@postgresql-typed/core",
-				name: viewFunction,
-				type: "named",
-			});
+			const viewFunction = ClassKind.View ? "view" : "materializedView";
 			return [
-				`const ${identifierName} = ${viewFunction}("${type.class_name}", {`,
+				`const ${identifierName} = ${file.getImport(SchemaRecord)}.${viewFunction}("${type.class_name}", {`,
 				...type.attributes.filter(a => a.attribute_number >= 0 && !shouldSkip(a, printer)).map(attribute => printColumn(type, attribute, printer, file)),
 				"}).existing();",
 			];
@@ -84,7 +78,7 @@ export function printTable(type: ClassDetails, printer: Printer) {
 				];
 			}
 
-			const viewType = type.kind === ClassKind.View ? "PgView" : "PgMaterializedView";
+			const viewType = type.kind === ClassKind.View ? "PgViewWithSelection" : "PgMaterializedViewWithSelection";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/core",

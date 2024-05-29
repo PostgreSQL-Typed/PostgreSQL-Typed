@@ -34,6 +34,11 @@ export interface PostgreSQLTypedCLIConfig {
 	 * - `*.schema`
 	 * - `database.*`
 	 *
+	 * You can also use the following syntax to exclude schemas:
+	 * - `!database.schema`
+	 * - `!*.schema`
+	 * - `!database.*`
+	 *
 	 * @default "*"
 	 */
 	schemas: string | string[] | number | number[];
@@ -56,6 +61,15 @@ export interface PostgreSQLTypedCLIConfig {
 	 * - `database.*.*`
 	 * - `database.*.table`
 	 * - `*.schema.*`
+	 *
+	 * You can also use the following syntax to exclude tables:
+	 * - `!database.schema.table`
+	 * - `!*.schema.table`
+	 * - `!*.*.table`
+	 * - `!database.schema.*`
+	 * - `!database.*.*`
+	 * - `!database.*.table`
+	 * - `!*.schema.*`
 	 *
 	 *
 	 * @default "*"

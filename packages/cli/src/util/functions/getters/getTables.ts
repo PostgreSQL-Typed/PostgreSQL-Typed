@@ -44,12 +44,34 @@ export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig
 				return schemas === `${databaseName}.${t.schema_name}` || schemas === `*.${t.schema_name}` || schemas === `${databaseName}.*`;
 			if (typeof schemas === "number") return schemas === t.schema_id;
 
+			const noPositives = [...schemas].filter(s => typeof s !== "string" || !s.startsWith("!")).length === 0;
+			if (noPositives) return true;
+
 			return (
 				[...schemas].filter((s): s is string => typeof s === "string").includes(`${databaseName}.${t.schema_name}`) ||
 				[...schemas].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}`) ||
 				[...schemas].filter((s): s is string => typeof s === "string").includes(`${databaseName}.*`) ||
 				[...schemas].filter((s): s is number => typeof s === "number").includes(t.schema_id)
 			);
+		})
+		.filter(t => {
+			const { schemas } = config;
+
+			if (schemas === "!*") return false;
+			if (typeof schemas === "string") {
+				if (schemas === `!${databaseName}.${t.schema_name}` || schemas === `!*.${t.schema_name}` || schemas === `!${databaseName}.*`) return false;
+				return true;
+			}
+			if (typeof schemas === "number") return true;
+
+			if (
+				[...schemas].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.${t.schema_name}`) ||
+				[...schemas].filter((s): s is string => typeof s === "string").includes(`!*.${t.schema_name}`) ||
+				[...schemas].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.*`)
+			)
+				return false;
+
+			return true;
 		})
 		.filter(t => {
 			const { tables } = config;
@@ -68,6 +90,9 @@ export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig
 			}
 			if (typeof tables === "number") return tables === t.table_id;
 
+			const noPositives = [...tables].filter(s => typeof s !== "string" || !s.startsWith("!")).length === 0;
+			if (noPositives) return true;
+
 			return (
 				[...tables].filter((s): s is string => typeof s === "string").includes(`${databaseName}.${t.schema_name}.${t.table_name}`) ||
 				[...tables].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}.${t.table_name}`) ||
@@ -78,5 +103,37 @@ export async function getTables(client: Client, config: PostgreSQLTypedCLIConfig
 				[...tables].filter((s): s is string => typeof s === "string").includes(`*.${t.schema_name}.*`) ||
 				[...tables].filter((s): s is number => typeof s === "number").includes(t.table_id)
 			);
+		})
+		.filter(t => {
+			const { tables } = config;
+
+			if (tables === "!*") return false;
+			if (typeof tables === "string") {
+				if (
+					tables === `!${databaseName}.${t.schema_name}.${t.table_name}` ||
+					tables === `!*.${t.schema_name}.${t.table_name}` ||
+					tables === `!*.*.${t.table_name}` ||
+					tables === `!${databaseName}.${t.schema_name}.*` ||
+					tables === `!${databaseName}.*.*` ||
+					tables === `!${databaseName}.*.${t.table_name}` ||
+					tables === `!*.${t.schema_name}.*`
+				)
+					return false;
+				return true;
+			}
+			if (typeof tables === "number") return true;
+
+			if (
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.${t.schema_name}.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!*.${t.schema_name}.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!*.*.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.${t.schema_name}.*`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.*.*`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!${databaseName}.*.${t.table_name}`) ||
+				[...tables].filter((s): s is string => typeof s === "string").includes(`!*.${t.schema_name}.*`)
+			)
+				return false;
+
+			return true;
 		});
 }

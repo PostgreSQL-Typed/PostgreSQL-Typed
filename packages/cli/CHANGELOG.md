@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.11.0
+
+### Minor Changes
+
+- [#135](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/pull/135) [`702c82d`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/702c82d6c2941b3a2f758c8400dd45a3d00edc78) Thanks [@Bas950](https://github.com/Bas950)! - Add support for (materialized) views
+
 ## 0.10.1
 
 ### Patch Changes

@@ -84,14 +84,15 @@ export function printTable(type: ClassDetails, printer: Printer) {
 				];
 			}
 
+			const viewType = type.kind === ClassKind.View ? "PgView" : "PgMaterializedView";
 			file.addImportStatement({
 				isType: true,
 				module: "@postgresql-typed/core",
-				name: "PgView",
+				name: viewType,
 				type: "named",
 			});
 			return [
-				`declare const ${identifierName}: PgView<`,
+				`declare const ${identifierName}: ${viewType}<`,
 				`"${type.class_name}",`,
 				"true,",
 				"{",

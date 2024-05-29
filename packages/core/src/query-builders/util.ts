@@ -145,6 +145,9 @@ export type GetSelectTableSelection<TTable extends TableLike> = TTable extends T
 	  {}
 	: never;
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type InferView<TTable extends TableLike> = SelectResult<GetSelectTableSelection<TTable>, "single", {}>;
+
 export type ApplyNullabilityToColumn<TColumn extends Column, TNullability extends JoinNullability> = TNullability extends "not-null"
 	? TColumn
 	: Column<

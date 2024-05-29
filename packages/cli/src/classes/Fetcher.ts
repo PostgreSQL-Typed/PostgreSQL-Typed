@@ -124,7 +124,11 @@ export class Fetcher {
 			kind: [ClassKind.OrdinaryTable, ClassKind.View, ClassKind.MaterializedView],
 			schema_names: this.schema_names,
 		});
-		this.LOGGER?.("Fetched %d classes", classes.length);
+		this.LOGGER?.(
+			"Fetched %d classes, with %d being views",
+			classes.length,
+			classes.filter(cls => [ClassKind.View, ClassKind.MaterializedView].includes(cls.kind)).length
+		);
 		if (classes.length === 0) {
 			this.progressBar.stop();
 			if (this.generatorConfig?.silent !== true)
@@ -142,6 +146,7 @@ export class Fetcher {
 		const attributes = await getAttributes(this.client, {
 			database_name: this.dbName,
 			schema_names: this.schema_names,
+			views: this.classes.filter(cls => [ClassKind.View, ClassKind.MaterializedView].includes(cls.kind)).map(cls => cls.class_id),
 		});
 		this.LOGGER?.("Fetched %d attributes", attributes.length);
 		if (attributes.length === 0) {

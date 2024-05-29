@@ -4,8 +4,6 @@ import type { ClassDetails } from "../../../types/interfaces/ClassDetails.js";
 import { printTable } from "./printTable.js";
 
 export function printTableTypes(type: ClassDetails, printer: Printer) {
-	if (type.kind !== ClassKind.OrdinaryTable) throw new Error("printTableTypes only supports ordinary tables at the moment.");
-
 	const { TableRecord, TableTypeRecord } = printTable(type, printer),
 		TableInferTypeRecord = printer.context.pushTypeDeclaration(
 			{
@@ -15,34 +13,37 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 				type: "tableInferType",
 			},
 			(identifierName, { addImportStatement, getImport }) => {
+				if (type.kind === ClassKind.OrdinaryTable) {
+					return [
+						`type ${identifierName} = typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}._.inferSelect;`,
+					];
+				}
+
 				addImportStatement({
 					isType: true,
 					module: "@postgresql-typed/core",
-					name: "InferModel",
+					name: "InferView",
 					type: "named",
 				});
-				return [`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}>;`];
+				return [`type ${identifierName} = InferView<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}>;`];
 			}
 		),
-		TableInsertInferTypeRecord = printer.context.pushTypeDeclaration(
-			{
-				databaseName: type.database_name,
-				name: type.class_name,
-				schemaName: type.schema_name,
-				type: "tableInsertInferType",
-			},
-			(identifierName, { addImportStatement, getImport }) => {
-				addImportStatement({
-					isType: true,
-					module: "@postgresql-typed/core",
-					name: "InferModel",
-					type: "named",
-				});
-				return [
-					`type ${identifierName} = InferModel<typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}, "insert">;`,
-				];
-			}
-		);
+		TableInsertInferTypeRecord =
+			type.kind === ClassKind.OrdinaryTable
+				? printer.context.pushTypeDeclaration(
+						{
+							databaseName: type.database_name,
+							name: type.class_name,
+							schemaName: type.schema_name,
+							type: "tableInsertInferType",
+						},
+						(identifierName, { getImport }) => {
+							return [
+								`type ${identifierName} = typeof ${getImport(printer.config.files.preCompile ? TableTypeRecord ?? TableRecord : TableRecord)}._.inferInsert;`,
+							];
+						}
+				  )
+				: undefined;
 
 	printer.context.pushReExport(
 		{
@@ -57,18 +58,20 @@ export function printTableTypes(type: ClassDetails, printer: Printer) {
 		TableInferTypeRecord
 	);
 
-	printer.context.pushReExport(
-		{
-			of: {
-				databaseName: type.database_name,
-				name: type.class_name,
-				schemaName: type.schema_name,
-				type: "tableInsertInferType",
+	if (TableInsertInferTypeRecord) {
+		printer.context.pushReExport(
+			{
+				of: {
+					databaseName: type.database_name,
+					name: type.class_name,
+					schemaName: type.schema_name,
+					type: "tableInsertInferType",
+				},
+				type: "export",
 			},
-			type: "export",
-		},
-		TableInsertInferTypeRecord
-	);
+			TableInsertInferTypeRecord
+		);
+	}
 
 	return { TableInferTypeRecord, TableInsertInferTypeRecord, TableRecord, TableTypeRecord };
 }

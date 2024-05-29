@@ -67,7 +67,7 @@
 		"@postgresql-typed/util": "workspace:*",
 		"@types/pg": "^8.10.7",
 		"c12": "^1.5.1",
-		"drizzle-orm": "0.28.6",
+		"drizzle-orm": "0.30.10",
 		"hookable": "^5.5.3",
 		"jiti": "^1.21.0",
 		"mlly": "^1.4.2",

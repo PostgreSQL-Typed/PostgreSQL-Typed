@@ -1,5 +1,11 @@
 # @postgresql-typed/cli
 
+## 0.11.2
+
+### Patch Changes
+
+- [`36dcb53`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/36dcb531ed1092af5432203ff4384b4ab8b560b6) Thanks [@Bas950](https://github.com/Bas950)! - Fixes a little bug with view types and schema linking
+
 ## 0.11.1
 
 ### Patch Changes

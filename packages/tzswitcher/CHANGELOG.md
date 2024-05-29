@@ -1,5 +1,13 @@
 # @postgresql-typed/tzswitcher
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [[`2c5b94a`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2c5b94af2dc642a9598a644580d54c1cf4d41c37)]:
+  - @postgresql-typed/util@0.12.1
+  - @postgresql-typed/parsers@0.12.1
+
 ## 0.3.0
 
 ### Minor Changes

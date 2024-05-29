@@ -1,5 +1,11 @@
 # @postgresql-typed/util
 
+## 0.12.1
+
+### Patch Changes
+
+- [`2c5b94a`](https://github.com/PostgreSQL-Typed/PostgreSQL-Typed/commit/2c5b94af2dc642a9598a644580d54c1cf4d41c37) Thanks [@Bas950](https://github.com/Bas950)! - Add option to skip schemas and tables using ! in the config
+
 ## 0.12.0
 
 ### Minor Changes

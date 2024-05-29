@@ -332,8 +332,8 @@ importers:
         specifier: ^0.57.1
         version: 0.57.1(postcss@8.4.31)(vite@4.5.0)(webpack@5.89.0)
       '@unocss/reset':
-        specifier: ^0.57.1
-        version: 0.57.1
+        specifier: ^0.60.0
+        version: 0.60.3
       '@vueuse/core':
         specifier: ^10.5.0
         version: 10.5.0(vue@3.3.7)
@@ -3501,6 +3501,10 @@ packages:
 
   /@unocss/reset@0.57.1:
     resolution: {integrity: sha512-f/ofoudjFN/HMtv1XV5phP58pOmNruBhr0GbVdBNylyieMQkFHowA7iSemChnC/fTbCcY6oSOAcFl4n9AefjdA==}
+    dev: true
+
+  /@unocss/reset@0.60.3:
+    resolution: {integrity: sha512-EuC8gkh8L8WvPOcjS/KqprEJXIKcpBPm+ou5G9D6WgDmJ+TgQrri5oR+QUmOmEnueQkVL7bnkFkIKeg71SJLFA==}
     dev: true
 
   /@unocss/rule-utils@0.57.1:

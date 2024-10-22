@@ -368,8 +368,8 @@ importers:
         specifier: ^1.1.3
         version: 1.1.3
       mermaid:
-        specifier: ^10.6.0
-        version: 10.6.0
+        specifier: ^10.9.3
+        version: 10.9.3
       nuxt:
         specifier: ^3.8.0
         version: 3.8.0(@types/node@20.8.10)(eslint@8.52.0)(sass@1.69.5)(typescript@5.2.2)(vite@4.5.0)
@@ -5065,12 +5065,6 @@ packages:
       layout-base: 1.0.2
     dev: true
 
-  /cose-base@2.2.0:
-    resolution: {integrity: sha512-AzlgcsCbUMymkADOJtQm3wO9S3ltPfYOFD5033keQn9NJzIbtnZj+UdBJe7DYml/8TdbtHJW3j58SOnKhWY/5g==}
-    dependencies:
-      layout-base: 2.0.1
-    dev: true
-
   /cosmiconfig-typescript-loader@4.4.0(@types/node@20.5.1)(cosmiconfig@8.3.6)(ts-node@10.9.1)(typescript@5.2.2):
     resolution: {integrity: sha512-BabizFdC3wBHhbI4kJh0VkQP9GkBfoHPydD0COMce1nJ1kJAB3F2TmJ/I7diULBKtmEWSwEbuN/KDtgnmUUVmw==}
     engines: {node: '>=v14.21.3'}
@@ -5358,30 +5352,18 @@ packages:
       yauzl: 2.10.0
     dev: true
 
-  /cytoscape-cose-bilkent@4.1.0(cytoscape@3.27.0):
+  /cytoscape-cose-bilkent@4.1.0(cytoscape@3.30.2):
     resolution: {integrity: sha512-wgQlVIUJF13Quxiv5e1gstZ08rnZj2XaLHGoFMYXz7SkNfCDOOteKBE6SYRfA9WxxI/iBc3ajfDoc6hb/MRAHQ==}
     peerDependencies:
       cytoscape: ^3.2.0
     dependencies:
       cose-base: 1.0.3
-      cytoscape: 3.27.0
+      cytoscape: 3.30.2
     dev: true
 
-  /cytoscape-fcose@2.2.0(cytoscape@3.27.0):
-    resolution: {integrity: sha512-ki1/VuRIHFCzxWNrsshHYPs6L7TvLu3DL+TyIGEsRcvVERmxokbf5Gdk7mFxZnTdiGtnA4cfSmjZJMviqSuZrQ==}
-    peerDependencies:
-      cytoscape: ^3.2.0
-    dependencies:
-      cose-base: 2.2.0
-      cytoscape: 3.27.0
-    dev: true
-
-  /cytoscape@3.27.0:
-    resolution: {integrity: sha512-pPZJilfX9BxESwujODz5pydeGi+FBrXq1rcaB1mfhFXXFJ9GjE6CNndAk+8jPzoXGD+16LtSS4xlYEIUiW4Abg==}
+  /cytoscape@3.30.2:
+    resolution: {integrity: sha512-oICxQsjW8uSaRmn4UK/jkczKOqTrVqt5/1WL0POiJUT2EKNc9STM4hYFHv917yu55aTBMFNRzymlJhVAiWPCxw==}
     engines: {node: '>=0.10'}
-    dependencies:
-      heap: 0.2.7
-      lodash: 4.17.21
     dev: true
 
   /d3-array@2.12.1:
@@ -6047,8 +6029,8 @@ packages:
   /electron-to-chromium@1.4.574:
     resolution: {integrity: sha512-bg1m8L0n02xRzx4LsTTMbBPiUd9yIR+74iPtS/Ao65CuXvhVZHP0ym1kSdDG3yHFDXqHQQBKujlN1AQ8qZnyFg==}
 
-  /elkjs@0.8.2:
-    resolution: {integrity: sha512-L6uRgvZTH+4OF5NE/MBbzQx/WYpru1xCBE9respNj6qznEewGUIfhzmm7horWWxbNO2M0WckQypGctR8lH79xQ==}
+  /elkjs@0.9.3:
+    resolution: {integrity: sha512-f/ZeWvW/BCXbhGEf1Ujp29EASo/lk1FDnETgNKwJrsVvGZhUWCZyg3xLJjAsxfOmt8KjswHmI5EwCQcPMpOYhQ==}
     dev: true
 
   /emoji-regex@8.0.0:
@@ -7285,10 +7267,6 @@ packages:
       function-bind: 1.1.2
     dev: true
 
-  /heap@0.2.7:
-    resolution: {integrity: sha512-2bsegYkkHO+h/9MGbn6KWcE45cHZgPANo5LXF7EvWdT0yT2EguSVO1nDgU5c8+ZOPwp2vMNa7YFsJhVcDR9Sdg==}
-    dev: true
-
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
@@ -7999,6 +7977,13 @@ packages:
       json-schema: 0.4.0
       verror: 1.10.0
 
+  /katex@0.16.11:
+    resolution: {integrity: sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==}
+    hasBin: true
+    dependencies:
+      commander: 8.3.0
+    dev: true
+
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
     dependencies:
@@ -8050,10 +8035,6 @@ packages:
 
   /layout-base@1.0.2:
     resolution: {integrity: sha512-8h2oVEZNktL4BH2JCOI90iD1yXwL6iNW7KcCKT2QZgQJR2vbqDsldCTPRU9NifTCqHZci57XvQQ15YTu+sTYPg==}
-    dev: true
-
-  /layout-base@2.0.1:
-    resolution: {integrity: sha512-dp3s92+uNI1hWIpPGH3jK2kxE2lMjdXdr+DH8ynZHpd6PUlH6x6cbuXnoMmiNumznqaNO31xu9e79F0uuZ0JFg==}
     dev: true
 
   /lazy-ass@1.6.0:
@@ -8502,21 +8483,21 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /mermaid@10.6.0:
-    resolution: {integrity: sha512-Hcti+Q2NiWnb2ZCijSX89Bn2i7TCUwosBdIn/d+u63Sz7y40XU6EKMctT4UX4qZuZGfKGZpfOeim2/KTrdR7aQ==}
+  /mermaid@10.9.3:
+    resolution: {integrity: sha512-V80X1isSEvAewIL3xhmz/rVmc27CVljcsbWxkxlWJWY/1kQa4XOABqpDl2qQLGKzpKm6WbTfUEKImBlUfFYArw==}
     dependencies:
       '@braintree/sanitize-url': 6.0.4
       '@types/d3-scale': 4.0.6
       '@types/d3-scale-chromatic': 3.0.1
-      cytoscape: 3.27.0
-      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.27.0)
-      cytoscape-fcose: 2.2.0(cytoscape@3.27.0)
+      cytoscape: 3.30.2
+      cytoscape-cose-bilkent: 4.1.0(cytoscape@3.30.2)
       d3: 7.8.5
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.10
       dayjs: 1.11.10
       dompurify: 3.0.6
-      elkjs: 0.8.2
+      elkjs: 0.9.3
+      katex: 0.16.11
       khroma: 2.1.0
       lodash-es: 4.17.21
       mdast-util-from-markdown: 1.3.1

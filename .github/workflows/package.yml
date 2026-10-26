@@ -87,11 +87,17 @@ jobs:
       - name: Run tests
         run: pnpm test:ci --filter ${{ inputs.package }}
 
+      - name: Compute artifact name
+        id: slug
+        if: ${{matrix.node == 'lts/*' && matrix.postgres == 'latest'}}
+        shell: bash
+        run: echo "slug=$(echo '${{ inputs.package }}' | tr '/@' '--')" >> "$GITHUB_OUTPUT"
+
       - name: Upload coverage
         if: ${{matrix.node == 'lts/*' && matrix.postgres == 'latest'}}
         uses: actions/upload-artifact@v4
         with:
-          name: Coverage-${{ inputs.package }}
+          name: Coverage-${{ steps.slug.outputs.slug }}
           # package.json is included so the artifact keeps the packages/<pkg>/coverage layout
           path: |
             package.json

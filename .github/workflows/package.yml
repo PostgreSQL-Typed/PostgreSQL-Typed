@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["16", "lts/*"]
+        node: ["20", "lts/*"]
         postgres: ["11", "12", "13", "14", "latest"]
     services:
       postgres:
@@ -89,9 +89,12 @@ jobs:
 
       - name: Upload coverage
         if: ${{matrix.node == 'lts/*' && matrix.postgres == 'latest'}}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Coverage
-          path: packages/*/coverage/coverage-summary.json
+          name: Coverage-${{ inputs.package }}
+          # package.json is included so the artifact keeps the packages/<pkg>/coverage layout
+          path: |
+            package.json
+            packages/*/coverage/coverage-summary.json
           #if-no-files-found: error
           retention-days: 1

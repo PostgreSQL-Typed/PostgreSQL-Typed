@@ -4,17 +4,15 @@ inputs:
   node-version:
     description: The Node.js version to use
     required: false
-    default: '16'
+    default: '24.22.1'
 runs:
   using: composite
   steps:
     - name: Install pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
+      uses: pnpm/action-setup@v4
 
     - name: Install Node
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         cache: pnpm
         node-version: ${{ inputs.node-version }}

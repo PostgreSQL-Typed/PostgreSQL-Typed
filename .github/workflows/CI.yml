@@ -67,9 +67,10 @@ jobs:
         uses: ./.github/actions/prepareEnvironment
 
       - name: Download coverage
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: Coverage
+          pattern: Coverage-*
+          merge-multiple: true
 
       - name: Check badges
         run: pnpm badges:ci

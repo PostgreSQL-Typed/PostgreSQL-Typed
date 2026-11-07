@@ -29,7 +29,7 @@ overrides:
   lodash@4.17.21: 4.18.0
   lodash-es@4.17.21: 4.18.0
   brace-expansion@1.1.11: 1.1.20
-  brace-expansion@2.0.1: 2.1.6
+  brace-expansion@2.0.1: 2.1.7
   cross-spawn@7.0.3: 7.0.5
   tmp@0.2.1: 0.2.7
   braces@3.0.2: 3.0.3
@@ -4649,12 +4649,6 @@ packages:
       concat-map: 0.0.1
     dev: true
 
-  /brace-expansion@2.1.6:
-    resolution: {integrity: sha512-pi/WFpBvCBmB/NsURt7hW5sDvuOqvJaDMDai7CrlT9xoehzWRzo/dhQRKqOhpPvlnicVaTzHCbzGnnTgpvMTFw==}
-    dependencies:
-      balanced-match: 1.0.2
-    dev: true
-
   /brace-expansion@2.1.7:
     resolution: {integrity: sha512-uZbew1NqdmPDTMJ8ah1y+b+9QEJrfkXFk3RcTQw3X0jW/xRUvFKsg1CfQdSYGdTbXZWExtU3J3ccxtnfw1Fi0g==}
     dependencies:
@@ -9146,7 +9140,7 @@ packages:
     resolution: {integrity: sha512-7RN35vit8DeBclkofOVmBY0eDAZZQd1HzmukRdSyz95CRh8FT54eqnbj0krQr3mrHR6sfRyYkyhwBWjoV5uqlQ==}
     engines: {node: '>=10'}
     dependencies:
-      brace-expansion: 2.1.6
+      brace-expansion: 2.1.7
     dev: true
 
   /minimatch@9.0.9:

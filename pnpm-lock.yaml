@@ -28,7 +28,7 @@ overrides:
   svgo@3.0.2: 3.3.5
   lodash@4.17.21: 4.18.0
   lodash-es@4.17.21: 4.18.0
-  brace-expansion@1.1.11: 1.1.20
+  brace-expansion@1.1.11: 2.1.7
   brace-expansion@2.0.1: 2.1.6
   cross-spawn@7.0.3: 7.0.5
   tmp@0.2.1: 0.2.7
@@ -4642,13 +4642,6 @@ packages:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
-  /brace-expansion@1.1.20:
-    resolution: {integrity: sha512-5/qk29RyvatwgzNMrvGjkIhKYzpJ0OUnPK+9TU+zS/CMJqzmb+UD0irWu42JfpUvO636fxd8IstgiydZRM/76A==}
-    dependencies:
-      balanced-match: 1.0.2
-      concat-map: 0.0.1
-    dev: true
-
   /brace-expansion@2.1.6:
     resolution: {integrity: sha512-pi/WFpBvCBmB/NsURt7hW5sDvuOqvJaDMDai7CrlT9xoehzWRzo/dhQRKqOhpPvlnicVaTzHCbzGnnTgpvMTFw==}
     dependencies:
@@ -5187,10 +5180,6 @@ packages:
       crc32-stream: 5.0.0
       normalize-path: 3.0.0
       readable-stream: 3.6.2
-    dev: true
-
-  /concat-map@0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /confbox@0.1.8:
@@ -9139,7 +9128,7 @@ packages:
   /minimatch@3.1.4:
     resolution: {integrity: sha512-twmL+S8+7yIsE9wsqgzU3E8/LumN3M3QELrBZ20OdmQ9jB2JvW5oZtBEmft84k/Gs5CG9mqtWc6Y9vW+JEzGxw==}
     dependencies:
-      brace-expansion: 1.1.20
+      brace-expansion: 2.1.7
     dev: true
 
   /minimatch@5.1.8:

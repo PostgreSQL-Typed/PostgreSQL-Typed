@@ -126,7 +126,7 @@
 			"js-yaml@4.1.0": "4.3.2",
 			"launch-editor@2.6.1": "2.14.2",
 			"picomatch@2.3.1": "2.3.2",
-			"postcss@8.4.31": "8.5.18",
+			"postcss@8.4.31": "8.5.23",
 			"@vue/server-renderer@3.3.7": "3.5.42",
 			"mermaid@10.6.0": "10.9.3"
 		}
